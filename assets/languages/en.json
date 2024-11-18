@@ -1,0 +1,76 @@
+{
+  "user": "User",
+  "creator": "Creator",
+
+  "get_started": "Get Started",
+  "get_started_intro": "Learn New Things Through Podcasts",
+
+  "login": "Log In",
+  "email": "Username or email",
+  "password": "Password",
+  "forget_password": "Forgot Password?",
+  "don't_have_account": "Don’t have an account?",
+  "sign_up": "Sign Up",
+
+  "create_account": "Create account",
+  "full_name": "Full Name",
+  "enter_your_full_name": "Enter your full name",
+  "email_only": "Email",
+  "enter_your_email_here": "Enter your email here",
+  "date_of_birth": "Date of Birth",
+  "confirm_password": "Confirm Password",
+  "confirm_your_password": "Confirm Your Password",
+  "address": "Address",
+  "enter_your_address": "Enter your address",
+  "already_have_an_account": "Already have an account?",
+
+  "forgot_password": "Forgot password",
+  "email_to_recover_password": "Email to recover password.",
+  "enter_your_email": "Enter your email:",
+  "continue": "Continue",
+
+  "verify_code": "Verify Code",
+  "resend_otp": "Resend OTP",
+  "verification_code": "Verification Code",
+  "we_send_you_a_verification_code_to_verify_your_email": "We send you a verification code to verify \nyour email.",
+  "enter_your_code_here": "Enter your code here",
+  "set_password": "Set Password",
+  "submit": "Submit",
+  "new_password": "New Password",
+  "please_select_a_password_that_uses_one_capital_letter_one_number_and_unique_symbol": "please select a password that uses one capital \nletter, one number and unique symbol.",
+
+  "home": "Home",
+  "history": "History",
+  "favorite": "Favorite",
+  "profile": "Profile",
+
+  "listen_and_be_happy": "Listen and be happy",
+  "what_would_you_like_to_listen": "What would you like to listen?",
+  "select_your_location": "Select your\nlocation",
+  "genres_podcast": "Genres\nPodcast",
+  "classical_audio": "Classical\nAudio",
+  "millennial_podcast": "Millennial \nPodcast",
+  "top_artists": "Top  Artists",
+  "see_all": "See all",
+  "new_music": "New Music",
+  "popular_music": "Popular Podcast",
+  "top_station": "Top Stations",
+
+  "recently_played": "Recently played",
+
+  "birthday": "Birthday:",
+  "personal_information": "Personal Information",
+  "my_play_list": "My playlist",
+  "settings": "Settings",
+  "notification": "Notification",
+  "upgrade": "Upgrade",
+  "logout": "Logout",
+
+  "select_your_location_question": "Select you Location ?",
+
+  "genres_podcast_only": "Genres Podcast",
+  "location": "Location",
+  "search": "Search",
+  "search_item": "Search  Item",
+  "for_you": "For You"
+}
