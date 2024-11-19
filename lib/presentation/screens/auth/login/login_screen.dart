@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
@@ -12,6 +13,7 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key, required this.isUser});
   final bool isUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +29,10 @@ class LoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Assets.images.forget.image(
+                width: MediaQuery.of(context).size.width/3
+              ),
+              const Gap(44),
               CustomAlignText(text: "email".tr),
               const Gap(8),
               const CustomTextField(
@@ -52,7 +58,7 @@ class LoginScreen extends StatelessWidget {
                 if(isUser){
                   AppRouter.route.goNamed(RoutePath.userNavScreen);
                 }else{
-                  // AppRouter.route.goNamed(RoutePath.partnerNavScreen);
+                  AppRouter.route.goNamed(RoutePath.creatorNavScreen);
                 }
               }),
               const Gap(12),

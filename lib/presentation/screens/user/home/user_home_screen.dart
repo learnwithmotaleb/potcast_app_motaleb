@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
-import 'package:podcast/presentation/widget/align/custom_row_text.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
+import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'widget/user_home_top_section.dart';
 import 'widget/user_top_artists_section.dart';
 
@@ -19,6 +20,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   final controller = Get.find<UserHomeController>();
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: ListView.builder(
         padding: const EdgeInsets.only(bottom: 44),
@@ -31,7 +33,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 const UserTopArtistsSection(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: CustomRowText(text: "new_music".tr, text1: "see_all".tr),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(text: "new_music".tr),
+                      TextButton(onPressed: (){
+                        AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "new_music");
+                      }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
+                    ],
+                  ),
                 ),
               ],
             );
@@ -42,7 +52,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             // Popular Music Header
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: CustomRowText(text: "popular_music".tr, text1: "see_all".tr),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(text: "popular_music".tr),
+                  TextButton(onPressed: (){
+                    AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular_music");
+                  }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
+                ],
+              ),
             );
           } else if (index <= controller.newItem.length + 1 + controller.popularItem.length) {
             // Popular Music Section
@@ -51,7 +69,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             // Station Music Header
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: CustomRowText(text: "top_station".tr, text1: "see_all".tr),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomText(text: "top_station".tr),
+                  TextButton(onPressed: (){
+                    AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "top_station");
+                  }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
+                ],
+              ),
             );
           } else {
             // Station Music Section

@@ -5,6 +5,7 @@ import 'package:podcast/model/route/audio_player_model.dart';
 
 class UserPlayController extends GetxController{
   RxBool isLoading = false.obs;
+   Rx<AudioPlayerModel> clickAudioPlayerData = AudioPlayerModel(id: "", url: "", title: "", album: "", image: "", artist: "").obs;
   List<AudioPlayerModel> newItem = [
     AudioPlayerModel(
         id: "1",
@@ -72,6 +73,7 @@ class UserPlayController extends GetxController{
   }
 
   Future<void> playAudio(AudioPlayerModel model) async {
+    clickAudioPlayerData.value = model;
     isLoading.value = true; // Start loading
     await audioPlayer.setAudioSource(
       AudioSource.uri(

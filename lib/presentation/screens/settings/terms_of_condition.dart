@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:podcast/core/route/routes.dart';
 
-class PrivacyPolicy extends StatelessWidget {
-  const PrivacyPolicy({super.key});
+class TermsOfCondition extends StatelessWidget {
+  const TermsOfCondition({super.key});
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: Text("privacy_policy".tr),
         centerTitle: true,
+        leading: IconButton(onPressed: ()=>AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        title: Text("terms_of_condition".tr),
       ),
       body: const SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),

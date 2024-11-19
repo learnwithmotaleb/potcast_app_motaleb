@@ -14,8 +14,9 @@ class CustomProfileTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        color: Colors.transparent,
         child: Column(
           children: [
             Row(

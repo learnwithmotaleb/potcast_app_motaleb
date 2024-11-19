@@ -8,14 +8,29 @@ import 'package:podcast/presentation/screens/auth/login/login_screen.dart';
 import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
+import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
+import 'package:podcast/presentation/screens/creator/play/creator_play_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
+import 'package:podcast/presentation/screens/notification/notification_screen.dart';
+import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
+import 'package:podcast/presentation/screens/playlist_add/playlist_add_screen.dart';
+import 'package:podcast/presentation/screens/profile_edit/edit_profile_screen.dart';
 import 'package:podcast/presentation/screens/role/role_screen.dart';
+import 'package:podcast/presentation/screens/settings/about_us_screen.dart';
+import 'package:podcast/presentation/screens/settings/change_password_screen.dart';
+import 'package:podcast/presentation/screens/settings/privacy_policy.dart';
+import 'package:podcast/presentation/screens/settings/settings_screen.dart';
+import 'package:podcast/presentation/screens/settings/support_screen.dart';
+import 'package:podcast/presentation/screens/settings/terms_of_condition.dart';
 import 'package:podcast/presentation/screens/splash/splash_screen.dart';
 import 'package:podcast/presentation/screens/user/categories/categories_screen.dart';
 import 'package:podcast/presentation/screens/user/country/select_country_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/play/user_play_screen.dart';
 import 'package:podcast/presentation/screens/user/search/search_screen.dart';
+import 'package:podcast/presentation/screens/user/see/see_all_screen.dart';
+import 'package:podcast/presentation/screens/profile_view/view_profile_screen.dart';
+import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
 
 class AppRouter {
   static final GoRouter initRoute = GoRouter(
@@ -39,7 +54,7 @@ class AppRouter {
           },
         ),
 
-        ///======================= Global Route =======================
+        ///======================= Auth Route =======================
         GoRoute(
             name: RoutePath.roleScreen,
             path: RoutePath.roleScreen.addBasePath,
@@ -97,6 +112,48 @@ class AppRouter {
             ),
         ),
 
+        ///======================= Global Route =======================
+        GoRoute(
+          name: RoutePath.viewProfileScreen,
+          path: RoutePath.viewProfileScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const ViewProfileScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.editProfileScreen,
+          path: RoutePath.editProfileScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const EditProfileScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.playlistScreen,
+          path: RoutePath.playlistScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const PlaylistScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.playlistAddScreen,
+          path: RoutePath.playlistAddScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const PlaylistAddScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.notificationScreen,
+          path: RoutePath.notificationScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const NotificationScreen(),
+            state: state,
+          ),
+        ),
+
         ///======================= User Route =======================
         GoRoute(
             name: RoutePath.userNavScreen,
@@ -135,6 +192,91 @@ class AppRouter {
             path: RoutePath.userPlayScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
               child: state.extra != null?UserPlayScreen(model: state.extra as AudioPlayerModel):UserPlayScreen(model: AudioPlayerModel(image: "",id: "",title: "",album: "",artist: "",url: "")),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.seeAllScreen,
+            path: RoutePath.seeAllScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: state.extra != null?SeeAllScreen(title: state.extra as String):const SeeAllScreen(title: ""),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.upgradeScreen,
+            path: RoutePath.upgradeScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: const UpgradeScreen(),
+              state: state,
+            ),
+        ),
+
+        ///======================= Creator Route =======================
+        GoRoute(
+          name: RoutePath.creatorNavScreen,
+          path: RoutePath.creatorNavScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const CreatorNavScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.creatorPlayScreen,
+          path: RoutePath.creatorPlayScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const CreatorPlayScreen(),
+            state: state,
+          ),
+        ),
+
+
+        ///======================= Other Route =======================
+        GoRoute(
+            name: RoutePath.settingsScreen,
+            path: RoutePath.settingsScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: const SettingsScreen(),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.privacyPolicy,
+            path: RoutePath.privacyPolicy.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: const PrivacyPolicy(),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.termsOfCondition,
+            path: RoutePath.termsOfCondition.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: const TermsOfCondition(),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.aboutUsScreen,
+            path: RoutePath.aboutUsScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: const AboutUsScreen(),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.changePasswordScreen,
+            path: RoutePath.changePasswordScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: const ChangePasswordScreen(),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.supportScreen,
+            path: RoutePath.supportScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: const SupportScreen(),
               state: state,
             ),
         ),

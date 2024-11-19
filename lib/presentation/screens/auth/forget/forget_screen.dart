@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
@@ -25,6 +26,10 @@ class ForgetScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const Gap(12),
+            Assets.images.verification.image(
+                width: MediaQuery.of(context).size.width/3
+            ),
             const Gap(44),
             CustomText(text: "email_to_recover_password".tr,fontWeight: FontWeight.w300,fontSize: 20,),
             Gap(24.h),

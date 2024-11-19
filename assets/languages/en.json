@@ -72,5 +72,46 @@
   "location": "Location",
   "search": "Search",
   "search_item": "Search  Item",
-  "for_you": "For You"
+  "for_you": "For You",
+  "millennial_podcast_only": "Millennial Podcast",
+  "classical_podcast_only": "Classical Podcast",
+  "edit_profile": "Edit Profile",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "update_profile": "Update Profile",
+  "recently_added": "Recently added",
+  "add_playlists": "Add Playlists",
+  "add_new": "Add New",
+  "find_playlist": "Find Playlist",
+  "save": "Save",
+  "give_your_playlist_a_title": "Give your playlist a title",
+  "new_playlist": "New Playlist",
+  "cancel": "Cancel",
+  "create": "Create",
+  "unread" : "Unread",
+  "all": "All",
+
+
+  "no": "No",
+  "yes": "Yes",
+  "are_you_sure_you_want_logout": "Are you sure you want to log out ?",
+
+  "subscription": "Subscription",
+  "privacy_policy": "Privacy Policy",
+  "terms_of_condition": "Terms of Services",
+  "about_us": "About Us",
+  "change_password": "Change Password",
+  "language": "Languages",
+  "support": "Support",
+  "delete_account": "Delete Account",
+  "do_you_want_to_delete_your": "Do you want to delete your profile?",
+
+  "current_password": "Current Password",
+  "enter_your_new_password": "Enter your new password",
+  "re_enter_your_new_password": "Re-enter your new password",
+  "pay_now": "Pay Now",
+
+  "my_podcast": "My podcast",
+  "donate": "Donate"
 }

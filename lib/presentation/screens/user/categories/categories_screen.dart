@@ -36,7 +36,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 const Gap(8),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: CustomText(text: "genres_podcast_only".tr),
+                  child: CustomText(text: widget.name =="genres_podcast_only"?"genres_podcast_only".tr: widget.name == "classical_audio"?"classical_podcast_only".tr:"millennial_podcast_only".tr),
                 ),
               ],
             );

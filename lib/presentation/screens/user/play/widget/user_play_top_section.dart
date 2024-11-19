@@ -12,8 +12,7 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserPlayTopSection extends StatefulWidget {
-  const UserPlayTopSection({super.key, required this.model});
-  final AudioPlayerModel model;
+  const UserPlayTopSection({super.key});
 
   @override
   State<UserPlayTopSection> createState() => _UserPlayTopSectionState();
@@ -201,7 +200,7 @@ class _UserPlayTopSectionState extends State<UserPlayTopSection> {
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.r),
                           child: CachedNetworkImage(
-                            imageUrl: widget.model.image,
+                            imageUrl: controller.clickAudioPlayerData.value.image,
                             placeholder: (context, data)=>const SizedBox(),
                             errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
                             fit: BoxFit.cover,

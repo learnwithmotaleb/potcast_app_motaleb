@@ -12,8 +12,8 @@ import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
-class UserProfileScreen extends StatelessWidget {
-  const UserProfileScreen({super.key});
+class CreatorProfileScreen extends StatelessWidget {
+  const CreatorProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +74,20 @@ class UserProfileScreen extends StatelessWidget {
               ),
               const Gap(24),
               CustomProfileTile(
+                text: "my_podcast",
+                icon: Assets.icons.myPodcast.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                onTap: ()=>AppRouter.route.pushNamed(RoutePath.upgradeScreen),
+              ),
+              const Gap(24),
+              CustomProfileTile(
                 text: "my_play_list",
                 icon: Assets.icons.playList.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                onTap: ()=>AppRouter.route.pushNamed(RoutePath.playlistScreen),
+              ),
+              const Gap(24),
+              CustomProfileTile(
+                text: "donate",
+                icon: Assets.icons.donate.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                 onTap: ()=>AppRouter.route.pushNamed(RoutePath.playlistScreen),
               ),
               const Gap(24),
@@ -89,12 +101,6 @@ class UserProfileScreen extends StatelessWidget {
                 text: "notification",
                 icon: Assets.icons.notification.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                 onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
-              ),
-              const Gap(24),
-              CustomProfileTile(
-                text: "upgrade",
-                icon: Assets.icons.updrade.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                onTap: ()=>AppRouter.route.pushNamed(RoutePath.upgradeScreen),
               ),
               const Gap(24),
               CustomProfileTile(
@@ -130,8 +136,8 @@ class UserProfileScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(30),
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(30),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -150,9 +156,9 @@ class UserProfileScreen extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 28,vertical: 10),
                           decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.blackColor),
-                            color: AppColors.whiteColor,
-                            borderRadius: BorderRadius.circular(20)
+                              border: Border.all(color: AppColors.blackColor),
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(20)
                           ),
                           child: CustomText(text: "no".tr,color: AppColors.blackColor,),
                         ),
