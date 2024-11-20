@@ -10,8 +10,8 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({super.key});
-
+  const HistoryScreen({super.key, required this.isUser});
+  final bool isUser;
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -78,7 +78,13 @@ class HistoryScreen extends StatelessWidget {
               ),
             );
           }else{
-            return MusicCard(data: newItem[index - 1],onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index - 1]));
+            return MusicCard(data: newItem[index - 1],onTap: (){
+              if(isUser){
+                AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index - 1]);
+              }else{
+                AppRouter.route.pushNamed(RoutePath.creatorPlayScreen,extra: newItem[index - 1]);
+              }
+            });
           }
         },
       ),

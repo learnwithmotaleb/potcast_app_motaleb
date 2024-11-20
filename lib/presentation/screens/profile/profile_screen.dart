@@ -12,9 +12,9 @@ import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
-class UserProfileScreen extends StatelessWidget {
-  const UserProfileScreen({super.key});
-
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key, required this.isUser});
+  final bool isUser;
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -73,12 +73,32 @@ class UserProfileScreen extends StatelessWidget {
                 onTap: ()=>AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
               ),
               const Gap(24),
+              isUser?const SizedBox():Column(
+                children: [
+                  CustomProfileTile(
+                    text: "my_podcast",
+                    icon: Assets.icons.myPodcast.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                    onTap: ()=>AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
+                  ),
+                  const Gap(24),
+                ],
+              ),
               CustomProfileTile(
                 text: "my_play_list",
                 icon: Assets.icons.playList.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                 onTap: ()=>AppRouter.route.pushNamed(RoutePath.playlistScreen),
               ),
               const Gap(24),
+              isUser?const SizedBox():Column(
+                children: [
+                  CustomProfileTile(
+                    text: "donate",
+                    icon: Assets.icons.donate.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                    onTap: ()=>AppRouter.route.pushNamed(RoutePath.donateScreen),
+                  ),
+                  const Gap(24),
+                ],
+              ),
               CustomProfileTile(
                 text: "settings",
                 icon: Assets.icons.settings.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
@@ -91,12 +111,16 @@ class UserProfileScreen extends StatelessWidget {
                 onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
               ),
               const Gap(24),
-              CustomProfileTile(
-                text: "upgrade",
-                icon: Assets.icons.updrade.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                onTap: ()=>AppRouter.route.pushNamed(RoutePath.upgradeScreen),
-              ),
-              const Gap(24),
+              isUser?Column(
+                children: [
+                  CustomProfileTile(
+                    text: "upgrade",
+                    icon: Assets.icons.updrade.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                    onTap: ()=>AppRouter.route.pushNamed(RoutePath.upgradeScreen),
+                  ),
+                  const Gap(24),
+                ],
+              ):const SizedBox(),
               CustomProfileTile(
                 text: "logout",
                 icon: Assets.icons.logOut.svg(height: 20, width: 20),

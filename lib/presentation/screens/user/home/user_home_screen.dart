@@ -20,7 +20,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   final controller = Get.find<UserHomeController>();
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: ListView.builder(
         padding: const EdgeInsets.only(bottom: 44),
@@ -38,7 +38,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     children: [
                       CustomText(text: "new_music".tr),
                       TextButton(onPressed: (){
-                        AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "new_music");
+                        AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "new_music", "roll": "user"});
                       }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
                     ],
                   ),
@@ -57,7 +57,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 children: [
                   CustomText(text: "popular_music".tr),
                   TextButton(onPressed: (){
-                    AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular_music");
+                    AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "popular_music", "roll": "user"});
                   }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
                 ],
               ),
@@ -74,7 +74,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 children: [
                   CustomText(text: "top_station".tr),
                   TextButton(onPressed: (){
-                    AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "top_station");
+                    AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "top_station", "roll": "user"});
                   }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
                 ],
               ),

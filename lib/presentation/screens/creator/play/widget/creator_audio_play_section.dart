@@ -1,4 +1,5 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -6,26 +7,63 @@ import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
-import 'package:podcast/presentation/screens/user/play/controller/user_play_controller.dart';
+import 'package:podcast/presentation/screens/creator/play/controller/creator_play_controller.dart';
+import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
-class AudioPlaySection extends StatefulWidget {
-  const AudioPlaySection({super.key});
+class CreatorAudioPlaySection extends StatefulWidget {
+  const CreatorAudioPlaySection({super.key});
 
   @override
-  State<AudioPlaySection> createState() => _AudioPlaySectionState();
+  State<CreatorAudioPlaySection> createState() => _CreatorAudioPlaySectionState();
 }
 
-class _AudioPlaySectionState extends State<AudioPlaySection> {
-  final audioController = Get.find<UserPlayController>();
+class _CreatorAudioPlaySectionState extends State<CreatorAudioPlaySection> {
+  final audioController = Get.find<CreatorPlayController>();
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    return Padding(
+    final double width= MediaQuery.of(context).size.width;
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      decoration: const BoxDecoration(
+        color: Color(0xFF772424)
+      ),
       child: Column(
         children: [
-          const Gap(24),
+          const Gap(5),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              height: 5,
+              width: 75.w,
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(3.r)
+              ),
+            ),
+          ),
+          const Gap(12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 80.h,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0.r),
+                  child: CachedNetworkImage(
+                    imageUrl: audioController.clickAudioPlayerData.value.image,
+                    placeholder: (context, data) => const SizedBox(),
+                    errorWidget: (context, data, errorWidget) => const Icon(Icons.person),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const Gap(5),
+              const Flexible(child: CustomText(text: "Dance party at the top of the town that got all celebrities talking and whining.",maxLines: 3,fontWeight: FontWeight.w600,textAlign: TextAlign.start))
+            ],
+          ),
+          const Gap(12),
           Obx(() {
             final position = audioController.currentPosition.value;
             final total = audioController.totalDuration.value;
@@ -67,8 +105,8 @@ class _AudioPlaySectionState extends State<AudioPlaySection> {
                     child: Container(
                       padding: const EdgeInsets.all(8.0),
                       decoration: const BoxDecoration(
-                          color: AppColors.whiteColor,
-                          shape: BoxShape.circle
+                        color: AppColors.whiteColor,
+                        shape: BoxShape.circle
                       ),
                       child: Icon(audioController.isPlaying.value ? Iconsax.pause : Icons.play_arrow,color: AppColors.blackColor,size: 32),
                     ),
@@ -104,6 +142,23 @@ class _AudioPlaySectionState extends State<AudioPlaySection> {
               ),
             ],
           ),
+          Gap(12),
+          Container(
+            width: width,
+            padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
+            decoration: BoxDecoration(
+                color: AppColors.primaryColor,
+                borderRadius: BorderRadius.circular(8.r)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Assets.icons.comments.svg(height: 20.h,width: 20.h),
+                Assets.icons.donate.svg(height: 20.h,width: 20.h),
+              ],
+            ),
+          ),
+          const Gap(24),
         ],
       ),
     );

@@ -71,9 +71,9 @@ class DBHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear().then((value){
       toastMessage(message: "Logout Successful!");
-      AppRouter.route.goNamed(RoutePath.loginScreen);
+      AppRouter.route.goNamed(RoutePath.roleScreen);
     }).onError((error,stack){
-      AppRouter.route.goNamed(RoutePath.loginScreen);
+      AppRouter.route.goNamed(RoutePath.roleScreen);
     });
   }
 

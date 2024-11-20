@@ -89,11 +89,10 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomText(text: "select_your_location".tr, fontSize: 8, color: AppColors.blackColor, maxLines: 2, textAlign: TextAlign.start),
-                              const Gap(2),
+                              CustomText(text: "select_your_location".tr, fontSize: 8.sp, color: AppColors.blackColor, maxLines: 2, textAlign: TextAlign.start),
                               const Icon(Icons.location_on, color: Color(0xFFEF4849),),
                               Obx(() {
-                                return CustomText(text: controller.location.value, fontSize: 10, color: AppColors.blackColor);
+                                return CustomText(text: controller.location.value, fontSize: 8.sp, color: AppColors.blackColor);
                               }),
                             ],
                           ),

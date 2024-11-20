@@ -1,6 +1,7 @@
 class RoutePath {
   static const String basePath = '/';
 
+  //Auth
   static const String splashScreen = 'splashScreen';
   static const String roleScreen = 'roleScreen';
   static const String introScreen = 'introScreen';
@@ -29,6 +30,10 @@ class RoutePath {
   //Creator
   static const String creatorNavScreen = 'creatorNavScreen';
   static const String creatorPlayScreen = 'creatorPlayScreen';
+  static const String donateScreen = 'donateScreen';
+  static const String myPodcastScreen = 'myPodcastScreen';
+  static const String podcastAddScreen = 'podcastAddScreen';
+  static const String podcastEditScreen = 'podcastEditScreen';
 
   //Settings
   static const String settingsScreen = 'settingsScreen';

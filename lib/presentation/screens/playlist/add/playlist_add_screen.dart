@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/presentation/screens/playlist_add/controller/playlist_add_controller.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+
+import 'controller/playlist_add_controller.dart';
 
 class PlaylistAddScreen extends StatefulWidget {
   const PlaylistAddScreen({super.key});
@@ -22,7 +22,7 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

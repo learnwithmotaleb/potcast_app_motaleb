@@ -8,14 +8,20 @@ import 'package:podcast/presentation/screens/auth/login/login_screen.dart';
 import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
+import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/play/creator_play_screen.dart';
+import 'package:podcast/presentation/screens/creator/podcast/add/podcast_add_screen.dart';
+import 'package:podcast/presentation/screens/creator/podcast/edit/podcast_edit_screen.dart';
+import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/notification/notification_screen.dart';
+import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
-import 'package:podcast/presentation/screens/playlist_add/playlist_add_screen.dart';
-import 'package:podcast/presentation/screens/profile_edit/edit_profile_screen.dart';
+import 'package:podcast/presentation/screens/profile/edit/edit_profile_screen.dart';
+import 'package:podcast/presentation/screens/profile/view/view_profile_screen.dart';
 import 'package:podcast/presentation/screens/role/role_screen.dart';
+import 'package:podcast/presentation/screens/see/see_all_screen.dart';
 import 'package:podcast/presentation/screens/settings/about_us_screen.dart';
 import 'package:podcast/presentation/screens/settings/change_password_screen.dart';
 import 'package:podcast/presentation/screens/settings/privacy_policy.dart';
@@ -28,8 +34,6 @@ import 'package:podcast/presentation/screens/user/country/select_country_screen.
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/play/user_play_screen.dart';
 import 'package:podcast/presentation/screens/user/search/search_screen.dart';
-import 'package:podcast/presentation/screens/user/see/see_all_screen.dart';
-import 'package:podcast/presentation/screens/profile_view/view_profile_screen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
 
 class AppRouter {
@@ -197,9 +201,12 @@ class AppRouter {
         ),
         GoRoute(
             name: RoutePath.seeAllScreen,
-            path: RoutePath.seeAllScreen.addBasePath,
+            path: "/seeAllScreen/:title/:roll",
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?SeeAllScreen(title: state.extra as String):const SeeAllScreen(title: ""),
+              child: SeeAllScreen(
+                title: state.pathParameters['title'] ?? '',
+                roll: state.pathParameters['roll']?? '',
+              ),
               state: state,
             ),
         ),
@@ -225,7 +232,39 @@ class AppRouter {
           name: RoutePath.creatorPlayScreen,
           path: RoutePath.creatorPlayScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const CreatorPlayScreen(),
+            child: state.extra != null?CreatorPlayScreen(model: state.extra as AudioPlayerModel):CreatorPlayScreen(model: AudioPlayerModel(image: "",id: "",title: "",album: "",artist: "",url: "")),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.donateScreen,
+          path: RoutePath.donateScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const DonateScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.myPodcastScreen,
+          path: RoutePath.myPodcastScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const MyPodcastScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.podcastAddScreen,
+          path: RoutePath.podcastAddScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const PodcastAddScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.podcastEditScreen,
+          path: RoutePath.podcastEditScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const PodcastEditScreen(),
             state: state,
           ),
         ),

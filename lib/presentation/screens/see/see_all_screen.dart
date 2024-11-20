@@ -5,9 +5,10 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 
-class FavoriteScreen extends StatelessWidget {
-  const FavoriteScreen({super.key, required this.isUser});
-  final bool isUser;
+class SeeAllScreen extends StatelessWidget {
+  const SeeAllScreen({super.key, required this.title, required this.roll});
+  final String title;
+  final String roll;
   @override
   Widget build(BuildContext context) {
     List<AudioPlayerModel> newItem = [
@@ -54,18 +55,21 @@ class FavoriteScreen extends StatelessWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text("favorite".tr),
+        leading: IconButton(
+          onPressed: () => AppRouter.route.pop(),
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+        title: Text(title.tr),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.only(left: 12,right: 12,top: 12,bottom: 44),
         itemCount: newItem.length,
         itemBuilder: (BuildContext context, int index){
           return MusicCard(data: newItem[index],onTap: (){
-            if(isUser){
-              AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index - 1]);
-            }else{
-              AppRouter.route.pushNamed(RoutePath.creatorPlayScreen,extra: newItem[index - 1]);
+            if(roll != "" && roll == "user"){
+              AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index]);
+            }else if(roll != "" && roll == "creator"){
+              AppRouter.route.pushNamed(RoutePath.creatorPlayScreen,extra: newItem[index]);
             }
           });
         },

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/presentation/screens/creator/home/creator_home_screen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
-import 'package:podcast/presentation/screens/creator/profile/creator_profile_screen.dart';
+import 'package:podcast/presentation/screens/profile/profile_screen.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
@@ -20,10 +21,10 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
   int _selectedPage = 0;
 
   final List<Widget> _pages = [
-    Container(),
-    const HistoryScreen(),
-    const FavoriteScreen(),
-    const CreatorProfileScreen(),
+    const CreatorHomeScreen(),
+    const HistoryScreen(isUser: false),
+    const FavoriteScreen(isUser: false),
+    const ProfileScreen(isUser: false),
   ];
   @override
   Widget build(BuildContext context) {

@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
+import 'package:podcast/presentation/screens/profile/profile_screen.dart';
 import 'package:podcast/presentation/screens/user/home/user_home_screen.dart';
-import 'package:podcast/presentation/screens/user/profile/user_profile_screen.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
@@ -22,9 +22,9 @@ class _UserNavScreenState extends State<UserNavScreen> {
 
   final List<Widget> _pages = [
     const UserHomeScreen(),
-    const HistoryScreen(),
-    const FavoriteScreen(),
-    const UserProfileScreen(),
+    const HistoryScreen(isUser: true),
+    const FavoriteScreen(isUser: true),
+    const ProfileScreen(isUser: true),
   ];
   @override
   Widget build(BuildContext context) {

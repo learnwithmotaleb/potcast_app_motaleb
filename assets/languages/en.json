@@ -113,5 +113,13 @@
   "pay_now": "Pay Now",
 
   "my_podcast": "My podcast",
-  "donate": "Donate"
+  "donate": "Donate",
+
+  "continue_listening": "Continue Listening",
+  "withdraw": "Withdraw",
+  "date": "Date",
+  "time": "Time",
+  "amount": "Amount",
+  "donation_successful": "Donation Successful",
+  "add_new_podcast": "Add New Podcast"
 }
