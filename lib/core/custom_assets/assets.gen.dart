@@ -132,6 +132,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/updrade.svg
   SvgGenImage get updrade => const SvgGenImage('assets/icons/updrade.svg');
 
+  /// File path: assets/icons/updrade.svg
+  SvgGenImage get skip => const SvgGenImage('assets/icons/skip.svg');
+
   /// List of all assets
   List<SvgGenImage> get values => [
         addAPhoto,
@@ -165,7 +168,8 @@ class $AssetsIconsGen {
         sort,
         subscription,
         subscriptionWhite,
-        updrade
+        updrade,
+        skip
       ];
 }
 

@@ -8,6 +8,7 @@ import 'package:podcast/presentation/screens/auth/login/login_screen.dart';
 import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
+import 'package:podcast/presentation/screens/comments/comments_screen.dart';
 import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/play/creator_play_screen.dart';
@@ -154,6 +155,14 @@ class AppRouter {
           path: RoutePath.notificationScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const NotificationScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.commentsScreen,
+          path: RoutePath.commentsScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const CommentsScreen(),
             state: state,
           ),
         ),

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/core/route/route_path.dart';
+import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
@@ -28,7 +30,10 @@ class UserPlayBottomSection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Assets.icons.comments.svg(height: 20.h,width: 20.h),
+                GestureDetector(
+                  onTap: ()=>AppRouter.route.pushNamed(RoutePath.commentsScreen),
+                  child: Assets.icons.comments.svg(height: 20.h,width: 20.h),
+                ),
                 Assets.icons.donate.svg(height: 20.h,width: 20.h),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -46,6 +47,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                 children: [
                   UserPlayTopSection(),
                   const AudioPlaySection(),
+                  Gap(8),
                   const UserPlayBottomSection()
                 ],
               );

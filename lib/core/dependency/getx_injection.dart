@@ -3,6 +3,8 @@ import 'package:podcast/controller/language_controller.dart';
 import 'package:podcast/presentation/screens/creator/donate/controller/donate_controller.dart';
 import 'package:podcast/presentation/screens/creator/home/controller/creator_home_controller.dart';
 import 'package:podcast/presentation/screens/creator/play/controller/creator_play_controller.dart';
+import 'package:podcast/presentation/screens/creator/podcast/add/controller/podcast_add_controller.dart';
+import 'package:podcast/presentation/screens/creator/podcast/edit/controller/podcast_edit_controller.dart';
 import 'package:podcast/presentation/screens/notification/controller/notification_controller.dart';
 import 'package:podcast/presentation/screens/playlist/add/controller/playlist_add_controller.dart';
 import 'package:podcast/presentation/screens/user/categories/controller/categories_controller.dart';
@@ -30,4 +32,6 @@ void initGetX() {
   Get.lazyPut(() => CreatorHomeController(), fenix: true);
   Get.lazyPut(() => CreatorPlayController(), fenix: true);
   Get.lazyPut(() => DonateController(), fenix: true);
+  Get.lazyPut(() => PodcastAddController(), fenix: true);
+  Get.lazyPut(() => PodcastEditController(), fenix: true);
 }

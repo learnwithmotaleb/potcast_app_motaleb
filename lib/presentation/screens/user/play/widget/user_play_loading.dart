@@ -103,37 +103,15 @@ class UserPlayLoading extends StatelessWidget {
             const Gap(12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: SizedBox(
-                height: 250.h,
-                width: width,
-                child: ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Container(
-                        height: 250.h,
-                        width: width/2+100.h,
-                        decoration: BoxDecoration(
-                            color: AppColors.searchBoxColor,
-                            borderRadius: BorderRadius.circular(8.r)
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Container(
-                        height: 250.h,
-                        width: width/2+100.h,
-                        decoration: BoxDecoration(
-                            color: AppColors.searchBoxColor,
-                            borderRadius: BorderRadius.circular(8.r)
-                        ),
-                      ),
-                    ),
-                  ],
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Container(
+                  height: 250.h,
+                  width: width,
+                  decoration: BoxDecoration(
+                      color: AppColors.searchBoxColor,
+                      borderRadius: BorderRadius.circular(8.r)
+                  ),
                 ),
               ),
             ),

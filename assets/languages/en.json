@@ -121,5 +121,25 @@
   "time": "Time",
   "amount": "Amount",
   "donation_successful": "Donation Successful",
-  "add_new_podcast": "Add New Podcast"
+
+  "add_new_podcast": "Add New Podcast",
+  "ddd_podcast": "Add Podcast",
+  "category": "Category",
+  "sub_category": "Sub Category",
+  "select": "Select",
+  "cover_page_upload": "Cover page upload",
+  "add_image": "Add image",
+  "add_audio": "Add Audio",
+  "drag_your_file_or": "Drag your file(s) or",
+  "max_10_MB_files_are_allowed": "Max 10 MB files are allowed",
+  "podcast_title": "Podcast Title",
+  "enter_podcast_title": "Enter Podcast Title",
+  "type_you_location": "Type you location",
+  "description": "Description",
+  "enter_your_description": "Enter Your Description",
+  "edit_podcast": "Edit Podcast",
+  "comments": "Comments",
+  "ads_skip": "Ads Skip",
+  "see_more": "See More",
+  "see_less": "See Less"
 }

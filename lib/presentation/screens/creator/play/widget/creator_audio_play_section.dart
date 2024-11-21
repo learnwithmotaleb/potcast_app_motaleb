@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/core/route/route_path.dart';
+import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/creator/play/controller/creator_play_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -153,7 +155,10 @@ class _CreatorAudioPlaySectionState extends State<CreatorAudioPlaySection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Assets.icons.comments.svg(height: 20.h,width: 20.h),
+                GestureDetector(
+                  onTap: ()=>AppRouter.route.pushNamed(RoutePath.commentsScreen),
+                  child: Assets.icons.comments.svg(height: 20.h,width: 20.h),
+                ),
                 Assets.icons.donate.svg(height: 20.h,width: 20.h),
               ],
             ),

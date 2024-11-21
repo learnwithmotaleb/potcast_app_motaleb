@@ -187,52 +187,41 @@ class _UserPlayTopSectionState extends State<UserPlayTopSection> {
           child: SizedBox(
             height: 250.h,
             width: width,
-            child: ListView.builder(
-              itemCount: controller.newItem.length+1,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index){
-                if(index ==0){
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: SizedBox(
-                      height: 250.h,
-                      width: width/2+100.h,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.r),
-                          child: CachedNetworkImage(
-                            imageUrl: controller.clickAudioPlayerData.value.image,
-                            placeholder: (context, data)=>const SizedBox(),
-                            errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
-                            fit: BoxFit.cover,
-                          )
-                      ),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: CachedNetworkImage(
+                        imageUrl: controller.clickAudioPlayerData.value.image,
+                        placeholder: (context, data)=>const SizedBox(),
+                        errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
+                        fit: BoxFit.cover,
+                      )
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    height: 60.h,
+                    padding: const EdgeInsets.all(20),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFE79E9F)
                     ),
-                  );
-                }else{
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: GestureDetector(
-                      onTap:()=>controller.playAudio(controller.newItem[index - 1]),
-                      child: SizedBox(
-                        height: 250.h,
-                        width: width/2+100.h,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.r),
-                            child: CachedNetworkImage(
-                              imageUrl: controller.newItem[index-1].image,
-                              placeholder: (context, data)=>const SizedBox(),
-                              errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
-                              fit: BoxFit.cover,
-                            )
-                        ),
-                      ),
+                    child: Row(
+                      children: [
+                        const CustomText(text: "ads_skip"),
+                        const Gap(5),
+                        Assets.icons.skip.svg(),
+                      ],
                     ),
-                  );
-                }
-              },
+                  ),
+                )
+              ],
             ),
           ),
-        )
+        ),
       ],
     );
   }

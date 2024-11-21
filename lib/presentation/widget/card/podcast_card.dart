@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/core/route/route_path.dart';
+import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -60,15 +62,18 @@ class PodcastCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Container(
-                          height: 25.h,
-                          width: 25.h,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              color: const Color(0xFF7D6767)
+                        GestureDetector(
+                          onTap: ()=>AppRouter.route.pushNamed(RoutePath.podcastEditScreen),
+                          child: Container(
+                            height: 25.h,
+                            width: 25.h,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: const Color(0xFF7D6767)
+                            ),
+                            child: Assets.icons.edit.svg(height: 17.h,width: 17.h),
                           ),
-                          child: Assets.icons.edit.svg(height: 17.h,width: 17.h),
                         ),
                         Gap(3),
                         Container(
