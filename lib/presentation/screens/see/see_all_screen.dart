@@ -6,9 +6,8 @@ import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 
 class SeeAllScreen extends StatelessWidget {
-  const SeeAllScreen({super.key, required this.title, required this.roll});
+  const SeeAllScreen({super.key, required this.title});
   final String title;
-  final String roll;
   @override
   Widget build(BuildContext context) {
     List<AudioPlayerModel> newItem = [
@@ -66,11 +65,7 @@ class SeeAllScreen extends StatelessWidget {
         itemCount: newItem.length,
         itemBuilder: (BuildContext context, int index){
           return MusicCard(data: newItem[index],onTap: (){
-            if(roll != "" && roll == "user"){
-              AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index]);
-            }else if(roll != "" && roll == "creator"){
-              AppRouter.route.pushNamed(RoutePath.creatorPlayScreen,extra: newItem[index]);
-            }
+            AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index]);
           });
         },
       ),

@@ -55,7 +55,7 @@ class CreatorTopSection extends StatelessWidget {
             children: [
               CustomText(text: "continue_listening".tr),
               TextButton(onPressed: (){
-                AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "continue_listening", "roll": "creator"});
+                AppRouter.route.pushNamed(RoutePath.seeAllScreen,extra: "continue_listening");
               }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
             ],
           ),
@@ -72,7 +72,7 @@ class CreatorTopSection extends StatelessWidget {
                   child: Column(
                     children: [
                       GestureDetector(
-                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.creatorPlayScreen,extra: controller.artistItem[index]),
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.artistItem[index]),
                         child: SizedBox(
                           height: 80.w,
                           width: 80.w,
@@ -129,7 +129,7 @@ class CreatorTopSection extends StatelessWidget {
             children: [
               CustomText(text: "my_podcast".tr),
               TextButton(onPressed: (){
-                AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "my_podcast", "roll": "creator"});
+                AppRouter.route.pushNamed(RoutePath.seeAllScreen,extra: "my_podcast");
               }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
             ],
           ),

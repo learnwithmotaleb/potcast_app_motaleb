@@ -25,7 +25,7 @@ class _CreatorHomeScreenState extends State<CreatorHomeScreen> {
           if(index==0){
             return CreatorTopSection();
           }else{
-            return MusicCard(data: controller.newItem[index-1],onTap: ()=>AppRouter.route.pushNamed(RoutePath.creatorPlayScreen,extra: controller.artistItem[index-1]));
+            return MusicCard(data: controller.newItem[index-1],onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.artistItem[index-1]));
           }
         },
       ),

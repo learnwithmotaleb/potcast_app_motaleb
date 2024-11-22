@@ -6,8 +6,8 @@ import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 
 class FavoriteScreen extends StatelessWidget {
-  const FavoriteScreen({super.key, required this.isUser});
-  final bool isUser;
+  const FavoriteScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     List<AudioPlayerModel> newItem = [
@@ -62,11 +62,7 @@ class FavoriteScreen extends StatelessWidget {
         itemCount: newItem.length,
         itemBuilder: (BuildContext context, int index){
           return MusicCard(data: newItem[index],onTap: (){
-            if(isUser){
-              AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index - 1]);
-            }else{
-              AppRouter.route.pushNamed(RoutePath.creatorPlayScreen,extra: newItem[index - 1]);
-            }
+            AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index]);
           });
         },
       ),

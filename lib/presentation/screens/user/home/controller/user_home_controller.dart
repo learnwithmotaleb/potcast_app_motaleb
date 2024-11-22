@@ -6,6 +6,11 @@ import 'package:podcast/utils/app_const/app_const.dart';
 
 class UserHomeController extends GetxController {
   DBHelper dbHelper = serviceLocator();
+  RxString location = "".obs;
+
+  Future<void> findLocation() async {
+    location.value = await dbHelper.getLocation(AppConstants.location);
+  }
 
   List<AudioPlayerModel> newItem = [
     AudioPlayerModel(
@@ -94,30 +99,6 @@ class UserHomeController extends GetxController {
         image: "https://img.freepik.com/premium-photo/caucasian-female-singer-portrait-isolated-gradient-studio-background-neon-light_489646-16996.jpg"
     ),
   ];
-  List<AudioPlayerModel> stationItem = [
-    AudioPlayerModel(
-        id: "6",
-        artist: "Leroi Song",
-        album: "Eminem",
-        title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-        url: "https://drive.usercontent.google.com/u/0/uc?id=1CwdsEVSuVBsZuGtizMsBxdz8rpv86V8w&export=download",
-        image: "https://img.freepik.com/premium-photo/image-caucasian-dark-haired-woman-wearing-stylish-jacket-standing-with-closed-eyes-listening-music-holding-cell-phone-as-microphone-singing-posing-isolated-neon-light-background_176532-19786.jpg"
-    ),
-    AudioPlayerModel(
-        id: "7",
-        artist: "Sabrina Carpenter",
-        album: "Entertainment",
-        title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-        url: "https://drive.usercontent.google.com/u/0/uc?id=1pVGY5C8cMZIdJKWhvnmt4dZi7HYoxdM3&export=download",
-        image: "https://img.freepik.com/premium-photo/caucasian-female-singer-portrait-isolated-gradient-studio-background-neon-light_489646-16996.jpg"
-    ),
-  ];
-
-  RxString location = "".obs;
-
-  Future<void> findLocation() async {
-    location.value = await dbHelper.getLocation(AppConstants.location);
-  }
 
   @override
   void onReady() {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
@@ -47,7 +48,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                   child: Column(
                     children: [
                       if (index ==0) GestureDetector(
-                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.artistItem[index]),
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.seeAllScreen,extra: "Joe"),
                         child: Container(
                           height: 80.w,
                           width: 80.w,
@@ -58,12 +59,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                           ),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(40.r),
-                              child: CachedNetworkImage(
-                                imageUrl: controller.artistItem[index].image,
-                                placeholder: (context, data)=>const SizedBox(),
-                                errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
-                                fit: BoxFit.cover,
-                              )
+                              child: Assets.images.splashLogo.image()
                           ),
                         ),
                       ) else GestureDetector(
@@ -104,7 +100,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: controller.artistItem[index].artist),
+                      CustomText(text: index==0?"Joe":controller.artistItem[index].artist),
                     ],
                   ),
                 );

@@ -30,7 +30,6 @@ class RoutePath {
 
   //Creator
   static const String creatorNavScreen = 'creatorNavScreen';
-  static const String creatorPlayScreen = 'creatorPlayScreen';
   static const String donateScreen = 'donateScreen';
   static const String myPodcastScreen = 'myPodcastScreen';
   static const String podcastAddScreen = 'podcastAddScreen';

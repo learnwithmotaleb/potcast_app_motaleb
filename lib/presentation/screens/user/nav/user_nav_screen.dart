@@ -1,13 +1,10 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
 import 'package:podcast/presentation/screens/profile/profile_screen.dart';
 import 'package:podcast/presentation/screens/user/home/user_home_screen.dart';
-import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserNavScreen extends StatefulWidget {
@@ -22,68 +19,27 @@ class _UserNavScreenState extends State<UserNavScreen> {
 
   final List<Widget> _pages = [
     const UserHomeScreen(),
-    const HistoryScreen(isUser: true),
-    const FavoriteScreen(isUser: true),
+    const HistoryScreen(),
+    const FavoriteScreen(),
     const ProfileScreen(isUser: true),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedPage],
-      bottomNavigationBar: CurvedNavigationBar(
-        index: _selectedPage,
-        height: 60.h,
-        items: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Assets.icons.home.svg(),
-                CustomText(text: "home".tr,color: AppColors.primaryColor)
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Assets.icons.history.svg(),
-                CustomText(text: "history".tr,color: AppColors.primaryColor)
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Assets.icons.favorite.svg(),
-                CustomText(text: "favorite".tr,color: AppColors.primaryColor)
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Assets.icons.profile.svg(),
-                CustomText(text: "profile".tr,color: AppColors.primaryColor)
-              ],
-            ),
-          ),
-        ],
-        onTap: (index) {
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedPage,
+        onTap: (int index){
           setState(() {
             _selectedPage = index;
           });
         },
-        animationCurve: Curves.easeInOut,
-        backgroundColor: Colors.transparent,
-        color: const Color(0xFF282C30),
-        buttonBackgroundColor: const Color(0xFF282C30),
+        items: [
+          BottomNavigationBarItem(icon: Assets.icons.home.svg(colorFilter: _selectedPage==0?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "home".tr,),
+          BottomNavigationBarItem(icon: Assets.icons.history.svg(colorFilter: _selectedPage==1?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "history".tr),
+          BottomNavigationBarItem(icon: Assets.icons.favorite.svg(colorFilter: _selectedPage==2?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "favorite".tr),
+          BottomNavigationBarItem(icon: Assets.icons.profile.svg(colorFilter: _selectedPage==3?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "profile".tr),
+        ],
       ),
     );
   }

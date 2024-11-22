@@ -11,12 +11,12 @@ import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
 import 'package:podcast/presentation/screens/comments/comments_screen.dart';
 import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
-import 'package:podcast/presentation/screens/creator/play/creator_play_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/add/podcast_add_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/edit/podcast_edit_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/notification/notification_screen.dart';
+import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
 import 'package:podcast/presentation/screens/profile/edit/edit_profile_screen.dart';
@@ -33,7 +33,6 @@ import 'package:podcast/presentation/screens/splash/splash_screen.dart';
 import 'package:podcast/presentation/screens/user/categories/categories_screen.dart';
 import 'package:podcast/presentation/screens/user/country/select_country_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
-import 'package:podcast/presentation/screens/user/play/user_play_screen.dart';
 import 'package:podcast/presentation/screens/user/search/search_screen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
 
@@ -210,12 +209,11 @@ class AppRouter {
         ),
         GoRoute(
             name: RoutePath.seeAllScreen,
-            path: "/seeAllScreen/:title/:roll",
+            path: RoutePath.seeAllScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: SeeAllScreen(
-                title: state.pathParameters['title'] ?? '',
-                roll: state.pathParameters['roll']?? '',
-              ),
+              child: state.extra != null?SeeAllScreen(
+                title: state.extra as String,
+              ):const SeeAllScreen(title: ""),
               state: state,
             ),
         ),
@@ -234,14 +232,6 @@ class AppRouter {
           path: RoutePath.creatorNavScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const CreatorNavScreen(),
-            state: state,
-          ),
-        ),
-        GoRoute(
-          name: RoutePath.creatorPlayScreen,
-          path: RoutePath.creatorPlayScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: state.extra != null?CreatorPlayScreen(model: state.extra as AudioPlayerModel):CreatorPlayScreen(model: AudioPlayerModel(image: "",id: "",title: "",album: "",artist: "",url: "")),
             state: state,
           ),
         ),

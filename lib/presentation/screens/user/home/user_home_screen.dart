@@ -24,7 +24,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     return Scaffold(
       body: ListView.builder(
         padding: const EdgeInsets.only(bottom: 44),
-        itemCount: controller.newItem.length + controller.popularItem.length + controller.stationItem.length + 3,
+        itemCount: controller.newItem.length + controller.popularItem.length + 2,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return Column(
@@ -37,52 +37,55 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(text: "new_music".tr),
-                      TextButton(onPressed: (){
-                        AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "new_music", "roll": "user"});
-                      }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
+                      TextButton(
+                        onPressed: () {
+                          AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "new_music");
+                        },
+                        child: Text(
+                          "see_all".tr,
+                          style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
             );
           } else if (index <= controller.newItem.length) {
-            // New Music Section
-            return MusicCard(data: controller.newItem[index - 1],onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.newItem[index - 1]));
+
+            /// New Music Section--------------------------------------------------------
+            return MusicCard(
+              data: controller.newItem[index - 1],
+              onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: controller.newItem[index - 1]),
+            );
           } else if (index == controller.newItem.length + 1) {
-            // Popular Music Header
+
+            /// Popular Music Header------------------------------------------------------
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomText(text: "popular_music".tr),
-                  TextButton(onPressed: (){
-                    AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "popular_music", "roll": "user"});
-                  }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
+                  TextButton(
+                    onPressed: () {
+                      AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular_music");
+                    },
+                    child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor)),
+                  ),
                 ],
               ),
             );
           } else if (index <= controller.newItem.length + 1 + controller.popularItem.length) {
-            // Popular Music Section
-            return MusicCard(data: controller.popularItem[index - (controller.newItem.length + 2)],onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.popularItem[index - (controller.newItem.length + 2)]));
-          } else if (index == controller.newItem.length + 2 + controller.popularItem.length) {
-            // Station Music Header
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomText(text: "top_station".tr),
-                  TextButton(onPressed: (){
-                    AppRouter.route.pushNamed(RoutePath.seeAllScreen,pathParameters: {"title": "top_station", "roll": "user"});
-                  }, child: Text("see_all".tr,style: TextStyle(color: isDarkMode?AppColors.whiteColor:AppColors.blackColor)))
-                ],
-              ),
+
+            /// Popular Music Section-----------------------------------------------------------
+            return MusicCard(
+              data: controller.popularItem[index - (controller.newItem.length + 2)],
+              onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: controller.popularItem[index - (controller.newItem.length + 2)]),
             );
-          } else {
-            // Station Music Section
-            return MusicCard(data: controller.stationItem[index - (controller.newItem.length + controller.popularItem.length + 3)],onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.stationItem[index - (controller.newItem.length + controller.popularItem.length + 3)]));
           }
+          /// No other sections after Popular Music-----------------------------------------------
+          return const SizedBox.shrink(); // Placeholder for any unused indices
         },
       ),
     );

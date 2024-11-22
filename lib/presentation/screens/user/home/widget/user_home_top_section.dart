@@ -30,12 +30,15 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
       children: [
         Gap(24.h),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Assets.images.splashLogo.image(height: 60.h, width: 100.w, fit: BoxFit.cover, color: isDarkMode ? null : AppColors.blackColor),
             const Gap(8),
-            CustomText(text: "listen_and_be_happy".tr, family: "Bold", fontSize: 24.sp, fontWeight: FontWeight.w800)
+            Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: Assets.icons.notification.svg(height: 25.h,width: 25.w),
+            ),
           ],
         ),
         const Gap(12),
