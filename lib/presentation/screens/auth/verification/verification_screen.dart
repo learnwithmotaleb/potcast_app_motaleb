@@ -10,16 +10,16 @@ import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
-class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key, required this.email});
+class VerificationScreen extends StatefulWidget {
+  const VerificationScreen({super.key, required this.email});
 
   final String email;
 
   @override
-  State<OtpScreen> createState() => _OtpScreenState();
+  State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _VerificationScreenState extends State<VerificationScreen> {
   final _controller = Get.find<AuthController>();
   final TextEditingController _otp = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -29,7 +29,7 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
-        title: Text("forgot_password".tr),
+        title: Text("verify_email".tr),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -42,7 +42,7 @@ class _OtpScreenState extends State<OtpScreen> {
               const Gap(12),
               CustomText(text: "verification_code".tr, fontWeight: FontWeight.w800, fontSize: 20),
               const Gap(5),
-              CustomText(text: widget.email, fontSize: 12, family: "Light"),
+              CustomText(text: widget.email ?? "", fontSize: 12, family: "Light"),
               const Gap(12),
               CustomText(text: "we_send_you_a_verification_code_to_verify_your_email".tr, fontSize: 16, family: "Light", maxLines: 2),
               const Gap(24),
@@ -73,16 +73,13 @@ class _OtpScreenState extends State<OtpScreen> {
                   text: "continue".tr,
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      _controller.otpVerify(
-                        body: {
-                          "email": widget.email,
-                          "verificationOTP": _otp.text.trim(),
-                        },
-                        email: widget.email,
-                      );
+                      _controller.activeAccount(body: {
+                        "email": widget.email,
+                        "verificationOTP": _otp.text.trim(),
+                      });
                     }
                   },
-                  isLoading: _controller.otpLoading.value,
+                  isLoading: _controller.activeLoading.value,
                 ),
               ),
               const Gap(8),
@@ -107,8 +104,17 @@ class OTPField extends StatelessWidget {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Pinput(
       length: 6,
-      controller: controller,
       keyboardType: TextInputType.text,
+      controller: controller,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'OTP is required';
+        }
+        if (value.length != 6) {
+          return 'OTP must be 6 digits';
+        }
+        return null;
+      },
       focusedPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.primaryColor), borderRadius: BorderRadius.circular(5.r))),
       followingPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
       disabledPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),

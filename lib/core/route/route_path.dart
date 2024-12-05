@@ -3,10 +3,11 @@ class RoutePath {
 
   //Auth
   static const String splashScreen = 'splashScreen';
-  static const String roleScreen = 'roleScreen';
+  // static const String roleScreen = 'roleScreen';
   static const String introScreen = 'introScreen';
   static const String loginScreen = 'loginScreen';
   static const String signUpScreen = 'signUpScreen';
+  static const String verificationScreen = 'verificationScreen';
   static const String forgetScreen = 'forgetScreen';
   static const String otpScreen = 'otpScreen';
   static const String resetScreen = 'resetScreen';

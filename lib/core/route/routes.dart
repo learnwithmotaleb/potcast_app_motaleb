@@ -8,6 +8,7 @@ import 'package:podcast/presentation/screens/auth/login/login_screen.dart';
 import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
+import 'package:podcast/presentation/screens/auth/verification/verification_screen.dart';
 import 'package:podcast/presentation/screens/comments/comments_screen.dart';
 import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
@@ -50,28 +51,22 @@ class AppRouter {
             child: const SplashScreen(),
             state: state,
           ),
-          redirect: (context, state) {
-            Future.delayed(const Duration(seconds: 6), () {
-              AppRouter.route.goNamed(RoutePath.roleScreen);
-            });
-            return null;
-          },
         ),
 
         ///======================= Auth Route =======================
-        GoRoute(
+       /* GoRoute(
             name: RoutePath.roleScreen,
             path: RoutePath.roleScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
               child: const RoleScreen(),
               state: state,
             ),
-        ),
+        ),*/
         GoRoute(
             name: RoutePath.introScreen,
             path: RoutePath.introScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?IntroScreen(isUser: state.extra as bool):const IntroScreen(isUser: true),
+              child: const IntroScreen(),
               state: state,
             ),
         ),
@@ -79,7 +74,7 @@ class AppRouter {
             name: RoutePath.loginScreen,
             path: RoutePath.loginScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?LoginScreen(isUser: state.extra as bool):const LoginScreen(isUser: true),
+              child: const LoginScreen(),
               state: state,
             ),
         ),
@@ -87,7 +82,15 @@ class AppRouter {
             name: RoutePath.signUpScreen,
             path: RoutePath.signUpScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?SignUpScreen(isUser: state.extra as bool):const SignUpScreen(isUser: true),
+              child: const SignUpScreen(),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.verificationScreen,
+            path: RoutePath.verificationScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: state.extra != null?VerificationScreen(email: state.extra as String):const VerificationScreen(email: ""),
               state: state,
             ),
         ),
@@ -95,7 +98,7 @@ class AppRouter {
             name: RoutePath.forgetScreen,
             path: RoutePath.forgetScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?ForgetScreen(isUser: state.extra as bool):const ForgetScreen(isUser: true),
+              child: const ForgetScreen(),
               state: state,
             ),
         ),
@@ -103,7 +106,7 @@ class AppRouter {
             name: RoutePath.otpScreen,
             path: RoutePath.otpScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?OtpScreen(isUser: state.extra as bool):const OtpScreen(isUser: true),
+              child: state.extra != null?OtpScreen(email: state.extra as String):const OtpScreen(email: ""),
               state: state,
             ),
         ),
@@ -111,7 +114,7 @@ class AppRouter {
             name: RoutePath.resetScreen,
             path: RoutePath.resetScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?ResetScreen(isUser: state.extra as bool):const ResetScreen(isUser: true),
+              child: state.extra != null? ResetScreen(email: state.extra as String):const ResetScreen(email: ""),
               state: state,
             ),
         ),

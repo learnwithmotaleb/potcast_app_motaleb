@@ -30,7 +30,7 @@ class CustomButton extends StatelessWidget {
           color: isBgWhite?AppColors.whiteColor:null,
           border: isBgWhite?(isDarkMode?null:Border.all(color: AppColors.blackColor)):Border.all(color: AppColors.primaryColor),
         ),
-        child: isLoading?const Center(child: CircularProgressIndicator(color: AppColors.whiteColor)):
+        child: isLoading?const Center(child: CircularProgressIndicator()):
         CustomText(text: text,color: isBgWhite?AppColors.blackColor:AppColors.primaryColor,fontSize: 16),
       ),
     );

@@ -12,8 +12,7 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_images/app_images.dart';
 
 class IntroScreen extends StatefulWidget {
-  const IntroScreen({super.key, required this.isUser});
-  final bool isUser;
+  const IntroScreen({super.key});
 
   @override
   State<IntroScreen> createState() => _IntroScreenState();
@@ -73,7 +72,7 @@ class _IntroScreenState extends State<IntroScreen> {
                           children: [
                             CustomText(text: "get_started_intro".tr,fontSize: 20,color: AppColors.whiteColor,fontWeight: FontWeight.w800,textAlign: TextAlign.center,maxLines: 2),
                             Gap(22.h),
-                            CustomButton(text: "get_started".tr,onTap: ()=>AppRouter.route.goNamed(RoutePath.loginScreen,extra: widget.isUser))
+                            CustomButton(text: "get_started".tr,onTap: ()=>AppRouter.route.goNamed(RoutePath.loginScreen))
                           ],
                         ),
                       ),

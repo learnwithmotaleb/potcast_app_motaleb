@@ -10,44 +10,28 @@ class DBHelper {
 
   Future<String> getToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString(AppConstants.token) != null) {
-      return sharedPreferences.getString(AppConstants.token)??"";
-    }else{
-      return "";
-    }
+    return sharedPreferences.getString(AppConstants.token)??"";
   }
 
   /// ====================== Get User ID ==================
 
   Future<String> getUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString(AppConstants.id) != null) {
-      return sharedPreferences.getString(AppConstants.id)??"";
-    } else {
-      return "";
-    }
+    return sharedPreferences.getString(AppConstants.id)??"";
   }
 
   /// ====================== Get User Role ==================
 
   Future<String> getUserRole() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString(AppConstants.role) != null) {
-      return sharedPreferences.getString(AppConstants.role)??"";
-    } else {
-      return "";
-    }
+    return sharedPreferences.getString(AppConstants.role)??"";
   }
 
   /// ====================== Get User Role ==================
 
   Future<String> getUserEmail() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString(AppConstants.email) != null) {
-      return sharedPreferences.getString(AppConstants.email)??"";
-    } else {
-      return "";
-    }
+    return sharedPreferences.getString(AppConstants.email)??"";
   }
 
   /// ====================== Save User Information ==================
@@ -71,9 +55,9 @@ class DBHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear().then((value){
       toastMessage(message: "Logout Successful!");
-      AppRouter.route.goNamed(RoutePath.roleScreen);
+      AppRouter.route.goNamed(RoutePath.loginScreen);
     }).onError((error,stack){
-      AppRouter.route.goNamed(RoutePath.roleScreen);
+      AppRouter.route.goNamed(RoutePath.loginScreen);
     });
   }
 
@@ -83,6 +67,7 @@ class DBHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(AppConstants.location, location);
   }
+
   Future<String> getLocation(String location) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(AppConstants.location)??"";

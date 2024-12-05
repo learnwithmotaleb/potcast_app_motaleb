@@ -28,11 +28,11 @@ Map<String, String> basicHeaderInfo() {
 
 Future<Map<String, String>> bearerHeaderInfo() async {
   DBHelper dbHelper = serviceLocator();
-  // final token = await dbHelper.getToken();
+  final token = await dbHelper.getToken();
   return {
     HttpHeaders.acceptHeader: "application/json",
     HttpHeaders.contentTypeHeader: "application/json",
-    HttpHeaders.authorizationHeader: "Bearer token",
+    HttpHeaders.authorizationHeader: "Bearer $token",
   };
 }
 
@@ -87,9 +87,7 @@ class ApiClient {
       );
     } on SocketException {
       log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
-      if (context != null && context.mounted) {
-        showCustomSnackBar('Error Alert on Socket Exception',context: context);
-      }
+      toastMessage(message:'Error Alert on Socket Exception');
       return const Response(
           body: {},
           statusCode: 400,
@@ -133,13 +131,13 @@ class ApiClient {
       {required String url,
         bool isBasic = false,
         Map<String, dynamic>? body,
-        required BuildContext context,
         int duration = 30,
         bool showResult = true}) async {
     try {
       /// ======================- Check Internet ===================
 
       if (!await (connectionChecker.isConnected)) {
+        log.i('|📍📍📍|-----------------[[ POST ]] Internet Issue $url ----$body-----------------|📍📍📍|');
         return Response(statusCode: 503, statusText: noInternetConnection);
       }
 
@@ -184,12 +182,7 @@ class ApiClient {
       );
     } on SocketException {
       log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
-
-      if (context.mounted) {
-        showCustomSnackBar('Error Alert on Socket Exception', context: context);
-        // context.pushNamed(RoutePath.errorScreen);
-      }
-
+      toastMessage(message:'Error Alert on Socket Exception');
       return const Response(
           body: {},
           statusCode: 400,
@@ -516,100 +509,6 @@ class ApiClient {
     }
   }
 
-  // // multipart multi file Method
-  // Future<Map<String, dynamic>?> multipartMultiFile({
-  //   String? url,
-  //   bool? isBasic,
-  //   Map<String, String>? body,
-  //   int code = 200,
-  //   bool showResult = false,
-  //   required List<String> pathList,
-  //   required List<String> fieldList,
-  // }) async {
-  //   try {
-  //     log.i(
-  //         '|📍📍📍|-----------------[[ Multipart ]] method details start -----------------|📍📍📍|');
-
-  //     log.i(url);
-
-  //     if (showResult) {
-  //       log.i(body);
-  //       log.i(pathList);
-  //       log.i(fieldList);
-  //     }
-
-  //     log.i(
-  //         '|📍📍📍|-----------------[[ Multipart ]] method details end ------------|📍📍📍|');
-  //     final request = http.MultipartRequest(
-  //       'POST',
-  //       Uri.parse(url!),
-  //     )
-  //       ..fields.addAll(body!)
-  //       ..headers.addAll(
-  //         isBasic! ? basicHeaderInfo() : await bearerHeaderInfo(),
-  //       );
-
-  //     for (int i = 0; i < fieldList.length; i++) {
-  //       request.files
-  //           .add(await http.MultipartFile.fromPath(fieldList[i], pathList[i]));
-  //     }
-
-  //     var response = await request.send();
-  //     var jsonData = await http.Response.fromStream(response);
-
-  //     log.i(
-  //         '|📒📒📒|-----------------[[ POST ]] method response start ------------------|📒📒📒|');
-
-  //     log.i(jsonData.body.toString());
-
-  //     log.i(response.statusCode);
-
-  //     log.i(
-  //         '|📒📒📒|-----------------[[ POST ]] method response end --------------------|📒📒📒|');
-
-  //     if (response.statusCode == code) {
-  //       return jsonDecode(jsonData.body) as Map<String, dynamic>;
-  //     } else {
-  //       log.e('🐞🐞🐞 Error Alert On Status Code 🐞🐞🐞');
-
-  //       log.e(
-  //           'unknown error hitted in status code ${jsonDecode(jsonData.body)}');
-
-  //       // CustomSnackBar.error(
-  //       //     jsonDecode(response.body)['message']['error'].toString());
-  //       return null;
-  //     }
-  //   } on SocketException {
-  //     log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
-
-  //     return null;
-  //   } on TimeoutException {
-  //     log.e('🐞🐞🐞 Error Alert Timeout Exception🐞🐞🐞');
-
-  //     log.e('Time out exception$url');
-
-  //     return null;
-  //   } on http.ClientException catch (err, stackrace) {
-  //     log.e('🐞🐞🐞 Error Alert Client Exception🐞🐞🐞');
-
-  //     log.e('client exception hitted');
-
-  //     log.e(err.toString());
-
-  //     log.e(stackrace.toString());
-
-  //     return null;
-  //   } catch (e) {
-  //     log.e('🐞🐞🐞 Other Error Alert 🐞🐞🐞');
-
-  //     log.e('❌❌❌ unlisted error received');
-
-  //     log.e("❌❌❌ $e");
-
-  //     return null;
-  //   }
-  // }
-
   // Delete method
   Future<Map<String, dynamic>?> delete(
       {String? url,
@@ -699,11 +598,11 @@ class ApiClient {
     }
   }
 
-  Future<Map<String, dynamic>?> put(
+  Future<Response> put(
       {String? url,
         bool? isBasic,
         Map<String, dynamic>? body,
-        int code = 202,
+        int code = 200,
         int duration = 15,
         bool showResult = false}) async {
     try {
@@ -717,16 +616,13 @@ class ApiClient {
       log.i(
           '|📍📍📍|-------------[[ PUT ]] method details end ------------|📍📍📍|');
 
-      final response = await http
-          .put(
+      final response = await http.put(
         Uri.parse(url!),
         body: jsonEncode(body),
         headers: isBasic! ? basicHeaderInfo() : await bearerHeaderInfo(),
-      )
-          .timeout(Duration(seconds: duration));
+      ).timeout(Duration(seconds: duration));
 
-      log.i(
-          '|📒📒📒|-----------------[[ PUT ]] AKA Update method response start-----------------|📒📒📒|');
+      log.i('|📒📒📒|-----------------[[ PUT ]] AKA Update method response start-----------------|📒📒📒|');
 
       if (showResult) {
         log.i(response.body);
@@ -738,25 +634,37 @@ class ApiClient {
           '|📒📒📒|-----------------[[ PUT ]] AKA Update method response End -----------------|📒📒📒|');
 
       if (response.statusCode == code) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        return Response(
+            body: data,
+            statusCode: response.statusCode,
+            statusText: 'Success');
       } else {
         log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
-        log.e(
-            'unknown error hitted in status code  ${jsonDecode(response.body)}');
+        log.e('unknown error hitted in status code  ${jsonDecode(response.body)}');
 
-        return null;
+        return Response(
+            body: response.body,
+            statusCode: response.statusCode,
+            statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
       }
     } on SocketException {
       log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: 'Success');
     } on TimeoutException {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
       log.e('Time out exception$url');
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     } on http.ClientException catch (err, stackrace) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
@@ -766,7 +674,10 @@ class ApiClient {
 
       log.e(stackrace.toString());
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     } catch (e) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
@@ -774,92 +685,12 @@ class ApiClient {
 
       log.e(e.toString());
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     }
   }
-
-// Future<Map<String, dynamic>?> multipartKYC({
-//   String? url,
-//   bool? isBasic,
-//   int code = 200,
-//   bool showResult = false,
-//   required String fontPath,
-//   required String backPath,
-// }) async {
-//   try {
-//     log.i(
-//         '|📍📍📍|-----------------[[ Multipart ]] method details start -----------------|📍📍📍|');
-
-//     log.i(url);
-
-//     log.i(fontPath);
-//     log.i(backPath);
-
-//     log.i(
-//         '|📍📍📍|-----------------[[ Multipart ]] method details end ------------|📍📍📍|');
-
-//     final request = http.MultipartRequest(
-//       'POST',
-//       Uri.parse(url!),
-//     )
-//       ..headers.addAll(
-//         isBasic! ? basicHeaderInfo() : await bearerHeaderInfo(),
-//       )
-//       ..files.add(await http.MultipartFile.fromPath('id_back_part', fontPath))
-//       ..files
-//           .add(await http.MultipartFile.fromPath('id_front_part', backPath));
-//     var response = await request.send();
-//     var jsonData = await http.Response.fromStream(response);
-
-//     log.i(
-//         '|📒📒📒|-----------------[[ POST ]] method response start ------------------|📒📒📒|');
-
-//     log.i(jsonData.body.toString());
-
-//     log.i(response.statusCode);
-
-//     log.i(
-//         '|📒📒📒|-----------------[[ POST ]] method response end --------------------|📒📒📒|');
-
-//     if (response.statusCode == code) {
-//       return jsonDecode(jsonData.body) as Map<String, dynamic>;
-//     } else {
-//       log.e('🐞🐞🐞 Error Alert On Status Code 🐞🐞🐞');
-
-//       log.e(
-//           'unknown error hitted in status code ${jsonDecode(jsonData.body)}');
-//       return null;
-//     }
-//   } on SocketException {
-//     log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
-
-//     return null;
-//   } on TimeoutException {
-//     log.e('🐞🐞🐞 Error Alert Timeout Exception🐞🐞🐞');
-
-//     log.e('Time out exception$url');
-
-//     return null;
-//   } on http.ClientException catch (err, stackrace) {
-//     log.e('🐞🐞🐞 Error Alert Client Exception🐞🐞🐞');
-
-//     log.e('client exception hitted');
-
-//     log.e(err.toString());
-
-//     log.e(stackrace.toString());
-
-//     return null;
-//   } catch (e) {
-//     log.e('🐞🐞🐞 Other Error Alert 🐞🐞🐞');
-
-//     log.e('❌❌❌ unlisted error received');
-
-//     log.e("❌❌❌ $e");
-
-//     return null;
-//   }
-// }
 }
 
 class MultipartBody {
