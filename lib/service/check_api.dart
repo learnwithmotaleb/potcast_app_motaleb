@@ -8,9 +8,9 @@ void checkApi({required Response response}) async {
     DBHelper dbHelper = DBHelper();
     await dbHelper.logOut();
   } else if (response.statusCode == 503) {
-    toastMessage(message: response.statusText ?? "No internet connection");
+    toastMessage(message: response.body?['message'].toString() ?? "No internet connection");
   } else {
-    toastMessage(message: response.body?["message"] ?? "No internet connection");
+    toastMessage(message:  response.body?['message'].toString()??"something want wrong");
   }
 
 }

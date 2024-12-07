@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -59,9 +60,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 children: [
                   Assets.icons.search.svg(height: 22, width: 22),
                   const Gap(8),
-                  CustomText(text: "what_would_you_like_to_listen".tr,
-                      color: AppColors.blackColor,
-                      fontSize: 16),
+                  CustomText(text: "what_would_you_like_to_listen".tr, color: AppColors.blackColor, fontSize: 16),
                 ],
               ),
             ),
@@ -117,7 +116,6 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                   onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen,extra: "genres_podcast_only"),
                   child: Container(
                     height: 80.h,
-                    padding: const EdgeInsets.only(top: 8, right: 0, left: 8),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEF4849),
                       borderRadius: BorderRadius.circular(8),
@@ -127,86 +125,25 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: CustomText(text: "genres_podcast".tr,
-                              color: AppColors.whiteColor,
-                              maxLines: 2,
-                              textAlign: TextAlign.start),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5.0,top: 5.0,bottom: 5.0),
+                            child: CustomText(text: "genres_podcast".tr, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
+                          ),
                         ),
                         SizedBox(
                           height: 80.h,
-                          width: ((width / 2) - 25) / 2,
-                          child: Assets.images.genres.image(fit: BoxFit.fitWidth),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const Gap(12),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen,extra: "classical_audio"),
-                  child: Container(
-                    height: 80.h,
-                    padding: const EdgeInsets.only(top: 8, right: 0, left: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF03346E),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: CustomText(text: "classical_audio".tr,
-                              color: AppColors.whiteColor,
-                              maxLines: 2,
-                              textAlign: TextAlign.start),
-                        ),
-                        SizedBox(
-                          height: 80.h,
-                          width: ((width / 2) - 25) / 2,
-                          child: Assets.images.classical.image(fit: BoxFit.fitWidth),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Gap(12.w),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen,extra: "millennial_podcast"),
-                  child: Container(
-                    height: 80.h,
-                    padding: const EdgeInsets.only(top: 8, right: 0, left: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF016450),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: CustomText(text: "millennial_podcast".tr,
-                              color: AppColors.whiteColor,
-                              maxLines: 2,
-                              textAlign: TextAlign.start),
-                        ),
-                        SizedBox(
-                          height: 80.h,
-                          width: ((width / 2) - 25) / 2,
-                          child: Assets.images.millennial.image(
-                              fit: BoxFit.fitWidth),
+                          width: 100.h,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(60),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: controller.popularItem[0].image,
+                              placeholder: (context, data)=>const SizedBox(),
+                              errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ],
                     ),

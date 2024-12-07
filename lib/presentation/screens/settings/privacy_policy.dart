@@ -1,22 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 
-class PrivacyPolicy extends StatelessWidget {
+import 'controller/settings_controller.dart';
+
+class PrivacyPolicy extends StatefulWidget {
   const PrivacyPolicy({super.key});
 
   @override
+  State<PrivacyPolicy> createState() => _PrivacyPolicyState();
+}
+
+class _PrivacyPolicyState extends State<PrivacyPolicy> {
+  final _controller = Get.find<SettingsController>();
+  @override
+  void initState() {
+    _controller.getPrivacyPolicy();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(onPressed: ()=>AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
-        title: Text("privacy_policy".tr),
+        title: Text("terms_of_condition".tr),
       ),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-        child: Text(style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400),"When you use our App, we collect and store your personal information which is provided by you from time to time. Our primary goal in doing so is to provide you a safe, efficient, smooth and customized experience. This allows us to provide services and features that most likely meet your needs, and to customize our website to make your experience safer and easier. More importantly, while doing so, we collect personal information from you that we consider necessary for achieving this purpose.    Below are some of the ways in which we collect and store your information:   We receive and store any information you enter on our website or give us in any other way. We use the information that you provide for such purposes as responding to your requests, customizing future shopping for you, improving our stores, and communicating with you. We also store certain types of information whenever you interact with us. For example, like many websites, we use cookies, and we obtain certain types of information when your web browser accesses Chaldal.com or advertisements and other content served by or on behalf of Chaldal.com on other websites. When signing up via Facebook, we collect your Name and Email (provided by Facebook) as part of your Chaldal account Information. To help us make e-mails more useful and interesting, we often receive a confirmation when you open e-mail from Chaldal if your computer supports such capabilities.  Changes To Your Information:  The information you provide us isn’t set in stone. You may review, update, correct or delete the personal information in your profile at any time.   If you would like us to remove your information from our records, please create a request at the Contact Us page.  To Delete your Facebook login, visit the Contact Us page while logged in via Facebook. You should see a Delete Facebook Login option to create a request to remove Facebook login from your account.  Information about our customers is an important part of our business, and we are not in the business of selling it to others.   We release account and other personal information when we believe release is appropriate to comply with the law; enforce or apply our Terms of Use and other agreements; or protect the rights, property, or safety of Chaldal.com, our users, or others. This includes exchanging information with other companies and organizations for fraud protection."),
+      body: Obx(
+            () {
+          switch (_controller.privacyLoading.value) {
+            case Status.loading:
+              return const Center(child: CircularProgressIndicator());
+            case Status.internetError:
+              return NoInternetCard(onTap: (){
+                _controller.getPrivacyPolicy();
+              });
+            case Status.noDataFound:
+              return const Center(child: CustomText(text: "No data found!"));
+            case Status.error:
+              return NoInternetCard(onTap: (){
+                _controller.getPrivacyPolicy();
+              });
+
+            case Status.completed:
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
+                child: CustomText(text: _controller.privacyConditionsData.value.data?.text??""),
+              );
+          }
+        },
       ),
     );
   }

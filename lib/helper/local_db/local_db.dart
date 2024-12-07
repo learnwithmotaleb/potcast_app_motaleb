@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
@@ -55,6 +56,7 @@ class DBHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear().then((value){
       toastMessage(message: "Logout Successful!");
+      Get.deleteAll();
       AppRouter.route.goNamed(RoutePath.loginScreen);
     }).onError((error,stack){
       AppRouter.route.goNamed(RoutePath.loginScreen);

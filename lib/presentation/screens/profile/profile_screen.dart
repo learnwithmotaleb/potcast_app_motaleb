@@ -10,127 +10,162 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 
-class ProfileScreen extends StatelessWidget {
+import 'controller/profile_controller.dart';
+
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.isUser});
   final bool isUser;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final _controller = Get.find<ProfileController>();
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: width,
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                decoration:  BoxDecoration(
-                  color: isDarkMode?AppColors.whiteColor: const Color(0xFFB6B4B4),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    CustomText(text: "profile",fontSize: 18,fontWeight: FontWeight.w700,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
-                    Gap(12.h),
-                    SizedBox(
-                      height: 100.h,
-                      width: 100.h,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50.0.r),
-                        child: CachedNetworkImage(
-                          imageUrl: "https://img.freepik.com/free-photo/female-singer-portrait-isolated-blue-studio-wall-neon-light_155003-29661.jpg",
-                          placeholder: (context, data) => const SizedBox(),
-                          errorWidget: (context, data, errorWidget) => const Icon(Icons.person),
-                          fit: BoxFit.cover,
+      body: Obx(
+            () {
+          switch (_controller.loading.value) {
+            case Status.loading:
+              return const Center(child: CircularProgressIndicator());
+            case Status.internetError:
+              return NoInternetCard(onTap: (){
+                _controller.getProfile();
+              });
+            case Status.noDataFound:
+              return const Center(child: CustomText(text: "No data found!"));
+            case Status.error:
+              return NoInternetCard(onTap: (){
+                _controller.getProfile();
+              });
+
+            case Status.completed:
+              return SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: width,
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        decoration:  BoxDecoration(
+                          color: isDarkMode?AppColors.whiteColor: const Color(0xFFB6B4B4),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            CustomText(text: "profile",fontSize: 18,fontWeight: FontWeight.w700,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
+                            Gap(12.h),
+                            Container(
+                              height: 100.h,
+                              width: 100.h,
+                              decoration: BoxDecoration(
+                                color: _controller.profile.value.data?.avatar != null?null:AppColors.blackColor,
+                                borderRadius: BorderRadius.circular(50.0.r),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50.0.r),
+                                child: _controller.profile.value.data?.avatar != null?CachedNetworkImage(
+                                  imageUrl: "${AppConstants.baseUrl}${_controller.profile.value.data?.avatar}",
+                                  placeholder: (context, data) => const SizedBox(),
+                                  errorWidget: (context, data, errorWidget) => const Icon(Icons.person),
+                                  fit: BoxFit.cover,
+                                ):const Center(child: Icon(Icons.person,color: AppColors.whiteColor)),
+                              ),
+                            ),
+                            Gap(8.h),
+                            CustomText(text: _controller.profile.value.data?.name??"",fontSize: 16,fontWeight: FontWeight.w700,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
+                            const Gap(2),
+                            CustomText(text: _controller.profile.value.data?.email??"",fontSize: 12,fontWeight: FontWeight.w100,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
+                            const Gap(2),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomText(text: "birthday",fontWeight: FontWeight.w800,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
+                                CustomText(text: " ${_controller.profile.value.data?.dateOfBirth}",fontWeight: FontWeight.w100,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    Gap(8.h),
-                    CustomText(text: "Chris Tomlin",fontSize: 16,fontWeight: FontWeight.w700,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
-                    const Gap(2),
-                    CustomText(text: "chris@gmail.com",fontSize: 12,fontWeight: FontWeight.w100,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
-                    const Gap(2),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomText(text: "birthday",fontWeight: FontWeight.w800,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
-                        CustomText(text: " 20-11-2001",fontWeight: FontWeight.w100,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
-                      ],
-                    ),
-                  ],
+                      Gap(24.h),
+                      CustomProfileTile(
+                        text: "personal_information",
+                        icon: Assets.icons.person.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
+                      ),
+                      const Gap(24),
+                      widget.isUser?const SizedBox():Column(
+                        children: [
+                          CustomProfileTile(
+                            text: "my_podcast",
+                            icon: Assets.icons.myPodcast.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                            onTap: ()=>AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
+                          ),
+                          const Gap(24),
+                        ],
+                      ),
+                      CustomProfileTile(
+                        text: "my_play_list",
+                        icon: Assets.icons.playList.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.playlistScreen),
+                      ),
+                      const Gap(24),
+                      widget.isUser?const SizedBox():Column(
+                        children: [
+                          CustomProfileTile(
+                            text: "donate",
+                            icon: Assets.icons.donate.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                            onTap: ()=>AppRouter.route.pushNamed(RoutePath.donateScreen),
+                          ),
+                          const Gap(24),
+                        ],
+                      ),
+                      CustomProfileTile(
+                        text: "settings",
+                        icon: Assets.icons.settings.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.settingsScreen),
+                      ),
+                      const Gap(24),
+                      CustomProfileTile(
+                        text: "notification",
+                        icon: Assets.icons.notification.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
+                      ),
+                      const Gap(24),
+                      widget.isUser?Column(
+                        children: [
+                          CustomProfileTile(
+                            text: "upgrade",
+                            icon: Assets.icons.updrade.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                            onTap: ()=>AppRouter.route.pushNamed(RoutePath.upgradeScreen),
+                          ),
+                          const Gap(24),
+                        ],
+                      ):const SizedBox(),
+                      CustomProfileTile(
+                        text: "logout",
+                        icon: Assets.icons.logOut.svg(height: 20, width: 20),
+                        isLast: true,
+                        onTap: ()=>showLogoutDialog(context),
+                      ),
+                      const Gap(44),
+                    ],
+                  ),
                 ),
-              ),
-              Gap(24.h),
-              CustomProfileTile(
-                text: "personal_information",
-                icon: Assets.icons.person.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                onTap: ()=>AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
-              ),
-              const Gap(24),
-              isUser?const SizedBox():Column(
-                children: [
-                  CustomProfileTile(
-                    text: "my_podcast",
-                    icon: Assets.icons.myPodcast.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                    onTap: ()=>AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
-                  ),
-                  const Gap(24),
-                ],
-              ),
-              CustomProfileTile(
-                text: "my_play_list",
-                icon: Assets.icons.playList.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                onTap: ()=>AppRouter.route.pushNamed(RoutePath.playlistScreen),
-              ),
-              const Gap(24),
-              isUser?const SizedBox():Column(
-                children: [
-                  CustomProfileTile(
-                    text: "donate",
-                    icon: Assets.icons.donate.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                    onTap: ()=>AppRouter.route.pushNamed(RoutePath.donateScreen),
-                  ),
-                  const Gap(24),
-                ],
-              ),
-              CustomProfileTile(
-                text: "settings",
-                icon: Assets.icons.settings.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                onTap: ()=>AppRouter.route.pushNamed(RoutePath.settingsScreen),
-              ),
-              const Gap(24),
-              CustomProfileTile(
-                text: "notification",
-                icon: Assets.icons.notification.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
-              ),
-              const Gap(24),
-              isUser?Column(
-                children: [
-                  CustomProfileTile(
-                    text: "upgrade",
-                    icon: Assets.icons.updrade.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                    onTap: ()=>AppRouter.route.pushNamed(RoutePath.upgradeScreen),
-                  ),
-                  const Gap(24),
-                ],
-              ):const SizedBox(),
-              CustomProfileTile(
-                text: "logout",
-                icon: Assets.icons.logOut.svg(height: 20, width: 20),
-                isLast: true,
-                onTap: ()=>showLogoutDialog(context),
-              ),
-              const Gap(44),
-            ],
-          ),
-        ),
+              );
+          }
+        },
       ),
     );
   }

@@ -10,6 +10,8 @@ class AppConstants {
     // LanguageModel(imageUrl: "", languageName: 'Spanish', countryCode: 'ES', languageCode: 'es'),
   ];
 
+
+  static const String baseUrl = "http://192.168.10.220:8000/";
   //SharedPreferences
   static const String token = "token";
   static const String id = "id";

@@ -29,6 +29,7 @@ Map<String, String> basicHeaderInfo() {
 Future<Map<String, String>> bearerHeaderInfo() async {
   DBHelper dbHelper = serviceLocator();
   final token = await dbHelper.getToken();
+  print(token);
   return {
     HttpHeaders.acceptHeader: "application/json",
     HttpHeaders.contentTypeHeader: "application/json",
@@ -52,6 +53,7 @@ class ApiClient {
     /// ======================- Check Internet ===================
 
     if (!await (connectionChecker.isConnected)) {
+      log.i('|📍📍📍|-----------------[[ GET ]] Internet Error $url -----------------|📍📍📍|');
       return Response(statusCode: 503, statusText: noInternetConnection);
     }
 
@@ -150,8 +152,7 @@ class ApiClient {
         log.i("Body => $body");
       }
 
-      final response = await http
-          .post(
+      final response = await http.post(
         Uri.parse(url),
         body: jsonEncode(body),
         headers: isBasic ? basicHeaderInfo() : await bearerHeaderInfo(),
@@ -231,6 +232,7 @@ class ApiClient {
       /// ======================- Check Internet ===================
 
       if (!await (connectionChecker.isConnected)) {
+        log.i('|📍📍📍|-----------------[[ PATCH ]] Internet Error $url -----------------|📍📍📍|');
         return Response(statusCode: 503, statusText: noInternetConnection);
       }
 
@@ -407,6 +409,7 @@ class ApiClient {
       /// ======================- Check Internet ===================
 
       if (!await (connectionChecker.isConnected)) {
+        log.i('|📍📍📍|-----------------[[ MULTIPART ]] Internet Error $url -----------------|📍📍📍|');
         return Response(statusCode: 503, statusText: noInternetConnection);
       }
       if (showResult) {
@@ -510,41 +513,34 @@ class ApiClient {
   }
 
   // Delete method
-  Future<Map<String, dynamic>?> delete(
+  Future<Response> delete(
       {String? url,
-        bool? isBasic,
-        int code = 202,
+        bool isBasic = false,
+        int code = 200,
         bool isLogout = false,
         int duration = 15,
         bool showResult = false}) async {
-    log.i(
-        '|📍📍📍|-----------------[[ DELETE ]] method details start-----------------|📍📍📍|');
+    log.i('|📍📍📍|-----------------[[ DELETE ]] method details start-----------------|📍📍📍|');
 
+    if (!await (connectionChecker.isConnected)) {
+      log.i('|📍📍📍|-----------------[[ DELETE ]] Internet Error $url -----------------|📍📍📍|');
+      return Response(statusCode: 503, statusText: noInternetConnection);
+    }
     log.i(url);
 
-    log.i(
-        '|📍📍📍|-----------------[[ DELETE ]] method details end ------------------|📍📍📍|');
+    log.i('|📍📍📍|-----------------[[ DELETE ]] method details end ------------------|📍📍📍|');
 
     try {
-      var headers = isBasic! ? basicHeaderInfo() : await bearerHeaderInfo();
-
-      if (isLogout) {
-// headers
-
-// ..addAll({"fcm_token": await FirebaseMessaging.instance.getToken()});
-      }
+      var headers = isBasic ? basicHeaderInfo() : await bearerHeaderInfo();
 
       log.i(headers);
 
-      final response = await http
-          .delete(
+      final response = await http.delete(
         Uri.parse(url!),
         headers: headers,
-      )
-          .timeout(Duration(seconds: duration));
+      ).timeout(Duration(seconds: duration));
 
-      log.i(
-          '|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
+      log.i('|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
 
       if (showResult) {
         log.i(response.body.toString());
@@ -552,31 +548,40 @@ class ApiClient {
 
       log.i(response.statusCode);
 
-      log.i(
-          '|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
+      log.i('|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
 
       if (response.statusCode == code) {
-// LocalStorage.clear();
-
-        return jsonDecode(response.body);
+        return Response(
+            body: jsonDecode(response.body),
+            statusCode: response.statusCode,
+        );
       } else {
         log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
-        log.e(
-            'unknown error hitted in status code  ${jsonDecode(response.body)}');
+        log.e('unknown error hitted in status code  ${jsonDecode(response.body)}');
 
-        return null;
+        return Response(
+            body: jsonDecode(response.body),
+            statusCode: response.statusCode,
+            statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+        );
       }
     } on SocketException {
       log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     } on TimeoutException {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
       log.e('Time out exception$url');
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     } on http.ClientException catch (err, stackrace) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
@@ -586,7 +591,10 @@ class ApiClient {
 
       log.e(stackrace.toString());
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     } catch (e) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
@@ -594,13 +602,16 @@ class ApiClient {
 
       log.e("❌❌❌ $e");
 
-      return null;
+      return const Response(
+          body: {},
+          statusCode: 400,
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     }
   }
 
   Future<Response> put(
-      {String? url,
-        bool? isBasic,
+      {required String url,
+        bool isBasic = false,
         Map<String, dynamic>? body,
         int code = 200,
         int duration = 15,
@@ -610,6 +621,10 @@ class ApiClient {
           '|📍📍📍|-------------[[ PUT ]] method details start-----------------|📍📍📍|');
 
       log.i(url);
+      if (!await (connectionChecker.isConnected)) {
+        log.i('|📍📍📍|-----------------[[ PUT ]] Internet Error $url -----------------|📍📍📍|');
+        return Response(statusCode: 503, statusText: noInternetConnection);
+      }
 
       log.i(body);
 
@@ -617,9 +632,9 @@ class ApiClient {
           '|📍📍📍|-------------[[ PUT ]] method details end ------------|📍📍📍|');
 
       final response = await http.put(
-        Uri.parse(url!),
+        Uri.parse(url),
         body: jsonEncode(body),
-        headers: isBasic! ? basicHeaderInfo() : await bearerHeaderInfo(),
+        headers: isBasic ? basicHeaderInfo() : await bearerHeaderInfo(),
       ).timeout(Duration(seconds: duration));
 
       log.i('|📒📒📒|-----------------[[ PUT ]] AKA Update method response start-----------------|📒📒📒|');
@@ -645,7 +660,7 @@ class ApiClient {
         log.e('unknown error hitted in status code  ${jsonDecode(response.body)}');
 
         return Response(
-            body: response.body,
+            body: jsonDecode(response.body),
             statusCode: response.statusCode,
             statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
       }

@@ -32,7 +32,6 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Gap(12),
           CustomAlignText(text: "top_artists".tr),
           const Gap(12),
           SizedBox(
@@ -40,7 +39,6 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
             width: width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
               itemCount: controller.artistItem.length,
               itemBuilder: (BuildContext context, int index){
                 return Padding(

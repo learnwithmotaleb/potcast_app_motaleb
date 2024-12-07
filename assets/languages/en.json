@@ -13,6 +13,7 @@
   "sign_up": "Sign Up",
   "verify_email": "Verify Email",
   "choose_your_role_in_our_community": "Choose your role in our community",
+  "reset_password": "Reset Password",
 
   "create_account": "Create account",
   "full_name": "Full Name",
@@ -67,6 +68,8 @@
   "notification": "Notification",
   "upgrade": "Upgrade",
   "logout": "Logout",
+  "phone_number": "Phone Number",
+  "enter_your_phone_number": "Enter your phone number",
 
   "select_your_location_question": "Select you Location ?",
 

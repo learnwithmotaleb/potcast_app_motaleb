@@ -104,7 +104,6 @@ class OTPField extends StatelessWidget {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Pinput(
       length: 6,
-      keyboardType: TextInputType.text,
       controller: controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -115,10 +114,10 @@ class OTPField extends StatelessWidget {
         }
         return null;
       },
-      focusedPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.primaryColor), borderRadius: BorderRadius.circular(5.r))),
-      followingPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
-      disabledPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
-      submittedPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
+      focusedPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.primaryColor), borderRadius: BorderRadius.circular(5.r))),
+      followingPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
+      disabledPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
+      submittedPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
       defaultPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.blackColor : null, borderRadius: BorderRadius.circular(5.r), border: isDarkMode ? Border.all(color: const Color(0xFFFCFCF8)) : Border.all(color: AppColors.hintTextColor))),
     );
   }
