@@ -6,11 +6,13 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 
 class MusicCard extends StatelessWidget {
   const MusicCard({super.key, required this.data, required this.onTap});
   final AudioPlayerModel data;
   final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -27,7 +29,7 @@ class MusicCard extends StatelessWidget {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.r),
                   child: CachedNetworkImage(
-                    imageUrl: data.image,
+                    imageUrl: "${AppConstants.baseUrl}${data.image}",
                     placeholder: (context, data)=>const SizedBox(),
                     errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
                     fit: BoxFit.cover,
@@ -46,11 +48,11 @@ class MusicCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomText(text: data.title,fontSize: 16,fontWeight: FontWeight.w800),
-                          CustomText(text: data.album),
+                          CustomText(text: data.title??"",fontSize: 16,fontWeight: FontWeight.w800),
+                          CustomText(text: data.categories??""),
                           Row(
                             children: [
-                              const CustomText(text: "5.50 min"),
+                              CustomText(text: "${data.duration??""} min"),
                               const Gap(5),
                               const Icon(Icons.location_on,size: 14,color: AppColors.primaryColor),
                               const Gap(3),

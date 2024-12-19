@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,57 +9,48 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/model/route/audio_player_model.dart';
+import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/presentation/screens/play/model/podcast_model.dart';
 import 'package:podcast/presentation/screens/play/widget/audio_play_control.dart';
+import 'package:podcast/service/api_service.dart';
+import 'package:podcast/service/api_url.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 
 class AudioPlayController extends GetxController{
-  RxBool isLoading = false.obs;
-  RxInt currentAudioIndex = 0.obs;
+  ApiClient apiClient = ApiClient();
+  Rx<PodcastModel> postModel = PodcastModel().obs;
   RxString currentMediaId = ''.obs;
-  final cacheManager = DefaultCacheManager(); // Cache manager instance
-  Rx<AudioPlayerModel> clickAudioPlayerData = AudioPlayerModel(id: "", url: "", title: "", album: "", image: "", artist: "").obs;
-  List<AudioPlayerModel> newItem = [
-    AudioPlayerModel(
-        id: "1",
-        artist: "Sabrina Carpenter",
-        album: "Entertainment",
-        title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-        url: "https://drive.usercontent.google.com/u/0/uc?id=1PggdOYJxkD5Rb23R3E48F8dDdOzH62ld&export=download",
-        image: "https://img.freepik.com/free-photo/female-singer-portrait-neon-lights_155003-8240.jpg"
-    ),
-    AudioPlayerModel(
-        id: "2",
-        artist: "Sabrina Carpenter",
-        album: "Entertainment",
-        title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-        url: "https://drive.usercontent.google.com/u/0/uc?id=1uah5cRL4LxWSiNYeGfgC4i40mRW8hVgm&export=download",
-        image: "https://img.freepik.com/free-photo/young-caucasian-female-musician-performer-singing-dancing-neon-light-gradient_155003-44185.jpg"
-    ),
-    AudioPlayerModel(
-        id: "3",
-        artist: "Morgan Walled",
-        album: "Cubit Songs",
-        title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-        url: "https://drive.usercontent.google.com/u/0/uc?id=1pJaX_zNFRA3IPjvU2OutmEijpwCqkWDI&export=download",
-        image: "https://img.freepik.com/premium-photo/caucasian-female-singer-portrait-isolated-gradient-studio-background-neon-light_489646-16996.jpg"
-    ),
-    AudioPlayerModel(
-        id: "4",
-        artist: "Leroi Song",
-        album: "Eminem",
-        title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-        url: "https://drive.usercontent.google.com/u/0/uc?id=1CwdsEVSuVBsZuGtizMsBxdz8rpv86V8w&export=download",
-        image: "https://img.freepik.com/premium-photo/image-caucasian-dark-haired-woman-wearing-stylish-jacket-standing-with-closed-eyes-listening-music-holding-cell-phone-as-microphone-singing-posing-isolated-neon-light-background_176532-19786.jpg"
-    ),
-    AudioPlayerModel(
-        id: "5",
-        artist: "Sabrina Carpenter",
-        album: "Entertainment",
-        title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-        url: "https://drive.usercontent.google.com/u/0/uc?id=1pVGY5C8cMZIdJKWhvnmt4dZi7HYoxdM3&export=download",
-        image: "https://img.freepik.com/premium-photo/caucasian-female-singer-portrait-isolated-gradient-studio-background-neon-light_489646-16996.jpg"
-    ),
-  ];
+  final cacheManager = DefaultCacheManager();
+
+  /// ============================= GET Podcast Details Info =====================================
+  var loading = Status.completed.obs;
+  loadingMethod(Status status) => loading.value = status;
+  Future<void> playPodcast({required String id}) async {
+    try{
+      if (currentMediaId.value == id) {
+        print("Media ID $id is already playing");
+        return;
+      }
+      loadingMethod(Status.loading);
+      var response = await apiClient.post(url: ApiUrl.play(id: id),body: {},showResult: true);
+      if (response.statusCode == 200) {
+        postModel.value = PodcastModel.fromJson(response.body);
+        playAudio(podcast: PodcastModel.fromJson(response.body));
+      } else {
+        currentMediaId.value = '';
+        if (response.statusCode == 503) {
+          loadingMethod(Status.internetError);
+        } else if (response.statusCode == 404) {
+          loadingMethod(Status.noDataFound);
+        } else {
+          loadingMethod(Status.error);
+        }
+      }
+    }catch(e){
+      currentMediaId.value = '';
+      loadingMethod(Status.error);
+    }
+  }
 
   final audioPlayer = AudioPlayer();
 
@@ -97,105 +87,82 @@ class AudioPlayController extends GetxController{
     });
   }
 
-  Future<void> playAudio(AudioPlayerModel model) async {
-    if (currentMediaId.value == model.id) {
-      print("Media ID ${model.id} is already playing");
-      return;
-    }
+  var playLoading = Status.completed.obs;
+  playLoadingMethod(Status status) => playLoading.value = status;
 
-    currentMediaId.value = model.id;
-    clickAudioPlayerData.value = model;
-    isLoading.value = true;
+  Future<void> playAudio({required PodcastModel podcast}) async {
+    try{
+      final mediaItem = MediaItem(
+        id: podcast.data?.podcast?.id??"",
+        album:  podcast.data?.podcast?.category?.title??"",
+        title:  podcast.data?.podcast?.title??"",
+        artist:  podcast.data?.podcast?.creator?.user?.name??"",
+        artUri: Uri.parse("${AppConstants.baseUrl}${podcast.data?.podcast?.cover??""}"),
+      );
 
-    if (!await InternetConnection().hasInternetAccess) {
-      print("Key No Internet Connection ===================================:Key ${model.id}");
-      FileInfo? fileIInfo = await cacheManager.getFileFromCache(model.id);
-      File? file = fileIInfo?.file;
-
-      if(file != null){
-        await audioPlayer.setAudioSource(
-          AudioSource.uri(
-            Uri.parse(file.path),
-            tag: MediaItem(
-              id: model.id,
-              album: model.album,
-              title: model.title,
-              artist: model.artist,
-              artUri: Uri.parse(model.image),
+      if (!await InternetConnection().hasInternetAccess) {
+        print("Key No Internet Connection ===================================:Key ${podcast.data?.podcast?.id}");
+        FileInfo? fileIInfo = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
+        File? file = fileIInfo?.file;
+        if(file != null){
+          await audioPlayer.setAudioSource(
+            AudioSource.uri(
+              Uri.parse(file.path),
+              tag: mediaItem,
             ),
-          ),
-        ).then((value) async {
-          isLoading.value = false;
-          await play();
-        }).catchError((e){
-          isLoading.value = false;
-        });
-      }else{
-        await audioPlayer.setAudioSource(
-          AudioSource.uri(
-            Uri.parse(model.url),
-            tag: MediaItem(
-              id: model.id,
-              album: model.album,
-              title: model.title,
-              artist: model.artist,
-              artUri: Uri.parse(model.image),
-            ),
-          ),
-        ).then((value) async {
-          isLoading.value = false;
-          await play();
-        }).catchError((e){
-          isLoading.value = false;
-        });
-      }
-    } else {
-      final cacheFile = await cacheManager.getFileFromCache(model.id);
-      final File? file = cacheFile?.file;
-      if (file != null && file.path != "") {
-        print("Key Has Internet And Get Cache===================================Url${file.path} :Key ${model.id}");
-        await audioPlayer.setAudioSource(
-          AudioSource.uri(
-            Uri.parse(file.path),
-            tag: MediaItem(
-              id: model.id,
-              album: model.album,
-              title: model.title,
-              artist: model.artist,
-              artUri: Uri.parse(model.image),
-            ),
-          ),
-        ).then((value) async {
-          isLoading.value = false;
-          await play();
-        }).catchError((e){
-          isLoading.value = false;
-        });
+          ).then((value) async {
+            loadingMethod(Status.completed);
+            await play();
+          }).catchError((e){
+            currentMediaId.value = '';
+            loadingMethod(Status.error);
+          });
+        }else{
+          currentMediaId.value = '';
+          loadingMethod(Status.internetError);
+        }
       } else {
-        print("Key Has Internet ===================================Url${file?.path} :Key ${model.id}");
-        await cacheManager.getSingleFile(model.url,key: model.id);
-        await audioPlayer.setAudioSource(
-          AudioSource.uri(
-            Uri.parse(model.url),
-            tag: MediaItem(
-              id: model.id,
-              album: model.album,
-              title: model.title,
-              artist: model.artist,
-              artUri: Uri.parse(model.image),
+        final cacheFile = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
+        final File? file = cacheFile?.file;
+        if (file != null && file.path != "") {
+          print("Key Has Internet And Get Cache===================================Url${file.path} :Key ${podcast.data?.podcast?.id??""}");
+          await audioPlayer.setAudioSource(
+            AudioSource.uri(
+              Uri.parse(file.path),
+              tag: mediaItem,
             ),
-          ),
-        ).then((value) async {
-          isLoading.value = false;
-          await play();
-        }).catchError((e){
-          isLoading.value = false;
-        });
+          ).then((value) async {
+            loadingMethod(Status.completed);
+            await play();
+          }).catchError((e){
+            currentMediaId.value = '';
+            loadingMethod(Status.error);
+          });
+        } else {
+          print("Key Has Internet ===================================Url${file?.path} :Key ${podcast.data?.podcast?.id}");
+          await cacheManager.getSingleFile(podcast.data?.podcast?.audio??"",key: podcast.data?.podcast?.id);
+          await audioPlayer.setAudioSource(
+            AudioSource.uri(
+              Uri.parse(podcast.data?.podcast?.audio??""),
+              tag: mediaItem,
+            ),
+          ).then((value) async {
+            loadingMethod(Status.completed);
+            await play();
+          }).catchError((e){
+            currentMediaId.value = '';
+            loadingMethod(Status.error);
+          });
+        }
       }
+    }catch(e){
+      currentMediaId.value = '';
+      loadingMethod(Status.error);
     }
   }
 
   Future<void> play() async{
+    currentMediaId.value = postModel.value.data?.podcast?.id??"";
     await audioPlayer.play();
   }
 
@@ -207,15 +174,69 @@ class AudioPlayController extends GetxController{
     seekAudio(newPosition < Duration.zero ? Duration.zero : newPosition);
   }
 
+  RxBool isWorking = false.obs;
+  RxBool likeLoading = false.obs;
+
+  Future<bool> likePodcast({required String id, required bool current}) async {
+    try{
+      if (isWorking.value) {
+        return current;
+      }
+      likeLoading.value = true;
+      isWorking.value = true;
+      var response = await apiClient.post(url: ApiUrl.like(id: id),body: {},showResult: true);
+      if (response.statusCode == 200) {
+        likeLoading.value = false;
+        final bool likeData = response.body?['data']?['like']??false;
+        return likeData;
+      } else {
+        likeLoading.value = false;
+        return current;
+      }
+    }catch(e){
+      likeLoading.value = false;
+      return current;
+    }finally{
+      likeLoading.value = false;
+      isWorking.value = false;
+    }
+  }
+
+  RxBool favoriteLoading = false.obs;
+  Future<bool> favoritePodcast({required String id, required bool current}) async {
+    try{
+      if (isWorking.value) {
+        return current;
+      }
+      favoriteLoading.value = true;
+      isWorking.value = true;
+      var response = await apiClient.post(url: ApiUrl.favoriteAdd(),body: {"podcastId" : id},showResult: true);
+      if (response.statusCode == 200) {
+        favoriteLoading.value = false;
+        final bool favorite = response.body?['data']?['favorite']??false;
+        return favorite;
+      } else {
+        favoriteLoading.value = false;
+        return current;
+      }
+    }catch(e){
+      favoriteLoading.value = false;
+      return current;
+    }finally{
+      favoriteLoading.value = false;
+      isWorking.value = false;
+    }
+  }
+
   void playNext() {
-    print("Call play next===============================================");
+/*    print("Call play next===============================================");
     if (currentAudioIndex.value < newItem.length - 1) {
       currentAudioIndex.value++;
       playAudio(newItem[currentAudioIndex.value]);
     }else{
       currentAudioIndex.value==1;
       playAudio(newItem[0]);
-    }
+    }*/
   }
 
   OverlayEntry? overlayEntry;
@@ -254,28 +275,22 @@ class AudioPlayController extends GetxController{
                       GestureDetector(
                         onTap: () {
                           removeOverlay();
-                          AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: clickAudioPlayerData.value,
-                          );
+                          AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: postModel.value.data?.podcast?.id);
                         },
                         child: SizedBox(
                           height: 60.h,
+                          width: 80,
                           child: Obx(() {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(8.0.r),
-                              child: CachedNetworkImage(
-                                imageUrl: clickAudioPlayerData.value.image,
-                                placeholder: (context, data) =>
-                                const SizedBox(),
-                                errorWidget: (context, data, errorWidget) =>
-                                const Icon(Icons.person),
-                                fit: BoxFit.cover,
-                              ),
+                              child: CustomNetworkImage(imageUrl: postModel.value.data?.podcast?.cover??""),
                             );
                           }),
                         ),
                       ),
-                      const Gap(5),
-                      const Expanded(child: AudioPlayControl()),
+                      const Gap(12),
+                      const Expanded(child: AudioPlayControl(isRemove: true,)),
+                      const Gap(12),
                     ],
                   ),
                 ),
@@ -284,7 +299,7 @@ class AudioPlayController extends GetxController{
                   onTap: removeOverlay,
                   child: Container(
                     width: 50,
-                    height: 60,
+                    height: 60.h,
                     decoration: BoxDecoration(
                       color: const Color(0xFF1C1C77),
                       borderRadius: BorderRadius.circular(8.0),

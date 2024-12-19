@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -6,13 +5,15 @@ import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
+import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserHomeTopSection extends StatefulWidget {
-  const UserHomeTopSection({super.key});
-
+  const UserHomeTopSection({super.key, this.categories});
+  final CategoryElement? categories;
   @override
   State<UserHomeTopSection> createState() => _UserHomeTopSectionState();
 }
@@ -25,6 +26,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
     final double width = MediaQuery.of(context).size.width;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
+    print(widget.categories?.image);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +129,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5.0,top: 5.0,bottom: 5.0),
-                            child: CustomText(text: "genres_podcast".tr, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
+                            child: CustomText(text: widget.categories?.title??"", color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
                           ),
                         ),
                         SizedBox(
@@ -137,12 +139,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(60),
                             ),
-                            child: CachedNetworkImage(
-                              imageUrl: controller.popularItem[0].image,
-                              placeholder: (context, data)=>const SizedBox(),
-                              errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
-                              fit: BoxFit.cover,
-                            ),
+                            child: CustomNetworkImage(imageUrl: widget.categories?.image??""),
                           ),
                         ),
                       ],

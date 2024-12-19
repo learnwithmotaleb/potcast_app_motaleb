@@ -39,8 +39,15 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
   }
 
   @override
+  void dispose() {
+    title.clear();
+    location.clear();
+    description.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

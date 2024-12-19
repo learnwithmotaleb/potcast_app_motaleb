@@ -7,7 +7,6 @@ import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
-
 import 'controller/playlist_add_controller.dart';
 
 class PlaylistAddScreen extends StatefulWidget {

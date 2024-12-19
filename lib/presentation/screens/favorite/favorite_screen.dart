@@ -1,70 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
+import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
+import 'model/favorite_model.dart';
 
-class FavoriteScreen extends StatelessWidget {
+class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
 
   @override
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
+}
+
+class _FavoriteScreenState extends State<FavoriteScreen> {
+  final controller = Get.find<FavoriteController>();
+  @override
   Widget build(BuildContext context) {
-    List<AudioPlayerModel> newItem = [
-      AudioPlayerModel(
-          id: "1",
-          artist: "Sabrina Carpenter",
-          album: "Entertainment",
-          title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-          url: "https://drive.usercontent.google.com/u/0/uc?id=1PggdOYJxkD5Rb23R3E48F8dDdOzH62ld&export=download",
-          image: "https://img.freepik.com/free-photo/female-singer-portrait-neon-lights_155003-8240.jpg"
-      ),
-      AudioPlayerModel(
-          id: "2",
-          artist: "Sabrina Carpenter",
-          album: "Entertainment",
-          title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-          url: "https://drive.usercontent.google.com/u/0/uc?id=1uah5cRL4LxWSiNYeGfgC4i40mRW8hVgm&export=download",
-          image: "https://img.freepik.com/free-photo/young-caucasian-female-musician-performer-singing-dancing-neon-light-gradient_155003-44185.jpg"
-      ),
-      AudioPlayerModel(
-          id: "3",
-          artist: "Morgan Walled",
-          album: "Cubit Songs",
-          title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-          url: "https://drive.usercontent.google.com/u/0/uc?id=1pJaX_zNFRA3IPjvU2OutmEijpwCqkWDI&export=download",
-          image: "https://img.freepik.com/premium-photo/caucasian-female-singer-portrait-isolated-gradient-studio-background-neon-light_489646-16996.jpg"
-      ),
-      AudioPlayerModel(
-          id: "4",
-          artist: "Leroi Song",
-          album: "Eminem",
-          title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-          url: "https://drive.usercontent.google.com/u/0/uc?id=1CwdsEVSuVBsZuGtizMsBxdz8rpv86V8w&export=download",
-          image: "https://img.freepik.com/premium-photo/image-caucasian-dark-haired-woman-wearing-stylish-jacket-standing-with-closed-eyes-listening-music-holding-cell-phone-as-microphone-singing-posing-isolated-neon-light-background_176532-19786.jpg"
-      ),
-      AudioPlayerModel(
-          id: "5",
-          artist: "Sabrina Carpenter",
-          album: "Entertainment",
-          title: "Promises (feat. Joe L Barnes & Naomi Raine) _ Maverick City Music _ TRIBL",
-          url: "https://drive.usercontent.google.com/u/0/uc?id=1pVGY5C8cMZIdJKWhvnmt4dZi7HYoxdM3&export=download",
-          image: "https://img.freepik.com/premium-photo/caucasian-female-singer-portrait-isolated-gradient-studio-background-neon-light_489646-16996.jpg"
-      ),
-    ];
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("favorite".tr),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.only(left: 12,right: 12,top: 12,bottom: 44),
-        itemCount: newItem.length,
-        itemBuilder: (BuildContext context, int index){
-          return MusicCard(data: newItem[index],onTap: (){
-            AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: newItem[index]);
-          });
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          controller.pagingController.refresh();
         },
+        child: PagedListView<int, FavoritePodcast>(
+          pagingController: controller.pagingController,
+          builderDelegate: PagedChildBuilderDelegate<FavoritePodcast>(
+            itemBuilder: (context, item, index) {
+              final data = AudioPlayerModel(
+                id: item.id??"",
+                title: item.title??"",
+                image: item.cover??"",
+                categories: item.category?.title??"",
+                duration: item.audioDuration.toString(),
+                artist: item.creator?.user?.name??"",
+              );
+              return MusicCard(
+                data: data,
+                onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

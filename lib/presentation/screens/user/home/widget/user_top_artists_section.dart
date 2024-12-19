@@ -1,12 +1,11 @@
 import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
-import 'package:podcast/core/route/route_path.dart';
-import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -39,14 +38,14 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
             width: width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: controller.artistItem.length,
+              itemCount: controller.model.value.data?.creators?.length,
               itemBuilder: (BuildContext context, int index){
                 return Padding(
                   padding: const EdgeInsets.only(right: 12.0),
                   child: Column(
                     children: [
                       if (index ==0) GestureDetector(
-                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.seeAllScreen,extra: "Joe"),
+                        // onTap: ()=>AppRouter.route.pushNamed(RoutePath.seeAllScreen,extra: "Joe"),
                         child: Container(
                           height: 80.w,
                           width: 80.w,
@@ -61,7 +60,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                           ),
                         ),
                       ) else GestureDetector(
-                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.artistItem[index]),
+                        // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.artistItem[index]),
                         child: Container(
                           height: 80.0.h,
                           width: 80.0.h,
@@ -84,12 +83,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                                   padding: const EdgeInsets.all(5),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(40.0.r), // Make it circular
-                                    child: CachedNetworkImage(
-                                      imageUrl: controller.artistItem[index].image,
-                                      placeholder: (context, data) => const SizedBox(), // Placeholder for loading
-                                      errorWidget: (context, data, errorWidget) => const Icon(Icons.person), // Error widget
-                                      fit: BoxFit.cover, // Ensure the image fits inside the circle
-                                    ),
+                                    child: CustomNetworkImage(imageUrl: controller.model.value.data?.creators?[index].user?.avatar??""),
                                   ),
                                 ),
                               ),
@@ -98,7 +92,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: index==0?"Joe":controller.artistItem[index].artist),
+                      CustomText(text: index==0?"Joe":controller.model.value.data?.creators?[index].user?.name??""),
                     ],
                   ),
                 );
@@ -141,4 +135,3 @@ class PartialCirclePainter extends CustomPainter {
     return false;
   }
 }
-

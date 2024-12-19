@@ -164,7 +164,7 @@ class AppRouter {
           name: RoutePath.commentsScreen,
           path: RoutePath.commentsScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const CommentsScreen(),
+            child: CommentsScreen(id: state.extra as String),
             state: state,
           ),
         ),
@@ -206,7 +206,7 @@ class AppRouter {
             name: RoutePath.userPlayScreen,
             path: RoutePath.userPlayScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?UserPlayScreen(model: state.extra as AudioPlayerModel):UserPlayScreen(model: AudioPlayerModel(image: "",id: "",title: "",album: "",artist: "",url: "")),
+              child: state.extra != null?UserPlayScreen(id: state.extra as String):const UserPlayScreen(id: ""),
               state: state,
             ),
         ),
@@ -266,7 +266,7 @@ class AppRouter {
           name: RoutePath.podcastEditScreen,
           path: RoutePath.podcastEditScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const PodcastEditScreen(),
+            child: PodcastEditScreen(id: state.extra as String),
             state: state,
           ),
         ),

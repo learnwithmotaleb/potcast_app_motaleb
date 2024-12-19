@@ -1,10 +1,12 @@
 import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/model/global/categories_model.dart';
+import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
+import 'package:podcast/presentation/screens/play/model/podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
@@ -45,7 +47,7 @@ class PodcastController extends GetxController{
   RxString selectedCategory = "".obs;
   RxString selectedSubCategories = ''.obs;
 
-  /// ============================= GET Profile Info =====================================
+  /// ============================= GET Categories =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
   Future<void> getCategories() async {
@@ -70,24 +72,45 @@ class PodcastController extends GetxController{
     }
   }
 
+  /// ============================= GET Podcast =====================================
+  Rx<PodcastModel> model = PodcastModel().obs;
+  var podcastLoading = Status.completed.obs;
+  podcastLoadingMethod(Status status) => podcastLoading.value = status;
+  Future<void> getDetails({required String id}) async {
+    try{
+      podcastLoadingMethod(Status.loading);
+      var response = await apiClient.get(url: ApiUrl.details(id: id),showResult: true);
+      if (response.statusCode == 200) {
+        model.value = PodcastModel.fromJson(response.body);
+        podcastLoadingMethod(Status.completed);
+      } else {
+        if (response.statusCode == 503) {
+          podcastLoadingMethod(Status.internetError);
+        } else if (response.statusCode == 404) {
+          podcastLoadingMethod(Status.noDataFound);
+        } else {
+          podcastLoadingMethod(Status.error);
+        }
+      }
+    }catch(e){
+      podcastLoadingMethod(Status.error);
+    }
+  }
+
   void updateSubCategories(String category) {
     subCategories.clear();
     selectedCategory.value = category;
     try {
-      // Find the category that matches the selected title
+
       var categoryData = categories.value.data?.firstWhere((categoryItem) => categoryItem.title == category, orElse: () => CategoriesData());
       categoriesId.value = categoryData?.id??"";
       if (categoryData?.subCategories == null || categoryData!.subCategories!.isEmpty) {
-        print("No subcategories found for the selected category.");
         subCategories.assignAll([]);
       } else {
-        print("Subcategories found: ${categoryData.subCategories!}");
         subCategories.assignAll(categoryData.subCategories!);
       }
-
-      print("Subcategories length: ${subCategories.length}");
     } catch (e) {
-      print("Error updating subcategories: $e");
+      log("Error updating subcategories: $e");
     }
   }
 
@@ -103,6 +126,9 @@ class PodcastController extends GetxController{
       if (response.statusCode == 201 || response.statusCode == 200 ) {
         createLoadingMethod(false);
         AppRouter.route.pop();
+        pagingController.refresh();
+        audioFile.value = null;
+        selectedImage.value = null;
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       } else {
@@ -115,6 +141,118 @@ class PodcastController extends GetxController{
     }
   }
 
+  /// ============================= Delete Podcast =====================================
+  RxString deleteLoading = "".obs;
+
+  void deletePodcast({required String id}) async {
+    try{
+      deleteLoading.value = id;
+      var response = await apiClient.delete(url: ApiUrl.podcastDelete(id: id));
+
+      if (response.statusCode == 200) {
+        deleteLoading.value = "";
+        pagingController.refresh();
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      } else {
+        deleteLoading.value = "";
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    }catch (err){
+      deleteLoading.value = "";
+    }
+  }
+
+  /// ============================= Create Podcast =====================================
+  RxBool editLoading = false.obs;
+  editLoadingMethod(bool status) => createLoading.value = status;
+  void editPodcast({required Map<String, String> body, required List<MultipartBody> multipartBody, required String id}) async {
+    try{
+      editLoadingMethod(true);
+      var response = await apiClient.multipartRequest(url: ApiUrl.podcastEdit(id: id),body: body, reqType: "PUT", multipartBody: multipartBody);
+
+      if (response.statusCode == 200 ) {
+        editLoadingMethod(false);
+        AppRouter.route.pop();
+        pagingController.refresh();
+        audioFile.value = null;
+        selectedImage.value = null;
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      } else {
+        editLoadingMethod(false);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    }catch (err){
+      editLoadingMethod(false);
+    }
+  }
+
+  void editPodcastOnlyBody({required Map<String, String> body, required String id}) async {
+    try{
+      editLoadingMethod(true);
+      var response = await apiClient.put(url: ApiUrl.podcastEdit(id: id),body: body);
+
+      if (response.statusCode == 200) {
+        editLoadingMethod(false);
+        AppRouter.route.pop();
+        pagingController.refresh();
+        audioFile.value = null;
+        selectedImage.value = null;
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      } else {
+        editLoadingMethod(false);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    }catch (err){
+      editLoadingMethod(false);
+    }
+  }
+
+  final PagingController<int, MyPodcastData> pagingController = PagingController(firstPageKey: 1);
+  RxBool isLoadingMove = false.obs;
+  Future<void> getPodcast(int pageKey) async {
+    if (isLoadingMove.value) return;
+    isLoadingMove.value = true;
+
+    try {
+      final response = await apiClient.get(url: ApiUrl.myPodcast(page: pageKey), showResult: true);
+
+      if (response.statusCode == 200) {
+        final userServiceAll = MyPodcastModel.fromJson(response.body);
+        final newItems = userServiceAll.data ?? [];
+        if (newItems.isEmpty) {
+          pagingController.appendLastPage(newItems);
+        } else {
+          pagingController.appendPage(newItems, pageKey + newItems.length);
+        }
+      } else {
+        pagingController.error = 'Error fetching data';
+      }
+    } catch (e) {
+      pagingController.error = 'An error occurred';
+    } finally {
+      isLoadingMove.value = false;
+    }
+  }
 
 
+  @override
+  void onInit() {
+    pagingController.addPageRequestListener((pageKey) {
+      getPodcast(pageKey);
+    });
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    pagingController.dispose();
+    super.onClose();
+  }
 }
+

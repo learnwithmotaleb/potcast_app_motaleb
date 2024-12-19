@@ -18,12 +18,24 @@ class ApiUrl {
 
   ///Global
   static String category() => '$base/category';
+  static String play({required String id}) => '$base/podcast/play/$id';
+  static String like({required String id}) => '$base/like/$id';
+  static String favoriteAdd() => '$base/favorite/toggle';
+  static String comments({required String id, required int page}) => '$base/comment/$id?page=$page&limit=2';
+  static String details({required String id}) => '$base/podcast/$id';
+
+  static String favorite({required int page}) => '$base/favorite?limit=10&page=$page';
+  static String history({required int page}) => '$base/history?page=$page&limit=10';
 
   ///User
-  // static String category() => '$base/category';
+  static String home() => '$base/home';
 
   ///Creator
+  static String podcast({required int page}) => '$base/podcast?page=$page&limit=10';
+  static String myPodcast({required int page}) => '$base/creator/all-podcasts?page=$page&limit=10';
   static String podcastCreate() => '$base/podcast/create';
+  static String podcastEdit({required String id}) => '$base/podcast/update/$id';
+  static String podcastDelete({required String id}) => '$base/podcast/delete/$id';
 
   ///Settings
   static String terms() => '$base/tac';

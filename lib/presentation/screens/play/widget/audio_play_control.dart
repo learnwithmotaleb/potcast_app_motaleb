@@ -8,7 +8,9 @@ import 'package:podcast/presentation/screens/play/controller/audio_play_controll
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class AudioPlayControl extends StatefulWidget {
-  const AudioPlayControl({super.key});
+  const AudioPlayControl({super.key, this.isRemove = false});
+
+  final bool isRemove;
 
   @override
   State<AudioPlayControl> createState() => _AudioPlayControlState();
@@ -16,6 +18,7 @@ class AudioPlayControl extends StatefulWidget {
 
 class _AudioPlayControlState extends State<AudioPlayControl> {
   final controller = Get.find<AudioPlayController>();
+
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -23,27 +26,37 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         LikeButton(
+          isLiked: controller.postModel.value.data?.isFavorited ?? false,
           circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
           bubblesColor: const BubblesColor(
             dotPrimaryColor: Color(0xff33b5e5),
             dotSecondaryColor: Color(0xff0099cc),
           ),
+          onTap: (value) async {
+            return await controller.favoritePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value);
+          },
           likeBuilder: (bool isLiked) {
-            return Icon(
-              Icons.favorite,
-              color: isLiked ? Colors.red : Colors.white,
-              size: 30,
-            );
+            return Obx(() {
+              return controller.favoriteLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : Icon(
+                      Icons.favorite,
+                      color: isLiked ? Colors.red : Colors.white,
+                      size: 30,
+                    );
+            });
           },
         ),
-        IconButton(
-          icon: Assets.icons.audioLeft.svg(height: 20.w,width: 20.w,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-          onPressed: controller.skipBackward,
-          iconSize: 36,
-        ),
+        widget.isRemove
+            ? const SizedBox()
+            : IconButton(
+                icon: Assets.icons.audioLeft.svg(height: 20.w, width: 20.w, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                onPressed: controller.skipBackward,
+                iconSize: 36,
+              ),
         Obx(() {
           return GestureDetector(
-            onTap: (){
+            onTap: () {
               if (controller.isPlaying.value) {
                 controller.pauseAudio();
               } else {
@@ -52,30 +65,37 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
             },
             child: Container(
               padding: const EdgeInsets.all(8.0),
-              decoration: const BoxDecoration(
-                  color: AppColors.whiteColor,
-                  shape: BoxShape.circle
-              ),
-              child: Icon(controller.isPlaying.value ? Iconsax.pause : Icons.play_arrow,color: AppColors.blackColor,size: 32),
+              decoration: const BoxDecoration(color: AppColors.whiteColor, shape: BoxShape.circle),
+              child: Icon(controller.isPlaying.value ? Iconsax.pause : Icons.play_arrow, color: AppColors.blackColor, size: 32),
             ),
           );
         }),
-        IconButton(
-          icon: Icon(Icons.skip_next,color: AppColors.whiteColor),
-          onPressed: controller.playNext,
-          iconSize: 36,
-        ),
+        widget.isRemove
+            ? const SizedBox()
+            : IconButton(
+                icon: const Icon(Icons.skip_next, color: AppColors.whiteColor),
+                onPressed: controller.playNext,
+                iconSize: 36,
+              ),
         LikeButton(
-          circleColor:
-          const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+          isLiked: controller.postModel.value.data?.isLiked ?? false,
+          circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
           bubblesColor: const BubblesColor(
             dotPrimaryColor: Color(0xff33b5e5),
             dotSecondaryColor: Color(0xff0099cc),
           ),
+          onTap: (value) async {
+            return await controller.likePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value);
+          },
           likeBuilder: (bool isLiked) {
-            return Icon(Iconsax.like_1,
-              color: isLiked ? Colors.red : (isDarkMode?AppColors.whiteColor:AppColors.blackColor),
-            );
+            return Obx(() {
+              return controller.likeLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : Icon(
+                Iconsax.like_1,
+                color: isLiked ? Colors.red : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+              );
+            });
           },
         ),
       ],
