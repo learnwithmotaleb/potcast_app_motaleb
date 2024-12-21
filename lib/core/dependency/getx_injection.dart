@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:podcast/controller/language_controller.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
-import 'package:podcast/presentation/screens/comments/controller/comments_controller.dart';
 import 'package:podcast/presentation/screens/creator/donate/controller/donate_controller.dart';
 import 'package:podcast/presentation/screens/creator/home/controller/creator_home_controller.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_controller.dart';
@@ -9,12 +8,14 @@ import 'package:podcast/presentation/screens/favorite/controller/favorite_contro
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
 import 'package:podcast/presentation/screens/notification/controller/notification_controller.dart';
 import 'package:podcast/presentation/screens/playlist/add/controller/playlist_add_controller.dart';
+import 'package:podcast/presentation/screens/playlist/controller/playlist_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/settings/controller/settings_controller.dart';
 import 'package:podcast/presentation/screens/user/categories/controller/categories_controller.dart';
 import 'package:podcast/presentation/screens/user/country/controller/country_select_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/search/controller/user_search_controller.dart';
+import 'package:podcast/presentation/screens/user/upgrade/controller/upgrade_controller.dart';
 
 void initGetX() {
 
@@ -27,13 +28,14 @@ void initGetX() {
   Get.lazyPut(() => SettingsController(), fenix: true);
   Get.lazyPut(() => FavoriteController(), fenix: true);
   Get.lazyPut(() => HistoryController(), fenix: true);
+  Get.lazyPut(() => PlaylistController(), fenix: true);
 
   //User
   Get.lazyPut(() => UserHomeController(), fenix: true);
   Get.lazyPut(() => CountrySelectController(), fenix: true);
   Get.lazyPut(() => CategoriesController(), fenix: true);
   Get.lazyPut(() => UserSearchController(), fenix: true);
-  // Get.lazyPut(() => AudioPlayController(), fenix: true);
+  Get.lazyPut(() => UpgradeController(), fenix: true);
 
 
   //Creator

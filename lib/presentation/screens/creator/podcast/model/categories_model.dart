@@ -1,15 +1,15 @@
-class CategoriesModel {
+class PodcastCategoriesModel {
   final bool? success;
   final String? message;
   final List<CategoriesData>? data;
 
-  CategoriesModel({
+  PodcastCategoriesModel({
     this.success,
     this.message,
     this.data,
   });
 
-  factory CategoriesModel.fromJson(Map<String, dynamic> json) => CategoriesModel(
+  factory PodcastCategoriesModel.fromJson(Map<String, dynamic> json) => PodcastCategoriesModel(
     success: json["success"],
     message: json["message"],
     data: json["data"] == null ? [] : List<CategoriesData>.from(json["data"]!.map((x) => CategoriesData.fromJson(x))),

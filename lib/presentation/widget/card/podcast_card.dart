@@ -49,7 +49,7 @@ class PodcastCard extends StatelessWidget {
                         CustomText(text: data.categories??""),
                         Row(
                           children: [
-                            CustomText(text: "${data.duration} min"),
+                            CustomText(text: data.duration??""),
                             const Gap(5),
                             const Icon(Icons.location_on,size: 14,color: AppColors.primaryColor),
                             const Gap(3),

@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 
-class AudioPlayBottom extends StatelessWidget {
+class AudioPlayBottom extends StatefulWidget {
   const AudioPlayBottom({super.key});
+
+  @override
+  State<AudioPlayBottom> createState() => _AudioPlayBottomState();
+}
+
+class _AudioPlayBottomState extends State<AudioPlayBottom> {
+  final controller = Get.find<AudioPlayController>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +30,7 @@ class AudioPlayBottom extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: ()=>AppRouter.route.pushNamed(RoutePath.commentsScreen),
+            onTap: ()=>AppRouter.route.pushNamed(RoutePath.commentsScreen,extra:  controller.postModel.value.data?.podcast?.id),
             child: Assets.icons.comments.svg(height: 20.h,width: 20.h),
           ),
           GestureDetector(

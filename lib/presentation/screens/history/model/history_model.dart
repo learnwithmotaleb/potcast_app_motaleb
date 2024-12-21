@@ -48,7 +48,7 @@ class HistoryPodcast {
   final Category? category;
   final String? title;
   final String? cover;
-  final double? audioDuration;
+  final String? audioDuration;
 
   HistoryPodcast({
     this.id,
@@ -65,7 +65,7 @@ class HistoryPodcast {
     category: json["category"] == null ? null : Category.fromJson(json["category"]),
     title: json["title"],
     cover: json["cover"],
-    audioDuration: json["audioDuration"]?.toDouble(),
+    audioDuration: json["audioDuration"],
   );
 
   Map<String, dynamic> toJson() => {

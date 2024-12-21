@@ -29,15 +29,15 @@ class MyPodcastData {
   final String? location;
   final String? cover;
   final String? coverFormat;
-  final double? coverSize;
+  final num? coverSize;
   final String? audio;
-  final double? audioDuration;
+  final String? audioDuration;
   final String? audioFormat;
-  final double? audioSize;
-  final int? totalLikes;
-  final int? totalViews;
-  final int? totalComments;
-  final int? totalFavorites;
+  final num? audioSize;
+  final num? totalLikes;
+  final num? totalViews;
+  final num? totalComments;
+  final num? totalFavorites;
 
   MyPodcastData({
     this.id,
@@ -70,11 +70,11 @@ class MyPodcastData {
     location: json["location"],
     cover: json["cover"],
     coverFormat: json["coverFormat"],
-    coverSize: json["coverSize"]?.toDouble(),
+    coverSize: json["coverSize"],
     audio: json["audio"],
-    audioDuration: json["audioDuration"]?.toDouble(),
+    audioDuration: json["audioDuration"],
     audioFormat: json["audioFormat"],
-    audioSize: json["audioSize"]?.toDouble(),
+    audioSize: json["audioSize"],
     totalLikes: json["totalLikes"],
     totalViews: json["totalViews"],
     totalComments: json["totalComments"],
@@ -122,9 +122,9 @@ class User {
 }
 
 class Pagination {
-  final int? page;
-  final int? limit;
-  final int? total;
+  final num? page;
+  final num? limit;
+  final num? total;
 
   Pagination({
     this.page,

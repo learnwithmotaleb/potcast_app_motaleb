@@ -190,7 +190,7 @@ class AppRouter {
             name: RoutePath.categoriesScreen,
             path: RoutePath.categoriesScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null? CategoriesScreen(name: state.extra as String):const CategoriesScreen(name: "genres_podcast_only"),
+              child: CategoriesScreen(id: state.extra as String),
               state: state,
             ),
         ),
@@ -198,7 +198,7 @@ class AppRouter {
             name: RoutePath.searchScreen,
             path: RoutePath.searchScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null? SearchScreen(name: state.extra as String):const CategoriesScreen(name: "genres_podcast_only"),
+              child: SearchScreen(name: state.extra as String),
               state: state,
             ),
         ),

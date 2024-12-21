@@ -115,7 +115,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
               Expanded(
                 flex: 1,
                 child: GestureDetector(
-                  onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen,extra: "genres_podcast_only"),
+                  onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen, extra: widget.categories?.id??""),
                   child: Container(
                     height: 80.h,
                     decoration: BoxDecoration(

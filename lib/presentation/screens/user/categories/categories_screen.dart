@@ -10,8 +10,8 @@ import 'controller/categories_controller.dart';
 import 'widget/categories_top_section.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  const CategoriesScreen({super.key, required this.name});
-  final String name;
+  const CategoriesScreen({super.key, required this.id});
+  final String id;
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
 }

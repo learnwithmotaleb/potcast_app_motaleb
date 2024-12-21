@@ -14,7 +14,7 @@ class UserHomeCategoriesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen,extra: "genres_podcast_only"),
+      onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen,extra: category?.id??""),
       child: Container(
         height: 70,
         decoration: BoxDecoration(

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
-import 'package:podcast/model/global/categories_model.dart';
+import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';

@@ -1,17 +1,16 @@
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:podcast/model/route/audio_player_model.dart';
-import 'package:podcast/presentation/screens/user/categories/model/search_category_model.dart';
+import 'package:podcast/presentation/screens/user/upgrade/model/upgrade_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
-class CategoriesController extends GetxController{
+class UpgradeController extends GetxController{
   ApiClient apiClient = ApiClient();
-  Rx<SearchCategoryModel> model = SearchCategoryModel().obs;
 
+  final PagingController<int, Plan> pagingController = PagingController(firstPageKey: 1);
   RxBool isLoadingMove = false.obs;
 
-  Future<void> getPodcast({required int pageKey, required String search}) async {
+  Future<void> getPodcast(int pageKey) async {
     if (isLoadingMove.value) return;
     isLoadingMove.value = true;
 
@@ -41,7 +40,7 @@ class CategoriesController extends GetxController{
   @override
   void onInit() {
     pagingController.addPageRequestListener((pageKey) {
-      getPodcast(pageKey:pageKey,search: "all");
+      getPodcast(pageKey);
     });
     super.onInit();
   }

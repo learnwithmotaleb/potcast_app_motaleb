@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
-import 'package:podcast/model/global/categories_model.dart';
+import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
 import 'package:podcast/presentation/screens/play/model/podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
@@ -14,7 +14,7 @@ import 'package:file_picker/file_picker.dart';
 
 class PodcastController extends GetxController{
   ApiClient apiClient = ApiClient();
-  Rx<CategoriesModel> categories = CategoriesModel().obs;
+  Rx<PodcastCategoriesModel> categories = PodcastCategoriesModel().obs;
   RxList<SubCategory> subCategories = <SubCategory>[].obs;
   final ImagePicker _picker = ImagePicker();
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
@@ -56,7 +56,7 @@ class PodcastController extends GetxController{
       var response = await apiClient.get(url: ApiUrl.category(), showResult: true);
 
       if (response.statusCode == 200) {
-        categories.value = CategoriesModel.fromJson(response.body);
+        categories.value = PodcastCategoriesModel.fromJson(response.body);
         loadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -234,6 +234,7 @@ class PodcastController extends GetxController{
         pagingController.error = 'Error fetching data';
       }
     } catch (e) {
+      print(e.toString());
       pagingController.error = 'An error occurred';
     } finally {
       isLoadingMove.value = false;
