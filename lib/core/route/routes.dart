@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/helper/extension/base_extension.dart';
-import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/auth/forget/forget_screen.dart';
 import 'package:podcast/presentation/screens/auth/login/login_screen.dart';
 import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
@@ -20,9 +19,9 @@ import 'package:podcast/presentation/screens/notification/notification_screen.da
 import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
+import 'package:podcast/presentation/screens/playlist/songs/playlist_songs_screen.dart';
 import 'package:podcast/presentation/screens/profile/edit/edit_profile_screen.dart';
 import 'package:podcast/presentation/screens/profile/view/view_profile_screen.dart';
-import 'package:podcast/presentation/screens/role/role_screen.dart';
 import 'package:podcast/presentation/screens/see/see_all_screen.dart';
 import 'package:podcast/presentation/screens/settings/about_us_screen.dart';
 import 'package:podcast/presentation/screens/settings/change_password_screen.dart';
@@ -198,7 +197,7 @@ class AppRouter {
             name: RoutePath.searchScreen,
             path: RoutePath.searchScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: SearchScreen(name: state.extra as String),
+              child: const SearchScreen(),
               state: state,
             ),
         ),
@@ -225,6 +224,14 @@ class AppRouter {
             path: RoutePath.upgradeScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
               child: const UpgradeScreen(),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.playlistSongsScreen,
+            path: RoutePath.playlistSongsScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: PlaylistSongsScreen(id: state.extra as String),
               state: state,
             ),
         ),

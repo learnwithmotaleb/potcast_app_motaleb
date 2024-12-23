@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NoInternetCard extends StatelessWidget {
-  const NoInternetCard({super.key, required this.onTap, this.color});
+  const NoInternetCard({super.key, required this.onTap, this.color, this.text});
   final VoidCallback onTap;
   final Color? color;
+  final String? text;
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -15,7 +17,7 @@ class NoInternetCard extends StatelessWidget {
           SizedBox(
             height: 20.h,
           ),
-          Text("Something wrong!", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp,color: color)),
+          Text(text??"Something wrong!", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp,color: color)),
           SizedBox(
             height: 20.h,
           ),

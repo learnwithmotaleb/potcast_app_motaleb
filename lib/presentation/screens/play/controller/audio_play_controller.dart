@@ -52,6 +52,29 @@ class AudioPlayController extends GetxController{
     }
   }
 
+  Future<void> playNextPodcast({required String id}) async {
+    try{
+      loadingMethod(Status.loading);
+      var response = await apiClient.post(url: ApiUrl.playNext(id: id),body: {},showResult: true);
+      if (response.statusCode == 200) {
+        postModel.value = PodcastModel.fromJson(response.body);
+        playAudio(podcast: PodcastModel.fromJson(response.body));
+      } else {
+        currentMediaId.value = '';
+        if (response.statusCode == 503) {
+          loadingMethod(Status.internetError);
+        } else if (response.statusCode == 404) {
+          loadingMethod(Status.noDataFound);
+        } else {
+          loadingMethod(Status.error);
+        }
+      }
+    }catch(e){
+      currentMediaId.value = '';
+      loadingMethod(Status.error);
+    }
+  }
+
   final audioPlayer = AudioPlayer();
 
   // Observables
@@ -229,14 +252,7 @@ class AudioPlayController extends GetxController{
   }
 
   void playNext() {
-/*    print("Call play next===============================================");
-    if (currentAudioIndex.value < newItem.length - 1) {
-      currentAudioIndex.value++;
-      playAudio(newItem[currentAudioIndex.value]);
-    }else{
-      currentAudioIndex.value==1;
-      playAudio(newItem[0]);
-    }*/
+    playNextPodcast(id: postModel.value.data?.podcast?.id??"");
   }
 
   OverlayEntry? overlayEntry;

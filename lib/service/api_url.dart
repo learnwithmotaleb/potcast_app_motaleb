@@ -19,14 +19,20 @@ class ApiUrl {
   ///Global
   static String category() => '$base/category';
   static String play({required String id}) => '$base/podcast/play/$id';
+  static String playNext({required String id}) => '$base/podcast/play-next/$id';
   static String like({required String id}) => '$base/like/$id';
   static String favoriteAdd() => '$base/favorite/toggle';
   static String comments({required String id, required int page}) => '$base/comment/$id?page=$page&limit=10';
   static String commentsAdd({required String id}) => '$base/comment/$id';
   static String details({required String id}) => '$base/podcast/$id';
-
+  static String subCategory({required String id, required String search}) => '$base/search/subcategories/$id?query=$search';
   static String favorite({required int page}) => '$base/favorite?limit=10&page=$page';
   static String history({required int page}) => '$base/history?page=$page&limit=10';
+  static String search({required int page, required String search}) => '$base/search/podcasts?query=$search&page=$page&limit=10';
+  static String playListCreate() => '$base/playlist/create';
+  static String playList({required int page}) => '$base/playlist/?page=$page&limit=10';
+  static String playListDelete({required String id}) => '$base/playlist/delete/$id';
+  static String playListSongs({required String id, required int page}) => '$base/playlist/$id/podcasts?page=$page&limit=10';
 
   ///User
   static String home() => '$base/home';

@@ -63,6 +63,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         if (categories == null || index + 1 >= categories.length) {
                           return const SizedBox.shrink();
                         }
+                        print(categories[index].image);
                         return UserHomeCategoriesSection(category: categories[index + 1]);
                       },
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

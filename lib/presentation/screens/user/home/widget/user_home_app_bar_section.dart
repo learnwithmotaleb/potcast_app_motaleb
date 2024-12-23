@@ -48,7 +48,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: GestureDetector(
-            onTap: ()=>AppRouter.route.pushNamed(RoutePath.searchScreen,extra: "all"),
+            onTap: ()=>AppRouter.route.pushNamed(RoutePath.searchScreen),
             child: Container(
               width: width,
               padding: const EdgeInsets.all(14),

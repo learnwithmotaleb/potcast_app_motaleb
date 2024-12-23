@@ -1,13 +1,3 @@
-// To parse this JSON data, do
-//
-//     final searchCategoryModel = searchCategoryModelFromJson(jsonString);
-
-import 'dart:convert';
-
-SearchCategoryModel searchCategoryModelFromJson(String str) => SearchCategoryModel.fromJson(json.decode(str));
-
-String searchCategoryModelToJson(SearchCategoryModel data) => json.encode(data.toJson());
-
 class SearchCategoryModel {
   final bool? success;
   final String? message;

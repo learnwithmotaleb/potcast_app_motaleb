@@ -1,54 +1,70 @@
 import 'package:get/get.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/user/categories/model/search_category_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 
 class CategoriesController extends GetxController{
   ApiClient apiClient = ApiClient();
-  Rx<SearchCategoryModel> model = SearchCategoryModel().obs;
+  Rx<SearchCategoryModel> categoryModel = SearchCategoryModel().obs;
+  RxList<SubCategory> subCategory = RxList<SubCategory>([]);
 
   RxBool isLoadingMove = false.obs;
+  var loading = Status.completed.obs;
+  loadingMethod(Status status) => loading.value = status;
 
-  Future<void> getPodcast({required int pageKey, required String search}) async {
+  Future<void> getAllSubCategories({required String id}) async {
     if (isLoadingMove.value) return;
     isLoadingMove.value = true;
-
+    subCategory.clear();
     try {
-      final response = await apiClient.get(url: ApiUrl.plan(), showResult: true);
-
+      loadingMethod(Status.loading);
+      final response = await apiClient.get(url: ApiUrl.subCategory(id: id, search: "all"), showResult: true);
       if (response.statusCode == 200) {
-        final userServiceAll = PlanModel.fromJson(response.body);
-        final newItems = userServiceAll.data ?? [];
+        categoryModel.value = SearchCategoryModel.fromJson(response.body);
+        final newItems = categoryModel.value.data?.subCategories ?? [];
         if (newItems.isEmpty) {
-          pagingController.appendLastPage(newItems);
+          loadingMethod(Status.completed);
         } else {
-          pagingController.appendPage(newItems, pageKey + newItems.length);
-          pagingController.appendLastPage([]);
+          subCategory.addAll(newItems);
+          loadingMethod(Status.completed);
         }
       } else {
-        pagingController.error = 'Error fetching data';
+        loadingMethod(Status.error);
       }
     } catch (e) {
-      pagingController.error = 'An error occurred';
+      loadingMethod(Status.error);
     } finally {
       isLoadingMove.value = false;
     }
   }
 
+  var searchLoading = Status.completed.obs;
+  searchLoadingMethod(Status status) => searchLoading.value = status;
 
-  @override
-  void onInit() {
-    pagingController.addPageRequestListener((pageKey) {
-      getPodcast(pageKey:pageKey,search: "all");
-    });
-    super.onInit();
-  }
-
-  @override
-  void onClose() {
-    pagingController.dispose();
-    super.onClose();
+  Future<void> getSearch({required String id, required String search}) async {
+    if (isLoadingMove.value) return;
+    isLoadingMove.value = true;
+    subCategory.clear();
+    try {
+      searchLoadingMethod(Status.loading);
+      final response = await apiClient.get(url: ApiUrl.subCategory(id: id, search: search), showResult: true);
+      if (response.statusCode == 200) {
+        final data = SearchCategoryModel.fromJson(response.body);
+        final newItems = data.data?.subCategories ?? [];
+        if (newItems.isEmpty) {
+          searchLoadingMethod(Status.completed);
+        } else {
+          subCategory.addAll(newItems);
+          searchLoadingMethod(Status.completed);
+        }
+      } else {
+        searchLoadingMethod(Status.error);
+      }
+    } catch (e) {
+      searchLoadingMethod(Status.error);
+    } finally {
+      isLoadingMove.value = false;
+    }
   }
 }

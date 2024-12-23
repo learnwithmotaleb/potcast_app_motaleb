@@ -164,9 +164,9 @@ class PodcastController extends GetxController{
     }
   }
 
-  /// ============================= Create Podcast =====================================
+  /// ============================= Edit Podcast =====================================
   RxBool editLoading = false.obs;
-  editLoadingMethod(bool status) => createLoading.value = status;
+  editLoadingMethod(bool status) => editLoading.value = status;
   void editPodcast({required Map<String, String> body, required List<MultipartBody> multipartBody, required String id}) async {
     try{
       editLoadingMethod(true);

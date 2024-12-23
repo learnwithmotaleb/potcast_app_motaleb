@@ -9,74 +9,80 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class MusicCard extends StatelessWidget {
-  const MusicCard({super.key, required this.data, required this.onTap});
+  const MusicCard({super.key, required this.data, required this.onTap, this.bgColor, this.onLongPress});
   final AudioPlayerModel data;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
+  final Color? bgColor;
 
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        color: Colors.transparent,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 100.w,
-              height: 100.h,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.r),
-                  child: CachedNetworkImage(
-                    imageUrl: "${AppConstants.baseUrl}${data.image}",
-                    placeholder: (context, data)=>const SizedBox(),
-                    errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
-                    fit: BoxFit.cover,
-                  )
+      onLongPress: onLongPress,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bgColor != null?8.0:0),
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          color: bgColor??Colors.transparent,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 100.w,
+                height: 100.h,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.r),
+                    child: CachedNetworkImage(
+                      imageUrl: "${AppConstants.baseUrl}${data.image}",
+                      placeholder: (context, data)=>const SizedBox(),
+                      errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
+                      fit: BoxFit.cover,
+                    )
+                ),
               ),
-            ),
-            const Gap(8),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 100.h,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(text: data.title??"",fontSize: 16,fontWeight: FontWeight.w800),
-                          CustomText(text: data.categories??""),
-                          Row(
-                            children: [
-                              CustomText(text: data.duration??""),
-                              const Gap(5),
-                              const Icon(Icons.location_on,size: 14,color: AppColors.primaryColor),
-                              const Gap(3),
-                              Assets.icons.favorite.svg(height: 10,width: 10)
-                            ],
-                          ),
-                        ],
+              const Gap(8),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 100.h,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(text: data.title??"",fontSize: 16,fontWeight: FontWeight.w800),
+                            CustomText(text: data.categories??""),
+                            Row(
+                              children: [
+                                CustomText(text: data.duration??""),
+                                const Gap(5),
+                                const Icon(Icons.location_on,size: 14,color: AppColors.primaryColor),
+                                const Gap(3),
+                                Assets.icons.favorite.svg(height: 10,width: 10)
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    height: 50.h,
-                    width: 50.h,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isDarkMode?const Color(0xFF1e1e1e):const Color(0xFFAAA9A9)
+                    Container(
+                      height: 50.h,
+                      width: 50.h,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isDarkMode?const Color(0xFF1e1e1e):const Color(0xFFAAA9A9)
+                      ),
+                      child: Assets.icons.play.svg(height: 17.h,width: 17.h),
                     ),
-                    child: Assets.icons.play.svg(height: 17.h,width: 17.h),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
