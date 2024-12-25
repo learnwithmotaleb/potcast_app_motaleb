@@ -22,6 +22,9 @@ class AudioPlayController extends GetxController{
   RxString currentMediaId = ''.obs;
   final cacheManager = DefaultCacheManager();
 
+  RxBool isLike = false.obs;
+  RxBool isFavorite = false.obs;
+
   /// ============================= GET Podcast Details Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
@@ -35,6 +38,9 @@ class AudioPlayController extends GetxController{
       var response = await apiClient.post(url: ApiUrl.play(id: id),body: {},showResult: true);
       if (response.statusCode == 200) {
         postModel.value = PodcastModel.fromJson(response.body);
+        isLike.value = postModel.value.data?.isLiked?? false;
+        isFavorite.value = postModel.value.data?.isFavorited?? false;
+
         playAudio(podcast: PodcastModel.fromJson(response.body));
       } else {
         currentMediaId.value = '';
@@ -58,6 +64,9 @@ class AudioPlayController extends GetxController{
       var response = await apiClient.post(url: ApiUrl.playNext(id: id),body: {},showResult: true);
       if (response.statusCode == 200) {
         postModel.value = PodcastModel.fromJson(response.body);
+        isLike.value = postModel.value.data?.isLiked?? false;
+        isFavorite.value = postModel.value.data?.isFavorited?? false;
+
         playAudio(podcast: PodcastModel.fromJson(response.body));
       } else {
         currentMediaId.value = '';

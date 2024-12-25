@@ -33,10 +33,12 @@ class ApiUrl {
   static String playList({required int page}) => '$base/playlist/?page=$page&limit=10';
   static String playListDelete({required String id}) => '$base/playlist/delete/$id';
   static String playListSongs({required String id, required int page}) => '$base/playlist/$id/podcasts?page=$page&limit=10';
+  static String seeAll({required String type, required int page}) => '$base/podcast/$type?page=$page&limit=10';
 
   ///User
   static String home() => '$base/home';
   static String plan() => '$base/plan';
+  static String payment({required String id}) => '$base/subscription/create/$id';
 
   ///Creator
   static String podcast({required int page}) => '$base/podcast?page=$page&limit=10';

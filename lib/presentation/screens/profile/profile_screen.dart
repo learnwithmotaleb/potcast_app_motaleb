@@ -162,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
               ),
               const Gap(24),
-              widget.isUser
+              /*widget.isUser
                   ? const SizedBox()
                   : Column(
                       children: [
@@ -173,7 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Gap(24),
                       ],
-                    ),
+                    ),*/
               CustomProfileTile(
                 text: "settings",
                 icon: Assets.icons.settings.svg(height: 20, width: 20, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),

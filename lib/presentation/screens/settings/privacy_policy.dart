@@ -27,7 +27,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(onPressed: ()=>AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
-        title: Text("terms_of_condition".tr),
+        title: Text("privacy_policy".tr),
       ),
       body: Obx(
             () {

@@ -33,6 +33,7 @@ import 'package:podcast/presentation/screens/splash/splash_screen.dart';
 import 'package:podcast/presentation/screens/user/categories/categories_screen.dart';
 import 'package:podcast/presentation/screens/user/country/select_country_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
+import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
 import 'package:podcast/presentation/screens/user/search/search_screen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
 
@@ -232,6 +233,14 @@ class AppRouter {
             path: RoutePath.playlistSongsScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
               child: PlaylistSongsScreen(id: state.extra as String),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.paymentWebViewScreen,
+            path: RoutePath.paymentWebViewScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: PaymentWebViewScreen(paymentUrl: state.extra as String),
               state: state,
             ),
         ),

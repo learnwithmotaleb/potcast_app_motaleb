@@ -32,8 +32,18 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
       bottomNavigationBar: Container(
         height: 80.h,
         width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 16),
-        child: CustomButton(text: "pay_now".tr),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        child: Obx(() {
+          return CustomButton(
+            text: "pay_now".tr,
+            isLoading: controller.loading.value,
+            onTap: () {
+              if(controller.selectedId.value.isNotEmpty){
+                controller.makeStripePayment(id: controller.selectedId.value);
+              }
+            },
+          );
+        }),
       ),
       body: PagedListView<int, Plan>(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -41,7 +51,14 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
         scrollDirection: Axis.horizontal,
         builderDelegate: PagedChildBuilderDelegate<Plan>(
           itemBuilder: (context, item, index) {
-            return SubscriptionCard(index: index, plan: item);
+            return Obx(() => SubscriptionCard(
+                  select: controller.index.value == index,
+                  plan: item,
+                  onTap: () {
+                    controller.index.value = index;
+                    controller.selectedId.value = item.id??"";
+                  },
+                ));
           },
         ),
       ),

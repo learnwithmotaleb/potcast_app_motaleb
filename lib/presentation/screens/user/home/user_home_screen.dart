@@ -63,7 +63,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         if (categories == null || index + 1 >= categories.length) {
                           return const SizedBox.shrink();
                         }
-                        print(categories[index].image);
                         return UserHomeCategoriesSection(category: categories[index + 1]);
                       },
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -84,10 +83,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomText(text: "new_music".tr),
+                              CustomText(text: "latest".tr),
                               TextButton(
                                 onPressed: () {
-                                  AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "new_music");
+                                  AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "latest");
                                 },
                                 child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor)),
                               ),
@@ -122,10 +121,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomText(text: "popular_music".tr),
+                          CustomText(text: "popular".tr),
                           TextButton(
                             onPressed: () {
-                              AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular_music");
+                              AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular");
                             },
                             child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor)),
                           ),
@@ -160,82 +159,3 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     );
   }
 }
-
-/*
-class TEst extends StatefulWidget {
-  const TEst({super.key});
-
-  @override
-  State<TEst> createState() => _TEstState();
-}
-
-class _TEstState extends State<TEst> {
-  final controller = Get.find<UserHomeController>();
-  @override
-  Widget build(BuildContext context) {
-    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 44),
-      itemCount: controller.newItem.length + controller.popularItem.length + 2,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0) {
-          return Column(
-            children: [
-              const UserHomeTopSection(),
-              const UserTopArtistsSection(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomText(text: "new_music".tr),
-                    TextButton(
-                      onPressed: () {
-                        AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "new_music");
-                      },
-                      child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor)),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        } else if (index <= controller.newItem.length) {
-
-          /// New Music Section--------------------------------------------------------
-          return MusicCard(
-            data: controller.newItem[index - 1],
-            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: controller.newItem[index - 1]),
-          );
-        } else if (index == controller.newItem.length + 1) {
-
-          /// Popular Music Header------------------------------------------------------
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomText(text: "popular_music".tr),
-                TextButton(
-                  onPressed: () {
-                    AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular_music");
-                  },
-                  child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor)),
-                ),
-              ],
-            ),
-          );
-        } else if (index <= controller.newItem.length + 1 + controller.popularItem.length) {
-
-          /// Popular Music Section-----------------------------------------------------------
-          return MusicCard(
-            data: controller.popularItem[index - (controller.newItem.length + 2)],
-            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: controller.popularItem[index - (controller.newItem.length + 2)]),
-          );
-        }
-        /// No other sections after Popular Music-----------------------------------------------
-        return const SizedBox.shrink(); // Placeholder for any unused indices
-      },
-    );
-  }
-}*/

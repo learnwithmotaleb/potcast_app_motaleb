@@ -46,7 +46,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
                 child: Row(
                   children: [
                     Assets.icons.sort.svg(height: 15, width: 15, colorFilter: isDarkMode ? null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),

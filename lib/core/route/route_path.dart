@@ -29,6 +29,7 @@ class RoutePath {
   static const String playlistSongsScreen = 'playlistSongsScreen';
   static const String seeAllScreen = 'seeAllScreen';
   static const String upgradeScreen = 'upgradeScreen';
+  static const String paymentWebViewScreen = 'paymentWebViewScreen';
 
   //Creator
   static const String creatorNavScreen = 'creatorNavScreen';

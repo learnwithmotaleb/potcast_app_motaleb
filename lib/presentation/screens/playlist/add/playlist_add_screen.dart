@@ -155,8 +155,8 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Name is required';
                         }
-                        if (value.length < 5) {
-                          return 'Name must be at least 5 characters';
+                        if (value.length < 2) {
+                          return 'Name must be at least 2 characters';
                         }
                         final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
                         if (!nameRegex.hasMatch(value)) {

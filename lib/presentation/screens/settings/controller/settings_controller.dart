@@ -89,6 +89,32 @@ class SettingsController extends GetxController{
     }
   }
 
+  /// ============================= GET Support Us =====================================
+  final Rx<TermsConditionsModel> supportsData = TermsConditionsModel().obs;
+  var supportsLoading = Status.completed.obs;
+  supportsLoadingMethod(Status status) => supportsLoading.value = status;
+
+  Future<void> getSupportUs() async {
+    try{
+      supportsLoadingMethod(Status.loading);
+      var response = await apiClient.get(url: ApiUrl.about(),showResult: true);
+      if (response.statusCode == 200) {
+        aboutUsData.value = TermsConditionsModel.fromJson(response.body);
+        supportsLoadingMethod(Status.completed);
+      } else {
+        if (response.statusCode == 503) {
+          supportsLoadingMethod(Status.internetError);
+        } else if (response.statusCode == 404) {
+          supportsLoadingMethod(Status.noDataFound);
+        } else {
+          supportsLoadingMethod(Status.error);
+        }
+      }
+    }catch(e){
+      supportsLoadingMethod(Status.error);
+    }
+  }
+
   /// ============================= Patch Change Password =====================================
   var changePasswordLoading = false.obs;
   changePasswordLoadingMethod(bool loading) => changePasswordLoading.value = loading;

@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/core/route/route_path.dart';
+import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
@@ -60,7 +62,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                           ),
                         ),
                       ) else GestureDetector(
-                        // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.artistItem[index]),
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.creators?[index].id??""),
                         child: Container(
                           height: 80.0.h,
                           width: 80.0.h,

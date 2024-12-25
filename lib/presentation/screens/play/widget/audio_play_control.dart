@@ -26,14 +26,17 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         LikeButton(
-          isLiked: controller.postModel.value.data?.isFavorited ?? false,
+          isLiked: controller.isFavorite.value,
           circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
           bubblesColor: const BubblesColor(
             dotPrimaryColor: Color(0xff33b5e5),
             dotSecondaryColor: Color(0xff0099cc),
           ),
           onTap: (value) async {
-            return await controller.favoritePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value);
+            return await controller.favoritePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value).then((value){
+              controller.isFavorite.value = value;
+              return value;
+            });
           },
           likeBuilder: (bool isLiked) {
             return Obx(() {
@@ -78,14 +81,17 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
                 iconSize: 36,
               ),
         LikeButton(
-          isLiked: controller.postModel.value.data?.isLiked ?? false,
+          isLiked: controller.isLike.value,
           circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
           bubblesColor: const BubblesColor(
             dotPrimaryColor: Color(0xff33b5e5),
             dotSecondaryColor: Color(0xff0099cc),
           ),
           onTap: (value) async {
-            return await controller.likePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value);
+            return await controller.likePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value).then((value){
+              controller.isFavorite.value = value;
+              return value;
+            });
           },
           likeBuilder: (bool isLiked) {
             return Obx(() {
