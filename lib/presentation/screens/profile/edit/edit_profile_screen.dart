@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
@@ -88,12 +88,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   : controller.profile.value.data?.avatar != null
                                       ? ClipRRect(
                                           borderRadius: BorderRadius.circular(50),
-                                          child: CachedNetworkImage(
-                                            imageUrl: "${AppConstants.baseUrl}${controller.profile.value.data?.avatar}",
-                                            placeholder: (context, data) => const Center(child: CircularProgressIndicator()),
-                                            errorWidget: (context, data, errorWidget) => const Icon(Icons.person),
-                                            fit: BoxFit.cover,
-                                          ),
+                                          child: CustomNetworkImage(imageUrl: controller.profile.value.data?.avatar??""),
                                         )
                                       : const Icon(Icons.image_outlined),
                             ),

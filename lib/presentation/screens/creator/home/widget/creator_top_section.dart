@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -13,6 +12,7 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:shimmer/shimmer.dart';
+
 class CreatorTopSection extends StatelessWidget {
   CreatorTopSection({super.key});
 
@@ -91,12 +91,7 @@ class CreatorTopSection extends StatelessWidget {
                                   ),
                                   child: ClipRRect(
                                       borderRadius: BorderRadius.circular(40.r),
-                                      child: CachedNetworkImage(
-                                        imageUrl: "",
-                                        placeholder: (context, data)=>const SizedBox(),
-                                        errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
-                                        fit: BoxFit.cover,
-                                      )
+                                      child: CustomNetworkImage(imageUrl: "")
                                   ),
                                 ),
                               ),
@@ -119,7 +114,7 @@ class CreatorTopSection extends StatelessWidget {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: "controller.artistItem[index].artist",fontSize: 8),
+                      const CustomText(text: "controller.artistItem[index].artist",fontSize: 8),
                     ],
                   ),
                 );

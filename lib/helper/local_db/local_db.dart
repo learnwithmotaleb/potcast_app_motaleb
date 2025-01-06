@@ -62,16 +62,4 @@ class DBHelper {
       AppRouter.route.goNamed(RoutePath.loginScreen);
     });
   }
-
-  /// ====================== Save Selected Country ==================
-
-  Future saveLocation(String location) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(AppConstants.location, location);
-  }
-
-  Future<String> getLocation(String location) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConstants.location)??"";
-  }
 }

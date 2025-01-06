@@ -1,12 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
+import 'package:podcast/service/api_service.dart';
+import 'package:podcast/service/api_url.dart';
 
-class CountrySelectController extends GetxController{
-  DBHelper dbHelper = serviceLocator();
+class CountrySelectController extends GetxController {
+  ApiClient apiClient = ApiClient();
   final List<String> locationList = [
     "Alabama",
     "Alaska",
@@ -35,7 +36,7 @@ class CountrySelectController extends GetxController{
 
   RxList<String> filteredList = RxList([]);
 
-@override
+  @override
   void onInit() {
     super.onInit();
     filteredList.value = List.from(locationList);
@@ -49,13 +50,41 @@ class CountrySelectController extends GetxController{
     }
   }
 
-  void saveLocation(int index){
-    dbHelper.saveLocation(filteredList[index]).then((value) {
-      toastMessage(message: "Location Selected");
-      Get.find<UserHomeController>().findLocation();
-      AppRouter.route.pop();
-    }).onError((error, stack) {
+  /// ============================= Add Location =====================================
 
-    });
+  void saveLocation({required int index, required BuildContext context}) async {
+    try {
+      showPopUpLoader(context: context);
+      final body = {"location": filteredList[index]};
+
+      var response = await apiClient.post(url: ApiUrl.addLocation(), body: body,showResult: true);
+
+      if (response.statusCode == 200) {
+        AppRouter.route.pop();
+        AppRouter.route.pop();
+        Get.find<UserHomeController>().getHome();
+      } else {
+        AppRouter.route.pop();
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    } catch (err) {
+      AppRouter.route.pop();
+    }
+  }
+
+  showPopUpLoader({required BuildContext context}) {
+    return showDialog(
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (_) => const SizedBox(
+        height: 70,
+        child: AlertDialog(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          content: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+    );
   }
 }

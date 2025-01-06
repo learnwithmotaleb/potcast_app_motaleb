@@ -17,82 +17,97 @@ class HomeModel {
 }
 
 class Data {
+  final String? location;
   final List<CategoryElement>? categories;
-  final List<Creator>? creators;
-  final List<Podcast>? newPodcasts;
-  final List<Podcast>? popularPodcasts;
+  final Admin? admin;
+  final List<Admin>? creators;
+  final List<NewPodcastElement>? newPodcasts;
+  final List<NewPodcastElement>? popularPodcasts;
 
   Data({
+    this.location,
     this.categories,
+    this.admin,
     this.creators,
     this.newPodcasts,
     this.popularPodcasts,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
+    location: json["location"],
     categories: json["categories"] == null ? [] : List<CategoryElement>.from(json["categories"]!.map((x) => CategoryElement.fromJson(x))),
-    creators: json["creators"] == null ? [] : List<Creator>.from(json["creators"]!.map((x) => Creator.fromJson(x))),
-    newPodcasts: json["newPodcasts"] == null ? [] : List<Podcast>.from(json["newPodcasts"]!.map((x) => Podcast.fromJson(x))),
-    popularPodcasts: json["popularPodcasts"] == null ? [] : List<Podcast>.from(json["popularPodcasts"]!.map((x) => Podcast.fromJson(x))),
+    admin: json["admin"] == null ? null : Admin.fromJson(json["admin"]),
+    creators: json["creators"] == null ? [] : List<Admin>.from(json["creators"]!.map((x) => Admin.fromJson(x))),
+    newPodcasts: json["newPodcasts"] == null ? [] : List<NewPodcastElement>.from(json["newPodcasts"]!.map((x) => NewPodcastElement.fromJson(x))),
+    popularPodcasts: json["popularPodcasts"] == null ? [] : List<NewPodcastElement>.from(json["popularPodcasts"]!.map((x) => NewPodcastElement.fromJson(x))),
   );
+
+  Map<String, dynamic> toJson() => {
+    "location": location,
+    "categories": categories == null ? [] : List<dynamic>.from(categories!.map((x) => x.toJson())),
+    "admin": admin?.toJson(),
+    "creators": creators == null ? [] : List<dynamic>.from(creators!.map((x) => x.toJson())),
+    "newPodcasts": newPodcasts == null ? [] : List<dynamic>.from(newPodcasts!.map((x) => x.toJson())),
+    "popularPodcasts": popularPodcasts == null ? [] : List<dynamic>.from(popularPodcasts!.map((x) => x.toJson())),
+  };
+}
+
+class Admin {
+  final String? name;
+  final String? avatar;
+  final String? podcast;
+
+  Admin({
+    this.name,
+    this.avatar,
+    this.podcast,
+  });
+
+  factory Admin.fromJson(Map<String, dynamic> json) => Admin(
+    name: json["name"],
+    avatar: json["avatar"],
+    podcast: json["podcast"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
+    "avatar": avatar,
+    "podcast": podcast,
+  };
 }
 
 class CategoryElement {
   final String? id;
   final String? title;
-  final String? image;
+  final String? categoryImage;
 
   CategoryElement({
     this.id,
     this.title,
-    this.image,
+    this.categoryImage,
   });
 
   factory CategoryElement.fromJson(Map<String, dynamic> json) => CategoryElement(
     id: json["_id"],
     title: json["title"],
-    image: json["image"],
+    categoryImage: json["categoryImage"],
   );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "title": title,
+    "categoryImage": categoryImage,
+  };
 }
 
-class Creator {
-  final String? id;
-  final User? user;
-
-  Creator({
-    this.id,
-    this.user,
-  });
-
-  factory Creator.fromJson(Map<String, dynamic> json) => Creator(
-    id: json["_id"],
-    user: json["user"] == null ? null : User.fromJson(json["user"]),
-  );
-}
-
-class User {
-  final String? name;
-  final String? avatar;
-
-  User({
-    this.name,
-    this.avatar,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    name: json["name"],
-    avatar: json["avatar"],
-  );
-}
-
-class Podcast {
+class NewPodcastElement {
   final String? id;
   final NewPodcastCategory? category;
   final String? title;
   final String? cover;
   final String? audioDuration;
 
-  Podcast({
+  NewPodcastElement({
     this.id,
     this.category,
     this.title,
@@ -100,13 +115,21 @@ class Podcast {
     this.audioDuration,
   });
 
-  factory Podcast.fromJson(Map<String, dynamic> json) => Podcast(
+  factory NewPodcastElement.fromJson(Map<String, dynamic> json) => NewPodcastElement(
     id: json["_id"],
     category: json["category"] == null ? null : NewPodcastCategory.fromJson(json["category"]),
     title: json["title"],
     cover: json["cover"],
     audioDuration: json["audioDuration"],
   );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "category": category?.toJson(),
+    "title": title,
+    "cover": cover,
+    "audioDuration": audioDuration,
+  };
 }
 
 class NewPodcastCategory {
@@ -119,4 +142,8 @@ class NewPodcastCategory {
   factory NewPodcastCategory.fromJson(Map<String, dynamic> json) => NewPodcastCategory(
     title: json["title"],
   );
+
+  Map<String, dynamic> toJson() => {
+    "title": title,
+  };
 }

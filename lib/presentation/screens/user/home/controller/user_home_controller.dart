@@ -1,17 +1,10 @@
 import 'package:get/get.dart';
-import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class UserHomeController extends GetxController {
-  DBHelper dbHelper = DBHelper();
-  RxString location = "".obs;
-
-  Future<void> findLocation() async {
-    location.value = await dbHelper.getLocation(AppConstants.location);
-  }
 
   ApiClient apiClient = ApiClient();
   Rx<HomeModel> model = HomeModel().obs;
@@ -44,7 +37,6 @@ class UserHomeController extends GetxController {
   @override
   void onReady() {
     getHome();
-    findLocation();
     super.onReady();
   }
 }

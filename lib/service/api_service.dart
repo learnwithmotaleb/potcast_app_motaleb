@@ -404,6 +404,7 @@ class ApiClient {
         bool isBasic = false,
         Map<String, String>? body,
         required List<MultipartBody> multipartBody,
+        Function(double progress)? onProgress,
         bool showResult = true}) async {
     try {
       /// ======================- Check Internet ===================
@@ -424,13 +425,13 @@ class ApiClient {
       final request = http.MultipartRequest(
         reqType,
         Uri.parse(url),
-      )
-        ..fields.addAll(body ?? {})
+      )..fields.addAll(body ?? {})
         ..headers.addAll(
           isBasic ? basicHeaderInfo() : await bearerHeaderInfo(),
         );
 
       if (multipartBody.isNotEmpty) {
+
         // ignore: avoid_function_literals_in_foreach_calls
         multipartBody.forEach((element) async {
           if (element.file.path.isEmpty) {
@@ -448,16 +449,57 @@ class ApiClient {
             contentType: MediaType.parse(mimeType!),
           );
           request.files.add(multipartImg);
-          //request.files.add(await http.MultipartFile.fromPath(element.key, element.file.path,contentType: MediaType('video', 'mp4')));
         });
       }
+      // Debug: Print total files
+      print('Files added to request: ${request.files.length}');
 
-      // ..files.add(await http.MultipartFile.fromPath(filedName!, filepath!));
-      var response = await request.send();
-      var jsonData = await http.Response.fromStream(response);
+      // Send request
+      final streamedResponse = await request.send();
+
+      // Content length for progress tracking
+      final totalBytes = streamedResponse.contentLength;
+      int bytesUploaded = 0;
+
+      // Debug: Log content length
+      print('Total bytes to upload: $totalBytes');
+
+      if (totalBytes == null || totalBytes <= 0) {
+        print('Content length is invalid. Cannot track progress.');
+      }
+
+      final responseStream = streamedResponse.stream.transform<List<int>>(
+        StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            bytesUploaded += data.length;
+            if (onProgress != null && totalBytes != null && totalBytes > 0) {
+              double progress = bytesUploaded / totalBytes;
+              onProgress(progress); // Report progress
+              print('Progress: ${(progress * 100).toStringAsFixed(2)}%');
+            }
+            sink.add(data); // Forward data
+          },
+          handleError: (error, stackTrace, sink) {
+            print('Stream error: $error');
+            sink.addError(error, stackTrace);
+          },
+          handleDone: (sink) {
+            print('Stream completed');
+            sink.close();
+          },
+        ),
+      );
+      // Get response from the stream
+      final response = await http.Response.fromStream(
+        http.StreamedResponse(responseStream, streamedResponse.statusCode),
+      );
+
+      // Debug response body
+      print('Response body: ${response.body}');
+      print('Status code: ${streamedResponse.statusCode}');
 
       if (showResult) {
-        log.i("===> Response Body => ${jsonData.body}");
+        log.i("===> Response Body => ${response.body}");
 
         log.i("===> Status Code =>${response.statusCode}");
 
@@ -465,7 +507,7 @@ class ApiClient {
             '|📒📒📒|-----------------[[ MULTIPART $reqType ]] method response end --------------------|📒📒📒|');
       }
 
-      var decodeBody = jsonDecode(jsonData.body);
+      var decodeBody = jsonDecode(response.body);
 
       return Response(
         body: decodeBody,

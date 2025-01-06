@@ -1,25 +1,25 @@
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:podcast/presentation/screens/notification/model/notification_model.dart';
+import 'package:podcast/presentation/screens/user/categories/model/sub_category_podcast.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
-class NotificationController extends GetxController{
+class CategoryAllPodcastController extends GetxController{
   ApiClient apiClient = ApiClient();
 
-  final PagingController<int, NotificationData> pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, CategoryPodcast> pagingController = PagingController(firstPageKey: 1);
   RxBool isLoadingMove = false.obs;
 
-  Future<void> getNotification(int pageKey) async {
+  Future<void> getPodcast(int pageKey, String id) async {
     if (isLoadingMove.value) return;
     isLoadingMove.value = true;
 
     try {
-      final response = await apiClient.get(url: ApiUrl.notification(page: pageKey), showResult: true);
+      final response = await apiClient.get(url: ApiUrl.subCategoryPodcast(page: pageKey, id: id), showResult: true);
 
       if (response.statusCode == 200) {
-        final userServiceAll = NotificationModel.fromJson(response.body);
-        final newItems = userServiceAll.data?.notifications ?? [];
+        final userServiceAll = SubCategoryPodcast.fromJson(response.body);
+        final newItems = userServiceAll.data?.podcasts ?? [];
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
         } else {
@@ -33,20 +33,5 @@ class NotificationController extends GetxController{
     } finally {
       isLoadingMove.value = false;
     }
-  }
-
-
-  @override
-  void onInit() {
-    pagingController.addPageRequestListener((pageKey) {
-      getNotification(pageKey);
-    });
-    super.onInit();
-  }
-
-  @override
-  void onClose() {
-    pagingController.dispose();
-    super.onClose();
   }
 }

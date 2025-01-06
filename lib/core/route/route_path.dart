@@ -30,6 +30,8 @@ class RoutePath {
   static const String seeAllScreen = 'seeAllScreen';
   static const String upgradeScreen = 'upgradeScreen';
   static const String paymentWebViewScreen = 'paymentWebViewScreen';
+  static const String categoryAllPodcast = 'categoryAllPodcast';
+  static const String adminPodcastScreen = 'adminPodcastScreen';
 
   //Creator
   static const String creatorNavScreen = 'creatorNavScreen';

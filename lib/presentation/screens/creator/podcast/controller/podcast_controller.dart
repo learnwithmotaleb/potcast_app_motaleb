@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -6,6 +7,7 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
+import 'package:podcast/presentation/screens/creator/podcast/model/single_podcast_model.dart';
 import 'package:podcast/presentation/screens/play/model/podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
@@ -72,16 +74,27 @@ class PodcastController extends GetxController{
     }
   }
 
+
+  TextEditingController title = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController description = TextEditingController();
+
   /// ============================= GET Podcast =====================================
-  Rx<PodcastModel> model = PodcastModel().obs;
+  Rx<SinglePodcastModel> postModel = SinglePodcastModel().obs;
   var podcastLoading = Status.completed.obs;
   podcastLoadingMethod(Status status) => podcastLoading.value = status;
+
   Future<void> getDetails({required String id}) async {
     try{
       podcastLoadingMethod(Status.loading);
       var response = await apiClient.get(url: ApiUrl.details(id: id),showResult: true);
       if (response.statusCode == 200) {
-        model.value = PodcastModel.fromJson(response.body);
+        postModel.value = SinglePodcastModel.fromJson(response.body);
+        title = TextEditingController(text: postModel.value.data?.title??"");
+        location = TextEditingController(text: postModel.value.data?.location??"");
+        description = TextEditingController(text: postModel.value.data?.description??"");
+        print(response.body);
+        print("Desc ${postModel.value.data?.description}");
         podcastLoadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -121,7 +134,15 @@ class PodcastController extends GetxController{
   void createPodcast({required Map<String, String> body, required List<MultipartBody> multipartBody}) async {
     try{
       createLoadingMethod(true);
-      var response = await apiClient.multipartRequest(url: ApiUrl.podcastCreate(),body: body, reqType: "POST", multipartBody: multipartBody);
+      var response = await apiClient.multipartRequest(
+          url: ApiUrl.podcastCreate(),
+        body: body,
+        reqType: "POST",
+        multipartBody: multipartBody,
+        onProgress: (progress) {
+          print("Upload progress: ${(progress * 100).toStringAsFixed(2)}%");
+        },
+      );
 
       if (response.statusCode == 201 || response.statusCode == 200 ) {
         createLoadingMethod(false);
@@ -193,7 +214,7 @@ class PodcastController extends GetxController{
   void editPodcastOnlyBody({required Map<String, String> body, required String id}) async {
     try{
       editLoadingMethod(true);
-      var response = await apiClient.put(url: ApiUrl.podcastEdit(id: id),body: body);
+      var response = await apiClient.put(url: ApiUrl.podcastEdit(id: id),body: body, showResult: true);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);

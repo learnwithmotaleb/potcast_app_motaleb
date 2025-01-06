@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:podcast/controller/language_controller.dart';
+import 'package:podcast/presentation/screens/admin/controller/admin_podcast_controller.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
 import 'package:podcast/presentation/screens/creator/donate/controller/donate_controller.dart';
 import 'package:podcast/presentation/screens/creator/home/controller/creator_home_controller.dart';
@@ -26,6 +27,7 @@ void initGetX() {
   Get.lazyPut(() => FavoriteController(), fenix: true);
   Get.lazyPut(() => HistoryController(), fenix: true);
   Get.lazyPut(() => PlaylistController(), fenix: true);
+  Get.lazyPut(() => AdminPodcastController(), fenix: true);
 
   //User
   Get.lazyPut(() => UserHomeController(), fenix: true);

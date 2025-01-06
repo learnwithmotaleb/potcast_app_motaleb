@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -47,7 +48,7 @@ class _TermsOfConditionState extends State<TermsOfCondition> {
             case Status.completed:
               return SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
-                child: CustomText(text: _controller.termsConditionsData.value.data?.text??""),
+                child: Html(data: _controller.termsConditionsData.value.data?.text??"")
               );
           }
         },

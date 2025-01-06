@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
-import 'package:podcast/utils/app_const/app_const.dart';
 
 class MusicCard extends StatelessWidget {
   const MusicCard({super.key, required this.data, required this.onTap, this.bgColor, this.onLongPress});
@@ -33,12 +32,7 @@ class MusicCard extends StatelessWidget {
                 height: 100.h,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.r),
-                    child: CachedNetworkImage(
-                      imageUrl: "${AppConstants.baseUrl}${data.image}",
-                      placeholder: (context, data)=>const SizedBox(),
-                      errorWidget: (context, data, errorWidget)=>const Icon(Icons.person),
-                      fit: BoxFit.cover,
-                    )
+                    child: CustomNetworkImage(imageUrl: data.image??"")
                 ),
               ),
               const Gap(8),

@@ -10,7 +10,7 @@ import 'package:podcast/service/api_url.dart';
 
 class PlaylistController extends GetxController{
   ApiClient apiClient = ApiClient();
-  RxString search = "all".obs;
+  RxString search = "".obs;
   RxList<String> selectedPlayListId = RxList([]);
   TextEditingController title = TextEditingController();
 

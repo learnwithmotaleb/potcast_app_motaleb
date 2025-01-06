@@ -39,7 +39,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (controller.overlayEntry == null) {
+        if (controller.overlayEntry == null && controller.isPlaying.value) {
           controller.showAudioPlayerOverlayCard(context);
         }
         return true;
@@ -52,7 +52,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
             case Status.noDataFound:
               return const Center(child: Text("No data found"));
             case Status.internetError:
-              return Center(child: NoInternetCard(onTap: ()=>controller.playPodcast(id: widget.id)));
+              return Center(child: NoInternetCard(onTap: ()=>controller.playPodcast(id: widget.id),text: "No Internet Connection",));
             case Status.error:
               return Center(child: NoInternetCard(onTap: ()=>controller.playPodcast(id: widget.id)));
             case Status.completed:
@@ -69,7 +69,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                           child: IconButton(
                             icon: const Icon(Icons.arrow_back_ios, color: AppColors.blackColor),
                             onPressed: () {
-                              if (controller.overlayEntry == null) {
+                              if (controller.overlayEntry == null && controller.isPlaying.value) {
                                 controller.showAudioPlayerOverlayCard(context);
                               }
                               AppRouter.route.pop();

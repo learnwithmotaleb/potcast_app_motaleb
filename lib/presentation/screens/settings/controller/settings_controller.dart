@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
+import 'package:podcast/presentation/screens/settings/model/faq_model.dart';
 import 'package:podcast/presentation/screens/settings/model/terms_condition_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
@@ -90,28 +91,24 @@ class SettingsController extends GetxController{
   }
 
   /// ============================= GET Support Us =====================================
-  final Rx<TermsConditionsModel> supportsData = TermsConditionsModel().obs;
+  final Rx<FaqModel> supportsData = FaqModel().obs;
   var supportsLoading = Status.completed.obs;
   supportsLoadingMethod(Status status) => supportsLoading.value = status;
 
   Future<void> getSupportUs() async {
-    try{
-      supportsLoadingMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.about(),showResult: true);
-      if (response.statusCode == 200) {
-        aboutUsData.value = TermsConditionsModel.fromJson(response.body);
-        supportsLoadingMethod(Status.completed);
+    supportsLoadingMethod(Status.loading);
+    var response = await apiClient.get(url: ApiUrl.faq(),showResult: true);
+    if (response.statusCode == 200) {
+      supportsData.value = FaqModel.fromJson(response.body);
+      supportsLoadingMethod(Status.completed);
+    } else {
+      if (response.statusCode == 503) {
+        supportsLoadingMethod(Status.internetError);
+      } else if (response.statusCode == 404) {
+        supportsLoadingMethod(Status.noDataFound);
       } else {
-        if (response.statusCode == 503) {
-          supportsLoadingMethod(Status.internetError);
-        } else if (response.statusCode == 404) {
-          supportsLoadingMethod(Status.noDataFound);
-        } else {
-          supportsLoadingMethod(Status.error);
-        }
+        supportsLoadingMethod(Status.error);
       }
-    }catch(e){
-      supportsLoadingMethod(Status.error);
     }
   }
 

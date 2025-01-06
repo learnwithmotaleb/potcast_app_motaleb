@@ -39,7 +39,7 @@ class UserHomeCategoriesSection extends StatelessWidget {
                   topLeft: Radius.circular(60),
                 ),
                 child: CustomNetworkImage(
-                    imageUrl: category?.image??"",
+                    imageUrl: category?.categoryImage??"",
                 ),
               ),
             ),

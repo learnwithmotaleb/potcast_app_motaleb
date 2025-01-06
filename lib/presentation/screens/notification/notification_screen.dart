@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/presentation/screens/notification/model/notification_model.dart';
 import 'package:podcast/presentation/widget/card/notification_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'controller/notification_controller.dart';
@@ -27,12 +29,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
         ),
         title: Text("notification".tr,style: const TextStyle(color: AppColors.whiteColor),),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.only(left: 12, right: 12, top: 12, bottom: 44),
-        itemCount: 10 + 1,
-        itemBuilder: (BuildContext context, int index) {
-          return NotificationCard(isRead: index % 4 == 0);
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          controller.pagingController.refresh();
         },
+        child: PagedListView<int, NotificationData>(
+          pagingController: controller.pagingController,
+          builderDelegate: PagedChildBuilderDelegate<NotificationData>(
+            itemBuilder: (context, item, index) {
+              return NotificationCard(notification: item);
+            },
+          ),
+        ),
       ),
     );
   }

@@ -47,7 +47,7 @@ class _SelectCountryScreenState extends State<SelectCountryScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                      controller.saveLocation(index);
+                      controller.saveLocation(index: index, context: context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 18.0),

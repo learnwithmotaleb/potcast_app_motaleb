@@ -85,7 +85,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               sliver: SliverGrid(
                                 delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                                   return GestureDetector(
-                                    onTap: () => AppRouter.route.pushNamed(RoutePath.seeAllScreen,extra: controller.subCategory[index].id),
+                                    onTap: () => AppRouter.route.pushNamed(RoutePath.categoryAllPodcast,extra: controller.subCategory[index].id),
                                     child: Container(
                                       height: 80.h,
                                       padding: const EdgeInsets.only(right: 0, left: 8),

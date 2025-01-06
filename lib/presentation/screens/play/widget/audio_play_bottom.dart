@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AudioPlayBottom extends StatefulWidget {
   const AudioPlayBottom({super.key});
@@ -34,11 +36,28 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
             child: Assets.icons.comments.svg(height: 20.h,width: 20.h),
           ),
           GestureDetector(
-            onTap: (){},
+            onTap: (){
+              _openBrowser(controller.postModel.value.data?.podcast?.creator?.donations??"");
+            },
             child: Assets.icons.donate.svg(height: 20.h,width: 20.h),
           ),
         ],
       ),
     );
+  }
+  Future<void> _openBrowser(String urlString) async {
+    try{
+      final Uri url = Uri.parse(urlString);
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        toastMessage(message: "URL not open");
+      }
+    }catch(e){
+      toastMessage(message: "URL not open");
+    }
   }
 }

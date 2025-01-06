@@ -26,7 +26,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
     final double width = MediaQuery.of(context).size.width;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    print(widget.categories?.image);
+    print(widget.categories?.categoryImage);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,9 +38,12 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
           children: [
             Assets.images.splashLogo.image(height: 60.h, width: 100.w, fit: BoxFit.cover, color: isDarkMode ? null : AppColors.blackColor),
             const Gap(8),
-            Padding(
-              padding: const EdgeInsets.only(right: 18.0),
-              child: Assets.icons.notification.svg(height: 25.h,width: 25.w),
+            GestureDetector(
+              onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: Assets.icons.notification.svg(height: 25.h,width: 25.w),
+              ),
             ),
           ],
         ),
@@ -95,9 +98,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                             children: [
                               CustomText(text: "select_your_location".tr, fontSize: 8.sp, color: AppColors.blackColor, maxLines: 2, textAlign: TextAlign.start),
                               const Icon(Icons.location_on, color: Color(0xFFEF4849),),
-                              Obx(() {
-                                return CustomText(text: controller.location.value, fontSize: 8.sp, color: AppColors.blackColor);
-                              }),
+                              CustomText(text: controller.model.value.data?.location??"", fontSize: 8.sp, color: AppColors.blackColor),
                             ],
                           ),
                         ),
@@ -139,7 +140,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(60),
                             ),
-                            child: CustomNetworkImage(imageUrl: widget.categories?.image??""),
+                            child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage??""),
                           ),
                         ),
                       ],

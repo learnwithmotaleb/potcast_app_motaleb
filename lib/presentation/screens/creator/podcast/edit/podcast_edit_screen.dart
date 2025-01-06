@@ -30,10 +30,6 @@ class PodcastEditScreen extends StatefulWidget {
 
 class _PodcastEditScreenState extends State<PodcastEditScreen> {
   final controller = Get.find<PodcastController>();
-
-  TextEditingController title = TextEditingController();
-  TextEditingController location = TextEditingController();
-  TextEditingController description = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -44,9 +40,9 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
 
   @override
   void dispose() {
-    title.clear();
-    location.clear();
-    description.clear();
+    controller.title.clear();
+    controller.location.clear();
+    controller.description.clear();
     super.dispose();
   }
 
@@ -70,6 +66,7 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
           case Status.error:
             return Center(child: NoInternetCard(onTap: () => controller.getDetails(id: widget.id)));
           case Status.completed:
+            print(controller.postModel.value.data?.cover);
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               child: Form(
@@ -107,9 +104,9 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                                     child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
                                   ),
                                 )
-                              : controller.model.value.data?.podcast?.cover != null
+                              : controller.postModel.value.data?.cover != null
                                   ? CustomNetworkImage(
-                                      imageUrl: controller.model.value.data?.podcast?.cover ?? "",
+                                      imageUrl: controller.postModel.value.data?.cover ?? "",
                                       height: 200,
                                       width: width,
                                     )
@@ -188,7 +185,7 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                     const Gap(8.0),
                     CustomTextField(
                       hintText: "enter_podcast_title".tr,
-                      controller: title,
+                      controller: controller.title,
                       keyboardType: TextInputType.name,
                     ),
                     const Gap(12),
@@ -196,7 +193,7 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                     const Gap(8.0),
                     CustomTextField(
                       hintText: "type_you_location".tr,
-                      controller: location,
+                      controller: controller.location,
                       keyboardType: TextInputType.streetAddress,
                     ),
                     const Gap(12),
@@ -204,7 +201,7 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                     const Gap(8.0),
                     CustomTextField(
                       hintText: "enter_your_description".tr,
-                      controller: description,
+                      controller: controller.description,
                       keyboardType: TextInputType.multiline,
                       maxLines: 6,
                       minLines: 3,
@@ -216,9 +213,9 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                         onTap: () {
                           if(_formKey.currentState!.validate()){
                             final body = {
-                              "title" : title.text,
-                              "location": location.text,
-                              "description": description.text,
+                              "title" : controller.title.text,
+                              "location": controller.location.text,
+                              "description": controller.description.text,
                             };
                             if(controller.selectedImage.value != null){
 

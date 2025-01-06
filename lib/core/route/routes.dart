@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/helper/extension/base_extension.dart';
+import 'package:podcast/presentation/screens/admin/admin_podcast_screen.dart';
 import 'package:podcast/presentation/screens/auth/forget/forget_screen.dart';
 import 'package:podcast/presentation/screens/auth/login/login_screen.dart';
 import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
@@ -31,6 +32,7 @@ import 'package:podcast/presentation/screens/settings/support_screen.dart';
 import 'package:podcast/presentation/screens/settings/terms_of_condition.dart';
 import 'package:podcast/presentation/screens/splash/splash_screen.dart';
 import 'package:podcast/presentation/screens/user/categories/categories_screen.dart';
+import 'package:podcast/presentation/screens/user/categories/view/category_all_podcast.dart';
 import 'package:podcast/presentation/screens/user/country/select_country_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
@@ -241,6 +243,22 @@ class AppRouter {
             path: RoutePath.paymentWebViewScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
               child: PaymentWebViewScreen(paymentUrl: state.extra as String),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.categoryAllPodcast,
+            path: RoutePath.categoryAllPodcast.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: CategoryAllPodcast(id: state.extra as String),
+              state: state,
+            ),
+        ),
+        GoRoute(
+            name: RoutePath.adminPodcastScreen,
+            path: RoutePath.adminPodcastScreen.addBasePath,
+            pageBuilder: (context, state) => _buildPageWithAnimation(
+              child: AdminPodcastScreen(name: state.extra as String),
               state: state,
             ),
         ),

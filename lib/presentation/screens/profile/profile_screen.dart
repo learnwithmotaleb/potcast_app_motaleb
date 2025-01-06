@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +6,7 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -92,12 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50.0.r),
                                 child: _controller.profile.value.data?.avatar != null
-                                    ? CachedNetworkImage(
-                                        imageUrl: "${AppConstants.baseUrl}${_controller.profile.value.data?.avatar}",
-                                        placeholder: (context, data) => const SizedBox(),
-                                        errorWidget: (context, data, errorWidget) => const Icon(Icons.person),
-                                        fit: BoxFit.cover,
-                                      )
+                                    ? CustomNetworkImage(imageUrl: _controller.profile.value.data?.avatar??"")
                                     : const Center(child: Icon(Icons.person, color: AppColors.whiteColor)),
                               ),
                             ),

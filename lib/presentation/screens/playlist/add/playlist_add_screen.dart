@@ -78,7 +78,7 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                   final data = AudioPlayerModel(
                     id: item.id ?? "",
                     title: item.title ?? "",
-                    image: item.creator?.user?.avatar ?? "",
+                    image: item.cover ?? "",
                     categories: item.category?.title ?? "",
                     duration: item.audioDuration.toString(),
                     artist: item.creator?.user?.name ?? "",

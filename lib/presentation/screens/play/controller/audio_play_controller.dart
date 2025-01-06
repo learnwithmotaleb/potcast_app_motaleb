@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:podcast/core/route/route_path.dart';
@@ -39,9 +37,29 @@ class AudioPlayController extends GetxController{
       if (response.statusCode == 200) {
         postModel.value = PodcastModel.fromJson(response.body);
         isLike.value = postModel.value.data?.isLiked?? false;
-        isFavorite.value = postModel.value.data?.isFavorited?? false;
+        isFavorite.value = postModel.value.data?.isFavorite?? false;
 
-        playAudio(podcast: PodcastModel.fromJson(response.body));
+        // playAudio(podcast: PodcastModel.fromJson(response.body));
+        final mediaItem = MediaItem(
+          id: postModel.value.data?.podcast?.id??"",
+          album:  postModel.value.data?.podcast?.category?.title??"",
+          title:  postModel.value.data?.podcast?.title??"",
+          artist:  postModel.value.data?.podcast?.creator?.user?.name??"",
+          artUri: Uri.parse("${AppConstants.baseUrl}${postModel.value.data?.podcast?.cover??""}"),
+        );
+        await audioPlayer.setAudioSource(
+          AudioSource.uri(
+            Uri.parse(postModel.value.data?.podcast?.audio??""),
+            tag: mediaItem,
+          ),
+          preload: true,
+        ).then((value) async {
+          loadingMethod(Status.completed);
+          await play();
+        }).catchError((e){
+          currentMediaId.value = '';
+          loadingMethod(Status.error);
+        });
       } else {
         currentMediaId.value = '';
         if (response.statusCode == 503) {
@@ -65,9 +83,29 @@ class AudioPlayController extends GetxController{
       if (response.statusCode == 200) {
         postModel.value = PodcastModel.fromJson(response.body);
         isLike.value = postModel.value.data?.isLiked?? false;
-        isFavorite.value = postModel.value.data?.isFavorited?? false;
+        isFavorite.value = postModel.value.data?.isFavorite?? false;
 
-        playAudio(podcast: PodcastModel.fromJson(response.body));
+        // playAudio(podcast: PodcastModel.fromJson(response.body));
+        final mediaItem = MediaItem(
+          id: postModel.value.data?.podcast?.id??"",
+          album:  postModel.value.data?.podcast?.category?.title??"",
+          title:  postModel.value.data?.podcast?.title??"",
+          artist:  postModel.value.data?.podcast?.creator?.user?.name??"",
+          artUri: Uri.parse("${AppConstants.baseUrl}${postModel.value.data?.podcast?.cover??""}"),
+        );
+        await audioPlayer.setAudioSource(
+          AudioSource.uri(
+            Uri.parse(postModel.value.data?.podcast?.audio??""),
+            tag: mediaItem,
+          ),
+          preload: true,
+        ).then((value) async {
+          loadingMethod(Status.completed);
+          await play();
+        }).catchError((e){
+          currentMediaId.value = '';
+          loadingMethod(Status.error);
+        });
       } else {
         currentMediaId.value = '';
         if (response.statusCode == 503) {
@@ -122,7 +160,7 @@ class AudioPlayController extends GetxController{
   var playLoading = Status.completed.obs;
   playLoadingMethod(Status status) => playLoading.value = status;
 
-  Future<void> playAudio({required PodcastModel podcast}) async {
+/*  Future<void> playAudio({required PodcastModel podcast}) async {
     try{
       final mediaItem = MediaItem(
         id: podcast.data?.podcast?.id??"",
@@ -178,6 +216,7 @@ class AudioPlayController extends GetxController{
               Uri.parse(podcast.data?.podcast?.audio??""),
               tag: mediaItem,
             ),
+            preload: true,
           ).then((value) async {
             loadingMethod(Status.completed);
             await play();
@@ -191,7 +230,7 @@ class AudioPlayController extends GetxController{
       currentMediaId.value = '';
       loadingMethod(Status.error);
     }
-  }
+  }*/
 
   Future<void> play() async{
     currentMediaId.value = postModel.value.data?.podcast?.id??"";

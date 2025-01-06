@@ -1,15 +1,15 @@
-class SearchPodcastModel {
+class AdminPodcastModel {
   final bool? success;
   final String? message;
   final Data? data;
 
-  SearchPodcastModel({
+  AdminPodcastModel({
     this.success,
     this.message,
     this.data,
   });
 
-  factory SearchPodcastModel.fromJson(Map<String, dynamic> json) => SearchPodcastModel(
+  factory AdminPodcastModel.fromJson(Map<String, dynamic> json) => AdminPodcastModel(
     success: json["success"],
     message: json["message"],
     data: json["data"] == null ? null : Data.fromJson(json["data"]),
@@ -23,74 +23,44 @@ class SearchPodcastModel {
 }
 
 class Data {
-  final List<SearchPodcast>? podcasts;
-  final int? page;
-  final int? limit;
-  final int? total;
+  final List<AdminPodcast>? podcasts;
 
   Data({
     this.podcasts,
-    this.page,
-    this.limit,
-    this.total,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    podcasts: json["podcasts"] == null ? [] : List<SearchPodcast>.from(json["podcasts"]!.map((x) => SearchPodcast.fromJson(x))),
-    page: json["page"],
-    limit: json["limit"],
-    total: json["total"],
+    podcasts: json["podcasts"] == null ? [] : List<AdminPodcast>.from(json["podcasts"]!.map((x) => AdminPodcast.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "podcasts": podcasts == null ? [] : List<dynamic>.from(podcasts!.map((x) => x.toJson())),
-    "page": page,
-    "limit": limit,
-    "total": total,
   };
 }
 
-class SearchPodcast {
+class AdminPodcast {
   final String? id;
   final Creator? creator;
   final Category? category;
-  final Category? subCategory;
   final String? title;
-  final String? description;
-  final String? location;
   final String? cover;
-  final String? audio;
-  final int? totalLikes;
-  final int? totalViews;
   final String? audioDuration;
 
-  SearchPodcast({
+  AdminPodcast({
     this.id,
     this.creator,
     this.category,
-    this.subCategory,
     this.title,
-    this.description,
-    this.location,
     this.cover,
-    this.audio,
-    this.totalLikes,
-    this.totalViews,
     this.audioDuration,
   });
 
-  factory SearchPodcast.fromJson(Map<String, dynamic> json) => SearchPodcast(
+  factory AdminPodcast.fromJson(Map<String, dynamic> json) => AdminPodcast(
     id: json["_id"],
     creator: json["creator"] == null ? null : Creator.fromJson(json["creator"]),
     category: json["category"] == null ? null : Category.fromJson(json["category"]),
-    subCategory: json["subCategory"] == null ? null : Category.fromJson(json["subCategory"]),
     title: json["title"],
-    description: json["description"],
-    location: json["location"],
     cover: json["cover"],
-    audio: json["audio"],
-    totalLikes: json["totalLikes"],
-    totalViews: json["totalViews"],
     audioDuration: json["audioDuration"],
   );
 
@@ -98,14 +68,8 @@ class SearchPodcast {
     "_id": id,
     "creator": creator?.toJson(),
     "category": category?.toJson(),
-    "subCategory": subCategory?.toJson(),
     "title": title,
-    "description": description,
-    "location": location,
     "cover": cover,
-    "audio": audio,
-    "totalLikes": totalLikes,
-    "totalViews": totalViews,
     "audioDuration": audioDuration,
   };
 }
@@ -144,20 +108,16 @@ class Creator {
 
 class User {
   final String? name;
-  final dynamic avatar;
 
   User({
     this.name,
-    this.avatar,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     name: json["name"],
-    avatar: json["avatar"],
   );
 
   Map<String, dynamic> toJson() => {
     "name": name,
-    "avatar": avatar,
   };
 }

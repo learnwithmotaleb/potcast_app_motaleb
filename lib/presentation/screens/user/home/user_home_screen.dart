@@ -35,7 +35,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           case Status.loading:
             return const Center(child: CircularProgressIndicator(),);
           case Status.internetError:
-            return NoInternetCard(onTap: ()=>controller.getHome());
+            return NoInternetCard(onTap: ()=>controller.getHome(),text: "Please check internet connection!",);
           case Status.noDataFound:
             return const Center(child: CustomText(text: "No data found!"));
           case Status.error:
@@ -44,8 +44,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           case Status.completed:
 
             final List<CategoryElement>? categories = controller.model.value.data?.categories != null && controller.model.value.data!.categories!.isNotEmpty?controller.model.value.data?.categories:[];
-            final List<Podcast>? newItem = controller.model.value.data?.newPodcasts != null && controller.model.value.data!.newPodcasts!.isNotEmpty?controller.model.value.data?.newPodcasts:[];
-            final List<Podcast>? popularItem = controller.model.value.data?.popularPodcasts != null && controller.model.value.data!.popularPodcasts!.isNotEmpty?controller.model.value.data?.popularPodcasts:[];
+            final List<NewPodcastElement>? newItem = controller.model.value.data?.newPodcasts != null && controller.model.value.data!.newPodcasts!.isNotEmpty?controller.model.value.data?.newPodcasts:[];
+            final List<NewPodcastElement>? popularItem = controller.model.value.data?.popularPodcasts != null && controller.model.value.data!.popularPodcasts!.isNotEmpty?controller.model.value.data?.popularPodcasts:[];
 
             return RefreshIndicator(
               onRefresh: ()async{

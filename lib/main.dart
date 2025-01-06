@@ -29,7 +29,6 @@ Future<void> main() async {
   Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
-  // runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp(languages: languages)));
 }
 
 class MyApp extends StatelessWidget {

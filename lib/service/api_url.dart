@@ -1,7 +1,7 @@
 class ApiUrl {
   ApiUrl._();
 
-  static const String base = "http://192.168.10.220:8000";
+  static const String base = "http://143.110.241.146:9000";
 
   ///Auth
   static String register() => '$base/auth/register';
@@ -34,6 +34,10 @@ class ApiUrl {
   static String playListDelete({required String id}) => '$base/playlist/delete/$id';
   static String playListSongs({required String id, required int page}) => '$base/playlist/$id/podcasts?page=$page&limit=10';
   static String seeAll({required String type, required int page}) => '$base/podcast/$type?page=$page&limit=10';
+  static String subCategoryPodcast({required String id, required int page}) => '$base/sub-category/$id/podcasts?page=$page&limit=10';
+  static String addLocation() => '$base/user/update-location';
+  static String notification({required int page}) => '$base/notification?limit=20&page=$page';
+  static String adminPodcast({required int page}) => '$base/admin/podcasts?page=$page&limit=10';
 
   ///User
   static String home() => '$base/home';
@@ -51,4 +55,5 @@ class ApiUrl {
   static String terms() => '$base/tac';
   static String privacy() => '$base/privacy';
   static String about() => '$base/about';
+  static String faq() => '$base/faq';
 }

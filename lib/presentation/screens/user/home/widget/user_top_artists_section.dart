@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -40,29 +39,43 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
             width: width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: controller.model.value.data?.creators?.length,
+              itemCount: (controller.model.value.data?.creators?.length??0)+1,
               itemBuilder: (BuildContext context, int index){
+                if(index ==0){
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""),
+                          child: Container(
+                            height: 80.w,
+                            width: 80.w,
+                            padding: EdgeInsets.all(index ==0?3:5),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: index ==0?Border.all(color: const Color(0xFFFE7A15),width: 3):Border.all(color: isDarkMode?AppColors.whiteColor:AppColors.primaryColor,width: 1)
+                            ),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(40.r),
+                                child: controller.model.value.data?.admin?.avatar != null?
+                                CustomNetworkImage(imageUrl: controller.model.value.data?.admin?.avatar??""):
+                                Assets.images.splashLogo.image()
+                            ),
+                          ),
+                        ),
+                        const Gap(5),
+                        CustomText(text: controller.model.value.data?.admin?.name??""),
+                      ],
+                    ),
+                  );
+                }
                 return Padding(
                   padding: const EdgeInsets.only(right: 12.0),
                   child: Column(
                     children: [
-                      if (index ==0) GestureDetector(
-                        // onTap: ()=>AppRouter.route.pushNamed(RoutePath.seeAllScreen,extra: "Joe"),
-                        child: Container(
-                          height: 80.w,
-                          width: 80.w,
-                          padding: EdgeInsets.all(index ==0?3:5),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: index ==0?Border.all(color: const Color(0xFFFE7A15),width: 3):Border.all(color: isDarkMode?AppColors.whiteColor:AppColors.primaryColor,width: 1)
-                          ),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(40.r),
-                              child: Assets.images.splashLogo.image()
-                          ),
-                        ),
-                      ) else GestureDetector(
-                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.creators?[index].id??""),
+                      GestureDetector(
+                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.creators?[index-1].podcast??""),
                         child: Container(
                           height: 80.0.h,
                           width: 80.0.h,
@@ -85,7 +98,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                                   padding: const EdgeInsets.all(5),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(40.0.r), // Make it circular
-                                    child: CustomNetworkImage(imageUrl: controller.model.value.data?.creators?[index].user?.avatar??""),
+                                    child: CustomNetworkImage(imageUrl: controller.model.value.data?.creators?[index-1].avatar??""),
                                   ),
                                 ),
                               ),
@@ -94,7 +107,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: index==0?"Joe":controller.model.value.data?.creators?[index].user?.name??""),
+                      CustomText(text: controller.model.value.data?.creators?[index-1].name??""),
                     ],
                   ),
                 );
