@@ -29,6 +29,7 @@ class CategoryAllPodcastController extends GetxController{
         pagingController.error = 'Error fetching data';
       }
     } catch (e) {
+      print(e.toString());
       pagingController.error = 'An error occurred';
     } finally {
       isLoadingMove.value = false;

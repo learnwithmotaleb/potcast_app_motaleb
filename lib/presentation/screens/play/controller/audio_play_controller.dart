@@ -45,7 +45,7 @@ class AudioPlayController extends GetxController{
           album:  postModel.value.data?.podcast?.category?.title??"",
           title:  postModel.value.data?.podcast?.title??"",
           artist:  postModel.value.data?.podcast?.creator?.user?.name??"",
-          artUri: Uri.parse("${AppConstants.baseUrl}${postModel.value.data?.podcast?.cover??""}"),
+          artUri: Uri.parse(postModel.value.data?.podcast?.cover??""),
         );
         await audioPlayer.setAudioSource(
           AudioSource.uri(
@@ -72,6 +72,7 @@ class AudioPlayController extends GetxController{
       }
     }catch(e){
       currentMediaId.value = '';
+      print(e);
       loadingMethod(Status.error);
     }
   }
@@ -91,7 +92,7 @@ class AudioPlayController extends GetxController{
           album:  postModel.value.data?.podcast?.category?.title??"",
           title:  postModel.value.data?.podcast?.title??"",
           artist:  postModel.value.data?.podcast?.creator?.user?.name??"",
-          artUri: Uri.parse("${AppConstants.baseUrl}${postModel.value.data?.podcast?.cover??""}"),
+          artUri: Uri.parse(postModel.value.data?.podcast?.cover??""),
         );
         await audioPlayer.setAudioSource(
           AudioSource.uri(

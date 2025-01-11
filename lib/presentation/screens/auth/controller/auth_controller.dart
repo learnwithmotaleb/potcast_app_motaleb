@@ -117,7 +117,8 @@ class AuthController extends GetxController{
           if(activeAccountModel.data?.auth?.role == "USER"){
             AppRouter.route.goNamed(RoutePath.userNavScreen);
           }else if(activeAccountModel.data?.auth?.role == "CREATOR"){
-            AppRouter.route.goNamed(RoutePath.creatorNavScreen);
+            toastMessage(message: "Please wait for admin approval");
+            AppRouter.route.pop();
           }else{
             AppRouter.route.goNamed(RoutePath.loginScreen);
           }

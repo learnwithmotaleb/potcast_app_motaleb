@@ -47,7 +47,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""),
+                          onTap: ()=>controller.model.value.data?.admin?.podcast != null?AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""):null,
                           child: Container(
                             height: 80.w,
                             width: 80.w,

@@ -144,6 +144,10 @@ class PodcastController extends GetxController{
         },
       );
 
+      print(response.body);
+      print(response.statusCode);
+      print(response.statusText);
+
       if (response.statusCode == 201 || response.statusCode == 200 ) {
         createLoadingMethod(false);
         AppRouter.route.pop();
@@ -158,6 +162,7 @@ class PodcastController extends GetxController{
         toastMessage(message: errorMessage);
       }
     }catch (err){
+      print(err);
       createLoadingMethod(false);
     }
   }

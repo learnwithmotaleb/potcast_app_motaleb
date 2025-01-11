@@ -45,7 +45,6 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
               });
 
             case Status.completed:
-              print("${AppConstants.baseUrl}${_controller.profile.value.data?.avatar}");
               return SafeArea(
                 child: SingleChildScrollView(
                   child: Column(

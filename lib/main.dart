@@ -65,8 +65,8 @@ class MyApp extends StatelessWidget {
               locale: localizeController.locale,
               translations: Messages(languages: languages),
               fallbackLocale: Locale(
-                AppConstants.languages[0].languageCode,
-                AppConstants.languages[0].countryCode,
+                AppConstants.languages.first.languageCode,
+                AppConstants.languages.first.countryCode,
               ),
             );
           },

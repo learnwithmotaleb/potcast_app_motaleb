@@ -24,6 +24,7 @@ class LanguageController extends GetxController implements GetxService {
   void loadCurrentLanguage() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     _locale = Locale(sharedPreferences.getString(AppConstants.languageCode) ?? AppConstants.languages[0].languageCode, sharedPreferences.getString(AppConstants.countryCode) ?? AppConstants.languages[0].countryCode);
+    Get.updateLocale(_locale);
 
     for(int index = 0; index<AppConstants.languages.length; index++) {
       if(AppConstants.languages[index].languageCode == _locale.languageCode) {
