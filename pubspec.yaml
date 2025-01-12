@@ -71,6 +71,7 @@ dependencies:
   flutter_html: any
   flutter_faq: ^1.0.1+1
   url_launcher: ^6.3.1
+  path: any
 
   audio_service: any
   audio_video_progress_bar: ^2.0.3

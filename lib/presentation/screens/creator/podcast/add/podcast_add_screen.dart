@@ -17,6 +17,7 @@ import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
+import 'package:path/path.dart' as path;
 
 class PodcastAddScreen extends StatefulWidget {
   const PodcastAddScreen({super.key});
@@ -180,36 +181,36 @@ class SubCategoriesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(()=>DropdownButtonFormField2<String>(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      isExpanded: true,
-      value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
-      hint: Text('sub categories'.tr),
-      items: controller.subCategories.isNotEmpty
-          ? controller.subCategories.map((subCategory) {
-        return DropdownMenuItem<String>(
-          value: subCategory.title ?? "",
-          child: Text(subCategory.title ?? ""),
-        );
-      }).toList()
-          : [
-        const DropdownMenuItem<String>(
-          value: "",
-          child: Text("No subcategories available"),
-        ),
-      ],
-      onChanged: (String? newValue) {
-        if (newValue != null && newValue != "") {
-          controller.selectedSubCategories.value = newValue;
-          var selectedSubCategory = controller.subCategories.firstWhere((subCategory) => subCategory.title == newValue, orElse: () => SubCategory(id: "", title: ""));
-          controller.subCategoriesId.value = selectedSubCategory.id ?? "";
-        }
-      },
-    ));
+    return Obx(() => DropdownButtonFormField2<String>(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          isExpanded: true,
+          value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
+          hint: Text('sub categories'.tr),
+          items: controller.subCategories.isNotEmpty
+              ? controller.subCategories.map((subCategory) {
+                  return DropdownMenuItem<String>(
+                    value: subCategory.title ?? "",
+                    child: Text(subCategory.title ?? ""),
+                  );
+                }).toList()
+              : [
+                  const DropdownMenuItem<String>(
+                    value: "",
+                    child: Text("No subcategories available"),
+                  ),
+                ],
+          onChanged: (String? newValue) {
+            if (newValue != null && newValue != "") {
+              controller.selectedSubCategories.value = newValue;
+              var selectedSubCategory = controller.subCategories.firstWhere((subCategory) => subCategory.title == newValue, orElse: () => SubCategory(id: "", title: ""));
+              controller.subCategoriesId.value = selectedSubCategory.id ?? "";
+            }
+          },
+        ));
   }
 }
 
@@ -373,9 +374,15 @@ class PickAudioWidget extends StatelessWidget {
                           Expanded(
                             child: Container(
                               height: 50.h,
+                              alignment: Alignment.center,
                               padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(color: AppColors.primaryColor, borderRadius: BorderRadius.circular(8)),
-                              child: CustomText(text: controller.audioFile.value?.path ?? ""),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryColor,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: CustomText(
+                                text: controller.audioFile.value?.path != null ? path.basename(controller.audioFile.value!.path) : "",
+                              ),
                             ),
                           ),
                           const Gap(5),
