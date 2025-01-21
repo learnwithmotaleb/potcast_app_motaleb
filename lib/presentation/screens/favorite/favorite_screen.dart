@@ -30,6 +30,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         },
         child: PagedListView<int, FavoritePodcast>(
           pagingController: controller.pagingController,
+          padding: EdgeInsets.symmetric(horizontal: 8,vertical: 12),
           builderDelegate: PagedChildBuilderDelegate<FavoritePodcast>(
             itemBuilder: (context, item, index) {
               final data = AudioPlayerModel(

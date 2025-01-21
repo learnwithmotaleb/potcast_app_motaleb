@@ -32,15 +32,19 @@ class $AssetsIconsGen {
   const $AssetsIconsGen();
 
   /// File path: assets/icons/add_a_photo.svg
-  SvgGenImage get addAPhoto =>
-      const SvgGenImage('assets/icons/add_a_photo.svg');
+  SvgGenImage get addAPhoto => const SvgGenImage('assets/icons/add_a_photo.svg');
+
+  /// File path: assets/icons/add_a_photo.svg
+  SvgGenImage get audio => const SvgGenImage('assets/icons/audio.svg');
+
+  /// File path: assets/icons/add_a_photo.svg
+  SvgGenImage get cloudAdd => const SvgGenImage('assets/icons/cloud-add.svg');
 
   /// File path: assets/icons/audio_left.svg
   SvgGenImage get audioLeft => const SvgGenImage('assets/icons/audio_left.svg');
 
   /// File path: assets/icons/audio_right.svg
-  SvgGenImage get audioRight =>
-      const SvgGenImage('assets/icons/audio_right.svg');
+  SvgGenImage get audioRight => const SvgGenImage('assets/icons/audio_right.svg');
 
   /// File path: assets/icons/birthday.svg
   SvgGenImage get birthday => const SvgGenImage('assets/icons/birthday.svg');
@@ -169,7 +173,9 @@ class $AssetsIconsGen {
         subscription,
         subscriptionWhite,
         updrade,
-        skip
+        skip,
+    audio,
+    cloudAdd
       ];
 }
 

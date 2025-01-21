@@ -40,7 +40,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
           BottomNavigationBarItem(icon: Assets.icons.home.svg(colorFilter: _selectedPage==0?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "home".tr,),
           BottomNavigationBarItem(icon: Assets.icons.history.svg(colorFilter: _selectedPage==1?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "history".tr),
           BottomNavigationBarItem(icon: Assets.icons.favorite.svg(colorFilter: _selectedPage==2?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "favorite".tr),
-          BottomNavigationBarItem(icon: Assets.icons.myPodcast.svg(colorFilter: _selectedPage==3?null:const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn)), label: "my_podcast".tr),
+          BottomNavigationBarItem(icon: Assets.icons.audio.svg(height: 26,width: 28,colorFilter: _selectedPage==3?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn)), label: "my_podcast".tr),
           BottomNavigationBarItem(icon: Assets.icons.profile.svg(colorFilter: _selectedPage==4?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "profile".tr),
         ],
       ),

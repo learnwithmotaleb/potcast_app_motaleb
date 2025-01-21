@@ -6,13 +6,14 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
+import 'package:podcast/presentation/screens/user/home/widget/user_home_app_bar.dart';
 import 'package:podcast/presentation/screens/user/home/widget/user_home_categories_section.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
-import 'widget/user_home_app_bar_section.dart';
+import 'widget/user_home_top_section.dart';
 import 'widget/user_top_artists_section.dart';
 
 class UserHomeScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
+      appBar: CustomHomeAppBar(),
       body: Obx(() {
         switch (controller.loading.value) {
           case Status.loading:
@@ -83,8 +85,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomText(text: "latest".tr),
+                              CustomText(text: "latest".tr,fontSize: 16),
                               TextButton(
+                                style: const ButtonStyle(
+                                    padding: WidgetStatePropertyAll(EdgeInsets.zero)
+                                ),
                                 onPressed: () {
                                   AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "latest");
                                 },
@@ -97,7 +102,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ),
                   ),
                   SliverPadding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.only(left: 12, right: 12),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                         return MusicCard(
@@ -121,8 +126,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomText(text: "popular".tr),
+                          CustomText(text: "popular".tr, fontSize: 16,),
                           TextButton(
+                            style: const ButtonStyle(
+                              padding: WidgetStatePropertyAll(EdgeInsets.zero)
+                            ),
                             onPressed: () {
                               AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular");
                             },
@@ -133,7 +141,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ),
                   ),
                   SliverPadding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.only(left: 12, right: 12),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                         return MusicCard(

@@ -46,8 +46,6 @@ class MyApp extends StatelessWidget {
           minTextAdapt: true,
           useInheritedMediaQuery: true,
           builder: (context, child){
-            /*final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-            _setGlobalStatusBarStyle(isDarkMode);*/
             return GetMaterialApp.router(
               debugShowCheckedModeBanner: false,
 
@@ -74,14 +72,4 @@ class MyApp extends StatelessWidget {
       },
     );
   }
-
-/*  void _setGlobalStatusBarStyle(bool isDarkMode) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: isDarkMode ? Colors.black : Colors.white, // Background color
-        statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark, // Icon brightness
-        statusBarBrightness: isDarkMode ? Brightness.dark : Brightness.light, // iOS compatibility
-      ),
-    );
-  }*/
 }

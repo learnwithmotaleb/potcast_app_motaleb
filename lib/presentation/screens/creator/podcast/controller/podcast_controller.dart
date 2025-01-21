@@ -48,6 +48,7 @@ class PodcastController extends GetxController{
 
   RxString selectedCategory = "".obs;
   RxString selectedSubCategories = ''.obs;
+  RxString responseMessage = "".obs;
 
   /// ============================= GET Categories =====================================
   var loading = Status.completed.obs;
@@ -69,6 +70,7 @@ class PodcastController extends GetxController{
           loadingMethod(Status.error);
         }
       }
+      responseMessage.value = response.body?['message']??"Something wrong!";
     } catch (e) {
       loadingMethod(Status.error);
     }

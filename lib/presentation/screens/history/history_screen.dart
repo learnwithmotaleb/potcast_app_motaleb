@@ -37,7 +37,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
                 child: Row(
                   children: [
                     Assets.icons.sort.svg(height: 15,width: 15,color: isDarkMode?null:AppColors.blackColor),
@@ -47,23 +47,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
               ),
             ),
-            PagedSliverList<int, HistoryPodcast>(
-              pagingController: controller.pagingController,
-              builderDelegate: PagedChildBuilderDelegate<HistoryPodcast>(
-                itemBuilder: (context, item, index) {
-                  final data = AudioPlayerModel(
-                    id: item.id??"",
-                    title: item.title??"",
-                    image: item.cover??"",
-                    categories: item.category?.title??"",
-                    duration: item.audioDuration.toString(),
-                    artist: item.creator?.user?.name??"",
-                  );
-                  return MusicCard(
-                    data: data,
-                    onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
-                  );
-                },
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              sliver: PagedSliverList<int, HistoryPodcast>(
+                pagingController: controller.pagingController,
+                builderDelegate: PagedChildBuilderDelegate<HistoryPodcast>(
+                  itemBuilder: (context, item, index) {
+                    final data = AudioPlayerModel(
+                      id: item.id??"",
+                      title: item.title??"",
+                      image: item.cover??"",
+                      categories: item.category?.title??"",
+                      duration: item.audioDuration.toString(),
+                      artist: item.creator?.user?.name??"",
+                    );
+                    return MusicCard(
+                      data: data,
+                      onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                    );
+                  },
+                ),
               ),
             )
           ],

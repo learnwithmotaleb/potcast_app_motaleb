@@ -45,6 +45,20 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
         return true;
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Play"),
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppColors.whiteColor),
+            onPressed: () {
+              if (controller.overlayEntry == null && controller.isPlaying.value) {
+                controller.showAudioPlayerOverlayCard(context);
+              }
+              AppRouter.route.pop();
+            },
+          ),
+          backgroundColor: const Color(0xFF0C3A30),
+        ),
         body: Obx(() {
           switch(controller.loading.value){
             case Status.loading:
@@ -56,60 +70,65 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
             case Status.error:
               return Center(child: NoInternetCard(onTap: ()=>controller.playPodcast(id: widget.id)));
             case Status.completed:
-              return Column(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: CustomNetworkImage(imageUrl: controller.postModel.value.data?.podcast?.cover??""),
-                        ),
-                        Positioned(
-                          top: 30,
-                          child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, color: AppColors.blackColor),
-                            onPressed: () {
-                              if (controller.overlayEntry == null && controller.isPlaying.value) {
-                                controller.showAudioPlayerOverlayCard(context);
-                              }
-                              AppRouter.route.pop();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+              return Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF093028),
+                      Color(0xFF237A57),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF142B77),
-                    ),
-                    child: Column(
-                      children: [
-                        const Gap(5),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            height: 5,
-                            width: 75.w,
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(3.r),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: CustomNetworkImage(
+                                    imageUrl: controller.postModel.value.data?.podcast?.cover??"",
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        const Gap(12),
-                        const AudioPlayCard(),
-                        const Gap(12),
-                        const AudioPlayProgress(),
-                        const AudioPlayControl(),
-                        const Gap(24),
-                        const AudioPlayBottom(),
-                        const Gap(24),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Column(
+                        children: [
+                          /*const Gap(5),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              height: 5,
+                              width: 75.w,
+                              decoration: BoxDecoration(
+                                color: AppColors.whiteColor,
+                                borderRadius: BorderRadius.circular(3.r),
+                              ),
+                            ),
+                          ),*/
+                          const Gap(12),
+                          const AudioPlayCard(),
+                          const Gap(12),
+                          const AudioPlayProgress(),
+                          const AudioPlayControl(),
+                          const Gap(24),
+                          const AudioPlayBottom(),
+                          const Gap(24),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               );
           }
         }),

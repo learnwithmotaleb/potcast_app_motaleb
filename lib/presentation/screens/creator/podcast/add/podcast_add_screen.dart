@@ -69,7 +69,7 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
             case Status.error:
               return NoInternetCard(onTap: () {
                 controller.getCategories();
-              });
+              },text: controller.responseMessage.value);
 
             case Status.completed:
               return SingleChildScrollView(
@@ -280,30 +280,30 @@ class PickCoverWidget extends StatelessWidget {
                 ? Container(
                     width: width,
                     padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF093028),
+                          Color(0xFF237A57),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Assets.images.upload.image(width: 36.w, height: 24.h),
+                        Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
                         const Gap(8),
-                        Container(
-                          width: width / 3,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: AppColors.blackColor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [Assets.icons.addAPhoto.svg(width: 24.w, height: 24.h), const Gap(5), CustomText(text: "add_image".tr, fontWeight: FontWeight.w600)],
-                          ),
-                        ),
+                        CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600,color: AppColors.whiteColor, fontSize: 16),
+                        const Gap(8),
+                        CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
                       ],
                     ),
                   )
                 : SizedBox(
-                    height: MediaQuery.of(context).size.height / 5,
+                    height: 150,
                     width: width,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
@@ -341,32 +341,28 @@ class PickAudioWidget extends StatelessWidget {
             () => Container(
               width: width,
               padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF093028),
+                    Color(0xFF237A57),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
               child: controller.audioFile.value == null
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Assets.images.upload.image(width: 36.w, height: 24.h),
-                        const Gap(8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CustomText(text: "drag_your_file_or".tr, fontWeight: FontWeight.w600, color: AppColors.blackColor),
-                            const Gap(2),
-                            CustomText(text: "browse".tr, fontWeight: FontWeight.w600, color: AppColors.redColor),
-                          ],
-                        ),
-                        const Gap(8),
-                        CustomText(
-                          text: "max_10_MB_files_are_allowed".tr,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF6D6D6D),
-                        ),
-                      ],
-                    )
-                  : SizedBox(
+                  ?  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                      const Gap(8),
+                      CustomText(text: "Choose_a_audio".tr, fontWeight: FontWeight.w600,color: AppColors.whiteColor, fontSize: 16),
+                      const Gap(8),
+                      CustomText(text: "max_10_MB_files_are_allowed".tr, fontWeight: FontWeight.w100)
+                    ],
+                  ): SizedBox(
                       width: width,
                       height: 50.h,
                       child: Row(

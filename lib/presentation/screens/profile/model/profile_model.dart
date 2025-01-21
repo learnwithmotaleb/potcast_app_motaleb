@@ -24,6 +24,7 @@ class Data {
   final String? address;
   final String? avatar;
   final String? email;
+  final String? backgroundImage;
 
   Data({
     this.name,
@@ -33,6 +34,7 @@ class Data {
     this.address,
     this.avatar,
     this.email,
+    this.backgroundImage
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -43,5 +45,6 @@ class Data {
     address: json["address"],
     avatar: json["avatar"],
     email: json["email"],
+    backgroundImage: json['backgroundImage']
   );
 }

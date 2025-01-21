@@ -44,7 +44,7 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
                   ? const Center(child: CircularProgressIndicator())
                   : Icon(
                       Icons.favorite,
-                      color: isLiked ? Colors.red : Colors.white,
+                      color: isLiked ? Colors.blue : Colors.white,
                       size: 30,
                     );
             });
@@ -66,11 +66,7 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
                 controller.play();
               }
             },
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: const BoxDecoration(color: AppColors.whiteColor, shape: BoxShape.circle),
-              child: Icon(controller.isPlaying.value ? Iconsax.pause : Icons.play_arrow, color: AppColors.blackColor, size: 32),
-            ),
+            child: Icon(controller.isPlaying.value ? Icons.pause : Icons.play_circle_outline_sharp, color: AppColors.whiteColor, size: 45),
           );
         }),
         widget.isRemove
@@ -99,7 +95,7 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
                   ? const Center(child: CircularProgressIndicator())
                   : Icon(
                 Iconsax.like_1,
-                color: isLiked ? Colors.red : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+                color: isLiked ? Colors.blue : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
               );
             });
           },

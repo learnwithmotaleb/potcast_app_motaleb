@@ -31,6 +31,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Categories"),
+        centerTitle: true,
+      ),
       body: Obx(
             () {
           switch (controller.loading.value) {
@@ -42,7 +46,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 color: AppColors.blackColor,
               );
             case Status.noDataFound:
-              return const Center(child: CustomText(text: "",color: AppColors.whiteColor));
+              return const Center(child: CustomText(text: "No Categories Found",color: AppColors.whiteColor));
             case Status.error:
               return NoInternetCard(
                 onTap: () => controller.getAllSubCategories(id: widget.id),
@@ -90,21 +94,26 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       height: 80.h,
                                       padding: const EdgeInsets.only(right: 0, left: 8),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFEF4849),
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF093028),
+                                            Color(0xFF237A57),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Flexible(child: CustomText(text: controller.subCategory[index].title??"",
-                                              color: AppColors.whiteColor,fontSize: 12.sp, maxLines: 3, textAlign: TextAlign.start)),
+                                          Expanded(child: CustomText(text: controller.subCategory[index].title??"", color: AppColors.whiteColor,fontSize: 12.sp, maxLines: 2, textAlign: TextAlign.start)),
                                           SizedBox(
                                             height: 80.h,
                                             width: ((width / 2) - 25) / 2,
                                             child: ClipRRect(
                                               borderRadius: const BorderRadius.only(
-                                                  topLeft: Radius.circular(30),
                                                   topRight: Radius.circular(8),
                                                   bottomRight: Radius.circular(8)
                                               ),

@@ -10,7 +10,6 @@ import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
-import 'package:podcast/utils/app_const/app_const.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -40,34 +39,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Edit Profile"),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               children: [
-                Container(
-                  width: width,
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  decoration: BoxDecoration(
-                    color: isDarkMode ? AppColors.whiteColor : const Color(0xFFB6B4B4),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomText(
-                        text: "profile",
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: isDarkMode ? AppColors.blackColor : AppColors.blackColor,
-                      ),
-                      Gap(12.h),
+                      const Gap(12),
                       Obx(() {
                         return Align(
                           alignment: Alignment.center,
@@ -78,34 +68,57 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               width: 100,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: controller.profile.value.data?.avatar != null ? null : AppColors.blackColor,
+                                color: controller.profile.value.data?.avatar != null ? null : AppColors.whiteColor,
                               ),
                               child: controller.selectedImage.value != null
                                   ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
-                                    )
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
+                              )
                                   : controller.profile.value.data?.avatar != null
-                                      ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(50),
-                                          child: CustomNetworkImage(imageUrl: controller.profile.value.data?.avatar??""),
-                                        )
-                                      : const Icon(Icons.image_outlined),
+                                  ? ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: CustomNetworkImage(imageUrl: controller.profile.value.data?.avatar??""),
+                              ) : const Icon(Icons.image_outlined,color: AppColors.blackColor),
                             ),
                           ),
                         );
                       }),
-                      Gap(8.h),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Gap(44.h),
+                      const Gap(12),
+                      CustomAlignText(text: "Cover".tr),
+                      const Gap(8),
+                      Obx(() {
+                        return Align(
+                          alignment: Alignment.center,
+                          child: GestureDetector(
+                            onTap: controller.pickCoverImage,
+                            child: Container(
+                              height: 100,
+                              width: width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF093028),
+                                    Color(0xFF237A57),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                              child: controller.selectedCoverImage.value != null
+                                  ? ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: Image.file(File(controller.selectedCoverImage.value?.path ?? ""), fit: BoxFit.cover),
+                              ) : controller.profile.value.data?.backgroundImage != null ? ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: CustomNetworkImage(imageUrl: controller.profile.value.data?.backgroundImage??""),
+                              ) : const Icon(Icons.image_outlined,color: AppColors.blackColor),
+                            ),
+                          ),
+                        );
+                      }),
+                      Gap(12.h),
                       CustomAlignText(text: "full_name".tr),
                       const Gap(8),
                       CustomTextField(
@@ -210,7 +223,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   "address": address.text,
                                 };
 
-                                if(controller.selectedImage.value != null){
+                                if(controller.selectedImage.value != null || controller.selectedCoverImage.value != null){
                                   controller.editProfile(body: body);
                                 }else{
                                   controller.editProfileOnlyBody(body: body);

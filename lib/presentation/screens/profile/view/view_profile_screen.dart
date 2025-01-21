@@ -28,6 +28,9 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
     final double width = MediaQuery.of(context).size.width;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Profile"),
+      ),
       body: Obx(
             () {
           switch (_controller.loading.value) {
@@ -61,8 +64,6 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                         ),
                         child: Column(
                           children: [
-                            CustomText(text: "profile",fontSize: 18,fontWeight: FontWeight.w700,color: isDarkMode?AppColors.blackColor:AppColors.blackColor,),
-                            Gap(12.h),
                             Container(
                               height: 100.h,
                               width: 100.h,

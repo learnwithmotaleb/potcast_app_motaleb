@@ -25,8 +25,15 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
       width: width,
       padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
       decoration: BoxDecoration(
-          color:const  Color(0xFF1C1C77),
-          borderRadius: BorderRadius.circular(8.r)
+        borderRadius: BorderRadius.circular(8),
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF093028),
+            Color(0xFF0F593B),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,10 +61,10 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
           mode: LaunchMode.externalApplication,
         );
       } else {
-        toastMessage(message: "URL not open");
+        toastMessage(message: "Donations URL not found");
       }
     }catch(e){
-      toastMessage(message: "URL not open");
+      toastMessage(message: "Donations URL not found");
     }
   }
 }

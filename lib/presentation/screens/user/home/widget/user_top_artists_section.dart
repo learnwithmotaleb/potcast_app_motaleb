@@ -8,7 +8,6 @@ import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
-import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
@@ -32,7 +31,16 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomAlignText(text: "top_artists".tr),
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomText(text: "top_artists".tr, fontSize: 16,),
+                GestureDetector(onTap: ()=>AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor))),
+              ],
+            ),
+          ),
           const Gap(12),
           SizedBox(
             height: 120.h,
@@ -65,7 +73,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                           ),
                         ),
                         const Gap(5),
-                        CustomText(text: controller.model.value.data?.admin?.name??""),
+                        CustomText(text: controller.model.value.data?.admin?.name??"", fontSize: 16,),
                       ],
                     ),
                   );
@@ -107,7 +115,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: controller.model.value.data?.creators?[index-1].name??""),
+                      CustomText(text: controller.model.value.data?.creators?[index-1].name??"", fontSize: 16),
                     ],
                   ),
                 );

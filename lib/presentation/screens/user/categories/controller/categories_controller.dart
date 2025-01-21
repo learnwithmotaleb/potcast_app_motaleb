@@ -24,7 +24,8 @@ class CategoriesController extends GetxController{
         categoryModel.value = SearchCategoryModel.fromJson(response.body);
         final newItems = categoryModel.value.data?.subCategories ?? [];
         if (newItems.isEmpty) {
-          loadingMethod(Status.completed);
+          print(newItems.isNotEmpty);
+          loadingMethod(Status.noDataFound);
         } else {
           subCategory.addAll(newItems);
           loadingMethod(Status.completed);
@@ -53,7 +54,7 @@ class CategoriesController extends GetxController{
         final data = SearchCategoryModel.fromJson(response.body);
         final newItems = data.data?.subCategories ?? [];
         if (newItems.isEmpty) {
-          searchLoadingMethod(Status.completed);
+          searchLoadingMethod(Status.noDataFound);
         } else {
           subCategory.addAll(newItems);
           searchLoadingMethod(Status.completed);

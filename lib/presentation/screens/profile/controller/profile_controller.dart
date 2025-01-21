@@ -14,12 +14,19 @@ class ProfileController extends GetxController{
   final ImagePicker _picker = ImagePicker();
   Rx<ProfileModel> profile = ProfileModel().obs;
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
+  Rx<XFile?> selectedCoverImage = Rx<XFile?>(null);
   RxString gender = "".obs;
 
   Future<void> pickImage() async {
     XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
       selectedImage.value = image;
+    }
+  }
+  Future<void> pickCoverImage() async {
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    if (image != null) {
+      selectedCoverImage.value = image;
     }
   }
 
@@ -62,7 +69,14 @@ class ProfileController extends GetxController{
   void editProfile({required Map<String, String> body}) async {
     try{
       editLoadingMethod(true);
-      var response = await apiClient.multipartRequest(url: ApiUrl.profileEdit(),body: body, reqType: "PUT", multipartBody: [MultipartBody("avatar", File(selectedImage.value?.path??""))]);
+      final List<MultipartBody> multipartBody = [];
+      if(selectedImage.value != null){
+        multipartBody.add(MultipartBody("avatar", File(selectedImage.value?.path??"")));
+      }
+      if(selectedCoverImage.value != null){
+        multipartBody.add(MultipartBody("backgroundImage", File(selectedCoverImage.value?.path??"")));
+      }
+      var response = await apiClient.multipartRequest(url: ApiUrl.profileEdit(),body: body, reqType: "PUT", multipartBody: multipartBody);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);

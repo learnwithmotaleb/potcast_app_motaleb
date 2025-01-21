@@ -34,6 +34,7 @@ class ApiUrl {
   static String playListDelete({required String id}) => '$base/playlist/delete/$id';
   static String playListSongs({required String id, required int page}) => '$base/playlist/$id/podcasts?page=$page&limit=10';
   static String seeAll({required String type, required int page}) => '$base/podcast/$type?page=$page&limit=10';
+  static String seeAllTopCreator({required int page}) => '$base/creator/top-creators?page=$page&limit=20';
   static String subCategoryPodcast({required String id, required int page}) => '$base/sub-category/$id/podcasts?page=$page&limit=10';
   static String addLocation() => '$base/user/update-location';
   static String notification({required int page}) => '$base/notification?limit=20&page=$page';

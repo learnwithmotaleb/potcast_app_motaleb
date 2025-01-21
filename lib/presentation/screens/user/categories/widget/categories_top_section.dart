@@ -24,29 +24,12 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return SliverToBoxAdapter(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Gap(24.h),
-          GestureDetector(
-            onTap: () => AppRouter.route.pop(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Assets.images.splashLogo.image(height: 60.h, width: 100.w, fit: BoxFit.cover, color: isDarkMode ? null : AppColors.blackColor),
-                const Gap(8),
-                Padding(
-                  padding: const EdgeInsets.only(right: 18.0),
-                  child: Assets.icons.notification.svg(height: 25.h, width: 25.w),
-                ),
-              ],
-            ),
-          ),
           const Gap(12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -54,9 +37,17 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
               itemColor: CupertinoColors.systemGrey,
               placeholder:  "what_would_you_like_to_listen".tr,
               style: const TextStyle(fontSize: 16, color: CupertinoColors.white),
+              placeholderStyle: const TextStyle(color: AppColors.whiteColor),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: CupertinoColors.systemGrey5,
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF093028),
+                    Color(0xFF237A57),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               onSubmitted: (value) {
@@ -71,28 +62,23 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
               height: 100.h,
               width: width,
               decoration: BoxDecoration(
-                color: const Color(0xFFEF4849),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF093028),
+                    Color(0xFF237A57),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Gap(5),
-                  Align(
-                    alignment: Alignment.center,
-                    child: CustomText(text: controller.categoryModel.value.data?.category?.title ??"", fontSize: 16, color: AppColors.whiteColor, textAlign: TextAlign.center),
-                  ),
-                  SizedBox(
-                    height: 100.h,
-                    width: width / 2,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(75)
-                      ),
-                      child: CustomNetworkImage(imageUrl: controller.categoryModel.value.data?.category?.categoryImage ?? ""),
-                    ),
-                  ),
+                  Expanded(child: CustomText(text: controller.categoryModel.value.data?.category?.title ??"", maxLines: 2, fontSize: 16, color: AppColors.whiteColor, textAlign: TextAlign.center)),
+                  Expanded(child: CustomNetworkImage(imageUrl: controller.categoryModel.value.data?.category?.categoryImage ?? ""))
                 ],
               ),
             ),

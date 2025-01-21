@@ -331,7 +331,14 @@ class AudioPlayController extends GetxController{
                   width: width - 70.w,
                   height: 60.h,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1C1C77),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF093028),
+                        Color(0xFF237A57),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   padding: const EdgeInsets.all(5.0),
@@ -366,12 +373,18 @@ class AudioPlayController extends GetxController{
                     width: 50,
                     height: 60.h,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1C1C77),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF093028),
+                          Color(0xFF237A57),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     padding: const EdgeInsets.all(12.0),
-                    child: const Center(
-                        child: Icon(Icons.cancel, color: Colors.white)),
+                    child: const Center(child: Icon(Icons.cancel, color: Colors.white)),
                   ),
                 ),
               ],

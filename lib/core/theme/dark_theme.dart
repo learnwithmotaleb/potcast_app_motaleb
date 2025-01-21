@@ -40,7 +40,8 @@ final InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
 
 const AppBarTheme appBarTheme = AppBarTheme(
   elevation: 0,
-  backgroundColor: AppColors.blackColor,
+  backgroundColor: const Color(0xFF093028),
+  centerTitle: true,
 );
 
 const BottomNavigationBarThemeData bottomNavigationBarTheme =  BottomNavigationBarThemeData(

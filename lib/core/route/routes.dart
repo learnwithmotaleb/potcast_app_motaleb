@@ -24,6 +24,7 @@ import 'package:podcast/presentation/screens/playlist/songs/playlist_songs_scree
 import 'package:podcast/presentation/screens/profile/edit/edit_profile_screen.dart';
 import 'package:podcast/presentation/screens/profile/view/view_profile_screen.dart';
 import 'package:podcast/presentation/screens/see/see_all_screen.dart';
+import 'package:podcast/presentation/screens/see/see_all_top_creator.dart';
 import 'package:podcast/presentation/screens/settings/about_us_screen.dart';
 import 'package:podcast/presentation/screens/settings/change_password_screen.dart';
 import 'package:podcast/presentation/screens/settings/privacy_policy.dart';
@@ -167,6 +168,14 @@ class AppRouter {
           path: RoutePath.commentsScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: CommentsScreen(id: state.extra as String),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.seeAllTopCreator,
+          path: RoutePath.seeAllTopCreator.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const SeeAllTopCreator(),
             state: state,
           ),
         ),

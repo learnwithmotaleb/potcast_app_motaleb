@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
@@ -23,7 +22,7 @@ class UserHomeCategoriesSection extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Padding(
@@ -31,16 +30,9 @@ class UserHomeCategoriesSection extends StatelessWidget {
                 child: CustomText(text: category?.title??"", color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
               ),
             ),
-            SizedBox(
-              height: 70,
-              width: 100.h,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                ),
-                child: CustomNetworkImage(
-                    imageUrl: category?.categoryImage??"",
-                ),
+            Expanded(
+              child: CustomNetworkImage(
+                  imageUrl: category?.categoryImage??"",
               ),
             ),
           ],

@@ -49,11 +49,11 @@
 
   "listen_and_be_happy": "Listen and be happy",
   "what_would_you_like_to_listen": "What would you like to hear?",
-  "select_your_location": "Select your\nlocation",
+  "select_your_location": "Select your location",
   "genres_podcast": "Genres\nPodcast",
   "classical_audio": "Classical\nAudio",
   "millennial_podcast": "Millennial \nPodcast",
-  "top_artists": "Top  Artists",
+  "top_artists": "Top  Creator",
   "see_all": "See all",
   "latest": "New Music",
   "popular": "Popular Podcast",
@@ -118,7 +118,7 @@
   "re_enter_your_new_password": "Re-enter your new password",
   "pay_now": "Pay Now",
 
-  "my_podcast": "My Podcast",
+  "my_podcast": "My Audio",
   "donate": "Donate",
 
   "continue_listening": "Continue Listening",
@@ -128,8 +128,8 @@
   "amount": "Amount",
   "donation_successful": "Donation Successful",
 
-  "add_new_podcast": "Add New Podcast",
-  "ddd_podcast": "Add Podcast",
+  "add_new_podcast": "Add New Audio",
+  "ddd_podcast": "Add Audio",
   "category": "Category",
   "sub_category": "Sub Category",
   "select": "Select",
@@ -143,9 +143,12 @@
   "type_you_location": "Type you location",
   "description": "Description",
   "enter_your_description": "Enter Your Description",
-  "edit_podcast": "Edit Podcast",
+  "edit_podcast": "Edit Audio",
   "comments": "Comments",
   "ads_skip": "Ads Skip",
   "see_more": "See More",
-  "see_less": "See Less"
+  "see_less": "See Less",
+  "Choose_a_file_or_it_here": "Pick a cover image",
+  "JPEG_PNG_and_MP4_formats": "JPEG, PNG, and more formats, up to 50MB",
+  "Choose_a_audio": "Pick a audio"
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CustomNetworkImage extends StatelessWidget {
-  final String imageUrl;
+  final String? imageUrl;
   final double? height;
   final double? width;
   final Border? border;
@@ -28,9 +28,9 @@ class CustomNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String finalUrl = imageUrl;
+    final String finalUrl = imageUrl??"";
 
-    if (imageUrl.isEmpty) {
+    if (imageUrl == null || imageUrl!.isEmpty) {
       return Container(
         height: height,
         width: width,

@@ -31,22 +31,6 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(24.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Assets.images.splashLogo.image(height: 60.h, width: 100.w, fit: BoxFit.cover, color: isDarkMode ? null : AppColors.blackColor),
-            const Gap(8),
-            GestureDetector(
-              onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: Assets.icons.notification.svg(height: 25.h,width: 25.w),
-              ),
-            ),
-          ],
-        ),
         const Gap(12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -56,16 +40,23 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
               width: width,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                  color: AppColors.searchBoxColor,
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF093028),
+                      Color(0xFF237A57),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(8.r)
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Assets.icons.search.svg(height: 22, width: 22),
+                  Assets.icons.search.svg(height: 22, width: 22, colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
                   const Gap(8),
-                  CustomText(text: "what_would_you_like_to_listen".tr, color: AppColors.blackColor, fontSize: 16),
+                  CustomText(text: "what_would_you_like_to_listen".tr, color: AppColors.whiteColor, fontSize: 16),
                 ],
               ),
             ),
@@ -82,11 +73,11 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 child: GestureDetector(
                   onTap: () => AppRouter.route.pushNamed(RoutePath.selectCountryScreen),
                   child: Container(
-                    height: 80.h,
+                    height: 70.h,
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: const Color(0xFFD9DCDE),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,15 +87,14 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomText(text: "select_your_location".tr, fontSize: 8.sp, color: AppColors.blackColor, maxLines: 2, textAlign: TextAlign.start),
-                              const Icon(Icons.location_on, color: Color(0xFFEF4849),),
+                              CustomText(text: "select_your_location".tr, fontSize: 12.sp, color: AppColors.blackColor, maxLines: 2, textAlign: TextAlign.start),
                               CustomText(text: controller.model.value.data?.location??"", fontSize: 8.sp, color: AppColors.blackColor),
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: 80.h,
-                          width: ((width / 2) - 25) / 2,
+                          height: 70.h,
+                          width: 60,
                           child: Assets.images.flag.image(),
                         ),
                       ],
@@ -118,31 +108,22 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 child: GestureDetector(
                   onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen, extra: widget.categories?.id??""),
                   child: Container(
-                    height: 80.h,
+                    height: 70.h,
                     decoration: BoxDecoration(
                       color: const Color(0xFFEF4849),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 5.0,top: 5.0,bottom: 5.0),
-                            child: CustomText(text: widget.categories?.title??"", color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
+                            padding: const EdgeInsets.only(left: 2.0,top: 2.0,bottom: 2.0),
+                            child: CustomText(text: widget.categories?.title??"", fontSize: 12, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
                           ),
                         ),
-                        SizedBox(
-                          height: 80.h,
-                          width: 100.h,
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(60),
-                            ),
-                            child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage??""),
-                          ),
-                        ),
+                        Expanded(child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage??"")),
                       ],
                     ),
                   ),

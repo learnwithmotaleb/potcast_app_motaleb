@@ -23,13 +23,13 @@ class MusicCard extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(bottom: bgColor != null?8.0:0),
         child: Container(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 3.0),
           color: bgColor??Colors.transparent,
           child: Row(
             children: [
               SizedBox(
                 width: 100.w,
-                height: 100.h,
+                height: 80.h,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.r),
                     child: CustomNetworkImage(imageUrl: data.image??"")
@@ -42,7 +42,7 @@ class MusicCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SizedBox(
-                        height: 100.h,
+                        height: 80.h,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
