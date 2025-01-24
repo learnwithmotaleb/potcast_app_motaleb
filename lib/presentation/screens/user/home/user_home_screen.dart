@@ -31,7 +31,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      appBar: CustomHomeAppBar(),
+      // appBar: CustomHomeAppBar(),
       body: Obx(() {
         switch (controller.loading.value) {
           case Status.loading:
@@ -85,7 +85,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomText(text: "latest".tr,fontSize: 16),
+                              CustomText(text: "latest".tr,fontSize: 18),
                               TextButton(
                                 style: const ButtonStyle(
                                     padding: WidgetStatePropertyAll(EdgeInsets.zero)
@@ -126,7 +126,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomText(text: "popular".tr, fontSize: 16,),
+                          CustomText(text: "popular".tr, fontSize: 18,),
                           TextButton(
                             style: const ButtonStyle(
                               padding: WidgetStatePropertyAll(EdgeInsets.zero)

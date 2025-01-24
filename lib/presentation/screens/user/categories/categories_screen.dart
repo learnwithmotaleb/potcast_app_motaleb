@@ -31,10 +31,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Categories"),
-        centerTitle: true,
-      ),
       body: Obx(
             () {
           switch (controller.loading.value) {
@@ -94,14 +90,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       height: 80.h,
                                       padding: const EdgeInsets.only(right: 0, left: 8),
                                       decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF093028),
-                                            Color(0xFF237A57),
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
+                                        color: const Color(0xFFEF4849),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Row(

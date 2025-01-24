@@ -35,10 +35,10 @@ class _UserNavScreenState extends State<UserNavScreen> {
           });
         },
         items: [
-          BottomNavigationBarItem(icon: Assets.icons.home.svg(colorFilter: _selectedPage==0?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "home".tr,),
-          BottomNavigationBarItem(icon: Assets.icons.history.svg(colorFilter: _selectedPage==1?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "history".tr),
-          BottomNavigationBarItem(icon: Assets.icons.favorite.svg(colorFilter: _selectedPage==2?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "favorite".tr),
-          BottomNavigationBarItem(icon: Assets.icons.profile.svg(colorFilter: _selectedPage==3?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "profile".tr),
+          BottomNavigationBarItem(icon: Assets.icons.home.svg(colorFilter: _selectedPage==0?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null)),
+          BottomNavigationBarItem(icon: Assets.icons.history.svg(colorFilter: _selectedPage==1?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null)),
+          BottomNavigationBarItem(icon: Assets.icons.favorite.svg(colorFilter: _selectedPage==2?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null)),
+          BottomNavigationBarItem(icon: Assets.icons.profile.svg(colorFilter: _selectedPage==3?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null)),
         ],
       ),
     );

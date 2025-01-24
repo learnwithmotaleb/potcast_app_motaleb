@@ -40,8 +40,7 @@ final InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
 
 const AppBarTheme appBarTheme = AppBarTheme(
   elevation: 0,
-  backgroundColor: const Color(0xFF093028),
-  centerTitle: true,
+  backgroundColor: AppColors.blackColor,
 );
 
 const BottomNavigationBarThemeData bottomNavigationBarTheme =  BottomNavigationBarThemeData(
@@ -51,9 +50,7 @@ const BottomNavigationBarThemeData bottomNavigationBarTheme =  BottomNavigationB
   selectedItemColor: AppColors.whiteColor,
   showUnselectedLabels: true,
   showSelectedLabels: true,
-  selectedIconTheme: IconThemeData(size: 28,color: AppColors.whiteColor),
+  selectedIconTheme: IconThemeData(size: 24,color: AppColors.whiteColor),
   unselectedItemColor: AppColors.primaryColor,
   unselectedIconTheme: IconThemeData(size: 24,color: AppColors.primaryColor),
-  unselectedLabelStyle: TextStyle(color: AppColors.primaryColor,fontWeight: FontWeight.w400,fontSize: 12,fontFamily: "Regular"),
-  selectedLabelStyle: TextStyle(color: AppColors.whiteColor,fontWeight: FontWeight.w400,fontSize: 12,fontFamily: "Regular"),
 );

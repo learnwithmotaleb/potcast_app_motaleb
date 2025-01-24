@@ -36,7 +36,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomText(text: "top_artists".tr, fontSize: 16,),
+                CustomText(text: "top_artists".tr, fontSize: 18),
                 GestureDetector(onTap: ()=>AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor))),
               ],
             ),

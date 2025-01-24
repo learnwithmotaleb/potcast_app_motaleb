@@ -31,32 +31,40 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Gap(24.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Assets.images.splashLogo.image(height: 60.h, width: 100.w, fit: BoxFit.cover, color: isDarkMode ? null : AppColors.blackColor),
+            const Gap(8),
+            Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: Assets.icons.notification.svg(height: 25.h,width: 25.w),
+            ),
+          ],
+        ),
         const Gap(12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: GestureDetector(
-            onTap: ()=>AppRouter.route.pushNamed(RoutePath.searchScreen),
+            onTap: ()=>AppRouter.route.pushNamed(RoutePath.searchScreen,extra: "all"),
             child: Container(
               width: width,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF093028),
-                      Color(0xFF237A57),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: AppColors.searchBoxColor,
                   borderRadius: BorderRadius.circular(8.r)
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Assets.icons.search.svg(height: 22, width: 22, colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                  Assets.icons.search.svg(height: 22, width: 22),
                   const Gap(8),
-                  CustomText(text: "what_would_you_like_to_listen".tr, color: AppColors.whiteColor, fontSize: 16),
+                  CustomText(text: "what_would_you_like_to_listen".tr,
+                      color: AppColors.blackColor,
+                      fontSize: 16),
                 ],
               ),
             ),
@@ -73,7 +81,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 child: GestureDetector(
                   onTap: () => AppRouter.route.pushNamed(RoutePath.selectCountryScreen),
                   child: Container(
-                    height: 70.h,
+                    height: 80.h,
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: const Color(0xFFD9DCDE),
@@ -93,7 +101,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                           ),
                         ),
                         SizedBox(
-                          height: 70.h,
+                          height: 80.h,
                           width: 60,
                           child: Assets.images.flag.image(),
                         ),
@@ -108,7 +116,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 child: GestureDetector(
                   onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen, extra: widget.categories?.id??""),
                   child: Container(
-                    height: 70.h,
+                    height: 80.h,
                     decoration: BoxDecoration(
                       color: const Color(0xFFEF4849),
                       borderRadius: BorderRadius.circular(8),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
@@ -25,24 +26,31 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
     const MyPodcastScreen(isBack: false),
     const ProfileScreen(isUser: false),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedPage],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedPage,
-        onTap: (int index){
-          setState(() {
-            _selectedPage = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(icon: Assets.icons.home.svg(colorFilter: _selectedPage==0?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "home".tr,),
-          BottomNavigationBarItem(icon: Assets.icons.history.svg(colorFilter: _selectedPage==1?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "history".tr),
-          BottomNavigationBarItem(icon: Assets.icons.favorite.svg(colorFilter: _selectedPage==2?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "favorite".tr),
-          BottomNavigationBarItem(icon: Assets.icons.audio.svg(height: 26,width: 28,colorFilter: _selectedPage==3?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):const ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn)), label: "my_podcast".tr),
-          BottomNavigationBarItem(icon: Assets.icons.profile.svg(colorFilter: _selectedPage==4?const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn):null), label: "profile".tr),
-        ],
+      bottomNavigationBar: SizedBox(
+        height: 80,
+        child: BottomNavigationBar(
+          currentIndex: _selectedPage,
+          elevation: 10,
+          backgroundColor: const Color(0xff151619),
+          type: BottomNavigationBarType.fixed,
+          onTap: (int index) {
+            setState(() {
+              _selectedPage = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Iconsax.home, size: 32), label: ""),
+            BottomNavigationBarItem(icon: Icon(Iconsax.clock, size: 32), label: ""),
+            BottomNavigationBarItem(icon: Icon(Iconsax.lovely, size: 32), label: ""),
+            BottomNavigationBarItem(icon: Icon(Iconsax.add, size: 32), label: ""),
+            BottomNavigationBarItem(icon: Icon(Iconsax.user, size: 32), label: ""),
+          ],
+        ),
       ),
     );
   }

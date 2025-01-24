@@ -382,13 +382,16 @@ class PickAudioWidget extends StatelessWidget {
                             ),
                           ),
                           const Gap(5),
-                          Container(
-                            height: 50.h,
-                            width: 50.w,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(color: AppColors.redColor, borderRadius: BorderRadius.circular(8)),
-                            child: const Icon(Icons.cancel_outlined),
+                          GestureDetector(
+                            onTap: ()=>controller.audioFile.value = null,
+                            child: Container(
+                              height: 50.h,
+                              width: 50.w,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(color: AppColors.redColor, borderRadius: BorderRadius.circular(8)),
+                              child: const Icon(Icons.cancel_outlined),
+                            ),
                           ),
                         ],
                       ),

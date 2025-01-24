@@ -10,39 +10,27 @@ class CustomProfileTile extends StatelessWidget {
     required this.icon,
     required this.text,
     required this.onTap,
-    this.isLast = false,
+    this.isIcon = true,
+    this.widget,
   });
 
-  final Widget icon;
+  final IconData icon;
   final String text;
   final VoidCallback onTap;
-  final bool isLast;
+  final bool isIcon;
+  final Widget? widget;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        color: Colors.transparent,
-        child: Column(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
           children: [
-            Row(
-              children: [
-                icon,
-                const Gap(12),
-                Flexible(
-                  child: CustomText(
-                    text: text.tr,
-                    fontSize: 16,
-                    family: "Bold",
-                    color: isLast ? AppColors.redColor : null,
-                  ),
-                ),
-              ],
-            ),
-            const Gap(3),
-            isLast ? const SizedBox() : const Divider(color: Color(0xFFCDE1F9), thickness: 2),
+            isIcon?Icon(icon):(widget??const SizedBox()),
+            const Gap(12),
+            Flexible(child: CustomText(text: text.tr, fontSize: 14)),
           ],
         ),
       ),

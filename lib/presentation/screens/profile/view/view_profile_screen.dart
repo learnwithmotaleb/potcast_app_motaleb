@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -29,7 +30,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: const Text("Profile"),
       ),
       body: Obx(
             () {
@@ -94,32 +95,42 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       Gap(44.h),
                       CustomProfileTile(
                         text: _controller.profile.value.data?.name??"",
-                        icon: Assets.icons.person.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        widget: Assets.icons.person.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: (){},
+                        icon: Iconsax.add,
+                        isIcon: false,
                       ),
                       const Gap(24),
                       CustomProfileTile(
                         text: _controller.profile.value.data?.dateOfBirth??"",
-                        icon: Assets.icons.birthday.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        widget: Assets.icons.birthday.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: (){},
+                        icon: Iconsax.add,
+                        isIcon: false,
                       ),
                       const Gap(24),
                       CustomProfileTile(
                         text: _controller.profile.value.data?.gender??"",
-                        icon: Assets.icons.gender.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        widget: Assets.icons.gender.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: (){},
+                        icon: Iconsax.add,
+                        isIcon: false,
                       ),
                       const Gap(24),
                       CustomProfileTile(
                         text: _controller.profile.value.data?.contact??"",
-                        icon: Assets.icons.phone.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        widget: Assets.icons.phone.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: (){},
+                        icon: Iconsax.add,
+                        isIcon: false,
                       ),
                       const Gap(24),
                       CustomProfileTile(
                         text: _controller.profile.value.data?.address??"",
-                        icon: Assets.icons.homeWhite.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                        widget: Assets.icons.homeWhite.svg(height: 20, width: 20,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: (){},
+                        icon: Iconsax.add,
+                        isIcon: false,
                       ),
                       const Gap(24),
                       Padding(
