@@ -107,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       CustomProfileTile(
                                         text: "my_podcast",
-                                        widget: Assets.icons.audio.svg(height: 26, width: 26, colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                                        widget: Assets.icons.audio.svg(height: 22, width: 22, colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
                                         onTap: () => AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
                                         icon: Iconsax.add,
                                         isIcon: false,
@@ -117,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                             CustomProfileTile(
                               text: "my_play_list",
-                              widget: Assets.icons.playList.svg(height: 24, width: 24, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                              widget: Assets.icons.playList.svg(height: 20, width: 20, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
                               icon: Iconsax.add,
                               isIcon: false,
@@ -140,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       CustomProfileTile(
                                         text: "upgrade",
-                                        widget: Assets.icons.updrade.svg(height: 30, width: 30, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                                        widget: Assets.icons.updrade.svg(height: 20, width: 20, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                                         onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
                                         icon: Iconsax.add,
                                         isIcon: false,

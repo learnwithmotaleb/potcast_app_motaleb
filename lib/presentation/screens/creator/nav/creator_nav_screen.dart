@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
 import 'package:podcast/presentation/screens/profile/profile_screen.dart';
 import 'package:podcast/presentation/screens/user/home/user_home_screen.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class CreatorNavScreen extends StatefulWidget {
   const CreatorNavScreen({super.key});
