@@ -37,9 +37,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Gap(12),
-              Assets.images.verification.image(width: MediaQuery.of(context).size.width / 3),
-              const Gap(44),
+              Assets.images.splashLogo.image(),
               CustomText(
                 text: "email_to_recover_password".tr,
                 fontWeight: FontWeight.w300,

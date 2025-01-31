@@ -46,6 +46,7 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
           controller.pagingController.refresh();
         },
         child: PagedListView<int, SeeAllPodcast>(
+          padding: EdgeInsets.symmetric(horizontal: 12),
           pagingController: controller.pagingController,
           builderDelegate: PagedChildBuilderDelegate<SeeAllPodcast>(
             itemBuilder: (context, item, index) {

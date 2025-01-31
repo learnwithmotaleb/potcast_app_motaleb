@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
@@ -36,7 +37,7 @@ class _ResetScreenState extends State<ResetScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Gap(24),
+              Assets.images.splashLogo.image(),
               CustomText(text: "please_select_a_password_that_uses_one_capital_letter_one_number_and_unique_symbol".tr,fontSize: 16,family: "Light",maxLines: 2),
               const Gap(24),
               CustomAlignText(text: "new_password".tr),

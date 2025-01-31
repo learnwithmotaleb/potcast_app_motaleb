@@ -15,7 +15,7 @@ class UserHomeCategoriesSection extends StatelessWidget {
     return GestureDetector(
       onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen,extra: category?.id??""),
       child: Container(
-        height: 80,
+        height: 60,
         decoration: BoxDecoration(
           color: const Color(0xFFEF4849),
           borderRadius: BorderRadius.circular(8),

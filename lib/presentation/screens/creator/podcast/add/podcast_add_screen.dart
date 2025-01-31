@@ -20,8 +20,8 @@ import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:path/path.dart' as path;
 
 class PodcastAddScreen extends StatefulWidget {
-  const PodcastAddScreen({super.key});
-
+  const PodcastAddScreen({super.key, this.isRemoveIcon = false});
+  final bool isRemoveIcon;
   @override
   State<PodcastAddScreen> createState() => _PodcastAddScreenState();
 }
@@ -52,7 +52,7 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: widget.isRemoveIcon?const SizedBox():IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("ddd_podcast".tr),
       ),
       body: Obx(

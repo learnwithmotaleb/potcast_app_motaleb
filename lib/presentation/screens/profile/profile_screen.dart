@@ -117,10 +117,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                             CustomProfileTile(
                               text: "my_play_list",
-                              widget: Assets.icons.playList.svg(height: 20, width: 20, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
-                              icon: Iconsax.add,
-                              isIcon: false,
+                              icon: Iconsax.headphone,
                             ),
                             const Gap(12),
                             CustomProfileTile(
@@ -152,16 +150,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const Spacer(),
                             GestureDetector(
                               onTap: ()=>showLogoutDialog(context),
-                              child: Container(
-                                height: 40,
-                                width: width/2,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: AppColors.blackColor,
-                                  border: Border.all(color: AppColors.primaryColor),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 40),
+                                child: Container(
+                                  height: 40,
+                                  width: width,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: AppColors.blackColor,
+                                    border: Border.all(color: AppColors.primaryColor),
+                                  ),
+                                  child: CustomText(text: "logout".tr),
                                 ),
-                                child: CustomText(text: "logout".tr),
                               ),
                             ),
                           ],

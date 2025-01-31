@@ -81,7 +81,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
                           case Status.completed:
                             return SliverPadding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
                               sliver: SliverGrid(
                                 delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                                   return GestureDetector(

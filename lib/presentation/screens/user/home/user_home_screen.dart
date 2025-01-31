@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'dart:math' as math;
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
+import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/presentation/screens/user/home/widget/user_home_app_bar.dart';
@@ -26,6 +28,7 @@ class UserHomeScreen extends StatefulWidget {
 class _UserHomeScreenState extends State<UserHomeScreen> {
 
   final controller = Get.find<UserHomeController>();
+  final profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +49,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           case Status.completed:
 
             final List<CategoryElement>? categories = controller.model.value.data?.categories != null && controller.model.value.data!.categories!.isNotEmpty?controller.model.value.data?.categories:[];
-            final List<NewPodcastElement>? newItem = controller.model.value.data?.newPodcasts != null && controller.model.value.data!.newPodcasts!.isNotEmpty?controller.model.value.data?.newPodcasts:[];
-            final List<NewPodcastElement>? popularItem = controller.model.value.data?.popularPodcasts != null && controller.model.value.data!.popularPodcasts!.isNotEmpty?controller.model.value.data?.popularPodcasts:[];
+            final List<Podcast>? newItem = controller.model.value.data?.newPodcasts != null && controller.model.value.data!.newPodcasts!.isNotEmpty?controller.model.value.data?.newPodcasts:[];
+            final List<Podcast>? popularItem = controller.model.value.data?.popularPodcasts != null && controller.model.value.data!.popularPodcasts!.isNotEmpty?controller.model.value.data?.popularPodcasts:[];
+            final List<Podcast>? reelsItem = controller.model.value.data?.shortPodcasts != null && controller.model.value.data!.shortPodcasts!.isNotEmpty?controller.model.value.data?.shortPodcasts:[];
 
             return RefreshIndicator(
               onRefresh: ()async{
+                profileController.getProfile();
                 controller.getHome();
               },
               child: CustomScrollView(
@@ -158,6 +163,45 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                     ),
                   ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(text: "reels".tr, fontSize: 18,),
+                          TextButton(
+                            style: const ButtonStyle(
+                              padding: WidgetStatePropertyAll(EdgeInsets.zero)
+                            ),
+                            onPressed: () {
+                              AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "short");
+                            },
+                            child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.only(left: 12, right: 12),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                        return MusicCard(
+                          data: AudioPlayerModel(
+                              id: reelsItem?[index].id??"",
+                              title: reelsItem?[index].title??"",
+                              categories: reelsItem?[index].category?.title??"",
+                              image: reelsItem?[index].cover??"",
+                              duration: reelsItem?[index].audioDuration??""
+                          ),
+                          onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: reelsItem?[index].id??""),
+                        );
+                      }, childCount: reelsItem?.length,
+                      ),
+                    ),
+                  ),
+                  SliverGap(24),
                 ],
               ),
             );

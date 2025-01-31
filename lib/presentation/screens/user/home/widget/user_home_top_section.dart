@@ -13,7 +13,9 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserHomeTopSection extends StatefulWidget {
   const UserHomeTopSection({super.key, this.categories});
+
   final CategoryElement? categories;
+
   @override
   State<UserHomeTopSection> createState() => _UserHomeTopSectionState();
 }
@@ -25,8 +27,6 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    print(widget.categories?.categoryImage);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,11 +36,24 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Assets.images.splashLogo.image(height: 60.h, width: 100.w, fit: BoxFit.cover, color: isDarkMode ? null : AppColors.blackColor),
-            const Gap(8),
+            SizedBox(height: 25.h, width: 25.w),
+            Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: Assets.images.splashLogo.image(
+                  height: 60.h,
+                  width: 100.w,
+                  fit: BoxFit.cover,
+                  color: isDarkMode ? null : AppColors.blackColor,
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(right: 18.0),
-              child: Assets.icons.notification.svg(height: 25.h,width: 25.w),
+              child: GestureDetector(
+                onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
+                child: Assets.icons.notification.svg(height: 25.h, width: 25.w),
+              ),
             ),
           ],
         ),
@@ -48,23 +61,18 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: GestureDetector(
-            onTap: ()=>AppRouter.route.pushNamed(RoutePath.searchScreen,extra: "all"),
+            onTap: () => AppRouter.route.pushNamed(RoutePath.searchScreen, extra: "all"),
             child: Container(
               width: width,
               padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                  color: AppColors.searchBoxColor,
-                  borderRadius: BorderRadius.circular(8.r)
-              ),
+              decoration: BoxDecoration(color: AppColors.searchBoxColor, borderRadius: BorderRadius.circular(8.r)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Assets.icons.search.svg(height: 22, width: 22),
                   const Gap(8),
-                  CustomText(text: "what_would_you_like_to_listen".tr,
-                      color: AppColors.blackColor,
-                      fontSize: 16),
+                  CustomText(text: "what_would_you_like_to_listen".tr, color: AppColors.blackColor, fontSize: 16),
                 ],
               ),
             ),
@@ -72,7 +80,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
         ),
         const Gap(24),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 18.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -96,7 +104,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CustomText(text: "select_your_location".tr, fontSize: 12.sp, color: AppColors.blackColor, maxLines: 2, textAlign: TextAlign.start),
-                              CustomText(text: controller.model.value.data?.location??"", fontSize: 8.sp, color: AppColors.blackColor),
+                              CustomText(text: controller.model.value.data?.location ?? "", fontSize: 8.sp, color: AppColors.blackColor),
                             ],
                           ),
                         ),
@@ -114,7 +122,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
               Expanded(
                 flex: 1,
                 child: GestureDetector(
-                  onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen, extra: widget.categories?.id??""),
+                  onTap: () => AppRouter.route.pushNamed(RoutePath.categoriesScreen, extra: widget.categories?.id ?? ""),
                   child: Container(
                     height: 80.h,
                     decoration: BoxDecoration(
@@ -127,11 +135,11 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 2.0,top: 2.0,bottom: 2.0),
-                            child: CustomText(text: widget.categories?.title??"", fontSize: 12, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
+                            padding: const EdgeInsets.only(left: 2.0, top: 2.0, bottom: 2.0),
+                            child: CustomText(text: widget.categories?.title ?? "", fontSize: 12, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
                           ),
                         ),
-                        Expanded(child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage??"")),
+                        Expanded(child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage ?? "")),
                       ],
                     ),
                   ),

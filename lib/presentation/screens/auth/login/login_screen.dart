@@ -41,8 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Assets.images.forget.image(width: MediaQuery.of(context).size.width / 3),
-                const Gap(44),
+                Assets.images.splashLogo.image(),
                 CustomAlignText(text: "email".tr),
                 const Gap(8),
                 CustomTextField(

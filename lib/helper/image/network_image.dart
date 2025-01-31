@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CustomNetworkImage extends StatelessWidget {
@@ -12,6 +13,7 @@ class CustomNetworkImage extends StatelessWidget {
   final Color? backgroundColor;
   final Widget? child;
   final ColorFilter? colorFilter;
+  final IconData? errorIcon;
 
   const CustomNetworkImage({
     super.key,
@@ -23,6 +25,7 @@ class CustomNetworkImage extends StatelessWidget {
     this.width,
     this.border,
     this.borderRadius,
+    this.errorIcon,
     this.boxShape = BoxShape.rectangle,
   });
 
@@ -40,7 +43,7 @@ class CustomNetworkImage extends StatelessWidget {
           borderRadius: borderRadius,
           shape: boxShape,
         ),
-        child: const Icon(Icons.error),
+        child: Icon(errorIcon?? Icons.error),
       );
     }
     print(finalUrl);
@@ -80,7 +83,7 @@ class CustomNetworkImage extends StatelessWidget {
           borderRadius: borderRadius,
           shape: boxShape,
         ),
-        child: const Icon(Icons.error),
+        child: Icon(errorIcon?? Icons.error),
       ),
     );
   }

@@ -13,6 +13,7 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class PodcastController extends GetxController{
   ApiClient apiClient = ApiClient();
@@ -32,19 +33,34 @@ class PodcastController extends GetxController{
   }
 
   Future<void> pickAudio() async {
-    try{
+    try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['mp3', 'wav', 'aac', 'flac', 'opus', 'ogg', 'm4a'],
       );
 
       if (result != null) {
-        audioFile.value = File(result.files.single.path!);
+        File audio = File(result.files.single.path!);
+        audioFile.value = audio;
+
+        AudioPlayer audioPlayer = AudioPlayer();
+
+        // Load the file into the audio player to get duration
+        await audioPlayer.setSourceDeviceFile(audio.path);
+        Duration? audioDuration = await audioPlayer.getDuration();
+
+        if (audioDuration != null) {
+          if (audioDuration.inMinutes >= 10) {
+            toastMessage(message: "Your audio file is too long. can not upload reels section");
+          }
+        }
       }
-    }catch(e){
-      toastMessage(message: "audio pick error");
+    } catch (e) {
+      print(e.toString());
+      // toastMessage(message: "Audio pick error");
     }
   }
+
 
   RxString selectedCategory = "".obs;
   RxString selectedSubCategories = ''.obs;

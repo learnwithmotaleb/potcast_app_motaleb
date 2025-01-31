@@ -11,6 +11,7 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
+
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
@@ -132,20 +133,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return null;
                 },
               ),
-              const Gap(12),
-              CustomAlignText(text: "address".tr),
-              const Gap(8),
-              CustomTextField(
-                hintText: "enter_your_address".tr,
-                keyboardType: TextInputType.streetAddress,
-                controller: _address,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your ${'address'.tr}';
-                  }
-                  return null;
-                },
-              ),
+              Obx(() {
+                return _controller.selectedRoll.value == "USER"?const SizedBox():
+                Column(
+                  children: [
+                    const Gap(12),
+                    CustomAlignText(text: "address".tr),
+                    const Gap(8),
+                    CustomTextField(
+                      hintText: "enter_your_address".tr,
+                      keyboardType: TextInputType.streetAddress,
+                      controller: _address,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your ${'address'.tr}';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                );
+              }),
               const Gap(12),
               CustomAlignText(text: "password".tr),
               const Gap(8),
@@ -184,26 +192,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const Gap(24),
               Obx(
-                () => CustomButton(
-                  text: "sign_up".tr,
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      _controller.signUp(
-                        body: {
-                          "name": _name.text.trim(),
-                          "email": _email.text.trim(),
-                          "password": _password.text.trim(),
-                          "confirmPassword": _confirmPassword.text.trim(),
-                          "role": _controller.selectedRoll.value,
-                          "address": _address.text.trim(),
-                          "dateOfBirth": _dob.text.trim(),
-                        },
-                        email: _email.text.trim(),
-                      );
-                    }
-                  },
-                  isLoading: _controller.signUpLoading.value,
-                ),
+                    () =>
+                    CustomButton(
+                      text: "sign_up".tr,
+                      onTap: () {
+                        if (_formKey.currentState!.validate()) {
+                          _controller.signUp(
+                            body: {
+                              "name": _name.text.trim(),
+                              "email": _email.text.trim(),
+                              "password": _password.text.trim(),
+                              "confirmPassword": _confirmPassword.text.trim(),
+                              "role": _controller.selectedRoll.value,
+                              "address": _address.text.trim(),
+                              "dateOfBirth": _dob.text.trim(),
+                            },
+                            email: _email.text.trim(),
+                          );
+                        }
+                      },
+                      isLoading: _controller.signUpLoading.value,
+                    ),
               ),
               const Gap(8),
               Row(
@@ -211,7 +220,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   Flexible(child: CustomText(text: "already_have_an_account".tr)),
                   TextButton(
-                    onPressed: ()=>AppRouter.route.pop(),
+                    onPressed: () => AppRouter.route.pop(),
                     child: Text(
                       "login".tr,
                       style: const TextStyle(

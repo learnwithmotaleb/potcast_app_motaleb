@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
@@ -39,7 +40,7 @@ class _OtpScreenState extends State<OtpScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Gap(12),
+              Assets.images.splashLogo.image(),
               CustomText(text: "verification_code".tr, fontWeight: FontWeight.w800, fontSize: 20),
               const Gap(5),
               CustomText(text: widget.email, fontSize: 12, family: "Light"),

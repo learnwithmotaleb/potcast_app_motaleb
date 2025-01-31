@@ -277,7 +277,7 @@ class AppRouter {
           name: RoutePath.creatorNavScreen,
           path: RoutePath.creatorNavScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const CreatorNavScreen(),
+            child: CreatorNavScreen(index: (state.extra is int)? state.extra as int: 0),
             state: state,
           ),
         ),
@@ -301,7 +301,7 @@ class AppRouter {
           name: RoutePath.podcastAddScreen,
           path: RoutePath.podcastAddScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const PodcastAddScreen(),
+            child: PodcastAddScreen(isRemoveIcon: (state.extra is bool)? (state.extra as bool?? false): false),
             state: state,
           ),
         ),

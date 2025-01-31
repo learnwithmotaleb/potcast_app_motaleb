@@ -60,6 +60,8 @@
   "top_station": "Top Stations",
   "podcast": "Podcast",
 
+  "reels": "Reels",
+
   "recently_played": "Recently played",
 
   "birthday": "Birthday:",
@@ -138,8 +140,8 @@
   "add_audio": "Add Audio",
   "drag_your_file_or": "Drag your file(s) or",
   "max_10_MB_files_are_allowed": "Max 10 MB files are allowed",
-  "podcast_title": "Podcast Title",
-  "enter_podcast_title": "Enter Podcast Title",
+  "podcast_title": "Title",
+  "enter_podcast_title": "Enter Content Title",
   "type_you_location": "Type you location",
   "description": "Description",
   "enter_your_description": "Enter Your Description",

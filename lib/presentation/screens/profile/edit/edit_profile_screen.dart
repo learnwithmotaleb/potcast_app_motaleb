@@ -176,7 +176,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: phone,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'enter_your_phone_number';
+                            return 'enter_your_phone_number'.tr;
                           }
                           return null;
                         },

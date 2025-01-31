@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/user/categories/controller/categories_controller.dart';
@@ -32,20 +33,35 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Gap(24.h),
-          GestureDetector(
-            onTap: ()=>AppRouter.route.pop(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Assets.images.splashLogo.image(height: 60.h, width: 100.w, fit: BoxFit.cover, color: isDarkMode ? null : AppColors.blackColor),
-                const Gap(8),
-                Padding(
-                  padding: const EdgeInsets.only(right: 18.0),
-                  child: Assets.icons.notification.svg(height: 25.h,width: 25.w),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: IconButton(onPressed: (){
+                  AppRouter.route.pop();
+                }, icon: Icon(Icons.arrow_back)),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Assets.images.splashLogo.image(
+                    height: 60.h,
+                    width: 100.w,
+                    fit: BoxFit.cover,
+                    color: isDarkMode ? null : AppColors.blackColor,
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: GestureDetector(
+                  onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
+                  child: Assets.icons.notification.svg(height: 25.h, width: 25.w),
+                ),
+              ),
+            ],
           ),
           const Gap(12),
           Padding(
@@ -57,8 +73,9 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
               placeholderStyle: const TextStyle(color: AppColors.whiteColor),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: const Color(0xFFEF4849),
+                // color: const Color(0xFFEF4849),
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.whiteColor)
               ),
               onSubmitted: (value) {
                 controller.getSearch(id: widget.id, search: value);
