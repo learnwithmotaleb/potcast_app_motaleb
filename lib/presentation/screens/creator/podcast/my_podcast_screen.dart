@@ -28,10 +28,11 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
         title: Text("my_podcast".tr,),
         centerTitle: true,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: ()=>AppRouter.route.pushNamed(RoutePath.podcastAddScreen),
-        backgroundColor: AppColors.whiteColor,
-        child: Icon(Iconsax.add, color: AppColors.blackColor),
+        backgroundColor: AppColors.blackColor,
+        child: Assets.images.add.image(),
       ),
       body: RefreshIndicator(
         onRefresh: ()async{
@@ -39,6 +40,7 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
         },
         child: PagedListView<int, MyPodcastData>(
           pagingController: _controller.pagingController,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           builderDelegate: PagedChildBuilderDelegate<MyPodcastData>(
             itemBuilder: (context, item, index) {
               final data = AudioPlayerModel(

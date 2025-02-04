@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
@@ -29,7 +30,8 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
         leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("add_playlists".tr),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (controller.selectedPlayListId.isNotEmpty) {
             openSaveDialog(context);
@@ -37,9 +39,8 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
             toastMessage(message: "Please select at last one podcast");
           }
         },
-        backgroundColor: AppColors.primaryColor,
-        label: Text("save".tr, style: const TextStyle(color: AppColors.whiteColor)),
-        icon: const Icon(Icons.add, color: AppColors.whiteColor),
+        backgroundColor: AppColors.blackColor,
+        child: Assets.images.add.image(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

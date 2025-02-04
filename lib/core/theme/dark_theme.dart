@@ -6,7 +6,7 @@ final darkTheme = ThemeData(
   scaffoldBackgroundColor: AppColors.blackColor,
   brightness: Brightness.dark,
   useMaterial3: true,
-  fontFamily: "Regular",
+  fontFamily: "Bold",
   splashColor: Colors.transparent,
   inputDecorationTheme: inputDecorationTheme,
   appBarTheme: appBarTheme,

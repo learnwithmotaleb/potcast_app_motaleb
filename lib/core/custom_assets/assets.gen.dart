@@ -186,6 +186,11 @@ class $AssetsImagesGen {
   AssetGenImage get bannerLogo =>
       const AssetGenImage('assets/images/banner_logo.png');
 
+
+  /// File path: assets/images/banner_logo.png
+  AssetGenImage get map =>
+      const AssetGenImage('assets/images/map.png');
+
   /// File path: assets/images/classical.png
   AssetGenImage get classical =>
       const AssetGenImage('assets/images/classical.png');
@@ -240,6 +245,10 @@ class $AssetsImagesGen {
   AssetGenImage get rectangle =>
       const AssetGenImage('assets/images/rectangle.png');
 
+  /// File path: assets/images/verification.png
+  AssetGenImage get add =>
+      const AssetGenImage('assets/images/add.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
         bannerLogo,
@@ -257,7 +266,9 @@ class $AssetsImagesGen {
         startedLogo,
         upload,
         verification,
-        rectangle
+        rectangle,
+    map,
+    add
       ];
 }
 

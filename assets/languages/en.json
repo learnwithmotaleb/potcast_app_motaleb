@@ -53,7 +53,7 @@
   "genres_podcast": "Genres\nPodcast",
   "classical_audio": "Classical\nAudio",
   "millennial_podcast": "Millennial \nPodcast",
-  "top_artists": "Top  Creator",
+  "top_artists": "Top Creator",
   "see_all": "See all",
   "latest": "New Content",
   "popular": "Popular Content",
@@ -152,5 +152,6 @@
   "see_less": "See Less",
   "Choose_a_file_or_it_here": "Pick a cover image",
   "JPEG_PNG_and_MP4_formats": "JPEG, PNG, and more formats, up to 50MB",
-  "Choose_a_audio": "Pick a audio"
+  "Choose_a_audio": "Pick a audio",
+  "short": "Short"
 }

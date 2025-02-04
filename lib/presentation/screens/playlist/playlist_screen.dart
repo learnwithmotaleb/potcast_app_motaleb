@@ -29,14 +29,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("my_play_list".tr),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
         onPressed: () => AppRouter.route.pushNamed(RoutePath.playlistAddScreen),
-        backgroundColor: AppColors.primaryColor,
-        label: Text(
-          "add_new".tr,
-          style: const TextStyle(color: AppColors.whiteColor),
-        ),
-        icon: const Icon(Icons.add, color: AppColors.whiteColor),
+        backgroundColor: AppColors.blackColor,
+        child: Assets.images.add.image(),
       ),
       body: RefreshIndicator(
         onRefresh: () async{
@@ -56,26 +53,29 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                 ),
               ),
             ),
-            PagedSliverList<int, Playlist>(
-              pagingController: controller.playListController,
-              builderDelegate: PagedChildBuilderDelegate<Playlist>(
-                itemBuilder: (context, item, index) {
-                  final data = AudioPlayerModel(
-                    id: item.id??"",
-                    title: item.title??"",
-                    image: item.cover??"",
-                    categories: "Total Songs ${item.total??0.0}"
-                  );
-                  return MusicCard(
-                    data: data,
-                    onTap: () => AppRouter.route.pushNamed(RoutePath.playlistSongsScreen, extra: item.id??""),
-                    onLongPress: (){
-                      if(!controller.deleteLoading.value){
-                        controller.playlistDelete(id: item.id??"", context: context);
-                      }
-                    },
-                  );
-                },
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
+              sliver: PagedSliverList<int, Playlist>(
+                pagingController: controller.playListController,
+                builderDelegate: PagedChildBuilderDelegate<Playlist>(
+                  itemBuilder: (context, item, index) {
+                    final data = AudioPlayerModel(
+                      id: item.id??"",
+                      title: item.title??"",
+                      image: item.cover??"",
+                      categories: "Total Songs ${item.total??0.0}"
+                    );
+                    return MusicCard(
+                      data: data,
+                      onTap: () => AppRouter.route.pushNamed(RoutePath.playlistSongsScreen, extra: item.id??""),
+                      onLongPress: (){
+                        if(!controller.deleteLoading.value){
+                          controller.playlistDelete(id: item.id??"", context: context);
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ],

@@ -31,7 +31,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(24.h),
+        Gap(44.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,7 +42,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 alignment: Alignment.center,
                 child: Assets.images.splashLogo.image(
                   height: 60.h,
-                  width: 100.w,
+                  width: 150.w,
                   fit: BoxFit.cover,
                   color: isDarkMode ? null : AppColors.blackColor,
                 ),
@@ -57,7 +57,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
             ),
           ],
         ),
-        const Gap(12),
+        const Gap(24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: GestureDetector(
@@ -80,7 +80,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
         ),
         const Gap(24),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -97,21 +97,13 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(text: "select_your_location".tr, fontSize: 12.sp, color: AppColors.blackColor, maxLines: 2, textAlign: TextAlign.start),
-                              CustomText(text: controller.model.value.data?.location ?? "", fontSize: 8.sp, color: AppColors.blackColor),
-                            ],
-                          ),
-                        ),
+                        Flexible(child: CustomText(text: controller.model.value.data?.location ?? "select_your_location".tr, fontSize: 16.sp, color: AppColors.blackColor, maxLines: 2,)),
                         SizedBox(
                           height: 80.h,
                           width: 60,
-                          child: Assets.images.flag.image(),
+                          child: Assets.images.map.image(),
                         ),
                       ],
                     ),
@@ -136,7 +128,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 2.0, top: 2.0, bottom: 2.0),
-                            child: CustomText(text: widget.categories?.title ?? "", fontSize: 12, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
+                            child: CustomText(text: widget.categories?.title ?? "", fontSize: 16, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
                           ),
                         ),
                         Expanded(child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage ?? "")),

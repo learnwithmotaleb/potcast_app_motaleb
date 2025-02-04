@@ -5,7 +5,6 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class MusicCard extends StatelessWidget {
   const MusicCard({super.key, required this.data, required this.onTap, this.bgColor, this.onLongPress});
@@ -21,7 +20,7 @@ class MusicCard extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       child: Padding(
-        padding: EdgeInsets.only(bottom: bgColor != null?8.0:0),
+        padding: EdgeInsets.only(bottom: bgColor != null?18.0:18, left: 8, right: 8),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 3.0),
           color: bgColor??Colors.transparent,
@@ -49,15 +48,7 @@ class MusicCard extends StatelessWidget {
                           children: [
                             CustomText(text: data.title??"",fontSize: 16,fontWeight: FontWeight.w800),
                             CustomText(text: data.categories??""),
-                            Row(
-                              children: [
-                                CustomText(text: data.duration??""),
-                                const Gap(5),
-                                const Icon(Icons.location_on,size: 14,color: AppColors.primaryColor),
-                                const Gap(3),
-                                Assets.icons.favorite.svg(height: 10,width: 10)
-                              ],
-                            ),
+                            CustomText(text: data.duration??""),
                           ],
                         ),
                       ),

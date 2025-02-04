@@ -72,23 +72,27 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
-            PagedSliverList<int, SearchPodcast>(
-              pagingController: controller.pagingController,
-              builderDelegate: PagedChildBuilderDelegate<SearchPodcast>(
-                itemBuilder: (context, item, index) {
-                  final data = AudioPlayerModel(
-                    id: item.id??"",
-                    title: item.title??"",
-                    image: item.cover??"",
-                    categories: item.category?.title??"",
-                    duration: item.audioDuration.toString(),
-                    artist: item.creator?.user?.name??"",
-                  );
-                  return MusicCard(
-                    data: data,
-                    onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
-                  );
-                },
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              sliver: PagedSliverList<int, SearchPodcast>(
+                pagingController: controller.pagingController,
+
+                builderDelegate: PagedChildBuilderDelegate<SearchPodcast>(
+                  itemBuilder: (context, item, index) {
+                    final data = AudioPlayerModel(
+                      id: item.id??"",
+                      title: item.title??"",
+                      image: item.cover??"",
+                      categories: item.category?.title??"",
+                      duration: item.audioDuration.toString(),
+                      artist: item.creator?.user?.name??"",
+                    );
+                    return MusicCard(
+                      data: data,
+                      onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                    );
+                  },
+                ),
               ),
             ),
           ],

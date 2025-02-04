@@ -8,9 +8,8 @@ import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
-import 'package:podcast/presentation/screens/user/home/widget/user_home_app_bar.dart';
 import 'package:podcast/presentation/screens/user/home/widget/user_home_categories_section.dart';
-import 'package:podcast/presentation/widget/card/music_card.dart';
+import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -64,7 +63,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     child: UserHomeTopSection(categories: categories != null && categories.isNotEmpty?categories.first:CategoryElement()),
                   ),
                   SliverPadding(
-                    padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 8),
+                    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8, top: 8),
                     sliver: SliverGrid.builder(
                       itemBuilder: (BuildContext context, int index) {
                         if (categories == null || index + 1 >= categories.length) {
@@ -81,6 +80,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       itemCount: math.max(0, (categories?.length ?? 0) - 1), // Prevent negative count
                     ),
                   ),
+                  const SliverGap(12),
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
@@ -90,7 +90,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomText(text: "latest".tr,fontSize: 18),
+                              CustomText(text: "latest".tr,fontSize: 22, fontWeight: FontWeight.w800,),
                               TextButton(
                                 style: const ButtonStyle(
                                     padding: WidgetStatePropertyAll(EdgeInsets.zero)
@@ -106,32 +106,36 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ],
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                        return MusicCard(
-                          data: AudioPlayerModel(
-                            id: newItem?[index].id??"",
-                            title: newItem?[index].title??"",
-                            categories: newItem?[index].category?.title??"",
-                            image: newItem?[index].cover??"",
-                            duration: newItem?[index].audioDuration??""
-                          ),
-                          onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: newItem?[index].id??""),
-                        );
-                      },
-                        childCount: newItem?.length,
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        itemCount: newItem?.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index){
+                          return HomeMusicCard(
+                            data: AudioPlayerModel(
+                                id: newItem?[index].id??"",
+                                title: newItem?[index].title??"",
+                                categories: newItem?[index].category?.title??"",
+                                image: newItem?[index].cover??"",
+                                duration: newItem?[index].audioDuration??""
+                            ),
+                            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: newItem?[index].id??""),
+                          );
+                        },
                       ),
                     ),
                   ),
+                  const SliverGap(12),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomText(text: "popular".tr, fontSize: 18,),
+                          CustomText(text: "popular".tr,fontSize: 22, fontWeight: FontWeight.w800),
                           TextButton(
                             style: const ButtonStyle(
                               padding: WidgetStatePropertyAll(EdgeInsets.zero)
@@ -145,31 +149,36 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                        return MusicCard(
-                          data: AudioPlayerModel(
-                              id: popularItem?[index].id??"",
-                              title: popularItem?[index].title??"",
-                              categories: popularItem?[index].category?.title??"",
-                              image: popularItem?[index].cover??"",
-                              duration: popularItem?[index].audioDuration??""
-                          ),
-                          onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??""),
-                        );
-                      }, childCount: popularItem?.length,
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        itemCount: popularItem?.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index){
+                          return HomeMusicCard(
+                            data: AudioPlayerModel(
+                                id: popularItem?[index].id??"",
+                                title: popularItem?[index].title??"",
+                                categories: popularItem?[index].category?.title??"",
+                                image: popularItem?[index].cover??"",
+                                duration: popularItem?[index].audioDuration??""
+                            ),
+                            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??""),
+                          );
+                        },
                       ),
                     ),
                   ),
+                  const SliverGap(12),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomText(text: "reels".tr, fontSize: 18,),
+                          CustomText(text: "reels".tr,fontSize: 22, fontWeight: FontWeight.w800),
                           TextButton(
                             style: const ButtonStyle(
                               padding: WidgetStatePropertyAll(EdgeInsets.zero)
@@ -183,25 +192,29 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.only(left: 12, right: 12),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                        return MusicCard(
-                          data: AudioPlayerModel(
-                              id: reelsItem?[index].id??"",
-                              title: reelsItem?[index].title??"",
-                              categories: reelsItem?[index].category?.title??"",
-                              image: reelsItem?[index].cover??"",
-                              duration: reelsItem?[index].audioDuration??""
-                          ),
-                          onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: reelsItem?[index].id??""),
-                        );
-                      }, childCount: reelsItem?.length,
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        itemCount: reelsItem?.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index){
+                          return HomeMusicCard(
+                            data: AudioPlayerModel(
+                                id: reelsItem?[index].id??"",
+                                title: reelsItem?[index].title??"",
+                                categories: reelsItem?[index].category?.title??"",
+                                image: reelsItem?[index].cover??"",
+                                duration: reelsItem?[index].audioDuration??""
+                            ),
+                            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: reelsItem?[index].id??""),
+                          );
+                        },
                       ),
                     ),
                   ),
-                  SliverGap(24),
+                  const SliverGap(24),
                 ],
               ),
             );

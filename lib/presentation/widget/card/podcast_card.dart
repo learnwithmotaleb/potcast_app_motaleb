@@ -18,7 +18,7 @@ class PodcastCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(bottom: 18.0),
       color: Colors.transparent,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -47,15 +47,7 @@ class PodcastCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(text: data.categories??""),
-                        Row(
-                          children: [
-                            CustomText(text: data.duration??""),
-                            const Gap(5),
-                            const Icon(Icons.location_on,size: 14,color: AppColors.primaryColor),
-                            const Gap(3),
-                            Assets.icons.favorite.svg(height: 10,width: 10)
-                          ],
-                        ),
+                        CustomText(text: data.duration??""),
                       ],
                     ),
                     Row(

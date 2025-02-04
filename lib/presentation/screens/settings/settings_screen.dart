@@ -30,16 +30,6 @@ class SettingsScreen extends StatelessWidget {
             ),
             const Gap(12),
             SettingsCard(
-              onTap: () => AppRouter.route.pushNamed(RoutePath.termsOfCondition),
-              text: "terms_of_condition",
-            ),
-            const Gap(12),
-            SettingsCard(
-              onTap: () => AppRouter.route.pushNamed(RoutePath.privacyPolicy),
-              text: "privacy_policy",
-            ),
-            const Gap(12),
-            SettingsCard(
               onTap: () => AppRouter.route.pushNamed(RoutePath.aboutUsScreen),
               text: "about_us",
             ),
@@ -47,6 +37,16 @@ class SettingsScreen extends StatelessWidget {
             SettingsCard(
               onTap: () => AppRouter.route.pushNamed(RoutePath.supportScreen),
               text: "support",
+            ),
+            const Gap(12),
+            SettingsCard(
+              onTap: () => AppRouter.route.pushNamed(RoutePath.termsOfCondition),
+              text: "terms_of_condition",
+            ),
+            const Gap(12),
+            SettingsCard(
+              onTap: () => AppRouter.route.pushNamed(RoutePath.privacyPolicy),
+              text: "privacy_policy",
             ),
             const Gap(12),
             SettingsCard(
