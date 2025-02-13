@@ -40,7 +40,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
     return Scaffold(
       body: _pages[_selectedPage],
       bottomNavigationBar: SizedBox(
-        height: 80.h,
+        height: 100.h,
         child: BottomNavigationBar(
           currentIndex: _selectedPage,
           elevation: 10,
