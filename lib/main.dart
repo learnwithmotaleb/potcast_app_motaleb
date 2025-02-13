@@ -14,6 +14,7 @@ import 'utils/app_const/app_const.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
   //Background Audio Player
   await JustAudioBackground.init(
     androidNotificationChannelId: "com.ryanheise.audio_service.podcast.audio_player",

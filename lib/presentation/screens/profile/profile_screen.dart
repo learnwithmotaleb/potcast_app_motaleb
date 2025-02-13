@@ -9,7 +9,6 @@ import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
-import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -62,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 200,
                           width: width,
                           decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.6),
+                            color: Colors.grey.withValues(alpha: 0.6),
                           ),
                         ));
               }),
@@ -82,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       right: 10,
                       child: Container(
                         width: width,
-                        height: height - 310,
+                        height: height - 400,
                         decoration: const BoxDecoration(color: AppColors.blackColor, borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
                         child: Column(
                           children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/helper/image/network_image.dart';
@@ -29,7 +30,7 @@ class _UserNavScreenState extends State<UserNavScreen> {
     return Scaffold(
       body: _pages[_selectedPage],
       bottomNavigationBar: SizedBox(
-        height: 80,
+        height: 80.h,
         child: BottomNavigationBar(
           currentIndex: _selectedPage,
           elevation: 10,
