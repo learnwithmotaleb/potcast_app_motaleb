@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/single_podcast_model.dart';
-import 'package:podcast/presentation/screens/play/model/podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
@@ -168,10 +168,10 @@ class PodcastController extends GetxController{
 
       if (response.statusCode == 201 || response.statusCode == 200 ) {
         createLoadingMethod(false);
-        AppRouter.route.pop();
+        AppRouter.route.goNamed(RoutePath.creatorNavScreen);
         pagingController.refresh();
-        audioFile.value = null;
-        selectedImage.value = null;
+        audioFile.value == null;
+        selectedImage.value == null;
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       } else {

@@ -42,7 +42,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
               const Gap(12),
               CustomText(text: "verification_code".tr, fontWeight: FontWeight.w800, fontSize: 20),
               const Gap(5),
-              CustomText(text: widget.email ?? "", fontSize: 12, family: "Light"),
+              CustomText(text: widget.email, fontSize: 12, family: "Light"),
               const Gap(12),
               CustomText(text: "we_send_you_a_verification_code_to_verify_your_email".tr, fontSize: 16, family: "Light", maxLines: 2),
               const Gap(24),

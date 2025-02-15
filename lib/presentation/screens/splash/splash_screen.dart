@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/core/dependency/path.dart';
@@ -14,27 +15,37 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  DBHelper dbHelper = serviceLocator();
 
   Future<void> _navigation() async {
-    final String token = await dbHelper.getToken();
-    final String roll = await dbHelper.getUserRole();
 
-    if(token != "" && roll != ""){
-      if(roll == "USER"){
-        Future.delayed(const Duration(seconds: 3),(){
-          AppRouter.route.goNamed(RoutePath.userNavScreen);
-        });
-      }else if(roll == "CREATOR"){
-        Future.delayed(const Duration(seconds: 3),(){
-          AppRouter.route.goNamed(RoutePath.creatorNavScreen);
-        });
+    DBHelper dbHelper = serviceLocator();
+
+    try{
+      final String token = await dbHelper.getToken();
+      final String roll = await dbHelper.getUserRole();
+      print(token);
+      bool hasExpired = JwtDecoder.isExpired(token);
+
+      if(token != "" && roll != "" && !hasExpired){
+        if(roll == "USER"){
+          Future.delayed(const Duration(seconds: 3),(){
+            AppRouter.route.goNamed(RoutePath.userNavScreen);
+          });
+        }else if(roll == "CREATOR"){
+          Future.delayed(const Duration(seconds: 3),(){
+            AppRouter.route.goNamed(RoutePath.creatorNavScreen);
+          });
+        }else{
+          Future.delayed(const Duration(seconds: 3),(){
+            AppRouter.route.goNamed(RoutePath.loginScreen);
+          });
+        }
       }else{
         Future.delayed(const Duration(seconds: 3),(){
-          AppRouter.route.goNamed(RoutePath.loginScreen);
+          AppRouter.route.goNamed(RoutePath.introScreen);
         });
       }
-    }else{
+    }catch(e){
       Future.delayed(const Duration(seconds: 3),(){
         AppRouter.route.goNamed(RoutePath.introScreen);
       });

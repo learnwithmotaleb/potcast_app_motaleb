@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/model/upgrade_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';

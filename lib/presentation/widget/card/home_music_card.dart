@@ -21,7 +21,6 @@ class HomeMusicCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final double width = MediaQuery.of(context).size.width;
 
     return Padding(

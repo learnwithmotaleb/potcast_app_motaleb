@@ -12,6 +12,8 @@ class AppConstants {
 
 
   static const String baseUrl = "http://143.110.241.146:9000";
+  static const String bannerAndroid = "ca-app-pub-3940256099942544/9214589741";
+  static const String bannerIOS = 'ca-app-pub-3940256099942544/2435281174';
   //SharedPreferences
   static const String token = "token";
   static const String id = "id";

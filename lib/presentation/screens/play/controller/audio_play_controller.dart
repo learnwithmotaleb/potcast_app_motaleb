@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:podcast/core/route/route_path.dart';
@@ -22,6 +24,29 @@ class AudioPlayController extends GetxController{
 
   RxBool isLike = false.obs;
   RxBool isFavorite = false.obs;
+
+  final adUnitId = Platform.isAndroid ? AppConstants.bannerAndroid : AppConstants.bannerIOS;
+
+  BannerAd? bannerAd;
+  RxBool isLoaded = false.obs;
+
+  void loadAd({required int width, required int height}) async {
+    bannerAd = BannerAd(
+      adUnitId: adUnitId,
+      request: const AdRequest(),
+      size: AdSize(width: width, height: height),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          debugPrint('$ad loaded.');
+          isLoaded.value = true;
+        },
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('BannerAd failed to load: $err');
+          ad.dispose();
+        },
+      ),
+    )..load();
+  }
 
   /// ============================= GET Podcast Details Info =====================================
   var loading = Status.completed.obs;
@@ -160,78 +185,6 @@ class AudioPlayController extends GetxController{
 
   var playLoading = Status.completed.obs;
   playLoadingMethod(Status status) => playLoading.value = status;
-
-/*  Future<void> playAudio({required PodcastModel podcast}) async {
-    try{
-      final mediaItem = MediaItem(
-        id: podcast.data?.podcast?.id??"",
-        album:  podcast.data?.podcast?.category?.title??"",
-        title:  podcast.data?.podcast?.title??"",
-        artist:  podcast.data?.podcast?.creator?.user?.name??"",
-        artUri: Uri.parse("${AppConstants.baseUrl}${podcast.data?.podcast?.cover??""}"),
-      );
-
-      if (!await InternetConnection().hasInternetAccess) {
-        print("Key No Internet Connection ===================================:Key ${podcast.data?.podcast?.id}");
-        FileInfo? fileIInfo = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
-        File? file = fileIInfo?.file;
-        if(file != null){
-          await audioPlayer.setAudioSource(
-            AudioSource.uri(
-              Uri.parse(file.path),
-              tag: mediaItem,
-            ),
-          ).then((value) async {
-            loadingMethod(Status.completed);
-            await play();
-          }).catchError((e){
-            currentMediaId.value = '';
-            loadingMethod(Status.error);
-          });
-        }else{
-          currentMediaId.value = '';
-          loadingMethod(Status.internetError);
-        }
-      } else {
-        final cacheFile = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
-        final File? file = cacheFile?.file;
-        if (file != null && file.path != "") {
-          print("Key Has Internet And Get Cache===================================Url${file.path} :Key ${podcast.data?.podcast?.id??""}");
-          await audioPlayer.setAudioSource(
-            AudioSource.uri(
-              Uri.parse(file.path),
-              tag: mediaItem,
-            ),
-          ).then((value) async {
-            loadingMethod(Status.completed);
-            await play();
-          }).catchError((e){
-            currentMediaId.value = '';
-            loadingMethod(Status.error);
-          });
-        } else {
-          print("Key Has Internet ===================================Url${file?.path} :Key ${podcast.data?.podcast?.id}");
-          await cacheManager.getSingleFile(podcast.data?.podcast?.audio??"",key: podcast.data?.podcast?.id);
-          await audioPlayer.setAudioSource(
-            AudioSource.uri(
-              Uri.parse(podcast.data?.podcast?.audio??""),
-              tag: mediaItem,
-            ),
-            preload: true,
-          ).then((value) async {
-            loadingMethod(Status.completed);
-            await play();
-          }).catchError((e){
-            currentMediaId.value = '';
-            loadingMethod(Status.error);
-          });
-        }
-      }
-    }catch(e){
-      currentMediaId.value = '';
-      loadingMethod(Status.error);
-    }
-  }*/
 
   Future<void> play() async{
     currentMediaId.value = postModel.value.data?.podcast?.id??"";
@@ -419,4 +372,76 @@ class AudioPlayController extends GetxController{
     audioPlayer.dispose();
     super.onClose();
   }
+
+/*  Future<void> playAudio({required PodcastModel podcast}) async {
+    try{
+      final mediaItem = MediaItem(
+        id: podcast.data?.podcast?.id??"",
+        album:  podcast.data?.podcast?.category?.title??"",
+        title:  podcast.data?.podcast?.title??"",
+        artist:  podcast.data?.podcast?.creator?.user?.name??"",
+        artUri: Uri.parse("${AppConstants.baseUrl}${podcast.data?.podcast?.cover??""}"),
+      );
+
+      if (!await InternetConnection().hasInternetAccess) {
+        print("Key No Internet Connection ===================================:Key ${podcast.data?.podcast?.id}");
+        FileInfo? fileIInfo = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
+        File? file = fileIInfo?.file;
+        if(file != null){
+          await audioPlayer.setAudioSource(
+            AudioSource.uri(
+              Uri.parse(file.path),
+              tag: mediaItem,
+            ),
+          ).then((value) async {
+            loadingMethod(Status.completed);
+            await play();
+          }).catchError((e){
+            currentMediaId.value = '';
+            loadingMethod(Status.error);
+          });
+        }else{
+          currentMediaId.value = '';
+          loadingMethod(Status.internetError);
+        }
+      } else {
+        final cacheFile = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
+        final File? file = cacheFile?.file;
+        if (file != null && file.path != "") {
+          print("Key Has Internet And Get Cache===================================Url${file.path} :Key ${podcast.data?.podcast?.id??""}");
+          await audioPlayer.setAudioSource(
+            AudioSource.uri(
+              Uri.parse(file.path),
+              tag: mediaItem,
+            ),
+          ).then((value) async {
+            loadingMethod(Status.completed);
+            await play();
+          }).catchError((e){
+            currentMediaId.value = '';
+            loadingMethod(Status.error);
+          });
+        } else {
+          print("Key Has Internet ===================================Url${file?.path} :Key ${podcast.data?.podcast?.id}");
+          await cacheManager.getSingleFile(podcast.data?.podcast?.audio??"",key: podcast.data?.podcast?.id);
+          await audioPlayer.setAudioSource(
+            AudioSource.uri(
+              Uri.parse(podcast.data?.podcast?.audio??""),
+              tag: mediaItem,
+            ),
+            preload: true,
+          ).then((value) async {
+            loadingMethod(Status.completed);
+            await play();
+          }).catchError((e){
+            currentMediaId.value = '';
+            loadingMethod(Status.error);
+          });
+        }
+      }
+    }catch(e){
+      currentMediaId.value = '';
+      loadingMethod(Status.error);
+    }
+  }*/
 }

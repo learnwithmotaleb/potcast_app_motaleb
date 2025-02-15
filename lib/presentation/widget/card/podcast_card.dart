@@ -9,7 +9,6 @@ import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class PodcastCard extends StatelessWidget {
   PodcastCard({super.key, required this.data});

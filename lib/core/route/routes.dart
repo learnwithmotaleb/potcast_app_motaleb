@@ -301,7 +301,7 @@ class AppRouter {
           name: RoutePath.podcastAddScreen,
           path: RoutePath.podcastAddScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: PodcastAddScreen(isRemoveIcon: (state.extra is bool)? (state.extra as bool?? false): false),
+            child: PodcastAddScreen(isRemoveIcon: (state.extra is bool)? (state.extra as bool): false),
             state: state,
           ),
         ),

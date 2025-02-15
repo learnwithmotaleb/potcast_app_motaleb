@@ -22,7 +22,6 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

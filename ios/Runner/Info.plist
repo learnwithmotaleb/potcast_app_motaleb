@@ -27,6 +27,10 @@
     <key>NSMicrophoneUsageDescription</key>
     <string>We need access to your microphone to record audio</string>
 
+    <!-- =================== Google AdMob ======================= -->
+<key>GADApplicationIdentifier</key>
+<string>ca-app-pub-9600166294736004~6364781143</string>
+
 
 
 

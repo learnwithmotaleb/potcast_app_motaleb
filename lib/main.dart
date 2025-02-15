@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:podcast/core/theme/dark_theme.dart';
 import 'controller/language_controller.dart';
@@ -13,7 +14,7 @@ import 'utils/app_const/app_const.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  MobileAds.instance.initialize();
 
   //Background Audio Player
   await JustAudioBackground.init(

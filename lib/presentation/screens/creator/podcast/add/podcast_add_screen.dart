@@ -157,7 +157,11 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                                 ];
 
                                 controller.createPodcast(body: body, multipartBody: multipartBody);
+                              }else{
+                                print("***999");
                               }
+                            }else{
+                              print("***");
                             }
                           },
                           isLoading: controller.createLoading.value,
@@ -373,7 +377,7 @@ class PickAudioWidget extends StatelessWidget {
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                color: AppColors.primaryColor,
+                                color: AppColors.blackColor,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: CustomText(

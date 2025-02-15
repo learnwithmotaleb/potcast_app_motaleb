@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class CustomProfileTile extends StatelessWidget {
   const CustomProfileTile({
