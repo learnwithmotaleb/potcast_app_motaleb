@@ -88,9 +88,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const Gap(65),
                             Obx(() => Column(
                                   children: [
-                                    CustomText(text: _controller.profile.value.data?.name ?? ""),
+                                    CustomText(text: _controller.profile.value.data?.name ?? "", fontSize: 24,fontWeight: FontWeight.w800),
                                     const Gap(5),
-                                    CustomText(text: _controller.profile.value.data?.email ?? ""),
+                                    CustomText(text: _controller.profile.value.data?.email ?? "", fontSize: 16),
                                   ],
                                 )),
                             Gap(12.h),
@@ -99,19 +99,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               icon: Iconsax.user,
                               onTap: () => AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
                             ),
-                            const Gap(12),
+                            const Gap(24),
                             widget.isUser
                                 ? const SizedBox()
                                 : Column(
                                     children: [
                                       CustomProfileTile(
                                         text: "my_podcast",
-                                        widget: Assets.icons.audio.svg(height: 22, width: 22, colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
                                         onTap: () => AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
-                                        icon: Iconsax.add,
-                                        isIcon: false,
+                                        icon: Iconsax.music,
                                       ),
-                                      const Gap(12),
+                                      const Gap(24),
                                     ],
                                   ),
                             CustomProfileTile(
@@ -119,19 +117,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
                               icon: Iconsax.headphone,
                             ),
-                            const Gap(12),
+                            const Gap(24),
                             CustomProfileTile(
                               text: "settings",
                               icon: Iconsax.setting,
                               onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
                             ),
-                            const Gap(12),
+                            const Gap(24),
                             CustomProfileTile(
                               text: "notification",
                               icon: Iconsax.notification,
                               onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
                             ),
-                            const Gap(12),
+                            const Gap(24),
                             widget.isUser
                                 ? Column(
                                     children: [

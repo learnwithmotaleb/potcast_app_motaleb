@@ -10,6 +10,9 @@
 	<string>We need access to your photo library to save captured images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to select images for your profile.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to pick images.</string>
+
 
 	<!-- =================== File Picker ======================= -->
 	<key>NSDocumentsFolderUsageDescription</key>

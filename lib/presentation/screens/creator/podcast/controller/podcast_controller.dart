@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
@@ -25,10 +26,46 @@ class PodcastController extends GetxController{
   RxString categoriesId = "".obs;
   RxString subCategoriesId = "".obs;
 
+  // Function to pick an image
   Future<void> pickImage() async {
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
-    if (image != null) {
-      selectedImage.value = image;
+    try {
+
+      var permissionStatus = await Permission.photos.status;
+
+      if (permissionStatus.isGranted) {
+        // If permission is granted, pick the image
+        XFile? image = await _picker.pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 50,
+        );
+        if (image != null) {
+          selectedImage.value = image;
+        } else {
+          toastMessage(message: "Cover Image not selected.");
+        }
+      } else if (permissionStatus.isDenied) {
+        // If permission is denied, request it
+        var status = await Permission.photos.request();
+        if (status.isGranted) {
+          // If permission is granted after the request, pick the image
+          XFile? image = await _picker.pickImage(
+            source: ImageSource.gallery,
+            imageQuality: 50,
+          );
+          if (image != null) {
+            selectedImage.value = image;
+          } else {
+            toastMessage(message: "Cover Image not selected.");
+          }
+        } else if (status.isPermanentlyDenied) {
+          // If permission is permanently denied, open app settings
+          toastMessage(message: "Permission permanently denied. Please enable permission in settings.");
+          var status = await Permission.photos.request();
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+      toastMessage(message: "Cover Image not selected for permission error.");
     }
   }
 
@@ -57,7 +94,7 @@ class PodcastController extends GetxController{
       }
     } catch (e) {
       print(e.toString());
-      // toastMessage(message: "Audio pick error");
+      toastMessage(message: "Audio not selected for permission error.");
     }
   }
 

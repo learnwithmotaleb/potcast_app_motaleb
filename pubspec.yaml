@@ -146,6 +146,15 @@ flutter:
     - family: Regular
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
+    - family: Regular1
+      fonts:
+        - asset: assets/fonts/RobotoCondensed-Regular.ttf
+    - family: MediumItalic
+      fonts:
+        - asset: assets/fonts/RobotoCondensed-MediumItalic.ttf
+    - family: SemiBold
+      fonts:
+        - asset: assets/fonts/RobotoCondensed-SemiBold.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

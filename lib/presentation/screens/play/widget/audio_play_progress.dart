@@ -29,7 +29,6 @@ class _AudioPlayProgressState extends State<AudioPlayProgress> {
         progressBarColor: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
         bufferedBarColor: isDarkMode ? AppColors.whiteColor.withOpacity(0.5) : AppColors.blackColor.withOpacity(0.5),
         baseBarColor: isDarkMode ? AppColors.whiteColor.withOpacity(0.1) : AppColors.blackColor.withOpacity(0.1),
-        onSeek: controller.seekAudio,
       );
     });
   }

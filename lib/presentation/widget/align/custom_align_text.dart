@@ -12,7 +12,7 @@ class CustomAlignText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: alignment,
-      child: Text(text,style: TextStyle(fontSize: fontSize??18,color: color,fontWeight: fontWeight??FontWeight.w800),maxLines: 1),
+      child: Text(text,style: TextStyle(fontSize: fontSize??18,color: color,fontWeight: fontWeight??FontWeight.w800, fontFamily: "SemiBold"),maxLines: 1),
     );
   }
 }

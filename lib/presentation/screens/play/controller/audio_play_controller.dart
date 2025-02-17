@@ -258,7 +258,7 @@ class AudioPlayController extends GetxController{
   }
 
   OverlayEntry? overlayEntry;
-  Offset offset = const Offset(5, 80);
+  Offset offset = const Offset(5, 100);
 
   void showAudioPlayerOverlayCard(BuildContext context) {
     if (overlayEntry != null) {
@@ -313,7 +313,7 @@ class AudioPlayController extends GetxController{
                           }),
                         ),
                       ),
-                      const Gap(12),
+                      const Gap(24),
                       const Expanded(child: AudioPlayControl(isRemove: true,)),
                       const Gap(12),
                     ],

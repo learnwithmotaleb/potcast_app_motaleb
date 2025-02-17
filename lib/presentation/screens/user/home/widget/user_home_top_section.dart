@@ -31,7 +31,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(44.h),
+        Gap(55.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,12 +59,12 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
         ),
         const Gap(24),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: GestureDetector(
             onTap: () => AppRouter.route.pushNamed(RoutePath.searchScreen, extra: "all"),
             child: Container(
               width: width,
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(color: AppColors.searchBoxColor, borderRadius: BorderRadius.circular(8.r)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -131,7 +131,10 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                             child: CustomText(text: widget.categories?.title ?? "", fontSize: 16, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
                           ),
                         ),
-                        Expanded(child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage ?? "")),
+                        Expanded(child: ClipRRect(borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(8.0),
+                          bottomRight: Radius.circular(8.0),
+                        ),child: CustomNetworkImage(imageUrl: widget.categories?.categoryImage ?? ""))),
                       ],
                     ),
                   ),

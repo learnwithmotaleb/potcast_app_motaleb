@@ -26,20 +26,17 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 12.0),
+      padding: const EdgeInsets.only(left: 12.0, right: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomText(text: "top_artists".tr,fontSize: 22, fontWeight: FontWeight.w800),
-                GestureDetector(onTap: ()=>AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor))),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomText(text: "top_artists".tr,fontSize: 22, fontWeight: FontWeight.w800),
+              TextButton(onPressed: ()=>AppRouter.route.pushNamed(RoutePath.seeAllTopCreator), child: CustomText(text: "see_all".tr,color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor))
+            ],
           ),
           const Gap(12),
           SizedBox(

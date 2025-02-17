@@ -55,7 +55,7 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
             _openBrowser(controller.postModel.value.data?.podcast?.creator?.donations??"");
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 10),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -68,7 +68,7 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
                 end: Alignment.bottomRight,
               ),
             ),
-            child: const CustomText(text: "Donate"),
+            child: const CustomText(text: "Give"),
           ),
         ),
       ],

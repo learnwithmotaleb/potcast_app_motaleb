@@ -6,7 +6,7 @@ final lightTheme = ThemeData(
   scaffoldBackgroundColor: AppColors.whiteColor,
   brightness: Brightness.light,
   useMaterial3: true,
-  fontFamily: "Regular",
+  fontFamily: "SemiBold",
   splashColor: Colors.transparent,
   inputDecorationTheme: inputDecorationTheme,
   appBarTheme: appBarTheme,

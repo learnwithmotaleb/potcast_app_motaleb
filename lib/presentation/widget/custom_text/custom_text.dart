@@ -16,7 +16,7 @@ class CustomText extends StatelessWidget {
     required this.text,
     this.overflow = TextOverflow.ellipsis,
     this.decoration,
-    this.family = "Regular"
+    this.family = "SemiBold"
   });
 
   final double left;

@@ -30,7 +30,7 @@ class HomeMusicCard extends StatelessWidget {
         onLongPress: onLongPress,
         child: SizedBox(
           height: 200,
-          width: (width/2)-30,
+          width: (width/2)-50,
           child: Padding(
             padding: EdgeInsets.only(bottom: bgColor != null?12.0:0),
             child: Container(

@@ -27,9 +27,9 @@ class CustomProfileTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: [
-            isIcon?Icon(icon):(widget??const SizedBox()),
+            isIcon?Icon(icon, size: 24,):(widget??const SizedBox()),
             const Gap(12),
-            Flexible(child: CustomText(text: text.tr, fontSize: 14)),
+            Flexible(child: CustomText(text: text.tr, fontSize: 20)),
           ],
         ),
       ),
