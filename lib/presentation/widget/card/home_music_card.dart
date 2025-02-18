@@ -49,7 +49,7 @@ class HomeMusicCard extends StatelessWidget {
                   const Gap(8),
                   CustomText(text: data.title??"",fontSize: 16,fontWeight: FontWeight.w800),
                   CustomText(text: data.categories??""),
-                  CustomText(text: data.duration??""),
+                  // CustomText(text: data.duration??""),
                 ],
               ),
             ),

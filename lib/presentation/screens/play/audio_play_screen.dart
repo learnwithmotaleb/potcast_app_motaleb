@@ -159,7 +159,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                           AudioPlayControl(),
                           Gap(24),
                           AudioPlayBottom(),
-                          Gap(24),
+                          Gap(44),
                         ],
                       ),
                     ),

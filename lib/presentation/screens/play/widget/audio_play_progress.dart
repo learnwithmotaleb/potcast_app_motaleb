@@ -21,15 +21,77 @@ class _AudioPlayProgressState extends State<AudioPlayProgress> {
       final total = controller.totalDuration.value;
       final buffered = controller.bufferedPosition.value;
 
-      return ProgressBar(
-        progress: position,
-        total: total,
-        buffered: buffered,
-        thumbColor: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
-        progressBarColor: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
-        bufferedBarColor: isDarkMode ? AppColors.whiteColor.withOpacity(0.5) : AppColors.blackColor.withOpacity(0.5),
-        baseBarColor: isDarkMode ? AppColors.whiteColor.withOpacity(0.1) : AppColors.blackColor.withOpacity(0.1),
+      double totalMillis = total.inMilliseconds.toDouble();
+      double bufferedMillis = buffered.inMilliseconds.toDouble();
+      double progressMillis = position.inMilliseconds.toDouble();
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Custom Progress Bar with Buffered Position
+          Stack(
+            children: [
+              // Base line (Background)
+              Container(
+                height: 5,
+                decoration: BoxDecoration(
+                  color: isDarkMode ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(2.5),
+                ),
+              ),
+              // Buffered progress
+              Positioned.fill(
+                child: FractionallySizedBox(
+                  widthFactor: totalMillis > 0 ? bufferedMillis / totalMillis : 0,
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? Colors.white.withOpacity(0.4) : Colors.black.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(2.5),
+                    ),
+                  ),
+                ),
+              ),
+              // Current progress
+              Positioned.fill(
+                child: FractionallySizedBox(
+                  widthFactor: totalMillis > 0 ? progressMillis / totalMillis : 0,
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      borderRadius: BorderRadius.circular(2.5),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          // Row with Total and Current Time
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _formatDuration(position),
+                style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+              ),
+              Text(
+                _formatDuration(total),
+                style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+              ),
+            ],
+          ),
+        ],
       );
     });
+  }
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
   }
 }

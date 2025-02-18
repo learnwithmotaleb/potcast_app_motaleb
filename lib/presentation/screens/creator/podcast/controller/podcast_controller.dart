@@ -60,7 +60,7 @@ class PodcastController extends GetxController{
         } else if (status.isPermanentlyDenied) {
           // If permission is permanently denied, open app settings
           toastMessage(message: "Permission permanently denied. Please enable permission in settings.");
-          var status = await Permission.photos.request();
+          openAppSettings();
         }
       }
     } catch (e) {

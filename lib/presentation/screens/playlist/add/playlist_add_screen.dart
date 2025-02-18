@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -31,16 +32,19 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
         title: Text("add_playlists".tr),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (controller.selectedPlayListId.isNotEmpty) {
-            openSaveDialog(context);
-          } else {
-            toastMessage(message: "Please select at last one podcast");
-          }
-        },
-        backgroundColor: AppColors.blackColor,
-        child: Assets.images.add.image(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+        child: FloatingActionButton(
+          onPressed: () {
+            if (controller.selectedPlayListId.isNotEmpty) {
+              openSaveDialog(context);
+            } else {
+              toastMessage(message: "Please select at last one podcast");
+            }
+          },
+          backgroundColor: AppColors.blackColor,
+          child: const Center(child: Icon(Iconsax.add, size: 80))
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

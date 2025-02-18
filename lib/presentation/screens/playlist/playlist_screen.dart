@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
@@ -30,10 +31,13 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         title: Text("my_play_list".tr),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => AppRouter.route.pushNamed(RoutePath.playlistAddScreen),
-        backgroundColor: AppColors.blackColor,
-        child: Assets.images.add.image(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+        child: FloatingActionButton(
+          onPressed: () => AppRouter.route.pushNamed(RoutePath.playlistAddScreen),
+          backgroundColor: AppColors.blackColor,
+          child: const Center(child: Icon(Iconsax.add, size: 80)),
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () async{

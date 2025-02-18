@@ -31,7 +31,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(55.h),
+        Gap(70.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,7 +99,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Flexible(child: CustomText(text: controller.model.value.data?.location ?? "select_your_location".tr, fontSize: 16.sp, color: AppColors.blackColor, maxLines: 2,)),
+                        Flexible(child: CustomText(text: controller.model.value.data?.location ?? "select_your_location".tr, fontSize: 20.sp, color: AppColors.blackColor, maxLines: 2,)),
                         SizedBox(
                           height: 80.h,
                           width: 60,
@@ -127,8 +127,8 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 2.0, top: 2.0, bottom: 2.0),
-                            child: CustomText(text: widget.categories?.title ?? "", fontSize: 16, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.start),
+                            padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+                            child: CustomText(text: widget.categories?.title ?? "", fontSize: 20, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.center),
                           ),
                         ),
                         Expanded(child: ClipRRect(borderRadius: const BorderRadius.only(

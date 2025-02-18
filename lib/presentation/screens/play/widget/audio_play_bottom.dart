@@ -44,7 +44,7 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
             child: Row(
               children: [
                 Assets.icons.comments.svg(height: 20.h,width: 20.h),
-                Gap(2),
+                const Gap(2),
                 const CustomText(text: "...."),
               ],
             ),

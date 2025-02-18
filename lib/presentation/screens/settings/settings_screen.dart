@@ -30,11 +30,6 @@ class SettingsScreen extends StatelessWidget {
             ),
             const Gap(12),
             SettingsCard(
-              onTap: () => AppRouter.route.pushNamed(RoutePath.aboutUsScreen),
-              text: "about_us",
-            ),
-            const Gap(12),
-            SettingsCard(
               onTap: () => AppRouter.route.pushNamed(RoutePath.supportScreen),
               text: "support",
             ),
@@ -50,10 +45,16 @@ class SettingsScreen extends StatelessWidget {
             ),
             const Gap(12),
             SettingsCard(
+              onTap: () => AppRouter.route.pushNamed(RoutePath.aboutUsScreen),
+              text: "about_us",
+            ),
+            const Gap(12),
+            SettingsCard(
               onTap: () => showDeleteAccountDialog(context),
               isRed: true,
               text: "delete_account",
             ),
+            const Gap(12),
           ],
         ),
       ),
