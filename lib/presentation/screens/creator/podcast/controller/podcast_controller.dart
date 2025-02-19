@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
@@ -29,39 +28,15 @@ class PodcastController extends GetxController{
   // Function to pick an image
   Future<void> pickImage() async {
     try {
-
-      var permissionStatus = await Permission.photos.status;
-
-      if (permissionStatus.isGranted) {
-        // If permission is granted, pick the image
-        XFile? image = await _picker.pickImage(
-          source: ImageSource.gallery,
-          imageQuality: 50,
-        );
-        if (image != null) {
-          selectedImage.value = image;
-        } else {
-          toastMessage(message: "Cover Image not selected.");
-        }
-      } else if (permissionStatus.isDenied) {
-        // If permission is denied, request it
-        var status = await Permission.photos.request();
-        if (status.isGranted) {
-          // If permission is granted after the request, pick the image
-          XFile? image = await _picker.pickImage(
-            source: ImageSource.gallery,
-            imageQuality: 50,
-          );
-          if (image != null) {
-            selectedImage.value = image;
-          } else {
-            toastMessage(message: "Cover Image not selected.");
-          }
-        } else if (status.isPermanentlyDenied) {
-          // If permission is permanently denied, open app settings
-          toastMessage(message: "Permission permanently denied. Please enable permission in settings.");
-          openAppSettings();
-        }
+      // If permission is granted after the request, pick the image
+      XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50,
+      );
+      if (image != null) {
+        selectedImage.value = image;
+      } else {
+        toastMessage(message: "Cover Image not selected.");
       }
     } catch (e) {
       print(e.toString());

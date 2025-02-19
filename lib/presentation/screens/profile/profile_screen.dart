@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -135,10 +134,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       CustomProfileTile(
                                         text: "upgrade",
-                                        widget: Assets.icons.updrade.svg(height: 20, width: 20, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                                        // widget: Assets.icons.updrade.svg(height: 20, width: 20, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                                         onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
-                                        icon: Iconsax.add,
-                                        isIcon: false,
+                                        icon: Iconsax.diamonds,
+                                        isIcon: true,
                                       ),
                                       const Gap(24),
                                     ],
