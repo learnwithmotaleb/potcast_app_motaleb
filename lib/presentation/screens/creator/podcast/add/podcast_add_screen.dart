@@ -32,6 +32,7 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
   final TextEditingController location = TextEditingController();
   final TextEditingController description = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  int value = 1;
 
   @override
   void initState() {
@@ -86,11 +87,41 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                       const Gap(8),
                       SubCategoriesWidget(),
                       const Gap(12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Radio(value: 1, groupValue: value, onChanged: (on){
+                                setState(() {
+                                  if(on != null){
+                                    value = on;
+                                  }
+                                });
+                              }),
+                              CustomText(text: "Video"),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Radio(value: 2, groupValue: value, onChanged: (on){
+                                setState(() {
+                                  if(on != null){
+                                    value = on;
+                                  }
+                                });
+                              }),
+                              CustomText(text: "Audio"),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const Gap(12),
                       CustomAlignText(text: "cover_page_upload".tr),
                       const Gap(8),
                       PickCoverWidget(),
                       const Gap(12),
-                      CustomAlignText(text: "add_audio".tr),
+                      value == 2?CustomAlignText(text: "add_audio".tr): CustomAlignText(text: "Add Video".tr),
                       const Gap(8),
                       PickAudioWidget(),
                       const Gap(12.0),
@@ -286,14 +317,7 @@ class PickCoverWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF093028),
-                          Color(0xFF237A57),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+                        color: AppColors.blackColor
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -347,14 +371,7 @@ class PickAudioWidget extends StatelessWidget {
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF093028),
-                    Color(0xFF237A57),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppColors.blackColor
               ),
               child: controller.audioFile.value == null
                   ?  Column(
