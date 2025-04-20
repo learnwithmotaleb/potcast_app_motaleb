@@ -11,7 +11,7 @@ class AppConstants {
   ];
 
 
-  static const String baseUrl = "http://143.110.241.146:9000";
+  static const String baseUrl = "http://182.252.68.230:7003";
   static const String bannerAndroid = "ca-app-pub-3940256099942544/9214589741";
   static const String bannerIOS = 'ca-app-pub-3940256099942544/2435281174';
   //SharedPreferences
@@ -23,4 +23,13 @@ class AppConstants {
 }
 
 enum Status { loading, error, completed, internetError, noDataFound }
+
+enum SelectedAddPostScreenType {
+  video,
+  audio,
+  record,
+  live,
+  none
+}
+
 

@@ -1,7 +1,7 @@
 class ApiUrl {
   ApiUrl._();
 
-  static const String base = "http://143.110.241.146:9000";
+  static const String base = "http://182.252.68.230:7003";
 
   ///Auth
   static String register() => '$base/auth/register';

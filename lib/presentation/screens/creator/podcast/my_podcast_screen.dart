@@ -28,7 +28,7 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
         title: Text("my_podcast".tr,),
         centerTitle: true,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+/*      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 20.0, bottom: 20),
         child: FloatingActionButton(
@@ -36,7 +36,7 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
           backgroundColor: AppColors.blackColor,
           child: const Center(child: Icon(Iconsax.add, size: 80)),
         ),
-      ),
+      ),*/
       body: RefreshIndicator(
         onRefresh: ()async{
           _controller.pagingController.refresh();

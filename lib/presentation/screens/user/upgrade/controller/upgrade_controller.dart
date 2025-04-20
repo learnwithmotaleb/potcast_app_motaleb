@@ -29,7 +29,7 @@ class UpgradeController extends GetxController{
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
         } else {
-          pagingController.appendPage(newItems, pageKey + newItems.length);
+          pagingController.appendPage(newItems, pageKey + 1);
           pagingController.appendLastPage([]);
         }
       } else {

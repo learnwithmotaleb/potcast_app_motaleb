@@ -15,6 +15,7 @@ import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart
 import 'package:podcast/presentation/screens/creator/podcast/add/podcast_add_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/edit/podcast_edit_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
+import 'package:podcast/presentation/screens/creator/podcast/add/audio_record_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/notification/notification_screen.dart';
 import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
@@ -297,19 +298,27 @@ class AppRouter {
             state: state,
           ),
         ),
-        GoRoute(
+/*        GoRoute(
           name: RoutePath.podcastAddScreen,
           path: RoutePath.podcastAddScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: PodcastAddScreen(isRemoveIcon: (state.extra is bool)? (state.extra as bool): false),
             state: state,
           ),
-        ),
+        ),*/
         GoRoute(
           name: RoutePath.podcastEditScreen,
           path: RoutePath.podcastEditScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: PodcastEditScreen(id: state.extra as String),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.audioRecordScreen,
+          path: RoutePath.audioRecordScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const AudioRecordScreen(),
             state: state,
           ),
         ),

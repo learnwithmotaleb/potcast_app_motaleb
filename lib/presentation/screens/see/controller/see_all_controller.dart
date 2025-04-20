@@ -24,7 +24,7 @@ class SeeAllController extends GetxController{
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
         } else {
-          pagingController.appendPage(newItems, pageKey + newItems.length);
+          pagingController.appendPage(newItems, pageKey + 1);
         }
       } else {
         pagingController.error = 'Error fetching data';
@@ -52,7 +52,7 @@ class SeeAllController extends GetxController{
         if (newItems.isEmpty) {
           pagingCreatorController.appendLastPage(newItems);
         } else {
-          pagingCreatorController.appendPage(newItems, pageKey + newItems.length);
+          pagingCreatorController.appendPage(newItems, pageKey + 1);
         }
       } else {
         pagingCreatorController.error = 'Error fetching data';

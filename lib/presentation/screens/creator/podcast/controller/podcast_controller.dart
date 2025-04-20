@@ -24,6 +24,7 @@ class PodcastController extends GetxController{
   final Rx<File?> audioFile = Rx<File?>(null);
   RxString categoriesId = "".obs;
   RxString subCategoriesId = "".obs;
+  Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
 
   // Function to pick an image
   Future<void> pickImage() async {
@@ -284,7 +285,7 @@ class PodcastController extends GetxController{
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
         } else {
-          pagingController.appendPage(newItems, pageKey + newItems.length);
+          pagingController.appendPage(newItems, pageKey + 1);
         }
       } else {
         pagingController.error = 'Error fetching data';

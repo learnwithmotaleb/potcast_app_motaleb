@@ -24,7 +24,7 @@ class CommentsController extends GetxController{
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
         } else {
-          pagingController.appendPage(newItems, pageKey + newItems.length);
+          pagingController.appendPage(newItems, pageKey + 1);
         }
       } else {
         pagingController.error = 'Error fetching data';

@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
-import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
@@ -20,8 +19,7 @@ import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:path/path.dart' as path;
 
 class PodcastAddScreen extends StatefulWidget {
-  const PodcastAddScreen({super.key, this.isRemoveIcon = false});
-  final bool isRemoveIcon;
+  const PodcastAddScreen({super.key});
   @override
   State<PodcastAddScreen> createState() => _PodcastAddScreenState();
 }
@@ -53,7 +51,7 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: widget.isRemoveIcon?const SizedBox():IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        // leading: widget.isRemoveIcon?const SizedBox():IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("ddd_podcast".tr),
       ),
       body: Obx(
@@ -86,36 +84,6 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                       CustomAlignText(text: "sub_category".tr),
                       const Gap(8),
                       SubCategoriesWidget(),
-                      const Gap(12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              Radio(value: 1, groupValue: value, onChanged: (on){
-                                setState(() {
-                                  if(on != null){
-                                    value = on;
-                                  }
-                                });
-                              }),
-                              CustomText(text: "Video"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Radio(value: 2, groupValue: value, onChanged: (on){
-                                setState(() {
-                                  if(on != null){
-                                    value = on;
-                                  }
-                                });
-                              }),
-                              CustomText(text: "Audio"),
-                            ],
-                          ),
-                        ],
-                      ),
                       const Gap(12),
                       CustomAlignText(text: "cover_page_upload".tr),
                       const Gap(8),

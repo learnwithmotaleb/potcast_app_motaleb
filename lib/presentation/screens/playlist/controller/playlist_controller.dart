@@ -33,7 +33,7 @@ class PlaylistController extends GetxController{
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
         } else {
-          pagingController.appendPage(newItems, pageKey + newItems.length);
+          pagingController.appendPage(newItems, pageKey + 1);
           for (int i = 0; i < newItems.length; i++) {
             playList.add(false);
           }
@@ -61,7 +61,7 @@ class PlaylistController extends GetxController{
         if (newItems.isEmpty) {
           playListController.appendLastPage(newItems);
         } else {
-          playListController.appendPage(newItems, pageKey + newItems.length);
+          playListController.appendPage(newItems, pageKey + 1);
         }
       } else {
         playListController.error = 'Error fetching data';

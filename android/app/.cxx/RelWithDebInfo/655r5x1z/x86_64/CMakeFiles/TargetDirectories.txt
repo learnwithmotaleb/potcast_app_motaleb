@@ -1,0 +1,2 @@
+/Users/bdcalling/StudioProjects/podcast_app/android/app/.cxx/RelWithDebInfo/655r5x1z/x86_64/CMakeFiles/edit_cache.dir
+/Users/bdcalling/StudioProjects/podcast_app/android/app/.cxx/RelWithDebInfo/655r5x1z/x86_64/CMakeFiles/rebuild_cache.dir
