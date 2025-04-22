@@ -89,7 +89,14 @@ dev_dependencies:
   build_runner: ^2.4.10
   flutter_gen_runner: null
   json_serializable: ^6.2.0
+
   flutter_test:
+    sdk: flutter
+
+  integration_test:
+    sdk: flutter
+
+  flutter_driver:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to

@@ -35,6 +35,13 @@ class DBHelper {
     return sharedPreferences.getString(AppConstants.email)??"";
   }
 
+  /// ====================== Get User Role ==================
+
+  Future<void> clear() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
+  }
+
   /// ====================== Save User Information ==================
 
   Future saveUserdata({
