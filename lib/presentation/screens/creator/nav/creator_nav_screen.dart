@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/creator/podcast/add/add_icon_main_screen.dart';
@@ -12,6 +13,7 @@ import 'package:podcast/presentation/screens/profile/controller/profile_controll
 import 'package:podcast/presentation/screens/profile/profile_screen.dart';
 import 'package:podcast/presentation/screens/user/home/user_home_screen.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class CreatorNavScreen extends StatefulWidget {
@@ -64,7 +66,11 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                     const CustomText(text: "Add Content Station", fontSize: 20),
                     const Divider(),
                     ListTile(
-                      leading: const Icon(Iconsax.video),
+                      leading: Assets.images.video.image(
+                        height: 30,
+                        width: 30,
+                        color: AppColors.whiteColor,
+                      ),
                       title: const Text("Upload Video"),
                       onTap: () {
                         controller.selectedScreenType.value = SelectedAddPostScreenType.video;
@@ -77,7 +83,11 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       },
                     ),
                     ListTile(
-                      leading: const Icon(Iconsax.audio_square),
+                      leading: Assets.images.headphones.image(
+                        height: 30,
+                        width: 30,
+                        color: AppColors.whiteColor,
+                      ),
                       title: const Text("Upload Audio"),
                       onTap: () {
                         controller.selectedScreenType.value = SelectedAddPostScreenType.audio;
@@ -90,7 +100,11 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       },
                     ),
                     ListTile(
-                      leading: const Icon(Iconsax.record),
+                      leading: Assets.images.microphone.image(
+                        height: 30,
+                        width: 30,
+                        color: AppColors.whiteColor,
+                      ),
                       title: const Text("Record Audio"),
                       onTap: () {
                         controller.selectedScreenType.value = SelectedAddPostScreenType.record;
@@ -103,7 +117,11 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       },
                     ),
                     ListTile(
-                      leading: const Icon(Icons.live_tv),
+                      leading: Assets.images.liveStream.image(
+                        height: 30,
+                        width: 30,
+                        color: AppColors.whiteColor,
+                      ),
                       title: const Text("Go Live"),
                       onTap: () {
                         controller.selectedScreenType.value = SelectedAddPostScreenType.live;

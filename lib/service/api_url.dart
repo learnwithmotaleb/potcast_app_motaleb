@@ -1,7 +1,13 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../utils/app_const/app_const.dart';
+
 class ApiUrl {
   ApiUrl._();
 
-  static const String base = "http://182.252.68.230:7003";
+  static const String base = "http://13.211.152.234:7010";
+
+  static String googleLetLongToAddressApi({required LatLng location}) => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
 
   ///Auth
   static String register() => '$base/auth/register';

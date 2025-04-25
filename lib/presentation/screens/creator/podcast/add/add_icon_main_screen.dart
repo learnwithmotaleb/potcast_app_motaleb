@@ -23,11 +23,11 @@ class _AddIconMainScreenState extends State<AddIconMainScreen> {
     return Obx(() {
       switch(controller.selectedScreenType.value){
         case SelectedAddPostScreenType.audio:
-          return const PodcastAddScreen();
+          return const PodcastAudioScreen();
         case SelectedAddPostScreenType.video:
           return const PodcastVideoAddScreen();
         case SelectedAddPostScreenType.record:
-          return const AudioRecordScreen();
+          return Text("Audio Record".tr);
         case SelectedAddPostScreenType.live:
           return Text("Go Live".tr);
         case SelectedAddPostScreenType.none:

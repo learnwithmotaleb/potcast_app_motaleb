@@ -16,6 +16,15 @@ class FontFamily {
   /// Font family: Light
   static const String light = 'Light';
 
+  /// Font family: MediumItalic
+  static const String mediumItalic = 'MediumItalic';
+
   /// Font family: Regular
   static const String regular = 'Regular';
+
+  /// Font family: Regular1
+  static const String regular1 = 'Regular1';
+
+  /// Font family: SemiBold
+  static const String semiBold = 'SemiBold';
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
@@ -43,13 +46,31 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   color: AppColors.blackColor,
                 );
               case Status.noDataFound:
-                return const Center(child: CustomText(text: "No Categories Found",color: AppColors.whiteColor));
+                return Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: GestureDetector(
+                        onTap: (){
+                          AppRouter.route.pop();
+                        },
+                        child: const SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: Icon(Icons.arrow_back),
+                        ),
+                      ),
+                    ),
+                    const Gap(300),
+                    const CustomText(text: "No Categories Found",color: AppColors.whiteColor),
+                  ],
+                );
               case Status.error:
                 return NoInternetCard(
                   onTap: () => controller.getAllSubCategories(id: widget.id),
                   color: AppColors.blackColor,
                 );
-      
+
               case Status.completed:
                 return RefreshIndicator(
                   onRefresh: ()async{
@@ -79,7 +100,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                   color: AppColors.blackColor,
                                 ),
                               );
-      
+
                             case Status.completed:
                               return SliverPadding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),

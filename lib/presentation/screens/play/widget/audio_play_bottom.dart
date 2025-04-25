@@ -8,6 +8,7 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AudioPlayBottom extends StatefulWidget {
@@ -32,14 +33,16 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
             padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              gradient: const LinearGradient(
+              /*gradient: const LinearGradient(
                 colors: [
                   Color(0xFF093028),
                   Color(0xFF0F593B),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-              ),
+              ),*/
+              color: AppColors.blackColor,
+                border: Border.all(color: AppColors.whiteColor)
             ),
             child: Row(
               children: [
@@ -59,14 +62,16 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              gradient: const LinearGradient(
+              /*gradient: const LinearGradient(
                 colors: [
                   Color(0xFF093028),
                   Color(0xFF0F593B),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-              ),
+              ),*/
+              color: AppColors.blackColor,
+              border: Border.all(color: AppColors.whiteColor)
             ),
             child: const CustomText(text: "Give"),
           ),

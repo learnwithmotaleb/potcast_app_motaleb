@@ -4,11 +4,15 @@ import 'package:get/get.dart';
 import 'dart:math' as math;
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
+import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
+import 'package:podcast/presentation/screens/play/widget/audio_play_control.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/presentation/screens/user/home/widget/user_home_categories_section.dart';
+import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
@@ -28,12 +32,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   final controller = Get.find<UserHomeController>();
   final profileController = Get.find<ProfileController>();
+  final playController = Get.put(AudioPlayController());
 
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      // appBar: CustomHomeAppBar(),
+      bottomNavigationBar: Obx((){
+        return playController.isPlaying.value? BottomNavPlayCard(): const SizedBox();
+      }),
       body: Obx(() {
         switch (controller.loading.value) {
           case Status.loading:

@@ -1,17 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:podcast/core/route/route_path.dart';
-import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/play/model/podcast_model.dart';
-import 'package:podcast/presentation/screens/play/widget/audio_play_control.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
@@ -257,191 +251,9 @@ class AudioPlayController extends GetxController{
     playNextPodcast(id: postModel.value.data?.podcast?.id??"");
   }
 
-  OverlayEntry? overlayEntry;
-  Offset offset = const Offset(5, 100);
-
-  void showAudioPlayerOverlayCard(BuildContext context) {
-    if (overlayEntry != null) {
-      removeOverlay();
-    }
-
-    final double width = MediaQuery.of(context).size.width;
-
-    overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx,
-        bottom: offset.dy,
-        child: GestureDetector(
-          onPanUpdate: (details) {
-            _onDrag(details.delta, context);
-          },
-          child: Material(
-            color: Colors.transparent,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: width - 70.w,
-                  height: 60.h,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF093028),
-                        Color(0xFF237A57),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: const EdgeInsets.all(5.0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          removeOverlay();
-                          AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: postModel.value.data?.podcast?.id);
-                        },
-                        child: SizedBox(
-                          height: 60.h,
-                          width: 80,
-                          child: Obx(() {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0.r),
-                              child: CustomNetworkImage(imageUrl: postModel.value.data?.podcast?.cover??""),
-                            );
-                          }),
-                        ),
-                      ),
-                      const Gap(24),
-                      const Expanded(child: AudioPlayControl(isRemove: true,)),
-                      const Gap(12),
-                    ],
-                  ),
-                ),
-                const Gap(1),
-                GestureDetector(
-                  onTap: removeOverlay,
-                  child: Container(
-                    width: 50,
-                    height: 60.h,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF093028),
-                          Color(0xFF237A57),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    padding: const EdgeInsets.all(12.0),
-                    child: const Center(child: Icon(Icons.cancel, color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(overlayEntry!);
-  }
-
-  void removeOverlay() {
-    overlayEntry?.remove();
-    overlayEntry = null;
-  }
-
-  void _onDrag(Offset delta, BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final widgetWidth = MediaQuery.of(context).size.width - 20;
-    const widgetHeight = 100.0;
-    offset = Offset(
-      (offset.dx + delta.dx).clamp(0.0, screenWidth - widgetWidth),
-      (offset.dy - delta.dy).clamp(0.0, screenHeight - widgetHeight),
-    );
-    overlayEntry?.markNeedsBuild();
-  }
-
   @override
   void onClose() {
     audioPlayer.dispose();
     super.onClose();
   }
-
-/*  Future<void> playAudio({required PodcastModel podcast}) async {
-    try{
-      final mediaItem = MediaItem(
-        id: podcast.data?.podcast?.id??"",
-        album:  podcast.data?.podcast?.category?.title??"",
-        title:  podcast.data?.podcast?.title??"",
-        artist:  podcast.data?.podcast?.creator?.user?.name??"",
-        artUri: Uri.parse("${AppConstants.baseUrl}${podcast.data?.podcast?.cover??""}"),
-      );
-
-      if (!await InternetConnection().hasInternetAccess) {
-        print("Key No Internet Connection ===================================:Key ${podcast.data?.podcast?.id}");
-        FileInfo? fileIInfo = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
-        File? file = fileIInfo?.file;
-        if(file != null){
-          await audioPlayer.setAudioSource(
-            AudioSource.uri(
-              Uri.parse(file.path),
-              tag: mediaItem,
-            ),
-          ).then((value) async {
-            loadingMethod(Status.completed);
-            await play();
-          }).catchError((e){
-            currentMediaId.value = '';
-            loadingMethod(Status.error);
-          });
-        }else{
-          currentMediaId.value = '';
-          loadingMethod(Status.internetError);
-        }
-      } else {
-        final cacheFile = await cacheManager.getFileFromCache(podcast.data?.podcast?.id??"");
-        final File? file = cacheFile?.file;
-        if (file != null && file.path != "") {
-          print("Key Has Internet And Get Cache===================================Url${file.path} :Key ${podcast.data?.podcast?.id??""}");
-          await audioPlayer.setAudioSource(
-            AudioSource.uri(
-              Uri.parse(file.path),
-              tag: mediaItem,
-            ),
-          ).then((value) async {
-            loadingMethod(Status.completed);
-            await play();
-          }).catchError((e){
-            currentMediaId.value = '';
-            loadingMethod(Status.error);
-          });
-        } else {
-          print("Key Has Internet ===================================Url${file?.path} :Key ${podcast.data?.podcast?.id}");
-          await cacheManager.getSingleFile(podcast.data?.podcast?.audio??"",key: podcast.data?.podcast?.id);
-          await audioPlayer.setAudioSource(
-            AudioSource.uri(
-              Uri.parse(podcast.data?.podcast?.audio??""),
-              tag: mediaItem,
-            ),
-            preload: true,
-          ).then((value) async {
-            loadingMethod(Status.completed);
-            await play();
-          }).catchError((e){
-            currentMediaId.value = '';
-            loadingMethod(Status.error);
-          });
-        }
-      }
-    }catch(e){
-      currentMediaId.value = '';
-      loadingMethod(Status.error);
-    }
-  }*/
 }

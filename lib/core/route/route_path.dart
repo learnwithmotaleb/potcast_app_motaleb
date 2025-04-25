@@ -40,7 +40,6 @@ class RoutePath {
   static const String myPodcastScreen = 'myPodcastScreen';
   // static const String podcastAddScreen = 'podcastAddScreen';
   static const String podcastEditScreen = 'podcastEditScreen';
-  static const String audioRecordScreen = 'audioRecordScreen';
 
   //Settings
   static const String settingsScreen = 'settingsScreen';

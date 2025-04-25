@@ -10,6 +10,7 @@ class AppConstants {
     // LanguageModel(imageUrl: "", languageName: 'Spanish', countryCode: 'ES', languageCode: 'es'),
   ];
 
+  static const String googleMapAPI = "AIzaSyAszXC1be8aJ37eHuNcBm_-O1clWkPUwV4";
 
   static const String baseUrl = "http://182.252.68.230:7003";
   static const String bannerAndroid = "ca-app-pub-3940256099942544/9214589741";

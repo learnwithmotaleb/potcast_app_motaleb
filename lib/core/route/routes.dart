@@ -314,14 +314,6 @@ class AppRouter {
             state: state,
           ),
         ),
-        GoRoute(
-          name: RoutePath.audioRecordScreen,
-          path: RoutePath.audioRecordScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const AudioRecordScreen(),
-            state: state,
-          ),
-        ),
 
 
         ///======================= Other Route =======================

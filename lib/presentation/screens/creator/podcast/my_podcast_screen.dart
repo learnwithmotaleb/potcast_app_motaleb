@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
-import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/card/podcast_card.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'controller/podcast_controller.dart';
 import 'model/my_podcast_model.dart';

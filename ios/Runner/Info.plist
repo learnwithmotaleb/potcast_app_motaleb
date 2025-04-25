@@ -31,11 +31,20 @@
     <string>We need access to your microphone to record audio</string>
 
     <!-- =================== Google AdMob ======================= -->
-<key>GADApplicationIdentifier</key>
-<string>ca-app-pub-9600166294736004~6364781143</string>
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-9600166294736004~6364781143</string>
 
-
-
+    <!-- =================== Google Map ======================= -->
+    <key>IOGoogleMapsAPIKey</key>
+    <string>AIzaSyAszXC1be8aJ37eHuNcBm_-O1clWkPUwV4</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your message to the user when requesting location access always.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your message to the user when requesting location access.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is used to get city name</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location is used to get city name</string>
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

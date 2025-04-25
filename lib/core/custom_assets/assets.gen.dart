@@ -24,33 +24,54 @@ class $AssetsFontsGen {
   /// File path: assets/fonts/Roboto-Regular.ttf
   String get robotoRegular => 'assets/fonts/Roboto-Regular.ttf';
 
+  /// File path: assets/fonts/RobotoCondensed-MediumItalic.ttf
+  String get robotoCondensedMediumItalic =>
+      'assets/fonts/RobotoCondensed-MediumItalic.ttf';
+
+  /// File path: assets/fonts/RobotoCondensed-Regular.ttf
+  String get robotoCondensedRegular =>
+      'assets/fonts/RobotoCondensed-Regular.ttf';
+
+  /// File path: assets/fonts/RobotoCondensed-SemiBold.ttf
+  String get robotoCondensedSemiBold =>
+      'assets/fonts/RobotoCondensed-SemiBold.ttf';
+
   /// List of all assets
-  List<String> get values => [robotoBold, robotoLight, robotoRegular];
+  List<String> get values => [
+        robotoBold,
+        robotoLight,
+        robotoRegular,
+        robotoCondensedMediumItalic,
+        robotoCondensedRegular,
+        robotoCondensedSemiBold
+      ];
 }
 
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
   /// File path: assets/icons/add_a_photo.svg
-  SvgGenImage get addAPhoto => const SvgGenImage('assets/icons/add_a_photo.svg');
+  SvgGenImage get addAPhoto =>
+      const SvgGenImage('assets/icons/add_a_photo.svg');
 
-  /// File path: assets/icons/add_a_photo.svg
+  /// File path: assets/icons/audio.svg
   SvgGenImage get audio => const SvgGenImage('assets/icons/audio.svg');
-
-  /// File path: assets/icons/add_a_photo.svg
-  SvgGenImage get cloudAdd => const SvgGenImage('assets/icons/cloud-add.svg');
 
   /// File path: assets/icons/audio_left.svg
   SvgGenImage get audioLeft => const SvgGenImage('assets/icons/audio_left.svg');
 
   /// File path: assets/icons/audio_right.svg
-  SvgGenImage get audioRight => const SvgGenImage('assets/icons/audio_right.svg');
+  SvgGenImage get audioRight =>
+      const SvgGenImage('assets/icons/audio_right.svg');
 
   /// File path: assets/icons/birthday.svg
   SvgGenImage get birthday => const SvgGenImage('assets/icons/birthday.svg');
 
   /// File path: assets/icons/close.svg
   SvgGenImage get close => const SvgGenImage('assets/icons/close.svg');
+
+  /// File path: assets/icons/cloud-add.svg
+  SvgGenImage get cloudAdd => const SvgGenImage('assets/icons/cloud-add.svg');
 
   /// File path: assets/icons/comments.svg
   SvgGenImage get comments => const SvgGenImage('assets/icons/comments.svg');
@@ -122,6 +143,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/settings.svg
   SvgGenImage get settings => const SvgGenImage('assets/icons/settings.svg');
 
+  /// File path: assets/icons/skip.svg
+  SvgGenImage get skip => const SvgGenImage('assets/icons/skip.svg');
+
   /// File path: assets/icons/sort.svg
   SvgGenImage get sort => const SvgGenImage('assets/icons/sort.svg');
 
@@ -136,16 +160,15 @@ class $AssetsIconsGen {
   /// File path: assets/icons/updrade.svg
   SvgGenImage get updrade => const SvgGenImage('assets/icons/updrade.svg');
 
-  /// File path: assets/icons/updrade.svg
-  SvgGenImage get skip => const SvgGenImage('assets/icons/skip.svg');
-
   /// List of all assets
   List<SvgGenImage> get values => [
         addAPhoto,
+        audio,
         audioLeft,
         audioRight,
         birthday,
         close,
+        cloudAdd,
         comments,
         delete,
         donate,
@@ -169,27 +192,23 @@ class $AssetsIconsGen {
         right,
         search,
         settings,
+        skip,
         sort,
         subscription,
         subscriptionWhite,
-        updrade,
-        skip,
-    audio,
-    cloudAdd
+        updrade
       ];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/add.png
+  AssetGenImage get add => const AssetGenImage('assets/images/add.png');
+
   /// File path: assets/images/banner_logo.png
   AssetGenImage get bannerLogo =>
       const AssetGenImage('assets/images/banner_logo.png');
-
-
-  /// File path: assets/images/banner_logo.png
-  AssetGenImage get map =>
-      const AssetGenImage('assets/images/map.png');
 
   /// File path: assets/images/classical.png
   AssetGenImage get classical =>
@@ -215,6 +234,21 @@ class $AssetsImagesGen {
   AssetGenImage get genresBanner =>
       const AssetGenImage('assets/images/genres_banner.png');
 
+  /// File path: assets/images/headphones.png
+  AssetGenImage get headphones =>
+      const AssetGenImage('assets/images/headphones.png');
+
+  /// File path: assets/images/live-stream.png
+  AssetGenImage get liveStream =>
+      const AssetGenImage('assets/images/live-stream.png');
+
+  /// File path: assets/images/map.png
+  AssetGenImage get map => const AssetGenImage('assets/images/map.png');
+
+  /// File path: assets/images/microphone.png
+  AssetGenImage get microphone =>
+      const AssetGenImage('assets/images/microphone.png');
+
   /// File path: assets/images/millennial.png
   AssetGenImage get millennial =>
       const AssetGenImage('assets/images/millennial.png');
@@ -222,6 +256,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/millennial_banner.png
   AssetGenImage get millennialBanner =>
       const AssetGenImage('assets/images/millennial_banner.png');
+
+  /// File path: assets/images/rectangle.png
+  AssetGenImage get rectangle =>
+      const AssetGenImage('assets/images/rectangle.png');
 
   /// File path: assets/images/reset.png
   AssetGenImage get reset => const AssetGenImage('assets/images/reset.png');
@@ -241,16 +279,12 @@ class $AssetsImagesGen {
   AssetGenImage get verification =>
       const AssetGenImage('assets/images/verification.png');
 
-  /// File path: assets/images/verification.png
-  AssetGenImage get rectangle =>
-      const AssetGenImage('assets/images/rectangle.png');
-
-  /// File path: assets/images/verification.png
-  AssetGenImage get add =>
-      const AssetGenImage('assets/images/add.png');
+  /// File path: assets/images/video.png
+  AssetGenImage get video => const AssetGenImage('assets/images/video.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        add,
         bannerLogo,
         classical,
         classicalBanner,
@@ -259,16 +293,19 @@ class $AssetsImagesGen {
         forget,
         genres,
         genresBanner,
+        headphones,
+        liveStream,
+        map,
+        microphone,
         millennial,
         millennialBanner,
+        rectangle,
         reset,
         splashLogo,
         startedLogo,
         upload,
         verification,
-        rectangle,
-    map,
-    add
+        video
       ];
 }
 

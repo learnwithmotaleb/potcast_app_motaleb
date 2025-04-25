@@ -5,9 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:podcast/controller/categories_controller.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/toast_message/toast_message.dart';
+import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
-import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -18,59 +23,37 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:path/path.dart' as path;
 
-class PodcastAddScreen extends StatefulWidget {
-  const PodcastAddScreen({super.key});
+class PodcastAudioScreen extends StatefulWidget {
+  const PodcastAudioScreen({super.key});
   @override
-  State<PodcastAddScreen> createState() => _PodcastAddScreenState();
+  State<PodcastAudioScreen> createState() => _PodcastAudioScreenState();
 }
 
-class _PodcastAddScreenState extends State<PodcastAddScreen> {
-  final controller = Get.find<PodcastController>();
-  final TextEditingController title = TextEditingController();
-  final TextEditingController location = TextEditingController();
-  final TextEditingController description = TextEditingController();
+class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
+  final controller = Get.find<PodcastAudioController>();
+  final category = Get.find<GlobalCategoriesController>();
   final _formKey = GlobalKey<FormState>();
-  int value = 1;
-
-  @override
-  void initState() {
-    controller.getCategories();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    title.clear();
-    location.clear();
-    description.clear();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        // leading: widget.isRemoveIcon?const SizedBox():IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("ddd_podcast".tr),
       ),
       body: Obx(
         () {
-          switch (controller.loading.value) {
+          switch (category.loading.value) {
             case Status.loading:
               return const Center(child: CircularProgressIndicator());
             case Status.internetError:
-              return NoInternetCard(onTap: () {
-                controller.getCategories();
-              });
+              return NoInternetCard(onTap: ()=> category.getCategories());
             case Status.noDataFound:
               return const Center(child: CustomText(text: "No data found!"));
             case Status.error:
-              return NoInternetCard(onTap: () {
-                controller.getCategories();
-              },text: controller.responseMessage.value);
-
+              return NoInternetCard(onTap: ()=> category.getCategories());
             case Status.completed:
+
               return SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 child: Form(
@@ -89,7 +72,7 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                       const Gap(8),
                       PickCoverWidget(),
                       const Gap(12),
-                      value == 2?CustomAlignText(text: "add_audio".tr): CustomAlignText(text: "Add Video".tr),
+                      CustomAlignText(text: "add_audio".tr),
                       const Gap(8),
                       PickAudioWidget(),
                       const Gap(12.0),
@@ -97,8 +80,8 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                       const Gap(8.0),
                       CustomTextField(
                         hintText: "enter_podcast_title".tr,
-                        keyboardType: TextInputType.name,
-                        controller: title,
+                        keyboardType: TextInputType.text,
+                        controller: controller.title,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'enter_podcast_title'.tr;
@@ -108,17 +91,25 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                       ),
                       const Gap(12),
                       CustomAlignText(text: "location".tr),
-                      const Gap(8.0),
-                      CustomTextField(
-                        hintText: "type_you_location".tr,
-                        keyboardType: TextInputType.streetAddress,
-                        controller: location,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'type_you_location'.tr;
-                          }
-                          return null;
-                        },
+                      const Gap(8),
+                      Obx(() => GestureDetector(
+                          onTap: () => showMapDialog(context),
+                          child: Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.whiteColor),
+                              borderRadius: BorderRadius.circular(8),
+                              color: AppColors.blackColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(child: Text(controller.selectedAddress.value.tr)),
+                                const Icon(Iconsax.location),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       const Gap(12),
                       CustomAlignText(text: "description".tr),
@@ -128,7 +119,7 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                         keyboardType: TextInputType.multiline,
                         maxLines: 6,
                         minLines: 3,
-                        controller: description,
+                        controller: controller.description,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'enter_your_description'.tr;
@@ -140,29 +131,7 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
                       Obx(() {
                         return CustomButton(
                           text: "create".tr,
-                          onTap: () {
-                            if (_formKey.currentState!.validate() && controller.selectedCategory.value != "" && controller.selectedSubCategories.value != "") {
-                              if (controller.selectedImage.value != null && controller.audioFile.value != null) {
-                                final Map<String, String> body = {
-                                  "categoryId": controller.categoriesId.value,
-                                  "subCategoryId": controller.subCategoriesId.value,
-                                  "title": title.text,
-                                  "description": description.text,
-                                  "location": location.text,
-                                };
-                                final List<MultipartBody> multipartBody = [
-                                  MultipartBody('audio', File(controller.audioFile.value?.path ?? "")),
-                                  MultipartBody('cover', File(controller.selectedImage.value?.path ?? "")),
-                                ];
-
-                                controller.createPodcast(body: body, multipartBody: multipartBody);
-                              }else{
-                                print("***999");
-                              }
-                            }else{
-                              print("***");
-                            }
-                          },
+                          onTap: ()=> uploadAudio(),
                           isLoading: controller.createLoading.value,
                         );
                       }),
@@ -175,12 +144,135 @@ class _PodcastAddScreenState extends State<PodcastAddScreen> {
       ),
     );
   }
+
+  void uploadAudio(){
+    final validate = _formKey.currentState!.validate();
+    final cat = controller.categoriesId.value.isNotEmpty;
+    final subCat = controller.subCategoriesId.value.isNotEmpty;
+    final city = controller.selectedAddress.value;
+    final allFile = controller.selectedImage.value != null && controller.audioFile.value != null;
+
+    if (validate &&  cat && subCat) {
+      if (allFile) {
+        final Map<String, String> body = {
+          "categoryId": controller.categoriesId.value,
+          "subCategoryId": controller.subCategoriesId.value,
+          "title": controller.title.text,
+          "description": controller.description.text,
+          "location": city,
+        };
+        final List<MultipartBody> multipartBody = [
+          MultipartBody('audio', File(controller.audioFile.value?.path ?? "")),
+          MultipartBody('cover', File(controller.selectedImage.value?.path ?? "")),
+        ];
+
+        controller.createPodcast(body: body, multipartBody: multipartBody);
+      }else{
+        toastMessage(message: "Please Provide all information");
+      }
+    }else{
+      toastMessage(message: "Please Provide all information");
+    }
+  }
+
+  void showMapDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black.withValues(alpha: 0.5),
+      transitionDuration: const Duration(milliseconds: 600),
+      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return SafeArea(
+          child: Dialog(
+            insetPadding: EdgeInsets.zero,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
+                children: [
+                  Obx(() => GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: controller.selectedPosition.value,
+                      zoom: 14,
+                    ),
+                    myLocationButtonEnabled: false,
+                    onCameraMove: (CameraPosition position) {
+                      controller.updatePosition(position.target);
+                    },
+                  )),
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: AppColors.blackColor.withValues(alpha: 0.8),
+                          shape: BoxShape.circle
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                        onPressed: () {
+                          AppRouter.route.pop();
+                        },
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    child: Obx(() {
+                      return CustomButton(
+                        text: "Save",
+                        isLoading: controller.isLocationSaveLoading.value,
+                        onTap: () {
+                          controller.saveLocationAddress(location: controller.selectedPosition.value);
+                        },
+                      );
+                    }),
+                  ),
+                  // Center marker (static UI marker)
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.location_on,
+                          color: Colors.red,
+                          size: 40,
+                        ),
+                        Obx(() {
+                          return CustomText(text: controller.selectedAddress.value, color: AppColors.blackColor,);
+                        })
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: animation,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
 }
 
 class SubCategoriesWidget extends StatelessWidget {
   SubCategoriesWidget({super.key});
 
-  final controller = Get.find<PodcastController>();
+  final controller = Get.find<PodcastAudioController>();
 
   @override
   Widget build(BuildContext context) {
@@ -193,8 +285,7 @@ class SubCategoriesWidget extends StatelessWidget {
           isExpanded: true,
           value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
           hint: Text('sub categories'.tr),
-          items: controller.subCategories.isNotEmpty
-              ? controller.subCategories.map((subCategory) {
+          items: controller.subCategories.isNotEmpty ? controller.subCategories.map((subCategory) {
                   return DropdownMenuItem<String>(
                     value: subCategory.title ?? "",
                     child: Text(subCategory.title ?? ""),
@@ -213,14 +304,16 @@ class SubCategoriesWidget extends StatelessWidget {
               controller.subCategoriesId.value = selectedSubCategory.id ?? "";
             }
           },
-        ));
+        ),
+    );
   }
 }
 
 class CategoriesWidget extends StatelessWidget {
   CategoriesWidget({super.key});
 
-  final controller = Get.find<PodcastController>();
+  final controller = Get.find<PodcastAudioController>();
+  final category = Get.find<GlobalCategoriesController>();
 
   @override
   Widget build(BuildContext context) {
@@ -233,8 +326,8 @@ class CategoriesWidget extends StatelessWidget {
         ),
         isExpanded: true,
         hint: const Text('Category'),
-        items: controller.categories.value.data != null && controller.categories.value.data!.isNotEmpty
-            ? controller.categories.value.data!.map((category) {
+        items: category.categories.value.data != null && category.categories.value.data!.isNotEmpty
+            ? category.categories.value.data!.map((category) {
                 return DropdownMenuItem<String>(
                   value: category.title,
                   child: Text(category.title ?? ""),
@@ -248,7 +341,7 @@ class CategoriesWidget extends StatelessWidget {
               ],
         onChanged: (String? newValue) {
           if (newValue != null) {
-            controller.updateSubCategories(newValue);
+            controller.updateSubCategories(newValue, category.categories.value);
           }
         },
       );
@@ -257,11 +350,9 @@ class CategoriesWidget extends StatelessWidget {
 }
 
 class PickCoverWidget extends StatelessWidget {
-  PickCoverWidget({
-    super.key,
-  });
+  PickCoverWidget({super.key});
 
-  final controller = Get.find<PodcastController>();
+  final controller = Get.find<PodcastAudioController>();
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +407,7 @@ class PickCoverWidget extends StatelessWidget {
 class PickAudioWidget extends StatelessWidget {
   PickAudioWidget({super.key});
 
-  final controller = Get.find<PodcastController>();
+  final controller = Get.find<PodcastAudioController>();
 
   @override
   Widget build(BuildContext context) {
