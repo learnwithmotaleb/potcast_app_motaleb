@@ -6,7 +6,7 @@ class ApiUrl {
   ApiUrl._();
 
   static const String base = "http://13.211.152.234:7010";
-
+  static String googleSearchApi({required String search}) => 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
   static String googleLetLongToAddressApi({required LatLng location}) => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
 
   ///Auth

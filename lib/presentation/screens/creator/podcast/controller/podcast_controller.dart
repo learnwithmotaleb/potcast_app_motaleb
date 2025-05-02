@@ -26,10 +26,8 @@ class PodcastController extends GetxController{
   RxString subCategoriesId = "".obs;
   Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
 
-  // Function to pick an image
   Future<void> pickImage() async {
     try {
-      // If permission is granted after the request, pick the image
       XFile? image = await _picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 50,
@@ -58,7 +56,6 @@ class PodcastController extends GetxController{
 
         AudioPlayer audioPlayer = AudioPlayer();
 
-        // Load the file into the audio player to get duration
         await audioPlayer.setSourceDeviceFile(audio.path);
         Duration? audioDuration = await audioPlayer.getDuration();
 

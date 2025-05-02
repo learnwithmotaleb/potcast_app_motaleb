@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
-import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/map/search_my_location.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserHomeTopSection extends StatefulWidget {
@@ -91,7 +90,15 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 child: Hero(
                   tag: "r gyug efegfwuefg weug",
                   child: GestureDetector(
-                    onTap: () => showMapDialog(context),
+                    onTap: () async {
+                      final location = await showMapDialog(context: context, isShotAddress: true);
+
+                      if (location != null && location.isNotEmpty) {
+                        controller.saveLocationAddress(address: location);
+                      } else {
+                        print("User dismissed the dialog or nothing selected");
+                      }
+                    },
                     child: Container(
                       height: 80.h,
                       padding: const EdgeInsets.all(5),
@@ -103,10 +110,10 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Flexible(child: CustomText(text: controller.model.value.data?.location ?? "select_your_location".tr, fontSize: 20.sp, color: AppColors.blackColor, maxLines: 2,)),
+                          Flexible(child: CustomText(text: controller.model.value.data?.location ?? "select_your_location".tr, fontSize: 16.sp, color: AppColors.blackColor, maxLines: 2,)),
                           SizedBox(
-                            height: 80.h,
-                            width: 60,
+                            height: 80,
+                            width: 40,
                             child: Assets.images.map.image(),
                           ),
                         ],
@@ -149,98 +156,6 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
           ),
         ),
       ],
-    );
-  }
-  void showMapDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withValues(alpha: 0.5),
-      transitionDuration: const Duration(milliseconds: 600),
-      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-        return SafeArea(
-          child: Dialog(
-            insetPadding: EdgeInsets.zero,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                children: [
-                  Obx(() => GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: controller.selectedPosition.value,
-                      zoom: 14,
-                    ),
-                    myLocationButtonEnabled: false,
-                    onCameraMove: (CameraPosition position) {
-                      controller.updatePosition(position.target);
-                    },
-                  )),
-                  Positioned(
-                    top: 12,
-                    left: 12,
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: AppColors.blackColor.withValues(alpha: 0.8),
-                        shape: BoxShape.circle
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
-                        onPressed: () {
-                          AppRouter.route.pop();
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
-                    child: Obx(() {
-                      return CustomButton(
-                        text: "Save",
-                        isLoading: controller.isLocationSaveLoading.value,
-                        onTap: () {
-                          controller.saveLocationAddress(location: controller.selectedPosition.value);
-                        },
-                      );
-                    }),
-                  ),
-                  // Center marker (static UI marker)
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.location_on,
-                          color: Colors.red,
-                          size: 40,
-                        ),
-                        Obx(() {
-                          return CustomText(text: controller.selectedAddress.value, color: AppColors.blackColor,);
-                        })
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: ScaleTransition(
-            scale: animation,
-            child: child,
-          ),
-        );
-      },
     );
   }
 }

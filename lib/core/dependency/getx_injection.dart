@@ -7,6 +7,8 @@ import 'package:podcast/presentation/screens/creator/donate/controller/donate_co
 import 'package:podcast/presentation/screens/creator/home/controller/creator_home_controller.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_controller.dart';
+import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_record_controller.dart';
+import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_video_controller.dart';
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
 import 'package:podcast/presentation/screens/notification/controller/notification_controller.dart';
@@ -46,4 +48,6 @@ void initGetX() {
   Get.lazyPut(() => DonateController(), fenix: true);
   Get.lazyPut(() => PodcastController(), fenix: true);
   Get.lazyPut(() => PodcastAudioController(), fenix: true);
+  Get.lazyPut(() => PodcastVideoController(), fenix: true);
+  Get.lazyPut(() => PodcastRecordController(), fenix: true);
 }

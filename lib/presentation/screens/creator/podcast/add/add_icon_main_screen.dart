@@ -5,6 +5,7 @@ import 'package:podcast/utils/app_const/app_const.dart';
 
 import 'add_podcast_design_none.dart';
 import 'audio_record_screen.dart';
+import 'go_live_screen.dart';
 import 'podcast_add_screen.dart';
 import 'podcast_video_add_screen.dart';
 
@@ -27,9 +28,9 @@ class _AddIconMainScreenState extends State<AddIconMainScreen> {
         case SelectedAddPostScreenType.video:
           return const PodcastVideoAddScreen();
         case SelectedAddPostScreenType.record:
-          return Text("Audio Record".tr);
+          return const AudioRecordScreen();
         case SelectedAddPostScreenType.live:
-          return Text("Go Live".tr);
+          return const GoLiveScreen();
         case SelectedAddPostScreenType.none:
           return const AddPodcastNoneDesign();
       }

@@ -34,6 +34,18 @@
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-9600166294736004~6364781143</string>
 
+    <!-- =================== Record Audio ======================= -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need microphone access to record audio</string>
+
+    <!-- =================== Play Audio ======================= -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app uses the microphone for audio recording.</string>
+    <key>NSAppleMusicUsageDescription</key>
+    <string>This app needs access to play audio files.</string>
+
+
+
     <!-- =================== Google Map ======================= -->
     <key>IOGoogleMapsAPIKey</key>
     <string>AIzaSyAszXC1be8aJ37eHuNcBm_-O1clWkPUwV4</string>

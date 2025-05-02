@@ -27,8 +27,6 @@ Future<void> main() async {
   initGetX();
   initDependencies();
 
-
-
   //Localization
   Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
 

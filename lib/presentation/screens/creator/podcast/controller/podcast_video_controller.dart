@@ -1,16 +1,17 @@
 import 'dart:io';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podcast/core/dependency/path.dart';
+import 'package:podcast/core/route/route_path.dart';
+import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
-class PodcastAudioController extends GetxController{
+class PodcastVideoController extends GetxController{
   final ApiClient apiClient = serviceLocator();
 
   final title = TextEditingController();
@@ -45,9 +46,8 @@ class PodcastAudioController extends GetxController{
 
   /// ============================= Image And Audio =====================================
   final ImagePicker _picker = ImagePicker();
-  final AudioPlayer _audioPlayer = AudioPlayer();
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
-  final Rx<File?> audioFile = Rx<File?>(null);
+  final Rx<File?> videoFile = Rx<File?>(null);
 
   Future<void> pickImage() async {
     try {
@@ -62,24 +62,15 @@ class PodcastAudioController extends GetxController{
     }
   }
 
-  Future<void> pickAudio() async {
+  Future<void> pickVideo() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['mp3', 'wav', 'aac', 'flac', 'opus', 'ogg', 'm4a'],
+        type: FileType.video,
       );
 
       if (result != null) {
         File audio = File(result.files.single.path ?? "");
-        audioFile.value = audio;
-        await _audioPlayer.setSourceDeviceFile(audio.path);
-        Duration? audioDuration = await _audioPlayer.getDuration();
-
-        if (audioDuration != null) {
-          if (audioDuration.inMinutes >= 10) {
-            toastMessage(message: "Your audio file is too long. can not upload reels section");
-          }
-        }
+        videoFile.value = audio;
       }
     } catch (e) {
       toastMessage(message: "Audio not selected for permission error.");
@@ -105,7 +96,7 @@ class PodcastAudioController extends GetxController{
 
       if (response.statusCode == 201 || response.statusCode == 200 ) {
         createLoadingMethod(false);
-        audioFile.value = null;
+        videoFile.value = null;
         selectedImage.value = null;
         title.clear();
         description.clear();
