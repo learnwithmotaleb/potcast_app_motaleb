@@ -44,9 +44,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
       appBar: AppBar(
         title: Text(
           "comments".tr,
-          style: const TextStyle(color: AppColors.whiteColor),
+          style: const TextStyle(
+              color: AppColors.whiteColor,
+          ),
         ),
-        backgroundColor: const Color(0xFF0F593B),
       ),
       body: Column(
         children: [
@@ -62,18 +63,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        padding: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(12.0),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color(0xFF0F2027),
-                              Color(0xFF203A43),
-                              Color(0xFF2C5364),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.whiteColor.withValues(alpha: 0.1)
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -83,8 +76,17 @@ class _CommentsScreenState extends State<CommentsScreen> {
                               height: 50.w,
                               width: 50.w,
                               padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xFFFE7A15), width: 2)),
-                              child: ClipRRect(borderRadius: BorderRadius.circular(25.r), child: CustomNetworkImage(imageUrl: item.user?.avatar ?? "")),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: const Color(0xFFFE7A15),
+                                      width: 2,
+                                  ),
+                              ),
+                              child: CustomNetworkImage(
+                                imageUrl: item.user?.avatar ?? "",
+                                borderRadius: BorderRadius.circular(25.r),
+                              ),
                             ),
                             const Gap(8),
                             Expanded(
@@ -112,15 +114,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
             width: MediaQuery.of(context).size.width,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF093028),
-                  Color(0xFF237A57),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Form(
               key: _formKey,
@@ -145,8 +139,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         hintText: "Write a comments...",
                         counterText: "",
                         filled: true,
-                        hintStyle: TextStyle(color: AppColors.whiteColor),
-                        fillColor: const Color(0xFF2C5364),
+                        hintStyle: const TextStyle(color: AppColors.whiteColor),
+                        // fillColor: const Color(0xFF2C5364),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide.none,
@@ -159,7 +153,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         ? const Center(child: CircularProgressIndicator())
                         : IconButton(
                             icon: const Icon(Iconsax.send_1, size: 30),
-                            style: ButtonStyle(
+                            style: const ButtonStyle(
                               padding: WidgetStatePropertyAll(EdgeInsets.zero)
                             ),
                             onPressed: () {
@@ -173,6 +167,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               ),
             ),
           ),
+          const Gap(12),
         ],
       ),
     );

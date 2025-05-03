@@ -45,7 +45,7 @@ class CustomNetworkImage extends StatelessWidget {
         child: Icon(errorIcon?? Icons.error),
       );
     }
-    print(finalUrl);
+
     return CachedNetworkImage(
       imageUrl: finalUrl,
       imageBuilder: (context, imageProvider) => Container(

@@ -140,7 +140,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
-                            child: CustomText(text: widget.categories?.title ?? "", fontSize: 20, color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.center),
+                            child: CustomText(text: widget.categories?.title ?? "", color: AppColors.whiteColor, maxLines: 2, textAlign: TextAlign.center),
                           ),
                         ),
                         Expanded(child: ClipRRect(borderRadius: const BorderRadius.only(

@@ -397,28 +397,25 @@ class ApiClient {
     }
   }
 
-  /// ========================= MaltiPart Request =====================
-  Future<Response> multipartRequest(
-      {required String url,
-        required String reqType,
-        bool isBasic = false,
-        Map<String, String>? body,
-        required List<MultipartBody> multipartBody,
-        Function(double progress)? onProgress,
-        bool showResult = true}) async {
+  Future<Response> multipartRequest({
+    required String url,
+    required String reqType,
+    bool isBasic = false,
+    Map<String, String>? body,
+    required List<MultipartBody> multipartBody,
+    Function(double progress)? onProgress,
+    bool showResult = true
+  }) async {
     try {
-      /// ======================- Check Internet ===================
-
+      /// Check Internet Connection
       if (!await (connectionChecker.isConnected)) {
         log.i('|📍📍📍|-----------------[[ MULTIPART ]] Internet Error $url -----------------|📍📍📍|');
         return Response(statusCode: 503, statusText: noInternetConnection);
       }
+
       if (showResult) {
-        log.i(
-            '|📍📍📍|-----------------[[ MULTIPART $reqType]] method details start -----------------|📍📍📍|');
-
+        log.i('|📍📍📍|-----------------[[ MULTIPART $reqType]] method details start -----------------|📍📍📍|');
         log.i("===> URL => $url");
-
         log.i("====> body => $body");
       }
 
@@ -431,11 +428,9 @@ class ApiClient {
         );
 
       if (multipartBody.isNotEmpty) {
-
-        // ignore: avoid_function_literals_in_foreach_calls
-        multipartBody.forEach((element) async {
+        for (var element in multipartBody) {
           if (element.file.path.isEmpty) {
-            return;
+            continue;
           }
           debugPrint("path : ${element.file.path}");
 
@@ -443,21 +438,26 @@ class ApiClient {
 
           debugPrint("MimeType================$mimeType");
 
-          var multipartImg = await http.MultipartFile.fromPath(
-            element.key,
-            element.file.path,
-            contentType: MediaType.parse(mimeType!),
-          );
-          request.files.add(multipartImg);
-        });
-      }
-      // Debug: Print total files
-      print('Files added to request: ${request.files.length}');
+          try {
+            var multipartImg = await http.MultipartFile.fromPath(
+              element.key,
+              element.file.path,
+              contentType: MediaType.parse(mimeType!),
+            );
 
-      // Send request
+            request.files.add(multipartImg);
+          } catch (e) {
+            debugPrint("Error adding file: $e");
+          }
+        }
+      }
+
+      // Debug: Print total files
+      debugPrint('Files added to request: ${request.files.length}');
+
+      // Send request and track progress while uploading
       final streamedResponse = await request.send();
 
-      // Content length for progress tracking
       final totalBytes = streamedResponse.contentLength;
       int bytesUploaded = 0;
 
@@ -489,7 +489,8 @@ class ApiClient {
           },
         ),
       );
-      // Get response from the stream
+
+      // Get the final response from the stream after upload completes
       final response = await http.Response.fromStream(
         http.StreamedResponse(responseStream, streamedResponse.statusCode),
       );
@@ -500,59 +501,40 @@ class ApiClient {
 
       if (showResult) {
         log.i("===> Response Body => ${response.body}");
-
         log.i("===> Status Code =>${response.statusCode}");
-
-        log.i(
-            '|📒📒📒|-----------------[[ MULTIPART $reqType ]] method response end --------------------|📒📒📒|');
+        log.i('|📒📒📒|-----------------[[ MULTIPART $reqType ]] method response end --------------------|📒📒📒|');
       }
 
       var decodeBody = jsonDecode(response.body);
-
       return Response(
         body: decodeBody,
         statusCode: response.statusCode,
       );
     } on SocketException {
       log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
-
       return const Response(
           body: {},
           statusCode: 400,
           statusText: '🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
     } on TimeoutException {
       log.e('🐞🐞🐞 Error Alert Timeout Exception🐞🐞🐞');
-
-      log.e('Time out exception$url');
-
       return const Response(
           body: {},
           statusCode: 400,
           statusText: '🐞🐞🐞 Error Alert Timeout Exception 🐞🐞🐞');
     } on http.ClientException catch (err, stackrace) {
       log.e('🐞🐞🐞 Error Alert Client Exception🐞🐞🐞');
-
-      log.e('client exception hitted');
-
-      log.e(err.toString());
-
-      log.e(stackrace.toString());
-
       return const Response(
           body: {}, statusCode: 400, statusText: 'client exception hitted');
     } catch (e) {
       log.e('🐞🐞🐞 Other Error Alert 🐞🐞🐞');
-
-      log.e('❌❌❌ unlisted error received');
-
-      log.e("❌❌❌ $e");
-
       return const Response(
           body: {},
           statusCode: 400,
           statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
     }
   }
+
 
   // Delete method
   Future<Response> delete(

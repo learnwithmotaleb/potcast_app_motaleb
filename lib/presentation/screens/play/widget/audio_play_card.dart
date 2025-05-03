@@ -30,7 +30,7 @@ class _AudioPlayCardState extends State<AudioPlayCard> {
           ),
         ),
         const Gap(5),
-        Flexible(child: CustomText(text: controller.postModel.value.data?.podcast?.title ?? "", maxLines: 3, fontWeight: FontWeight.w600, textAlign: TextAlign.start))
+        Flexible(child: CustomText(text: controller.postModel.value.data?.podcast?.description ?? "", maxLines: 3, fontWeight: FontWeight.w600, textAlign: TextAlign.start))
       ],
     );
   }

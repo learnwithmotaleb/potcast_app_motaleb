@@ -69,7 +69,7 @@ class _AudioPlayProgressState extends State<AudioPlayProgress> {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           // Row with Total and Current Time
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

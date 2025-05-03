@@ -77,7 +77,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
               const Gap(8),
               PickCoverWidget(),
               const Gap(12),
-              CustomAlignText(text: "add_audio".tr),
+              CustomAlignText(text: "add_video".tr),
               const Gap(8),
               PickAudioWidget(),
               const Gap(12.0),

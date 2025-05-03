@@ -12,6 +12,7 @@ import 'package:podcast/presentation/screens/profile/controller/profile_controll
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/presentation/screens/user/home/widget/user_home_categories_section.dart';
+import 'package:podcast/presentation/screens/user/home/widget/user_live_streaming_section.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -38,9 +39,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      bottomNavigationBar: Obx((){
+      /*bottomNavigationBar: Obx((){
         return playController.isPlaying.value? BottomNavPlayCard(): const SizedBox();
-      }),
+      }),*/
       body: Obx(() {
         switch (controller.loading.value) {
           case Status.loading:
@@ -92,6 +93,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     child: Column(
                       children: [
                         const UserTopArtistsSection(),
+                        const UserLiveStreamingSection(),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Row(

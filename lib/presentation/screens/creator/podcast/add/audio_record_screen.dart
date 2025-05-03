@@ -3,7 +3,6 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -21,7 +20,6 @@ import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
-import 'package:path/path.dart' as path;
 
 class AudioRecordScreen extends StatefulWidget {
   const AudioRecordScreen({super.key});

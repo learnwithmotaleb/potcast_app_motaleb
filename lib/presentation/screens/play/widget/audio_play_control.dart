@@ -59,13 +59,7 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
               ),
         Obx(() {
           return GestureDetector(
-            onTap: () {
-              if (controller.isPlaying.value) {
-                controller.pauseAudio();
-              } else {
-                controller.play();
-              }
-            },
+            onTap: ()=> controller.togglePlayPause(),
             child: Icon(controller.isPlaying.value ? Icons.pause : Icons.play_circle_outline_sharp, color: AppColors.whiteColor, size: 45),
           );
         }),

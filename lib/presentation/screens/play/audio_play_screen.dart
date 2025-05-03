@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
+import 'package:video_player/video_player.dart';
 import 'widget/audio_play_bottom.dart';
 import 'widget/audio_play_card.dart';
 import 'widget/audio_play_control.dart';
@@ -34,9 +36,13 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // controller.loadAd(width: constant.maxWidth.toInt() - 20, height: constant.maxHeight.toInt());
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Play"),
+        centerTitle: false,
+        title: Obx(() {
+          return Text(controller.postModel.value.data?.podcast?.title??"Play");
+        }),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.whiteColor),
@@ -45,6 +51,10 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
           },
         ),
         backgroundColor: AppColors.blackColor,
+        actions: [
+          IconButton(onPressed: ()=> controller.toggleMode(), icon: const Icon(Iconsax.arrow_swap)),
+          const Gap(12),
+        ],
       ),
       body: Obx(() {
         switch (controller.loading.value) {
@@ -77,48 +87,36 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                   Expanded(
                     child: LayoutBuilder(
                         builder: (context, constant) {
-                          controller.loadAd(width: constant.maxWidth.toInt()-20, height: constant.maxHeight.toInt());
                           return Obx(() {
-                            return Stack(
-                              children: [
-                                // Show music image only if the ad is not loaded
-                                if (!controller.isLoaded.value)
-                                  Positioned.fill(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20.0, vertical: 20),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                            8),
-                                        child: CustomNetworkImage(
-                                          imageUrl: controller.postModel.value
-                                              .data
-                                              ?.podcast?.cover ?? "",
-                                        ),
-                                      ),
-                                    ),
+                            if(controller.loading.value == Status.loading){
+                              return const Center(child: CircularProgressIndicator());
+                            }else if(controller.loading.value == Status.error){
+                              return const Center(child: CircularProgressIndicator());
+                            }else if(controller.loading.value == Status.internetError){
+                              return const Center(child: CircularProgressIndicator());
+                            }else if(controller.loading.value == Status.noDataFound){
+                              return Center(child: NoInternetCard(onTap: ()=> controller.playPodcast(id: widget.id)));
+                            }else{
+                              if (controller.isAudioMode.value) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                                  child: CustomNetworkImage(
+                                    borderRadius: BorderRadius.circular(8),
+                                    imageUrl: controller.postModel.value.data?.podcast?.cover ?? "",
                                   ),
-
-                                // Show Banner Ad at the bottom once it's loaded
-                                if (controller.isLoaded.value)
-                                  Positioned.fill(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: controller.bannerAd != null
-                                            ? AdWidget(
-                                            ad: controller.bannerAd!)
-                                            : CustomNetworkImage(
-                                          imageUrl: controller.postModel.value
-                                              .data
-                                              ?.podcast?.cover ?? "",
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            );
+                                );
+                              } else {
+                                print(controller.videoPlayerController.value?.value.isInitialized);
+                                if (controller.videoPlayerController.value?.value.isInitialized?? false) {
+                                  return AspectRatio(
+                                    aspectRatio: controller.videoPlayerController.value?.value.aspectRatio?? 9/16,
+                                    child: VideoPlayer(controller.videoPlayerController.value!),
+                                  );
+                                } else {
+                                  return const Center(child: CircularProgressIndicator());
+                                }
+                              }
+                            }
                           });
                         }
                     ),
@@ -140,7 +138,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                             ),
                           ),*/
                         Gap(12),
-                        AudioPlayCard(),
+                        // AudioPlayCard(),
                         Gap(12),
                         AudioPlayProgress(),
                         AudioPlayControl(),

@@ -1,84 +1,105 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/presentation/screens/play/model/podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
+import 'package:video_player/video_player.dart';
 
 class AudioPlayController extends GetxController{
-  ApiClient apiClient = ApiClient();
-  Rx<PodcastModel> postModel = PodcastModel().obs;
-  RxString currentMediaId = ''.obs;
-  final cacheManager = DefaultCacheManager();
+  final ApiClient apiClient = serviceLocator();
+  final Rx<VideoPlayerController?> videoPlayerController = Rx(null);
+  final AudioPlayer audioPlayer = AudioPlayer();
 
-  RxBool isLike = false.obs;
-  RxBool isFavorite = false.obs;
+  final Rx<bool> isAudioMode = true.obs;
+  final RxBool isPlaying = false.obs;
 
-  final adUnitId = Platform.isAndroid ? AppConstants.bannerAndroid : AppConstants.bannerIOS;
+  final Rx<Duration> currentPosition = Duration.zero.obs;
+  final Rx<Duration> totalAudioDuration = Duration.zero.obs;
+  final Rx<Duration> bufferedAudioPosition = Duration.zero.obs;
+  final Rx<Duration> totalVideoDuration = Duration.zero.obs;
+  final Rx<Duration> bufferedVideoPosition = Duration.zero.obs;
 
-  BannerAd? bannerAd;
-  RxBool isLoaded = false.obs;
-
-  void loadAd({required int width, required int height}) async {
-    bannerAd = BannerAd(
-      adUnitId: adUnitId,
-      request: const AdRequest(),
-      size: AdSize(width: width, height: height),
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          debugPrint('$ad loaded.');
-          isLoaded.value = true;
-        },
-        onAdFailedToLoad: (ad, err) {
-          debugPrint('BannerAd failed to load: $err');
-          ad.dispose();
-        },
-      ),
-    )..load();
-  }
+  final Rx<PodcastModel> postModel = PodcastModel().obs;
+  final RxString currentMediaId = ''.obs;
+  final RxBool isLike = false.obs;
+  final RxBool isFavorite = false.obs;
 
   /// ============================= GET Podcast Details Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
-  Future<void> playPodcast({required String id}) async {
+  Future<void> playPodcast({required String id, String? url}) async {
     try{
       if (currentMediaId.value == id) {
         print("Media ID $id is already playing");
         return;
       }
+
       loadingMethod(Status.loading);
-      var response = await apiClient.post(url: ApiUrl.play(id: id),body: {},showResult: true);
+      videoPlayerController.value?.removeListener(_onVideoPlayerChanged);
+      videoPlayerController.value?.dispose();
+      audioPlayer.stop();
+      videoPlayerController.value = null;
+
+      var response = await apiClient.post(url: url ?? ApiUrl.play(id: id), body: {}, showResult: true);
       if (response.statusCode == 200) {
         postModel.value = PodcastModel.fromJson(response.body);
         isLike.value = postModel.value.data?.isLiked?? false;
         isFavorite.value = postModel.value.data?.isFavorite?? false;
+        final contentUrl = postModel.value.data?.podcast?.audio ?? "";
 
-        // playAudio(podcast: PodcastModel.fromJson(response.body));
-        final mediaItem = MediaItem(
-          id: postModel.value.data?.podcast?.id??"",
-          album:  postModel.value.data?.podcast?.category?.title??"",
-          title:  postModel.value.data?.podcast?.title??"",
-          artist:  postModel.value.data?.podcast?.creator?.user?.name??"",
-          artUri: Uri.parse(postModel.value.data?.podcast?.cover??""),
-        );
-        await audioPlayer.setAudioSource(
-          AudioSource.uri(
-            Uri.parse(postModel.value.data?.podcast?.audio??""),
-            tag: mediaItem,
-          ),
-          preload: true,
-        ).then((value) async {
-          loadingMethod(Status.completed);
-          await play();
-        }).catchError((e){
+        final contentType = await getContentType(contentUrl);
+
+        if (contentType != null) {
+          final mediaItem = MediaItem(
+            id: postModel.value.data?.podcast?.id??"",
+            album:  postModel.value.data?.podcast?.category?.title??"",
+            title:  postModel.value.data?.podcast?.title??"",
+            artist:  postModel.value.data?.podcast?.creator?.user?.name??"",
+            artUri: Uri.parse(postModel.value.data?.podcast?.cover??""),
+          );
+
+          if (contentType.startsWith('video')) {
+            _loadVideo(contentUrl).then((value){
+              if (value) {
+                videoPlayerController.value?.addListener(_onVideoPlayerChanged);
+                loadingMethod(Status.completed);
+                isPlaying.value = true;
+                isAudioMode.value = false;
+                videoPlayerController.value?.play();
+                currentMediaId.value = contentUrl;
+              } else {
+                currentMediaId.value = '';
+                loadingMethod(Status.error);
+              }
+            });
+            _loadAudio(url: contentUrl, media: mediaItem);
+          } else if (contentType.startsWith('audio')) {
+            final audioRes = await _loadAudio(url: contentUrl, media: mediaItem);
+            if (audioRes) {
+              loadingMethod(Status.completed);
+              audioPlayer.play();
+              isPlaying.value = true;
+              currentMediaId.value = contentUrl;
+              isAudioMode.value = true;
+            } else {
+              currentMediaId.value = '';
+              loadingMethod(Status.error);
+            }
+          }else{
+            currentMediaId.value = '';
+            loadingMethod(Status.noDataFound);
+          }
+        } else {
           currentMediaId.value = '';
           loadingMethod(Status.error);
-        });
+        }
       } else {
         currentMediaId.value = '';
         if (response.statusCode == 503) {
@@ -91,111 +112,193 @@ class AudioPlayController extends GetxController{
       }
     }catch(e){
       currentMediaId.value = '';
-      print(e);
       loadingMethod(Status.error);
     }
   }
 
-  Future<void> playNextPodcast({required String id}) async {
+  void _onVideoPlayerChanged() {
+    if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+      bufferedVideoPosition.value = videoPlayerController.value?.value.buffered.last.end ?? Duration.zero;
+    }
+  }
+
+  Future<bool> _loadAudio({required String url, required MediaItem media}) async {
+    final startTime = DateTime.now();
+    print('🔊 _loadAudio() started at $startTime');
+
+    try {
+      await audioPlayer.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(url),
+          tag: media,
+        ),
+        preload: true,
+      );
+      await audioPlayer.seek(currentPosition.value);
+      return true;
+    } catch (e) {
+      print('❌ _loadAudio() error: $e');
+      return false;
+    } finally {
+      final endTime = DateTime.now();
+      print('✅ _loadAudio() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+    }
+  }
+
+  Future<bool> _loadVideo(String url) async {
+    final startTime = DateTime.now();
+    print('🎥 _loadVideo() started at $startTime');
+
+    try {
+      videoPlayerController.value = VideoPlayerController.networkUrl(Uri.parse(url));
+      await videoPlayerController.value?.initialize();
+      videoPlayerController.value?.addListener(_updateVideoProgress);
+      return true;
+    } catch (e) {
+      print('❌ _loadVideo() error: $e');
+      return false;
+    } finally {
+      final endTime = DateTime.now();
+      print('✅ _loadVideo() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+    }
+  }
+
+  void _updateVideoProgress() {
+    if (videoPlayerController.value?.value.isInitialized ?? false) {
+      currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+    }
+  }
+
+  Future<String?> getContentType(String? url) async {
+    if(url == null) {
+      return null;
+    }
+    final startTime = DateTime.now();
+    print('📄 getContentType() started at $startTime');
+
+    try {
+      final response = await http.head(Uri.parse(url));
+      if (response.statusCode == 200) {
+        return response.headers['content-type'];
+      }
+    } catch (e) {
+      print('❌ getContentType() error: $e');
+    } finally {
+      final endTime = DateTime.now();
+      print('✅ getContentType() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+    }
+
+    return null;
+  }
+
+  void seekAudio(Duration position) => audioPlayer.seek(position);
+
+  void skipBackward() {
+    const skipDuration = Duration(minutes: 15);
+    if (isAudioMode.value) {
+      final newPosition = currentPosition.value - skipDuration;
+      seekAudio(newPosition < Duration.zero ? Duration.zero : newPosition);
+    } else {
+      final newPosition = currentPosition.value - skipDuration;
+      if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+        videoPlayerController.value?.seekTo(newPosition < Duration.zero ? Duration.zero : newPosition);
+      }
+    }
+  }
+
+  bool isActive = false;
+
+  void toggleMode() {
+    final startTime = DateTime.now();
+    if (isActive) {
+      return;
+    }
+
+    try {
+      isActive = true;
+      print('📄 toggleMode() started at $startTime');
+
+      if (isAudioMode.value) {
+        if (audioPlayer.playing) {
+          if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+            currentPosition.value = audioPlayer.position;
+            audioPlayer.pause();
+            isAudioMode.value = false;
+            videoPlayerController.value?.seekTo(currentPosition.value);
+            videoPlayerController.value?.play();
+          } else {
+            print('❌ Video controller is not initialized');
+          }
+        }
+      } else {
+        if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+          currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+          videoPlayerController.value?.pause();
+          isAudioMode.value = true;
+          if (!audioPlayer.playing) {
+            audioPlayer.seek(currentPosition.value);
+            audioPlayer.play();
+          }
+        } else {
+          print('❌ Video controller is not initialized');
+        }
+      }
+    } catch (e) {
+      print('❌ toggleMode() error: $e');
+      debugPrint(e.toString());
+    } finally {
+      final endTime = DateTime.now();
+      isPlaying.value = true;
+      isActive = false;
+      print('✅ toggleMode() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+    }
+  }
+
+  void togglePlayPause() {
     try{
-      loadingMethod(Status.loading);
-      var response = await apiClient.post(url: ApiUrl.playNext(id: id),body: {},showResult: true);
-      if (response.statusCode == 200) {
-        postModel.value = PodcastModel.fromJson(response.body);
-        isLike.value = postModel.value.data?.isLiked?? false;
-        isFavorite.value = postModel.value.data?.isFavorite?? false;
-
-        // playAudio(podcast: PodcastModel.fromJson(response.body));
-        final mediaItem = MediaItem(
-          id: postModel.value.data?.podcast?.id??"",
-          album:  postModel.value.data?.podcast?.category?.title??"",
-          title:  postModel.value.data?.podcast?.title??"",
-          artist:  postModel.value.data?.podcast?.creator?.user?.name??"",
-          artUri: Uri.parse(postModel.value.data?.podcast?.cover??""),
-        );
-        await audioPlayer.setAudioSource(
-          AudioSource.uri(
-            Uri.parse(postModel.value.data?.podcast?.audio??""),
-            tag: mediaItem,
-          ),
-          preload: true,
-        ).then((value) async {
-          loadingMethod(Status.completed);
-          await play();
-        }).catchError((e){
-          currentMediaId.value = '';
-          loadingMethod(Status.error);
-        });
-      } else {
-        currentMediaId.value = '';
-        if (response.statusCode == 503) {
-          loadingMethod(Status.internetError);
-        } else if (response.statusCode == 404) {
-          loadingMethod(Status.noDataFound);
+      if (isAudioMode.value) {
+        if (audioPlayer.playing) {
+          audioPlayer.pause();
+          isPlaying.value = false;
         } else {
-          loadingMethod(Status.error);
+          audioPlayer.play();
+          isPlaying.value = true;
+        }
+      } else {
+        if (videoPlayerController.value?.value.isPlaying ?? false) {
+          videoPlayerController.value?.pause();
+          isPlaying.value = false;
+        } else {
+          videoPlayerController.value?.play();
+          isPlaying.value = true;
         }
       }
     }catch(e){
-      currentMediaId.value = '';
-      loadingMethod(Status.error);
+      debugPrint(e.toString());
     }
   }
 
-  final audioPlayer = AudioPlayer();
-
-  // Observables
-  var isPlaying = false.obs;
-  var currentPosition = Duration.zero.obs;
-  var totalDuration = Duration.zero.obs;
-  Rx<Duration> bufferedPosition = Duration.zero.obs;
+  void playNext() {
+    playPodcast(id: postModel.value.data?.podcast?.id??"", url: ApiUrl.playNext(id: postModel.value.data?.podcast?.id??""));
+  }
 
   @override
   void onInit() {
     super.onInit();
 
-    audioPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {
-        playNext();
-      }
-    });
-
-    audioPlayer.playerStateStream.listen((state) {
-      isPlaying.value = state.playing;
-    });
-
-    audioPlayer.bufferedPositionStream.listen((buffered) {
-      bufferedPosition.value = buffered;
-    });
-
     audioPlayer.positionStream.listen((pos) {
       currentPosition.value = pos;
     });
 
-    audioPlayer.durationStream.listen((dur) {
-      if (dur != null) totalDuration.value = dur;
+    videoPlayerController.value?.addListener(() {
+      if (videoPlayerController.value?.value.isInitialized ?? false) {
+        currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+      }
     });
-  }
-
-  var playLoading = Status.completed.obs;
-  playLoadingMethod(Status status) => playLoading.value = status;
-
-  Future<void> play() async{
-    currentMediaId.value = postModel.value.data?.podcast?.id??"";
-    await audioPlayer.play();
-  }
-
-  void pauseAudio() => audioPlayer.pause();
-  void seekAudio(Duration position) => audioPlayer.seek(position);
-
-  void skipBackward() {
-    final newPosition = currentPosition.value - const Duration(seconds: 15);
-    seekAudio(newPosition < Duration.zero ? Duration.zero : newPosition);
   }
 
   RxBool isWorking = false.obs;
   RxBool likeLoading = false.obs;
-
   Future<bool> likePodcast({required String id, required bool current}) async {
     try{
       if (isWorking.value) {
@@ -247,13 +350,32 @@ class AudioPlayController extends GetxController{
     }
   }
 
-  void playNext() {
-    playNextPodcast(id: postModel.value.data?.podcast?.id??"");
+  final adUnitId = Platform.isAndroid ? AppConstants.bannerAndroid : AppConstants.bannerIOS;
+  BannerAd? bannerAd;
+  RxBool isLoaded = false.obs;
+  void loadAd({required int width, required int height}) async {
+    bannerAd = BannerAd(
+      adUnitId: adUnitId,
+      request: const AdRequest(),
+      size: AdSize(width: width, height: height),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          debugPrint('$ad loaded.');
+          isLoaded.value = true;
+        },
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('BannerAd failed to load: $err');
+          ad.dispose();
+        },
+      ),
+    )..load();
   }
 
   @override
   void onClose() {
+    bannerAd?.dispose();
     audioPlayer.dispose();
+    videoPlayerController.value?.dispose();
     super.onClose();
   }
 }
