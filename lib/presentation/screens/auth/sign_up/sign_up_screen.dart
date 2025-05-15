@@ -53,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return Radio<String>(
                           value: "USER",
                           groupValue: _controller.selectedRoll.value,
-                          activeColor: AppColors.whiteColor,
+                          activeColor: AppColors.greenLight,
                           onChanged: _controller.updateRoll,
                         );
                       }),
@@ -69,7 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Obx(() {
                         return Radio<String>(
                           value: "CREATOR",
-                          activeColor: AppColors.whiteColor,
+                          activeColor: AppColors.greenLight,
                           groupValue: _controller.selectedRoll.value,
                           onChanged: _controller.updateRoll,
                         );
@@ -81,22 +81,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ],
               ),
-              CustomAlignText(text: "full_name".tr),
+              CustomAlignText(text: "User Name".tr),
               const Gap(8),
               CustomTextField(
-                hintText: "enter_your_full_name".tr,
+                hintText: "Enter Your User Name".tr,
                 keyboardType: TextInputType.name,
                 controller: _name,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Name is required';
+                    return 'User Name is required';
                   }
                   if (value.length < 2) {
-                    return 'Name must be at least 2 characters';
+                    return 'User Name must be at least 2 characters';
                   }
                   final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
                   if (!nameRegex.hasMatch(value)) {
-                    return 'Name can only contain letters and spaces';
+                    return 'User Name can only contain letters and spaces';
                   }
                   return null;
                 },
@@ -158,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               CustomAlignText(text: "password".tr),
               const Gap(8),
               CustomTextField(
-                hintText: "*************",
+                hintText: "Enter Your Password",
                 isPassword: true,
                 keyboardType: TextInputType.text,
                 controller: _password,
@@ -173,16 +173,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 },
               ),
               const Gap(12),
-              CustomAlignText(text: "confirm_password".tr),
+              CustomAlignText(text: "Repeat Your Password".tr),
               const Gap(8),
               CustomTextField(
-                hintText: "*************",
+                hintText: "Repeat Your Password",
                 isPassword: true,
                 keyboardType: TextInputType.text,
                 controller: _confirmPassword,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
+                    return 'Please Repeat your password';
                   }
                   if (value != _password.text) {
                     return 'Passwords do not match';

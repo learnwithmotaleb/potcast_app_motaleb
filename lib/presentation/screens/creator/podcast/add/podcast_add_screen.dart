@@ -286,39 +286,35 @@ class PickCoverWidget extends StatelessWidget {
       onTap: () => controller.pickImage(),
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.whiteColor)
+        ),
         padding: const EdgeInsets.all(1),
-        child: DottedBorder(
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(12),
-          strokeWidth: 1,
-          dashPattern: const [10, 5],
-          color: const Color(0xFF1849D6),
-          child: Obx(
-                () =>
-            controller.selectedImage.value == null
-                ? Container(
-              width: width,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
-                  const Gap(8),
-                  CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
-                  const Gap(8),
-                  CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
-                ],
-              ),
-            )
-                : SizedBox(
-              height: 150,
-              width: width,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
-              ),
+        child: Obx(
+              () =>
+          controller.selectedImage.value == null
+              ? Container(
+            width: width,
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                const Gap(8),
+                CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
+                const Gap(8),
+                CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
+              ],
+            ),
+          )
+              : SizedBox(
+            height: 150,
+            width: width,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
             ),
           ),
         ),
@@ -342,67 +338,68 @@ class PickAudioWidget extends StatelessWidget {
       onTap: () => controller.pickAudio(),
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.whiteColor)
+        ),
         padding: const EdgeInsets.all(1),
-        child: DottedBorder(
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(12),
-          strokeWidth: 1,
-          dashPattern: const [10, 5],
-          color: const Color(0xFF1849D6),
-          child: Obx(
-                () =>
-                Container(
+        child: Obx(
+              () =>
+              Container(
+                width: width,
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
+                child: controller.audioFile.value == null
+                    ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                    const Gap(8),
+                    CustomText(text: "Choose_a_audio".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
+                    const Gap(8),
+                    CustomText(text: "max_10_MB_files_are_allowed".tr, fontWeight: FontWeight.w100)
+                  ],
+                )
+                    : SizedBox(
                   width: width,
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
-                  child: controller.audioFile.value == null
-                      ? Column(
-                    mainAxisSize: MainAxisSize.min,
+                  height: 50.h,
+                  child: Row(
                     children: [
-                      Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
-                      const Gap(8),
-                      CustomText(text: "Choose_a_audio".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
-                      const Gap(8),
-                      CustomText(text: "max_10_MB_files_are_allowed".tr, fontWeight: FontWeight.w100)
+                      Expanded(
+                        child: Container(
+                          height: 50.h,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: AppColors.blackColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: CustomText(
+                            text: controller.audioFile.value?.path != null ? path.basename(controller.audioFile.value!.path) : "",
+                          ),
+                        ),
+                      ),
+                      const Gap(5),
+                      GestureDetector(
+                        onTap: () => controller.audioFile.value = null,
+                        child: Container(
+                          height: 25.h,
+                          width: 25.w,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.whiteColor),
+                            shape: BoxShape.circle
+                          ),
+                          padding: const EdgeInsets.all(2),
+                          child: Assets.images.delete.image(
+                            color: AppColors.whiteColor
+                          ),
+                        ),
+                      ),
                     ],
-                  )
-                      : SizedBox(
-                    width: width,
-                    height: 50.h,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50.h,
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: AppColors.blackColor,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: CustomText(
-                              text: controller.audioFile.value?.path != null ? path.basename(controller.audioFile.value!.path) : "",
-                            ),
-                          ),
-                        ),
-                        const Gap(5),
-                        GestureDetector(
-                          onTap: () => controller.audioFile.value = null,
-                          child: Container(
-                            height: 50.h,
-                            width: 50.w,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(color: AppColors.redColor, borderRadius: BorderRadius.circular(8)),
-                            child: const Icon(Icons.cancel_outlined),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
-          ),
+              ),
         ),
       ),
     );

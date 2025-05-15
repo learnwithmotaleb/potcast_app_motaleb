@@ -44,7 +44,7 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
                   ? const Center(child: CircularProgressIndicator())
                   : Icon(
                       Icons.favorite,
-                      color: isLiked ? Colors.blue : Colors.white,
+                      color: isLiked ? Colors.red : Colors.white,
                       size: 30,
                     );
             });
@@ -60,13 +60,13 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
         Obx(() {
           return GestureDetector(
             onTap: ()=> controller.togglePlayPause(),
-            child: Icon(controller.isPlaying.value ? Icons.pause : Icons.play_circle_outline_sharp, color: AppColors.whiteColor, size: 45),
+            child: Icon(controller.isPlaying.value ? Icons.pause : Icons.play_circle_outline_sharp, size: 45),
           );
         }),
         widget.isRemove
             ? const SizedBox()
             : IconButton(
-                icon: const Icon(Icons.skip_next, color: AppColors.whiteColor),
+                icon: const Icon(Icons.skip_next),
                 onPressed: controller.playNext,
                 iconSize: 36,
               ),
@@ -89,7 +89,7 @@ class _AudioPlayControlState extends State<AudioPlayControl> {
                   ? const Center(child: CircularProgressIndicator())
                   : Icon(
                 Iconsax.like_1,
-                color: isLiked ? Colors.blue : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
+                color: isLiked ? Colors.deepOrange : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
               );
             });
           },

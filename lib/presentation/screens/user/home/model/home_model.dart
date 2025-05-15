@@ -40,7 +40,7 @@ class Data {
   final List<Creator>? creators;
   final List<Podcast>? newPodcasts;
   final List<Podcast>? popularPodcasts;
-  final List<Podcast>? shortPodcasts;
+  final List<Podcast>? realsList;
 
   Data({
     this.location,
@@ -49,7 +49,7 @@ class Data {
     this.creators,
     this.newPodcasts,
     this.popularPodcasts,
-    this.shortPodcasts,
+    this.realsList,
   });
 
   Data copyWith({
@@ -59,7 +59,7 @@ class Data {
     List<Creator>? creators,
     List<Podcast>? newPodcasts,
     List<Podcast>? popularPodcasts,
-    List<Podcast>? shortPodcasts,
+    List<Podcast>? realsList,
   }) =>
       Data(
         location: location ?? this.location,
@@ -68,7 +68,7 @@ class Data {
         creators: creators ?? this.creators,
         newPodcasts: newPodcasts ?? this.newPodcasts,
         popularPodcasts: popularPodcasts ?? this.popularPodcasts,
-        shortPodcasts: shortPodcasts ?? this.shortPodcasts,
+        realsList: realsList ?? this.realsList,
       );
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -78,7 +78,7 @@ class Data {
     creators: json["creators"] == null ? [] : List<Creator>.from(json["creators"]!.map((x) => Creator.fromJson(x))),
     newPodcasts: json["newPodcasts"] == null ? [] : List<Podcast>.from(json["newPodcasts"]!.map((x) => Podcast.fromJson(x))),
     popularPodcasts: json["popularPodcasts"] == null ? [] : List<Podcast>.from(json["popularPodcasts"]!.map((x) => Podcast.fromJson(x))),
-    shortPodcasts: json["shortPodcasts"] == null ? [] : List<Podcast>.from(json["shortPodcasts"]!.map((x) => Podcast.fromJson(x))),
+    realsList: json["realsList"] == null ? [] : List<Podcast>.from(json["realsList"]!.map((x) => Podcast.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -88,7 +88,7 @@ class Data {
     "creators": creators == null ? [] : List<dynamic>.from(creators!.map((x) => x.toJson())),
     "newPodcasts": newPodcasts == null ? [] : List<dynamic>.from(newPodcasts!.map((x) => x.toJson())),
     "popularPodcasts": popularPodcasts == null ? [] : List<dynamic>.from(popularPodcasts!.map((x) => x.toJson())),
-    "shortPodcasts": shortPodcasts == null ? [] : List<dynamic>.from(shortPodcasts!.map((x) => x.toJson())),
+    "shortPodcasts": realsList == null ? [] : List<dynamic>.from(realsList!.map((x) => x.toJson())),
   };
 }
 

@@ -59,18 +59,18 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                             padding: EdgeInsets.all(index ==0?3:5),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: index ==0?Border.all(color: const Color(0xFFFE7A15),width: 3):Border.all(color: isDarkMode?AppColors.whiteColor:AppColors.primaryColor,width: 1)
+                                border: index ==0?Border.all(color: const Color(0xFFEF4849),width: 3):Border.all(color: isDarkMode? AppColors.whiteColor : Colors.green, width: 1)
                             ),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(40.r),
-                                child: controller.model.value.data?.admin?.avatar != null?
-                                CustomNetworkImage(imageUrl: controller.model.value.data?.admin?.avatar??""):
-                                Assets.images.splashLogo.image()
-                            ),
+                            child: controller.model.value.data?.admin?.avatar != null?
+                            CustomNetworkImage(
+                                imageUrl: controller.model.value.data?.admin?.avatar??"",
+                              borderRadius: BorderRadius.circular(40.r),
+                            ):
+                            Assets.images.splashLogo.image(),
                           ),
                         ),
                         const Gap(5),
-                        CustomText(text: controller.model.value.data?.admin?.name??"", fontSize: 16,),
+                        CustomText(text: controller.model.value.data?.admin?.name??"", fontSize: 16, color: AppColors.blackColor,),
                       ],
                     ),
                   );
@@ -112,7 +112,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: controller.model.value.data?.creators?[index-1].name??"", fontSize: 16),
+                      CustomText(text: controller.model.value.data?.creators?[index-1].name??"", fontSize: 16, color: AppColors.blackColor,),
                     ],
                   ),
                 );

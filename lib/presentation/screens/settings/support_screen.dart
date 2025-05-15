@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'controller/settings_controller.dart';
 
@@ -49,22 +50,29 @@ class _SupportScreenState extends State<SupportScreen> {
 
             case Status.completed:
               return ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
                 itemCount: _controller.supportsData.value.data?.length ?? 0,
                 itemBuilder: (BuildContext context, int index) {
                   return FAQ(
                     question: _controller.supportsData.value.data?[index].question ?? "",
                     answer: _controller.supportsData.value.data?[index].answer ?? "",
-                    ansDecoration: BoxDecoration(
-                      color: Colors.grey[600],
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
+                    queStyle: const TextStyle(
+                      color: AppColors.blackColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
                     ),
-                    queDecoration: const BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
+                    ansStyle: const TextStyle(
+                      color: AppColors.hintTextColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    queDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.greenLight.withValues(alpha: 0.1),
+                    ),
+                    ansDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: AppColors.greenLight.withValues(alpha: 0.1),
                     ),
                   );
                 },

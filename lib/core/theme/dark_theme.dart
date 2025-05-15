@@ -22,6 +22,10 @@ final InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
     borderRadius: BorderRadius.circular(8),
     borderSide: const BorderSide(color: AppColors.whiteColor),
   ),
+  focusedErrorBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(8),
+    borderSide: const BorderSide(color: AppColors.whiteColor),
+  ),
   disabledBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(8),
     borderSide: const BorderSide(color: AppColors.whiteColor),
@@ -32,7 +36,7 @@ final InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   ),
   errorBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(8),
-    borderSide: const BorderSide(color: AppColors.redColor),
+    borderSide: const BorderSide(color: AppColors.whiteColor),
   ),
   hintStyle: const TextStyle(color: AppColors.hintTextColor,fontWeight: FontWeight.w100),
 );

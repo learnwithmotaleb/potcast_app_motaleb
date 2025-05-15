@@ -23,7 +23,7 @@
 
 
     <application
-        android:label="podcast"
+        android:label="Preach Radio"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

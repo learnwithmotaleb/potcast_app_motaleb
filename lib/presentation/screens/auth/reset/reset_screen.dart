@@ -8,6 +8,7 @@ import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class ResetScreen extends StatefulWidget {
   const ResetScreen({super.key, required this.email});
@@ -37,7 +38,9 @@ class _ResetScreenState extends State<ResetScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Assets.images.splashLogo.image(),
+              Assets.images.splashLogo.image(
+                color: AppColors.blackColor,
+              ),
               CustomText(text: "please_select_a_password_that_uses_one_capital_letter_one_number_and_unique_symbol".tr,fontSize: 16,family: "Light",maxLines: 2),
               const Gap(24),
               CustomAlignText(text: "new_password".tr),

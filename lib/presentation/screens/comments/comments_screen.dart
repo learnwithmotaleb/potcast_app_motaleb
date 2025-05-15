@@ -49,126 +49,130 @@ class _CommentsScreenState extends State<CommentsScreen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                controller.pagingController.refresh();
-              },
-              child: PagedListView<int, Comment>(
-                pagingController: controller.pagingController,
-                builderDelegate: PagedChildBuilderDelegate<Comment>(
-                  itemBuilder: (context, item, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: AppColors.whiteColor.withValues(alpha: 0.1)
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 50.w,
-                              width: 50.w,
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: const Color(0xFFFE7A15),
-                                      width: 2,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        child: Column(
+          children: [
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  controller.pagingController.refresh();
+                },
+                child: PagedListView<int, Comment>(
+                  pagingController: controller.pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<Comment>(
+                    itemBuilder: (context, item, index) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 50.w,
+                                  width: 50.w,
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: AppColors.whiteColor,
+                                          width: 2,
+                                      ),
                                   ),
-                              ),
-                              child: CustomNetworkImage(
-                                imageUrl: item.user?.avatar ?? "",
-                                borderRadius: BorderRadius.circular(25.r),
-                              ),
+                                  child: CustomNetworkImage(
+                                    imageUrl: item.user?.avatar ?? "",
+                                    borderRadius: BorderRadius.circular(25.r),
+                                  ),
+                                ),
+                                const Gap(8),
+                                Expanded(
+                                  child: ReadMoreText(
+                                    item.text ?? "",
+                                    trimMode: TrimMode.Line,
+                                    trimLines: 2,
+                                    colorClickableText: Colors.pink,
+                                    trimCollapsedText: 'Show more',
+                                    trimExpandedText: 'Show less',
+                                    moreStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const Gap(8),
-                            Expanded(
-                              child: ReadMoreText(
-                                item.text ?? "",
-                                trimMode: TrimMode.Line,
-                                trimLines: 2,
-                                colorClickableText: Colors.pink,
-                                trimCollapsedText: 'Show more',
-                                trimExpandedText: 'Show less',
-                                moreStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                          ),
+                          const Divider(),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
-            width: MediaQuery.of(context).size.width,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Form(
-              key: _formKey,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      maxLines: 5,
-                      minLines: 1,
-                      controller: controller.comments,
-                      maxLength: 300,
-                      keyboardType: TextInputType.multiline,
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          return null;
-                        } else {
-                          return "Please Add Comments";
-                        }
-                      },
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: "Write a comments...",
-                        counterText: "",
-                        filled: true,
-                        hintStyle: const TextStyle(color: AppColors.whiteColor),
-                        // fillColor: const Color(0xFF2C5364),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide.none,
+            Container(
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Form(
+                key: _formKey,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        maxLines: 5,
+                        minLines: 1,
+                        controller: controller.comments,
+                        maxLength: 100,
+                        keyboardType: TextInputType.multiline,
+                        validator: (value) {
+                          if (value != null && value.isNotEmpty) {
+                            return null;
+                          } else {
+                            return "Please Add Comments";
+                          }
+                        },
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          hintText: "Write a comment...",
+                          hintStyle: const TextStyle(color: AppColors.whiteColor),
+                          suffixIcon: IconButton(onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              controller.commentsAdd(id: widget.id);
+                            }
+                          }, icon: const Icon(Iconsax.send_1)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Obx(() {
-                    return controller.addComments.value
-                        ? const Center(child: CircularProgressIndicator())
-                        : IconButton(
-                            icon: const Icon(Iconsax.send_1, size: 30),
-                            style: const ButtonStyle(
-                              padding: WidgetStatePropertyAll(EdgeInsets.zero)
-                            ),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                controller.commentsAdd(id: widget.id);
-                              }
-                            },
-                          );
-                  }),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const Gap(12),
-        ],
+            const Gap(44),
+          ],
+        ),
       ),
     );
   }

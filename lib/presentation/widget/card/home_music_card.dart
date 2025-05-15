@@ -24,13 +24,13 @@ class HomeMusicCard extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.only(right: 12.0),
+      padding: const EdgeInsets.only(right: 8.0),
       child: GestureDetector(
         onTap: onTap,
         onLongPress: onLongPress,
         child: SizedBox(
-          height: 200,
-          width: (width/2)-50,
+          height: 180,
+          width: (width/2)-30,
           child: Padding(
             padding: EdgeInsets.only(bottom: bgColor != null?12.0:0),
             child: Container(
@@ -41,14 +41,20 @@ class HomeMusicCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.r),
-                        child: CustomNetworkImage(imageUrl: data.image??"")
+                    child: CustomNetworkImage(
+                      imageUrl: data.image??"",
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   const Gap(8),
-                  CustomText(text: data.title??"",fontSize: 16,fontWeight: FontWeight.w800),
-                  CustomText(text: data.categories??""),
+                  CustomText(
+                      text: data.title??"",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                  ),
+                  CustomText(
+                    text: data.categories??"",
+                  ),
                   // CustomText(text: data.duration??""),
                 ],
               ),

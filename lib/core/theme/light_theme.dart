@@ -34,7 +34,7 @@ final InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
       borderRadius: BorderRadius.circular(8),
       borderSide: const BorderSide(color: AppColors.redColor),
     ),
-    fillColor: AppColors.searchBoxColor,
+    fillColor: Colors.green.withValues(alpha: 0.1),
     filled: true,
     hintStyle: const TextStyle(color: AppColors.hintTextColor,fontWeight: FontWeight.w100),
 );

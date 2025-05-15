@@ -33,22 +33,14 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
             padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              /*gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF093028),
-                  Color(0xFF0F593B),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),*/
-              color: AppColors.blackColor,
+                color: AppColors.blackColor,
                 border: Border.all(color: AppColors.whiteColor)
             ),
             child: Row(
               children: [
                 Assets.icons.comments.svg(height: 20.h,width: 20.h),
                 const Gap(2),
-                const CustomText(text: "...."),
+                const CustomText(text: "....", color: AppColors.whiteColor,),
               ],
             ),
           ),
@@ -73,7 +65,7 @@ class _AudioPlayBottomState extends State<AudioPlayBottom> {
               color: AppColors.blackColor,
               border: Border.all(color: AppColors.whiteColor)
             ),
-            child: const CustomText(text: "Give"),
+            child: const CustomText(text: "Give", color: AppColors.whiteColor),
           ),
         ),
       ],

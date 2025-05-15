@@ -20,14 +20,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.blackColor,
       appBar: AppBar(
-        backgroundColor: AppColors.blackColor,
         leading: IconButton(
             onPressed: () => AppRouter.route.pop(),
-            icon: const Icon(Icons.arrow_back_ios,color: AppColors.whiteColor),
+            icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: Text("notification".tr,style: const TextStyle(color: AppColors.whiteColor),),
+        title: Text("notification".tr,),
       ),
       body: RefreshIndicator(
         onRefresh: ()async{

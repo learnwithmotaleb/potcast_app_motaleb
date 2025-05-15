@@ -9,6 +9,7 @@ import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class ForgetScreen extends StatefulWidget {
   const ForgetScreen({super.key});

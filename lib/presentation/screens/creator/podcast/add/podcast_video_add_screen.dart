@@ -112,7 +112,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
                   decoration: BoxDecoration(
                     border: Border.all(color: AppColors.whiteColor),
                     borderRadius: BorderRadius.circular(8),
-                    color: AppColors.blackColor,
+                    color: AppColors.greenLight.withValues(alpha: 0.1),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -283,7 +283,10 @@ class PickCoverWidget extends StatelessWidget {
       onTap: () => controller.pickImage(),
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+            color: AppColors.whiteColor,
+            borderRadius: BorderRadius.circular(12),
+        ),
         padding: const EdgeInsets.all(1),
         child: DottedBorder(
           borderType: BorderType.RRect,
@@ -296,13 +299,16 @@ class PickCoverWidget extends StatelessWidget {
                 ? Container(
                     width: width,
                     padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: AppColors.greenLight.withValues(alpha: 0.1),
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                        Assets.icons.cloudAdd.svg(),
                         const Gap(8),
-                        CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
+                        CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600, fontSize: 16),
                         const Gap(8),
                         CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
                       ],
@@ -347,14 +353,17 @@ class PickAudioWidget extends StatelessWidget {
             () => Container(
               width: width,
               padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: AppColors.greenLight.withValues(alpha: 0.1),
+              ),
               child: controller.videoFile.value == null
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                        Assets.icons.cloudAdd.svg(),
                         const Gap(8),
-                        CustomText(text: "Choose_a_video".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
+                        CustomText(text: "Choose_a_video".tr, fontWeight: FontWeight.w600, fontSize: 16),
                         const Gap(8),
                         CustomText(text: "max_10_MB_files_are_allowed".tr, fontWeight: FontWeight.w100)
                       ],

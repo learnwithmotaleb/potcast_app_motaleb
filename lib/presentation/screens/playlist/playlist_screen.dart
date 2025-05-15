@@ -36,7 +36,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         child: FloatingActionButton(
           onPressed: () => AppRouter.route.pushNamed(RoutePath.playlistAddScreen),
           backgroundColor: AppColors.blackColor,
-          child: const Center(child: Icon(Iconsax.add, size: 80)),
+          child: const Center(child: Icon(Iconsax.add, size: 40, )),
         ),
       ),
       body: RefreshIndicator(

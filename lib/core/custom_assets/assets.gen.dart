@@ -205,6 +205,8 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/add.png
   AssetGenImage get add => const AssetGenImage('assets/images/add.png');
+  /// File path: assets/images/add.png
+  AssetGenImage get remove => const AssetGenImage('assets/images/remove.png');
 
   /// File path: assets/images/banner_logo.png
   AssetGenImage get bannerLogo =>
@@ -282,6 +284,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/video.png
   AssetGenImage get video => const AssetGenImage('assets/images/video.png');
 
+
+  /// File path: assets/images/video.png
+  AssetGenImage get delete => const AssetGenImage('assets/images/delete.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
         add,
@@ -305,7 +311,9 @@ class $AssetsImagesGen {
         startedLogo,
         upload,
         verification,
-        video
+        video,
+    remove,
+    delete
       ];
 }
 

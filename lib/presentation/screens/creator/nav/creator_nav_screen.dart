@@ -46,98 +46,22 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: _pages[_selectedPage],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedPage,
-        elevation: 10,
-        backgroundColor: const Color(0xff151619),
+        elevation: 0,
+        selectedIconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        unselectedIconTheme: const IconThemeData(
+          color: Color(0xFF5E5E60),
+        ),
         type: BottomNavigationBarType.fixed,
         onTap: (int index) {
           if (index == 2) {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Gap(24),
-                    const CustomText(text: "Add Content Station", fontSize: 20),
-                    const Divider(),
-                    ListTile(
-                      leading: Assets.images.video.image(
-                        height: 30,
-                        width: 30,
-                        color: AppColors.whiteColor,
-                      ),
-                      title: const Text("Upload Video"),
-                      onTap: () {
-                        controller.selectedScreenType.value = SelectedAddPostScreenType.video;
-                        AppRouter.route.pop();
-                        Future.delayed(const Duration(milliseconds: 300), () {
-                          setState(() {
-                            _selectedPage = 2;
-                          });
-                        });
-                      },
-                    ),
-                    ListTile(
-                      leading: Assets.images.headphones.image(
-                        height: 30,
-                        width: 30,
-                        color: AppColors.whiteColor,
-                      ),
-                      title: const Text("Upload Audio"),
-                      onTap: () {
-                        controller.selectedScreenType.value = SelectedAddPostScreenType.audio;
-                        AppRouter.route.pop();
-                        Future.delayed(const Duration(milliseconds: 300), () {
-                          setState(() {
-                            _selectedPage = 2;
-                          });
-                        });
-                      },
-                    ),
-                    ListTile(
-                      leading: Assets.images.microphone.image(
-                        height: 30,
-                        width: 30,
-                        color: AppColors.whiteColor,
-                      ),
-                      title: const Text("Record Audio"),
-                      onTap: () {
-                        controller.selectedScreenType.value = SelectedAddPostScreenType.record;
-                        AppRouter.route.pop();
-                        Future.delayed(const Duration(milliseconds: 300), () {
-                          setState(() {
-                            _selectedPage = 2;
-                          });
-                        });
-                      },
-                    ),
-                    ListTile(
-                      leading: Assets.images.liveStream.image(
-                        height: 30,
-                        width: 30,
-                        color: AppColors.whiteColor,
-                      ),
-                      title: const Text("Go Live"),
-                      onTap: () {
-                        controller.selectedScreenType.value = SelectedAddPostScreenType.live;
-                        AppRouter.route.pop();
-                        Future.delayed(const Duration(milliseconds: 300), () {
-                          setState(() {
-                            _selectedPage = 2;
-                          });
-                        });
-                      },
-                    ),
-                    const Gap(44),
-                  ],
-                ),
-              ),
-            );
+            buildShowModalBottomSheet(context);
           } else {
             setState(() {
               _selectedPage = index;
@@ -168,5 +92,91 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
         ],
       ),
     );
+  }
+
+  Future<dynamic> buildShowModalBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+            context: context,
+            builder: (context) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Gap(24),
+                  const CustomText(text: "Add Content Station", fontSize: 20),
+                  const Divider(),
+                  ListTile(
+                    leading: Assets.images.video.image(
+                      height: 30,
+                      width: 30,
+                      color: AppColors.whiteColor,
+                    ),
+                    title: const Text("Upload Video"),
+                    onTap: () {
+                      controller.selectedScreenType.value = SelectedAddPostScreenType.video;
+                      AppRouter.route.pop();
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        setState(() {
+                          _selectedPage = 2;
+                        });
+                      });
+                    },
+                  ),
+                  ListTile(
+                    leading: Assets.images.headphones.image(
+                      height: 30,
+                      width: 30,
+                      color: AppColors.whiteColor,
+                    ),
+                    title: const Text("Upload Audio"),
+                    onTap: () {
+                      controller.selectedScreenType.value = SelectedAddPostScreenType.audio;
+                      AppRouter.route.pop();
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        setState(() {
+                          _selectedPage = 2;
+                        });
+                      });
+                    },
+                  ),
+                  ListTile(
+                    leading: Assets.images.microphone.image(
+                      height: 30,
+                      width: 30,
+                      color: AppColors.whiteColor,
+                    ),
+                    title: const Text("Record Audio"),
+                    onTap: () {
+                      controller.selectedScreenType.value = SelectedAddPostScreenType.record;
+                      AppRouter.route.pop();
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        setState(() {
+                          _selectedPage = 2;
+                        });
+                      });
+                    },
+                  ),
+                  ListTile(
+                    leading: Assets.images.liveStream.image(
+                      height: 30,
+                      width: 30,
+                      color: AppColors.whiteColor,
+                    ),
+                    title: const Text("Go Live"),
+                    onTap: () {
+                      controller.selectedScreenType.value = SelectedAddPostScreenType.live;
+                      AppRouter.route.pop();
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        setState(() {
+                          _selectedPage = 2;
+                        });
+                      });
+                    },
+                  ),
+                  const Gap(44),
+                ],
+              ),
+            ),
+          );
   }
 }

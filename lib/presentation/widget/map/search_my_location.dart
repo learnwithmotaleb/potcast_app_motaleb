@@ -36,10 +36,10 @@ Future<String?> showMapDialog({required BuildContext context, bool isShotAddress
                     controller.searchLocationByGoogle(context: context);
                   },
                   placeholder: "Search your location",
-                  placeholderStyle: const TextStyle(color: AppColors.whiteColor),
+                  placeholderStyle: const TextStyle(color: Colors.grey),
                   style: const TextStyle(color: AppColors.whiteColor),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF302E2E),
+                    color: const Color(0xFF2A2B31),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -74,13 +74,13 @@ Future<String?> showMapDialog({required BuildContext context, bool isShotAddress
                             }
                           },
                           child: Container(
-                            color: const Color(0xFF1C1B1B),
+                            color: Colors.green.withValues(alpha: 0.1),
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Column(
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.location_on, color: AppColors.whiteColor),
+                                    const Icon(Icons.location_on, color: AppColors.blackColor),
                                     const Gap(5),
                                     Expanded(
                                       child: Column(

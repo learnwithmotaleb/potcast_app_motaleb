@@ -32,7 +32,7 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Gap(24.h),
+/*          Gap(24.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,7 +41,7 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
                 padding: const EdgeInsets.only(right: 18.0),
                 child: IconButton(onPressed: (){
                   AppRouter.route.pop();
-                }, icon: Icon(Icons.arrow_back)),
+                }, icon: const Icon(Icons.arrow_back)),
               ),
               Expanded(
                 child: Align(
@@ -63,26 +63,30 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
               ),
             ],
           ),
-          const Gap(12),
+          const Gap(12),*/
+
+          Gap(24.h),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: CupertinoSearchTextField(
               itemColor: CupertinoColors.systemGrey,
               placeholder:  "what_would_you_like_to_listen".tr,
-              style: const TextStyle(fontSize: 16, color: CupertinoColors.white),
-              placeholderStyle: const TextStyle(color: AppColors.whiteColor),
-              padding: const EdgeInsets.all(14),
+              // style: const TextStyle(fontSize: 16, color: CupertinoColors.white),
+              // placeholderStyle: const TextStyle(color: AppColors.whiteColor),
+              padding: const EdgeInsets.all(18),
+              placeholderStyle: const TextStyle(color: Colors.grey),
+              style: const TextStyle(color: AppColors.whiteColor),
               decoration: BoxDecoration(
-                // color: const Color(0xFFEF4849),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.whiteColor)
+                  color: const Color(0xFF2A2B31),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: AppColors.whiteColor)
               ),
               onSubmitted: (value) {
                 controller.getSearch(id: widget.id, search: value);
               },
             ),
           ),
-          const Gap(12),
+/*          const Gap(12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Container(
@@ -102,7 +106,7 @@ class _CategoriesTopSectionState extends State<CategoriesTopSection> {
                 ],
               ),
             ),
-          ),
+          ),*/
           const Gap(12),
         ],
       ),

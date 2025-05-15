@@ -1,8 +1,6 @@
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class AudioPlayProgress extends StatefulWidget {
   const AudioPlayProgress({super.key});

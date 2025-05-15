@@ -5,6 +5,7 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class MusicCard extends StatelessWidget {
   const MusicCard({super.key, required this.data, required this.onTap, this.bgColor, this.onLongPress});
@@ -20,17 +21,20 @@ class MusicCard extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       child: Padding(
-        padding: EdgeInsets.only(bottom: bgColor != null?18.0:18, left: 8, right: 8),
+        padding: EdgeInsets.only(bottom: bgColor != null?12.0:5, left: 8, right: 8),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 3.0),
-          color: bgColor??Colors.transparent,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: bgColor?? const Color(0xFF2A2B31),
+            borderRadius: BorderRadius.circular(5)
+          ),
           child: Row(
             children: [
               SizedBox(
                 width: 100.w,
                 height: 80.h,
                 child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(4.r),
                     child: CustomNetworkImage(imageUrl: data.image??"")
                 ),
               ),
@@ -54,12 +58,12 @@ class MusicCard extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      height: 50.h,
-                      width: 50.h,
+                      height: 45.h,
+                      width: 45.h,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isDarkMode?const Color(0xFF1e1e1e):const Color(0xFFAAA9A9)
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.hintTextColor)
                       ),
                       child: Assets.icons.play.svg(height: 17.h,width: 17.h),
                     ),

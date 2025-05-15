@@ -29,7 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        // leading: IconButton(onPressed: () => AppRouter.route.goNamed(RoutePath.roleScreen), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("login".tr),
       ),
       body: Center(
@@ -42,10 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Assets.images.splashLogo.image(),
-                CustomAlignText(text: "email".tr),
+                CustomAlignText(text: "Email".tr),
                 const Gap(8),
                 CustomTextField(
-                  hintText: "Sy@example.com",
+                  hintText: "Enter Your Email",
                   keyboardType: TextInputType.emailAddress,
                   controller: _email,
                   validator: (value) {
@@ -63,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomAlignText(text: "password".tr),
                 const Gap(8),
                 CustomTextField(
-                  hintText: "*************",
+                  hintText: "Enter Your Password",
                   isPassword: true,
                   keyboardType: TextInputType.text,
                   controller: _password,

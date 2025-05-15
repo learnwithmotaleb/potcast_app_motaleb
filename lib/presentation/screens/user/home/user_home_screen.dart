@@ -4,10 +4,8 @@ import 'package:get/get.dart';
 import 'dart:math' as math;
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
-import 'package:podcast/presentation/screens/play/widget/audio_play_control.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
@@ -15,6 +13,7 @@ import 'package:podcast/presentation/screens/user/home/widget/user_home_categori
 import 'package:podcast/presentation/screens/user/home/widget/user_live_streaming_section.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/home_music_card.dart';
+import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -39,9 +38,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      /*bottomNavigationBar: Obx((){
-        return playController.isPlaying.value? BottomNavPlayCard(): const SizedBox();
-      }),*/
+      bottomNavigationBar: BottomNavPlayCard(),
       body: Obx(() {
         switch (controller.loading.value) {
           case Status.loading:
@@ -58,7 +55,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             final List<CategoryElement>? categories = controller.model.value.data?.categories != null && controller.model.value.data!.categories!.isNotEmpty?controller.model.value.data?.categories:[];
             final List<Podcast>? newItem = controller.model.value.data?.newPodcasts != null && controller.model.value.data!.newPodcasts!.isNotEmpty?controller.model.value.data?.newPodcasts:[];
             final List<Podcast>? popularItem = controller.model.value.data?.popularPodcasts != null && controller.model.value.data!.popularPodcasts!.isNotEmpty?controller.model.value.data?.popularPodcasts:[];
-            final List<Podcast>? reelsItem = controller.model.value.data?.shortPodcasts != null && controller.model.value.data!.shortPodcasts!.isNotEmpty?controller.model.value.data?.shortPodcasts:[];
+            final List<Podcast>? reelsItem = controller.model.value.data?.realsList != null && controller.model.value.data!.realsList!.isNotEmpty?controller.model.value.data?.realsList:[];
 
             return RefreshIndicator(
               onRefresh: ()async{
@@ -70,30 +67,29 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   SliverToBoxAdapter(
                     child: UserHomeTopSection(categories: categories != null && categories.isNotEmpty?categories.first:CategoryElement()),
                   ),
+                  const SliverGap(8),
                   SliverPadding(
                     padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8, top: 8),
                     sliver: SliverGrid.builder(
                       itemBuilder: (BuildContext context, int index) {
-                        if (categories == null || index + 1 >= categories.length) {
+                        if (categories == null) {
                           return const SizedBox.shrink();
                         }
-                        return UserHomeCategoriesSection(category: categories[index + 1]);
+                        return UserHomeCategoriesSection(category: categories[index]);
                       },
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         mainAxisSpacing: 8,
                         crossAxisSpacing: 8,
-                        mainAxisExtent: 70,
+                        mainAxisExtent: 85,
                       ),
                       itemCount: math.max(0, (categories?.length ?? 0) - 1), // Prevent negative count
                     ),
                   ),
-                  const SliverGap(12),
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
                         const UserTopArtistsSection(),
-                        const UserLiveStreamingSection(),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Row(
@@ -203,13 +199,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   ),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: 200,
+                      height: 250,
                       child: ListView.builder(
                         padding: const EdgeInsets.only(left: 12, right: 12),
                         itemCount: reelsItem?.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (BuildContext context, int index){
-                          return HomeMusicCard(
+                          return HomeReelsCard(
                             data: AudioPlayerModel(
                                 id: reelsItem?[index].id??"",
                                 title: reelsItem?[index].title??"",

@@ -42,7 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,10 +51,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     CupertinoSearchTextField(
                       itemColor: CupertinoColors.systemGrey,
                       placeholder:  "what_would_you_like_to_listen".tr,
-                      style: const TextStyle(fontSize: 16, color: CupertinoColors.white),
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(16),
+                      placeholderStyle: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: AppColors.blackColor),
                       decoration: BoxDecoration(
-                        color: CupertinoColors.systemGrey5,
+                        color: const Color(0xFF2A2B31),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       onSubmitted: controller.updateSearch,
@@ -63,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(text: "search_item".tr),
+                        CustomText(text: "Search Content".tr),
                         Assets.icons.sort.svg(colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                       ],
                     ),

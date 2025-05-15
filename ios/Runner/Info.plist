@@ -2,67 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
-   <!-- =================== Image Picker ======================= -->
-    <key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to take photos for your profile.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need access to your photo library to save captured images.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to select images for your profile.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-    <string>We need access to your photo library to pick images.</string>
-
-
-	<!-- =================== File Picker ======================= -->
-	<key>NSDocumentsFolderUsageDescription</key>
-    <string>We need access to your files to save and retrieve data.</string>
-    <key>NSFileSystemUsageDescription</key>
-    <string>We need access to your device’s file system to manage files.</string>
-
-    <!-- =================== Audio Picker ======================= -->
-    <key>UIBackgroundModes</key>
-    <array>
-      <string>audio</string>
-    </array>
-    <key>NSAppleMusicUsageDescription</key>
-    <string>We need access to your media library to play your audio</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>We need access to your microphone to record audio</string>
-
-    <!-- =================== Google AdMob ======================= -->
-    <key>GADApplicationIdentifier</key>
-    <string>ca-app-pub-9600166294736004~6364781143</string>
-
-    <!-- =================== Record Audio ======================= -->
-    <key>NSMicrophoneUsageDescription</key>
-    <string>We need microphone access to record audio</string>
-
-    <!-- =================== Play Audio ======================= -->
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app uses the microphone for audio recording.</string>
-    <key>NSAppleMusicUsageDescription</key>
-    <string>This app needs access to play audio files.</string>
-
-
-
-
-    <!-- =================== Google Map ======================= -->
-    <key>IOGoogleMapsAPIKey</key>
-    <string>AIzaSyAszXC1be8aJ37eHuNcBm_-O1clWkPUwV4</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your message to the user when requesting location access always.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your message to the user when requesting location access.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>Your location is used to get city name</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Your location is used to get city name</string>
-
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Podcast</string>
+	<string>Preach Radio</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -79,8 +24,37 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-9600166294736004~6364781143</string>
+	<key>IOGoogleMapsAPIKey</key>
+	<string>AIzaSyAszXC1be8aJ37eHuNcBm_-O1clWkPUwV4</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app needs access to play audio files.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to take photos for your profile.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>We need access to your files to save and retrieve data.</string>
+	<key>NSFileSystemUsageDescription</key>
+	<string>We need access to your device’s file system to manage files.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your location is used to get city name</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is used to get city name</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app uses the microphone for audio recording.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need access to your photo library to save captured images.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to pick images.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>processing</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -88,19 +62,13 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

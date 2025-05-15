@@ -32,7 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final double height = MediaQuery.of(context).size.height;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: AppColors.blackColor,
       appBar: AppBar(
         title: Text("profile".tr),
         centerTitle: true,
@@ -81,7 +80,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Container(
                         width: width,
                         height: height - 400,
-                        decoration: const BoxDecoration(color: AppColors.blackColor, borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+                        decoration: const BoxDecoration(
+                            color: AppColors.blackColor,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25),
+                            ),
+                        ),
                         child: Column(
                           children: [
                             const Gap(65),
@@ -149,18 +154,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 40),
                                 child: Container(
-                                  height: 40,
+                                  height: 45,
                                   width: width,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    color: AppColors.blackColor,
-                                    border: Border.all(color: AppColors.primaryColor),
+                                    color: AppColors.whiteColor,
                                   ),
-                                  child: CustomText(text: "logout".tr),
+                                  child: CustomText(text: "logout".tr, color: AppColors.blackColor,),
                                 ),
                               ),
                             ),
+                            const Gap(12),
                           ],
                         ),
                       ),

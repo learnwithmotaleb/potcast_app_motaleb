@@ -7,6 +7,8 @@ import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
+import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
+import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -21,6 +23,8 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   final controller = Get.find<HistoryController>();
+  final playController = Get.put(AudioPlayController());
+
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -29,6 +33,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         centerTitle: true,
         title: Text("history".tr),
       ),
+      bottomNavigationBar: Obx((){
+        return playController.isPlaying.value? BottomNavPlayCard(): const SizedBox();
+      }),
       body: RefreshIndicator(
         onRefresh: ()async{
           controller.pagingController.refresh();

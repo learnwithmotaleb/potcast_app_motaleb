@@ -19,12 +19,11 @@ class AudioPlayController extends GetxController{
 
   final Rx<bool> isAudioMode = true.obs;
   final RxBool isPlaying = false.obs;
+  final RxBool isShowBottom = false.obs;
 
   final Rx<Duration> currentPosition = Duration.zero.obs;
-  final Rx<Duration> totalAudioDuration = Duration.zero.obs;
-  final Rx<Duration> bufferedAudioPosition = Duration.zero.obs;
-  final Rx<Duration> totalVideoDuration = Duration.zero.obs;
-  final Rx<Duration> bufferedVideoPosition = Duration.zero.obs;
+  final Rx<Duration> totalDuration = Duration.zero.obs;
+  final Rx<Duration> bufferedPosition = Duration.zero.obs;
 
   final Rx<PodcastModel> postModel = PodcastModel().obs;
   final RxString currentMediaId = ''.obs;
@@ -34,15 +33,15 @@ class AudioPlayController extends GetxController{
   /// ============================= GET Podcast Details Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
-  Future<void> playPodcast({required String id, String? url}) async {
+  Future<void> playPodcast({required String id, String? url, bool isNextPodcast = false}) async {
     try{
-      if (currentMediaId.value == id) {
+      if (!isNextPodcast && currentMediaId.value == id) {
         print("Media ID $id is already playing");
         return;
       }
 
       loadingMethod(Status.loading);
-      videoPlayerController.value?.removeListener(_onVideoPlayerChanged);
+      videoPlayerController.value?.removeListener(_updateVideoProgress);
       videoPlayerController.value?.dispose();
       audioPlayer.stop();
       videoPlayerController.value = null;
@@ -68,12 +67,11 @@ class AudioPlayController extends GetxController{
           if (contentType.startsWith('video')) {
             _loadVideo(contentUrl).then((value){
               if (value) {
-                videoPlayerController.value?.addListener(_onVideoPlayerChanged);
                 loadingMethod(Status.completed);
                 isPlaying.value = true;
                 isAudioMode.value = false;
                 videoPlayerController.value?.play();
-                currentMediaId.value = contentUrl;
+                currentMediaId.value = postModel.value.data?.podcast?.id??"";
               } else {
                 currentMediaId.value = '';
                 loadingMethod(Status.error);
@@ -86,7 +84,7 @@ class AudioPlayController extends GetxController{
               loadingMethod(Status.completed);
               audioPlayer.play();
               isPlaying.value = true;
-              currentMediaId.value = contentUrl;
+              currentMediaId.value = postModel.value.data?.podcast?.id??"";
               isAudioMode.value = true;
             } else {
               currentMediaId.value = '';
@@ -113,12 +111,6 @@ class AudioPlayController extends GetxController{
     }catch(e){
       currentMediaId.value = '';
       loadingMethod(Status.error);
-    }
-  }
-
-  void _onVideoPlayerChanged() {
-    if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
-      bufferedVideoPosition.value = videoPlayerController.value?.value.buffered.last.end ?? Duration.zero;
     }
   }
 
@@ -164,8 +156,15 @@ class AudioPlayController extends GetxController{
   }
 
   void _updateVideoProgress() {
-    if (videoPlayerController.value?.value.isInitialized ?? false) {
-      currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+    if ((videoPlayerController.value?.value.isInitialized ?? false) && !isAudioMode.value) {
+      final controller = videoPlayerController.value!;
+      currentPosition.value = controller.value.position;
+      totalDuration.value = controller.value.duration ?? Duration.zero;
+      bufferedPosition.value = controller.value.buffered.lastOrNull?.end ?? Duration.zero;
+
+      if (controller.value.position >= controller.value.duration && !controller.value.isPlaying) {
+        playNext();
+      }
     }
   }
 
@@ -208,6 +207,36 @@ class AudioPlayController extends GetxController{
 
   bool isActive = false;
 
+  void toggleAudio(){
+    try{
+      if (!(isAudioMode.value) && videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+        currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+        videoPlayerController.value?.pause();
+        isAudioMode.value = true;
+        if (!audioPlayer.playing) {
+          audioPlayer.seek(currentPosition.value);
+          audioPlayer.play();
+        }
+      } else {
+        print('❌ Video controller is not initialized');
+      }
+    }catch(e){
+      print("toggle Only Audio ");
+    }
+  }
+
+  void openBottom(){
+    try{
+      if (!(isAudioMode.value) && videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+
+      } else {
+        print('❌ Video controller is not initialized');
+      }
+    }catch(e){
+      print("toggle Only Audio ");
+    }
+  }
+
   void toggleMode() {
     final startTime = DateTime.now();
     if (isActive) {
@@ -221,7 +250,6 @@ class AudioPlayController extends GetxController{
       if (isAudioMode.value) {
         if (audioPlayer.playing) {
           if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
-            currentPosition.value = audioPlayer.position;
             audioPlayer.pause();
             isAudioMode.value = false;
             videoPlayerController.value?.seekTo(currentPosition.value);
@@ -279,7 +307,11 @@ class AudioPlayController extends GetxController{
   }
 
   void playNext() {
-    playPodcast(id: postModel.value.data?.podcast?.id??"", url: ApiUrl.playNext(id: postModel.value.data?.podcast?.id??""));
+    playPodcast(
+        id: postModel.value.data?.podcast?.id??"",
+        url: ApiUrl.playNext(id: postModel.value.data?.podcast?.id??""),
+      isNextPodcast: true,
+    );
   }
 
   @override
@@ -287,12 +319,26 @@ class AudioPlayController extends GetxController{
     super.onInit();
 
     audioPlayer.positionStream.listen((pos) {
-      currentPosition.value = pos;
+      if (isAudioMode.value) {
+        currentPosition.value = pos;
+      }
     });
 
-    videoPlayerController.value?.addListener(() {
-      if (videoPlayerController.value?.value.isInitialized ?? false) {
-        currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+    audioPlayer.durationStream.listen((dur) {
+      if (isAudioMode.value && dur != null) {
+        totalDuration.value = dur;
+      }
+    });
+
+    audioPlayer.bufferedPositionStream.listen((buffered) {
+      if (isAudioMode.value) {
+        bufferedPosition.value = buffered;
+      }
+    });
+
+    audioPlayer.playerStateStream.listen((state) {
+      if (isAudioMode.value && state.processingState == ProcessingState.completed) {
+        playNext();
       }
     });
   }
