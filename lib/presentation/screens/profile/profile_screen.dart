@@ -89,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Column(
                           children: [
-                            const Gap(65),
+                            const Gap(20),
                             Obx(() => Column(
                                   children: [
                                     CustomText(text: _controller.profile.value.data?.name ?? "", fontSize: 24,fontWeight: FontWeight.w800),
@@ -148,7 +148,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ],
                                   )
                                 : const SizedBox(),
-                            const Spacer(),
                             GestureDetector(
                               onTap: ()=>showLogoutDialog(context),
                               child: Padding(
