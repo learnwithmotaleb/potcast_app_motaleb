@@ -10,7 +10,6 @@ import 'package:podcast/presentation/screens/profile/controller/profile_controll
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/presentation/screens/user/home/widget/user_home_categories_section.dart';
-import 'package:podcast/presentation/screens/user/home/widget/user_live_streaming_section.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
@@ -214,6 +213,49 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                 duration: reelsItem?[index].audioDuration??""
                             ),
                             onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: reelsItem?[index].id??""),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SliverGap(12),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(text: "Album".tr,fontSize: 22, fontWeight: FontWeight.w800),
+                          TextButton(
+                            style: const ButtonStyle(
+                                padding: WidgetStatePropertyAll(EdgeInsets.zero)
+                            ),
+                            onPressed: () {
+                              AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular");
+                            },
+                            child: Text("see_all".tr, style: TextStyle(color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        itemCount: popularItem?.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index){
+                          return HomeMusicCard(
+                            data: AudioPlayerModel(
+                                id: popularItem?[index].id??"",
+                                title: popularItem?[index].title??"",
+                                categories: popularItem?[index].category?.title??"",
+                                image: popularItem?[index].cover??"",
+                                duration: popularItem?[index].audioDuration??""
+                            ),
+                            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??""),
                           );
                         },
                       ),

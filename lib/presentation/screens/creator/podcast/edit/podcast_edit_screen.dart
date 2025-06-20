@@ -55,7 +55,7 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
         leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("edit_podcast".tr),
       ),
-      /*body: Obx(() {
+      body: Obx(() {
         switch (controller.podcastLoading.value) {
           case Status.loading:
             return const Center(child: CircularProgressIndicator());
@@ -73,13 +73,13 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    *//*CustomAlignText(text: "category".tr),
+                    CustomAlignText(text: "category".tr),
                     const Gap(8),
                     CategoriesWidget(),
                     const Gap(12),
                     CustomAlignText(text: "sub_category".tr),
                     const Gap(8),
-                    SubCategoriesWidget(),*//*
+                    SubCategoriesWidget(),
                     const Gap(12),
                     CustomAlignText(text: "cover_page_upload".tr),
                     const Gap(8),
@@ -139,7 +139,7 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                       ),
                     ),
                     const Gap(12),
-                    *//*CustomAlignText(text: "add_audio".tr),
+                    CustomAlignText(text: "add_audio".tr),
                     const Gap(8),
                     Container(
                       alignment: Alignment.center,
@@ -180,7 +180,7 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
                         ),
                       ),
                     ),
-                    const Gap(12.0),*//*
+                    const Gap(12.0),
                     CustomAlignText(text: "podcast_title".tr),
                     const Gap(8.0),
                     CustomTextField(
@@ -236,11 +236,11 @@ class _PodcastEditScreenState extends State<PodcastEditScreen> {
               ),
             );
         }
-      }),*/
+      }),
     );
   }
 }
-/*
+
 class CategoriesWidget extends StatelessWidget {
   CategoriesWidget({super.key});
 
@@ -318,4 +318,4 @@ class SubCategoriesWidget extends StatelessWidget {
           },
         ));
   }
-}*/
+}

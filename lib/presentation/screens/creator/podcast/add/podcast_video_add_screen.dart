@@ -47,7 +47,8 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
           key: _formKey,
           child: Column(
             children: [
-              Obx(() {
+              Obx(
+                () {
                   switch (category.loading.value) {
                     case Status.loading:
                       return const Center(child: CircularProgressIndicator());
@@ -112,7 +113,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
                   decoration: BoxDecoration(
                     border: Border.all(color: AppColors.whiteColor),
                     borderRadius: BorderRadius.circular(8),
-                    color: AppColors.greenLight.withValues(alpha: 0.1),
+                    color: AppColors.blackColor,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,6 +138,20 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'enter_your_description'.tr;
+                  }
+                  return null;
+                },
+              ),
+              const Gap(12),
+              CustomAlignText(text: "Tag".tr),
+              const Gap(8.0),
+              CustomTextField(
+                hintText: "Enter tags like 'Explanation, Explanation'".tr,
+                keyboardType: TextInputType.text,
+                controller: controller.tag,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter at least one tag'.tr;
                   }
                   return null;
                 },
@@ -221,8 +236,9 @@ class SubCategoriesWidget extends StatelessWidget {
         onChanged: (String? newValue) {
           if (newValue != null && newValue != "") {
             controller.selectedSubCategories.value = newValue;
-            var selectedSubCategory =
-                controller.subCategories.firstWhere((subCategory) => subCategory.title == newValue, orElse: () => SubCategory(id: "", title: ""));
+            var selectedSubCategory = controller.subCategories.firstWhere(
+                (subCategory) => subCategory.title == newValue,
+                orElse: () => SubCategory(id: "", title: ""));
             controller.subCategoriesId.value = selectedSubCategory.id ?? "";
           }
         },
@@ -284,45 +300,42 @@ class PickCoverWidget extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: AppColors.whiteColor,
             borderRadius: BorderRadius.circular(12),
-        ),
+            border: Border.all(color: AppColors.whiteColor)),
         padding: const EdgeInsets.all(1),
-        child: DottedBorder(
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(12),
-          strokeWidth: 1,
-          dashPattern: const [10, 5],
-          color: const Color(0xFF1849D6),
-          child: Obx(
-            () => controller.selectedImage.value == null
-                ? Container(
-                    width: width,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        color: AppColors.greenLight.withValues(alpha: 0.1),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Assets.icons.cloudAdd.svg(),
-                        const Gap(8),
-                        CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600, fontSize: 16),
-                        const Gap(8),
-                        CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
-                      ],
-                    ),
-                  )
-                : SizedBox(
-                    height: 150,
-                    width: width,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
-                    ),
+        child: Obx(
+          () => controller.selectedImage.value == null
+              ? Container(
+                  width: width,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Assets.icons.cloudAdd.svg(
+                          colorFilter:
+                              const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                      const Gap(8),
+                      CustomText(
+                          text: "Choose_a_file_or_it_here".tr,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.whiteColor,
+                          fontSize: 16),
+                      const Gap(8),
+                      CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
+                    ],
                   ),
-          ),
+                )
+              : SizedBox(
+                  height: 150,
+                  width: width,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(File(controller.selectedImage.value?.path ?? ""),
+                        fit: BoxFit.cover),
+                  ),
+                ),
         ),
       ),
     );
@@ -341,68 +354,83 @@ class PickAudioWidget extends StatelessWidget {
       onTap: () => controller.pickVideo(),
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColors.whiteColor,
+          ),
+        ),
         padding: const EdgeInsets.all(1),
-        child: DottedBorder(
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(12),
-          strokeWidth: 1,
-          dashPattern: const [10, 5],
-          color: const Color(0xFF1849D6),
-          child: Obx(
-            () => Container(
-              width: width,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: AppColors.greenLight.withValues(alpha: 0.1),
-              ),
-              child: controller.videoFile.value == null
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Assets.icons.cloudAdd.svg(),
-                        const Gap(8),
-                        CustomText(text: "Choose_a_video".tr, fontWeight: FontWeight.w600, fontSize: 16),
-                        const Gap(8),
-                        CustomText(text: "max_10_MB_files_are_allowed".tr, fontWeight: FontWeight.w100)
-                      ],
-                    )
-                  : SizedBox(
-                      width: width,
-                      height: 50.h,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 50.h,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: AppColors.blackColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: CustomText(
-                                text: controller.videoFile.value?.path != null ? path.basename(controller.videoFile.value!.path) : "",
-                              ),
-                            ),
-                          ),
-                          const Gap(5),
-                          GestureDetector(
-                            onTap: () => controller.videoFile.value = null,
-                            child: Container(
-                              height: 50.h,
-                              width: 50.w,
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(color: AppColors.redColor, borderRadius: BorderRadius.circular(8)),
-                              child: const Icon(Icons.cancel_outlined),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+        child: Obx(
+          () => Container(
+            width: width,
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: AppColors.blackColor,
             ),
+            child: controller.videoFile.value == null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Assets.icons.cloudAdd.svg(
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.whiteColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      const Gap(8),
+                      CustomText(
+                        text: "Choose_a_audio".tr,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.whiteColor,
+                        fontSize: 16,
+                      ),
+                      const Gap(8),
+                      CustomText(
+                        text: "max_10_MB_files_are_allowed".tr,
+                        fontWeight: FontWeight.w100,
+                      )
+                    ],
+                  )
+                : SizedBox(
+                    width: width,
+                    height: 50.h,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 50.h,
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: AppColors.blackColor,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: CustomText(
+                              text: controller.videoFile.value?.path != null
+                                  ? path.basename(controller.videoFile.value!.path)
+                                  : "",
+                            ),
+                          ),
+                        ),
+                        const Gap(5),
+                        GestureDetector(
+                          onTap: () => controller.videoFile.value = null,
+                          child: Container(
+                            height: 25.h,
+                            width: 25.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: AppColors.whiteColor),
+                                shape: BoxShape.circle),
+                            padding: const EdgeInsets.all(2),
+                            child: Assets.images.delete.image(color: AppColors.whiteColor),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
           ),
         ),
       ),

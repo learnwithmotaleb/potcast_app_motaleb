@@ -57,12 +57,12 @@ class _SupportScreenState extends State<SupportScreen> {
                     question: _controller.supportsData.value.data?[index].question ?? "",
                     answer: _controller.supportsData.value.data?[index].answer ?? "",
                     queStyle: const TextStyle(
-                      color: AppColors.blackColor,
+                      color: AppColors.whiteColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
                     ),
                     ansStyle: const TextStyle(
-                      color: AppColors.hintTextColor,
+                      color: AppColors.whiteColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),

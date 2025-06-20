@@ -16,6 +16,7 @@ class PodcastVideoController extends GetxController{
 
   final title = TextEditingController();
   final description = TextEditingController();
+  final tag = TextEditingController();
 
   /// ============================= Place Location Information =====================================
   RxString selectedAddress = "Please select your location".obs;

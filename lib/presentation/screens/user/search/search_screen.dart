@@ -50,10 +50,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     const Gap(12),
                     CupertinoSearchTextField(
                       itemColor: CupertinoColors.systemGrey,
-                      placeholder:  "what_would_you_like_to_listen".tr,
+                      placeholder: "what_would_you_like_to_listen".tr,
                       padding: const EdgeInsets.all(16),
                       placeholderStyle: const TextStyle(color: Colors.grey),
-                      style: const TextStyle(color: AppColors.blackColor),
+                      style: const TextStyle(color: AppColors.whiteColor),
                       decoration: BoxDecoration(
                         color: const Color(0xFF2A2B31),
                         borderRadius: BorderRadius.circular(8),

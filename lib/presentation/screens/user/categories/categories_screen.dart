@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/model/route/audio_player_model.dart';
+import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -34,15 +33,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Obx(() {
           return Text(controller.categoryModel.value.data?.category?.title ?? "Podcast");
         }),
       ),
-      body: Obx(
-            () {
+      body: Obx(() {
           switch (controller.loading.value) {
             case Status.loading:
               return const Center(child: CircularProgressIndicator());
@@ -67,8 +64,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 child: CustomScrollView(
                   slivers: [
                     CategoriesTopSection(id: widget.id),
-                    Obx(
-                          () {
+                    Obx(() {
                         switch (controller.searchLoading.value) {
                           case Status.loading:
                             return const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
@@ -90,52 +86,54 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             );
 
                           case Status.completed:
-                            return SliverPadding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                              sliver: SliverGrid(
-                                delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                                  return GestureDetector(
-                                    onTap: () => AppRouter.route.pushNamed(RoutePath.categoryAllPodcast, extra: controller.subCategory[index].id),
-                                    child: Container(
-                                      height: 80.h,
-                                      padding: const EdgeInsets.only(right: 0, left: 8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFEF4849),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                            return SliverList(
+                              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                                return Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(child: CustomText(text: controller.subCategory[index].title ?? "",
-                                              color: AppColors.whiteColor,
-                                              fontSize: 12.sp,
-                                              maxLines: 2,
-                                              textAlign: TextAlign.start)),
-                                          SizedBox(
-                                            height: 80.h,
-                                            width: ((width / 2) - 25) / 2,
-                                            child: ClipRRect(
-                                              borderRadius: const BorderRadius.only(
-                                                  topRight: Radius.circular(8),
-                                                  bottomRight: Radius.circular(8)
-                                              ),
-                                              child: CustomNetworkImage(imageUrl: controller.subCategory[index].subCategoryImage ?? ""),
+                                          CustomText(text: controller.subCategory[index].title ?? "",fontSize: 22, fontWeight: FontWeight.w800),
+                                          TextButton(
+                                            style: const ButtonStyle(
+                                                padding: WidgetStatePropertyAll(EdgeInsets.zero)
                                             ),
+                                            onPressed: () {
+                                              AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular");
+                                            },
+                                            child: Text("see_all".tr, style: const TextStyle(color: AppColors.whiteColor)),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  );
-                                },
-                                  childCount: controller.subCategory.length,
-                                ),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 10.0,
-                                  crossAxisSpacing: 10.0,
-                                  mainAxisExtent: 80.h,
-                                ),
+                                    SizedBox(
+                                      height: 200,
+                                      child: ListView.builder(
+                                        padding: const EdgeInsets.only(left: 12, right: 12),
+                                        itemCount: 3,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (BuildContext context, int index){
+                                          return HomeMusicCard(
+                                            data: AudioPlayerModel(
+                                                id: "",
+                                                title: "Test Title",
+                                                categories: controller.categoryModel.value.data?.category?.title,
+                                                image: "https://plus.unsplash.com/premium_photo-1681335986095-5a9585e77246",
+                                                duration: "1.0"
+                                            ),
+                                            onTap: (){
+                                              //AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??"");
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                                childCount: controller.subCategory.length,
                               ),
                             );
                         }

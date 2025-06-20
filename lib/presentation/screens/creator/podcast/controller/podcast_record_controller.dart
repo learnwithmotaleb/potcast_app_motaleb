@@ -22,6 +22,7 @@ class PodcastRecordController extends GetxController{
 
   final title = TextEditingController();
   final description = TextEditingController();
+  final tag = TextEditingController();
 
   /// ============================= Image And Audio =====================================
   final ImagePicker _picker = ImagePicker();

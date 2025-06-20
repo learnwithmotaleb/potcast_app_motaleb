@@ -47,7 +47,8 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
           key: _formKey,
           child: Column(
             children: [
-              Obx(() {
+              Obx(
+                () {
                   switch (category.loading.value) {
                     case Status.loading:
                       return const Center(child: CircularProgressIndicator());
@@ -141,6 +142,20 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
                   return null;
                 },
               ),
+              const Gap(12),
+              CustomAlignText(text: "Tag".tr),
+              const Gap(8.0),
+              CustomTextField(
+                hintText: "Enter tags like 'Explanation, Explanation'".tr,
+                keyboardType: TextInputType.text,
+                controller: controller.tag,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter at least one tag'.tr;
+                  }
+                  return null;
+                },
+              ),
               const Gap(24),
               Obx(() {
                 return CustomButton(
@@ -195,38 +210,38 @@ class SubCategoriesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(
-          () =>
-          DropdownButtonFormField2<String>(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            isExpanded: true,
-            value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
-            hint: Text('sub categories'.tr),
-            items: controller.subCategories.isNotEmpty
-                ? controller.subCategories.map((subCategory) {
-              return DropdownMenuItem<String>(
-                value: subCategory.title ?? "",
-                child: Text(subCategory.title ?? ""),
-              );
-            }).toList()
-                : [
-              const DropdownMenuItem<String>(
-                value: "",
-                child: Text("No subcategories available"),
-              ),
-            ],
-            onChanged: (String? newValue) {
-              if (newValue != null && newValue != "") {
-                controller.selectedSubCategories.value = newValue;
-                var selectedSubCategory =
-                controller.subCategories.firstWhere((subCategory) => subCategory.title == newValue, orElse: () => SubCategory(id: "", title: ""));
-                controller.subCategoriesId.value = selectedSubCategory.id ?? "";
-              }
-            },
+      () => DropdownButtonFormField2<String>(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
+        ),
+        isExpanded: true,
+        value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
+        hint: Text('sub categories'.tr),
+        items: controller.subCategories.isNotEmpty
+            ? controller.subCategories.map((subCategory) {
+                return DropdownMenuItem<String>(
+                  value: subCategory.title ?? "",
+                  child: Text(subCategory.title ?? ""),
+                );
+              }).toList()
+            : [
+                const DropdownMenuItem<String>(
+                  value: "",
+                  child: Text("No subcategories available"),
+                ),
+              ],
+        onChanged: (String? newValue) {
+          if (newValue != null && newValue != "") {
+            controller.selectedSubCategories.value = newValue;
+            var selectedSubCategory = controller.subCategories.firstWhere(
+                (subCategory) => subCategory.title == newValue,
+                orElse: () => SubCategory(id: "", title: ""));
+            controller.subCategoriesId.value = selectedSubCategory.id ?? "";
+          }
+        },
+      ),
     );
   }
 }
@@ -250,17 +265,17 @@ class CategoriesWidget extends StatelessWidget {
         hint: const Text('Category'),
         items: category.categories.value.data != null && category.categories.value.data!.isNotEmpty
             ? category.categories.value.data!.map((category) {
-          return DropdownMenuItem<String>(
-            value: category.title,
-            child: Text(category.title ?? ""),
-          );
-        }).toList()
+                return DropdownMenuItem<String>(
+                  value: category.title,
+                  child: Text(category.title ?? ""),
+                );
+              }).toList()
             : [
-          const DropdownMenuItem<String>(
-            value: "",
-            child: Text("No categories available"),
-          )
-        ],
+                const DropdownMenuItem<String>(
+                  value: "",
+                  child: Text("No categories available"),
+                )
+              ],
         onChanged: (String? newValue) {
           if (newValue != null) {
             controller.updateSubCategories(newValue, category.categories.value);
@@ -278,45 +293,48 @@ class PickCoverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () => controller.pickImage(),
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.whiteColor)
-        ),
+            border: Border.all(color: AppColors.whiteColor)),
         padding: const EdgeInsets.all(1),
         child: Obx(
-              () =>
-          controller.selectedImage.value == null
+          () => controller.selectedImage.value == null
               ? Container(
-            width: width,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
-                const Gap(8),
-                CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
-                const Gap(8),
-                CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
-              ],
-            ),
-          )
+                  width: width,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Assets.icons.cloudAdd.svg(
+                          colorFilter:
+                              const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                      const Gap(8),
+                      CustomText(
+                          text: "Choose_a_file_or_it_here".tr,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.whiteColor,
+                          fontSize: 16),
+                      const Gap(8),
+                      CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
+                    ],
+                  ),
+                )
               : SizedBox(
-            height: 150,
-            width: width,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
-            ),
-          ),
+                  height: 150,
+                  width: width,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(File(controller.selectedImage.value?.path ?? ""),
+                        fit: BoxFit.cover),
+                  ),
+                ),
         ),
       ),
     );
@@ -330,76 +348,91 @@ class PickAudioWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () => controller.pickAudio(),
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.whiteColor)
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColors.whiteColor,
+          ),
         ),
         padding: const EdgeInsets.all(1),
         child: Obx(
-              () =>
-              Container(
-                width: width,
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
-                child: controller.audioFile.value == null
-                    ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
-                    const Gap(8),
-                    CustomText(text: "Choose_a_audio".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
-                    const Gap(8),
-                    CustomText(text: "max_10_MB_files_are_allowed".tr, fontWeight: FontWeight.w100)
-                  ],
-                )
-                    : SizedBox(
-                  width: width,
-                  height: 50.h,
-                  child: Row(
+          () => Container(
+            width: width,
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: AppColors.blackColor,
+            ),
+            child: controller.audioFile.value == null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Container(
-                          height: 50.h,
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: AppColors.blackColor,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: CustomText(
-                            text: controller.audioFile.value?.path != null ? path.basename(controller.audioFile.value!.path) : "",
-                          ),
+                      Assets.icons.cloudAdd.svg(
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.whiteColor,
+                          BlendMode.srcIn,
                         ),
                       ),
-                      const Gap(5),
-                      GestureDetector(
-                        onTap: () => controller.audioFile.value = null,
-                        child: Container(
-                          height: 25.h,
-                          width: 25.w,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.whiteColor),
-                            shape: BoxShape.circle
-                          ),
-                          padding: const EdgeInsets.all(2),
-                          child: Assets.images.delete.image(
-                            color: AppColors.whiteColor
-                          ),
-                        ),
+                      const Gap(8),
+                      CustomText(
+                        text: "Choose_a_audio".tr,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.whiteColor,
+                        fontSize: 16,
                       ),
+                      const Gap(8),
+                      CustomText(
+                        text: "max_10_MB_files_are_allowed".tr,
+                        fontWeight: FontWeight.w100,
+                      )
                     ],
+                  )
+                : SizedBox(
+                    width: width,
+                    height: 50.h,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 50.h,
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: AppColors.blackColor,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: CustomText(
+                              text: controller.audioFile.value?.path != null
+                                  ? path.basename(
+                                      controller.audioFile.value!.path,
+                                    )
+                                  : "",
+                            ),
+                          ),
+                        ),
+                        const Gap(5),
+                        GestureDetector(
+                          onTap: () => controller.audioFile.value = null,
+                          child: Container(
+                            height: 25.h,
+                            width: 25.w,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: AppColors.whiteColor),
+                                shape: BoxShape.circle),
+                            padding: const EdgeInsets.all(2),
+                            child: Assets.images.delete.image(color: AppColors.whiteColor),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+          ),
         ),
       ),
     );

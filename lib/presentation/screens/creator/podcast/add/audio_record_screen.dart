@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -47,7 +46,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
           child: Column(
             children: [
               Obx(
-                    () {
+                () {
                   switch (category.loading.value) {
                     case Status.loading:
                       return const Center(child: CircularProgressIndicator());
@@ -141,6 +140,20 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                   return null;
                 },
               ),
+              const Gap(12),
+              CustomAlignText(text: "Tag".tr),
+              const Gap(8.0),
+              CustomTextField(
+                hintText: "Enter tags like 'Explanation, Explanation'".tr,
+                keyboardType: TextInputType.text,
+                controller: controller.tag,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter at least one tag'.tr;
+                  }
+                  return null;
+                },
+              ),
               const Gap(24),
               Obx(() {
                 return CustomButton(
@@ -161,7 +174,8 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
     final cat = controller.categoriesId.value.isNotEmpty;
     final subCat = controller.subCategoriesId.value.isNotEmpty;
     final city = controller.selectedAddress.value;
-    final allFile = controller.selectedImage.value != null && controller.recordedFilePath.value != null;
+    final allFile =
+        controller.selectedImage.value != null && controller.recordedFilePath.value != null;
 
     if (validate && cat && subCat) {
       if (allFile) {
@@ -195,38 +209,38 @@ class SubCategoriesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(
-          () =>
-          DropdownButtonFormField2<String>(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            isExpanded: true,
-            value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
-            hint: Text('sub categories'.tr),
-            items: controller.subCategories.isNotEmpty
-                ? controller.subCategories.map((subCategory) {
-              return DropdownMenuItem<String>(
-                value: subCategory.title ?? "",
-                child: Text(subCategory.title ?? ""),
-              );
-            }).toList()
-                : [
-              const DropdownMenuItem<String>(
-                value: "",
-                child: Text("No subcategories available"),
-              ),
-            ],
-            onChanged: (String? newValue) {
-              if (newValue != null && newValue != "") {
-                controller.selectedSubCategories.value = newValue;
-                var selectedSubCategory =
-                controller.subCategories.firstWhere((subCategory) => subCategory.title == newValue, orElse: () => SubCategory(id: "", title: ""));
-                controller.subCategoriesId.value = selectedSubCategory.id ?? "";
-              }
-            },
+      () => DropdownButtonFormField2<String>(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
+        ),
+        isExpanded: true,
+        value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
+        hint: Text('sub categories'.tr),
+        items: controller.subCategories.isNotEmpty
+            ? controller.subCategories.map((subCategory) {
+                return DropdownMenuItem<String>(
+                  value: subCategory.title ?? "",
+                  child: Text(subCategory.title ?? ""),
+                );
+              }).toList()
+            : [
+                const DropdownMenuItem<String>(
+                  value: "",
+                  child: Text("No subcategories available"),
+                ),
+              ],
+        onChanged: (String? newValue) {
+          if (newValue != null && newValue != "") {
+            controller.selectedSubCategories.value = newValue;
+            var selectedSubCategory = controller.subCategories.firstWhere(
+                (subCategory) => subCategory.title == newValue,
+                orElse: () => SubCategory(id: "", title: ""));
+            controller.subCategoriesId.value = selectedSubCategory.id ?? "";
+          }
+        },
+      ),
     );
   }
 }
@@ -250,17 +264,17 @@ class CategoriesWidget extends StatelessWidget {
         hint: const Text('Category'),
         items: category.categories.value.data != null && category.categories.value.data!.isNotEmpty
             ? category.categories.value.data!.map((category) {
-          return DropdownMenuItem<String>(
-            value: category.title,
-            child: Text(category.title ?? ""),
-          );
-        }).toList()
+                return DropdownMenuItem<String>(
+                  value: category.title,
+                  child: Text(category.title ?? ""),
+                );
+              }).toList()
             : [
-          const DropdownMenuItem<String>(
-            value: "",
-            child: Text("No categories available"),
-          )
-        ],
+                const DropdownMenuItem<String>(
+                  value: "",
+                  child: Text("No categories available"),
+                )
+              ],
         onChanged: (String? newValue) {
           if (newValue != null) {
             controller.updateSubCategories(newValue, category.categories.value);
@@ -278,49 +292,48 @@ class PickCoverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () => controller.pickImage(),
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.whiteColor)),
         padding: const EdgeInsets.all(1),
-        child: DottedBorder(
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(12),
-          strokeWidth: 1,
-          dashPattern: const [10, 5],
-          color: const Color(0xFF1849D6),
-          child: Obx(
-                () =>
-            controller.selectedImage.value == null
-                ? Container(
-              width: width,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Assets.icons.cloudAdd.svg(colorFilter: const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
-                  const Gap(8),
-                  CustomText(text: "Choose_a_file_or_it_here".tr, fontWeight: FontWeight.w600, color: AppColors.whiteColor, fontSize: 16),
-                  const Gap(8),
-                  CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
-                ],
-              ),
-            )
-                : SizedBox(
-              height: 150,
-              width: width,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
-              ),
-            ),
-          ),
+        child: Obx(
+          () => controller.selectedImage.value == null
+              ? Container(
+                  width: width,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Assets.icons.cloudAdd.svg(
+                          colorFilter:
+                              const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
+                      const Gap(8),
+                      CustomText(
+                          text: "Choose_a_file_or_it_here".tr,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.whiteColor,
+                          fontSize: 16),
+                      const Gap(8),
+                      CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
+                    ],
+                  ),
+                )
+              : SizedBox(
+                  height: 150,
+                  width: width,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(File(controller.selectedImage.value?.path ?? ""),
+                        fit: BoxFit.cover),
+                  ),
+                ),
         ),
       ),
     );
@@ -355,42 +368,44 @@ class RecordAudioWidget extends StatelessWidget {
           child: Obx(() {
             return controller.isPlaying.value
                 ? AudioFileWaveforms(
-              size: Size(width, 70),
-              playerController: controller.playerController,
-              waveformType: WaveformType.long,
-              enableSeekGesture: true,
-              waveformData: controller.playerController.waveformData,
-              playerWaveStyle: const PlayerWaveStyle(
-                fixedWaveColor: Colors.grey,
-                liveWaveColor: Colors.white,
-              ),
-            ) : AudioWaveforms(
-              enableGesture: false,
-              size: Size(width, 80),
-              recorderController: controller.recorderController,
-              waveStyle: WaveStyle(
-                showMiddleLine: true,
-                extendWaveform: true,
-                spacing: 6,
-                showTop: true,
-                showBottom: true,
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFFBBD2C5),
-                    Color(0xFF536976),
-                    Color(0xFF292E49),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(Rect.fromLTWH(0, 0, width, 70)),
-              ),
-            );
+                    size: Size(width, 70),
+                    playerController: controller.playerController,
+                    waveformType: WaveformType.long,
+                    enableSeekGesture: true,
+                    waveformData: controller.playerController.waveformData,
+                    playerWaveStyle: const PlayerWaveStyle(
+                      fixedWaveColor: Colors.grey,
+                      liveWaveColor: Colors.white,
+                    ),
+                  )
+                : AudioWaveforms(
+                    enableGesture: false,
+                    size: Size(width, 80),
+                    recorderController: controller.recorderController,
+                    waveStyle: WaveStyle(
+                      showMiddleLine: true,
+                      extendWaveform: true,
+                      spacing: 6,
+                      showTop: true,
+                      showBottom: true,
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFBBD2C5),
+                          Color(0xFF536976),
+                          Color(0xFF292E49),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ).createShader(Rect.fromLTWH(0, 0, width, 70)),
+                    ),
+                  );
           }),
         ),
         const Gap(24),
         Obx(() {
           if (!controller.isRecording.value) {
-            if(controller.recordedFilePath.value != null && controller.recordedFilePath.value!.isNotEmpty){
+            if (controller.recordedFilePath.value != null &&
+                controller.recordedFilePath.value!.isNotEmpty) {
               return Column(
                 children: [
                   ElevatedButton(
@@ -399,47 +414,66 @@ class RecordAudioWidget extends StatelessWidget {
                       backgroundColor: Colors.grey,
                       minimumSize: const Size(150, 40),
                     ),
-                    child: const Text("Start Recording", style: TextStyle(color: AppColors.blackColor),),
+                    child: const Text(
+                      "Start Recording",
+                      style: TextStyle(color: AppColors.blackColor),
+                    ),
                   ),
                   const Gap(8),
-                  controller.isPlaying.value?Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Obx((){
-                        return controller.isPausePlaying.value?ElevatedButton(
-                          onPressed: controller.resumeAudio,
+                  controller.isPlaying.value
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Obx(() {
+                              return controller.isPausePlaying.value
+                                  ? ElevatedButton(
+                                      onPressed: controller.resumeAudio,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        minimumSize: const Size(150, 40),
+                                      ),
+                                      child: const Text(
+                                        "Resume Audio",
+                                        style: TextStyle(color: AppColors.blackColor),
+                                      ),
+                                    )
+                                  : ElevatedButton(
+                                      onPressed: controller.pauseAudio,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.orangeAccent,
+                                        minimumSize: const Size(150, 40),
+                                      ),
+                                      child: const Text(
+                                        "Pause Audio",
+                                        style: TextStyle(color: AppColors.blackColor),
+                                      ),
+                                    );
+                            }),
+                            const Gap(8),
+                            ElevatedButton(
+                              onPressed: controller.stopAudio,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                minimumSize: const Size(150, 40),
+                              ),
+                              child: const Text(
+                                "Stop Audio",
+                                style: TextStyle(color: AppColors.blackColor),
+                              ),
+                            )
+                          ],
+                        )
+                      : ElevatedButton(
+                          onPressed: controller.playAudio,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: Colors.grey,
                             minimumSize: const Size(150, 40),
                           ),
-                          child: const Text("Resume Audio", style: TextStyle(color: AppColors.blackColor),),
-                        ):ElevatedButton(
-                          onPressed: controller.pauseAudio,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orangeAccent,
-                            minimumSize: const Size(150, 40),
+                          child: const Text(
+                            "Play Audio",
+                            style: TextStyle(color: AppColors.blackColor),
                           ),
-                          child: const Text("Pause Audio", style: TextStyle(color: AppColors.blackColor),),
-                        );
-                      }),
-                      const Gap(8),
-                      ElevatedButton(
-                        onPressed: controller.stopAudio,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          minimumSize: const Size(150, 40),
                         ),
-                        child: const Text("Stop Audio", style: TextStyle(color: AppColors.blackColor),),
-                      )
-                    ],
-                  ):ElevatedButton(
-                    onPressed: controller.playAudio,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                      minimumSize: const Size(150, 40),
-                    ),
-                    child: const Text("Play Audio", style: TextStyle(color: AppColors.blackColor),),
-                  ),
                 ],
               );
             }
@@ -449,7 +483,10 @@ class RecordAudioWidget extends StatelessWidget {
                 backgroundColor: Colors.grey,
                 minimumSize: const Size(150, 40),
               ),
-              child: const Text("Start Recording", style: TextStyle(color: AppColors.blackColor),),
+              child: const Text(
+                "Start Recording",
+                style: TextStyle(color: AppColors.blackColor),
+              ),
             );
           } else if (controller.isPaused.value) {
             return Row(
@@ -461,7 +498,10 @@ class RecordAudioWidget extends StatelessWidget {
                     backgroundColor: Colors.orangeAccent,
                     minimumSize: const Size(150, 40),
                   ),
-                  child: const Text("Resume", style: TextStyle(color: AppColors.blackColor),),
+                  child: const Text(
+                    "Resume",
+                    style: TextStyle(color: AppColors.blackColor),
+                  ),
                 ),
                 Gap(8),
                 ElevatedButton(
@@ -470,7 +510,10 @@ class RecordAudioWidget extends StatelessWidget {
                     backgroundColor: Colors.red,
                     minimumSize: const Size(150, 40),
                   ),
-                  child: const Text("Stop", style: TextStyle(color: AppColors.whiteColor),),
+                  child: const Text(
+                    "Stop",
+                    style: TextStyle(color: AppColors.whiteColor),
+                  ),
                 ),
               ],
             );
@@ -484,7 +527,10 @@ class RecordAudioWidget extends StatelessWidget {
                     backgroundColor: Colors.green,
                     minimumSize: const Size(150, 40),
                   ),
-                  child: const Text("Pause", style: TextStyle(color: AppColors.whiteColor),),
+                  child: const Text(
+                    "Pause",
+                    style: TextStyle(color: AppColors.whiteColor),
+                  ),
                 ),
                 Gap(8),
                 ElevatedButton(
@@ -493,7 +539,10 @@ class RecordAudioWidget extends StatelessWidget {
                     backgroundColor: Colors.red,
                     minimumSize: const Size(150, 40),
                   ),
-                  child: const Text("Stop", style: TextStyle(color: AppColors.whiteColor),),
+                  child: const Text(
+                    "Stop",
+                    style: TextStyle(color: AppColors.whiteColor),
+                  ),
                 ),
               ],
             );
@@ -504,4 +553,3 @@ class RecordAudioWidget extends StatelessWidget {
     );
   }
 }
-
