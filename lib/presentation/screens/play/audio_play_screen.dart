@@ -88,7 +88,8 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                                 child: CustomNetworkImage(
                                   borderRadius: BorderRadius.circular(8),
-                                  imageUrl: controller.postModel.value.data?.podcast?.cover ?? "",
+                                  imageUrl: "https://plus.unsplash.com/premium_photo-1681335986095-5a9585e77246",
+                                  // imageUrl: controller.postModel.value.data?.podcast?.cover ?? "",
                                 ),
                               );
                             } else {
