@@ -5,22 +5,26 @@ import '../utils/app_const/app_const.dart';
 class ApiUrl {
   ApiUrl._();
 
-  static const String base = "http://192.168.10.32:7010";
+  static const String base = "http://10.0.60.137:5090";
   static String googleSearchApi({required String search}) => 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
   static String googleLetLongToAddressApi({required LatLng location}) => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
 
   ///Auth
-  static String register() => '$base/auth/register';
-  static String activate() => '$base/auth/activate';
-  static String otp() => '$base/auth/verify-otp';
+  static String register() => '$base/user/register-user';
+  static String activate() => '$base/user/verify-code';
+  static String activeOTPResend() => '$base/user/resend-verify-code';
+
   static String login() => '$base/auth/login';
   static String forget() => '$base/auth/forgot-password';
-  static String verifyOtp() => '$base/auth/verify-otp';
+  static String verifyOtp() => '$base/auth/verify-reset-otp';
+  static String verifyOtpResend() => '$base/auth/resend-reset-code';
   static String reset() => '$base/auth/reset-password';
-  static String profile() => '$base/user';
-  static String profileEdit() => '$base/user/update';
+
+  static String refreshToken() => '$base/auth/refresh-token';
+  static String profile() => '$base/user/get-my-profile';
+  static String profileEdit() => '$base/user/update-profile';
   static String changePassword() => '$base/auth/change-password';
-  static String delete() => '$base/auth/delete';
+  static String delete() => '$base/user/delete-account';
 
   ///Global
   static String category() => '$base/category';

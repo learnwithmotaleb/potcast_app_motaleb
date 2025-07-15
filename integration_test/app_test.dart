@@ -17,8 +17,9 @@ void main(){
       dbHelper.saveUserdata(
           token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OWEyMGU5ZTk5OTE2OTU1MzUxMDYwZCIsImlhdCI6MTc0NTE2MjU2NywiZXhwIjoxNzQ1NTA4MTY3fQ.m878lXUPi_SHiYfcEiNMbwsNm3hkCQ6laglAB-7XHAQ",
           id: "",
-          email: "creator@gmail.com",
-          role: "CREATOR",
+          profileId: "creator@gmail.com",
+          role: "creator",
+        refreshToken: '',
       );
     });
 

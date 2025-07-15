@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:pinput/pinput.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
+import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
+import 'package:podcast/service/api_url.dart';
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen({super.key, required this.email});
@@ -56,7 +55,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     () => TextButton(
                       onPressed: () {
                         if (_controller.resendLoading.value == false) {
-                          _controller.resendOTP(email: widget.email);
+                          _controller.resendOTP(email: widget.email, url: ApiUrl.activeOTPResend());
                         }
                       },
                       child: Text(
@@ -73,10 +72,12 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   text: "continue".tr,
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      _controller.activeAccount(body: {
+                      final body = {
                         "email": widget.email,
-                        "verificationOTP": _otp.text.trim(),
-                      });
+                        "verifyCode": int.tryParse(_otp.text.trim()),
+                      };
+
+                      _controller.activeAccount(body: body);
                     }
                   },
                   isLoading: _controller.activeLoading.value,
@@ -87,38 +88,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class OTPField extends StatelessWidget {
-  const OTPField({
-    super.key,
-    required this.controller,
-  });
-
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    return Pinput(
-      length: 6,
-      controller: controller,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'OTP is required';
-        }
-        if (value.length != 6) {
-          return 'OTP must be 6 digits';
-        }
-        return null;
-      },
-      focusedPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.primaryColor), borderRadius: BorderRadius.circular(5.r))),
-      followingPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
-      disabledPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
-      submittedPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp, color: AppColors.blackColor), decoration: BoxDecoration(color: isDarkMode ? AppColors.whiteColor : null, border: isDarkMode ? null : Border.all(color: AppColors.blackColor), borderRadius: BorderRadius.circular(5.r))),
-      defaultPinTheme: PinTheme(height: 70.h, width: 70.w, textStyle: TextStyle(fontSize: 22.sp), decoration: BoxDecoration(color: isDarkMode ? AppColors.blackColor : null, borderRadius: BorderRadius.circular(5.r), border: isDarkMode ? Border.all(color: const Color(0xFFFCFCF8)) : Border.all(color: AppColors.hintTextColor))),
     );
   }
 }

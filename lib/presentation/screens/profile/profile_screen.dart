@@ -30,7 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: Text("profile".tr),
@@ -46,22 +45,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               left: 0,
               right: 0,
               child: Obx(() {
-                return _controller.profile.value.data?.backgroundImage != null
-                    ? CustomNetworkImage(
-                        imageUrl: _controller.profile.value.data?.backgroundImage ?? "",
-                        height: 200,
-                        width: width,
-                      )
-                    : Shimmer.fromColors(
-                        baseColor: Colors.grey.withOpacity(0.6),
-                        highlightColor: Colors.grey.withOpacity(0.3),
-                        child: Container(
-                          height: 200,
-                          width: width,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withValues(alpha: 0.6),
-                          ),
-                        ));
+                if(_controller.profile.value.data?.backgroundImage != null){
+                  return CustomNetworkImage(
+                    imageUrl: _controller.profile.value.data?.backgroundImage ?? "",
+                    height: 200,
+                    width: width,
+                  );
+                }
+                return Shimmer.fromColors(
+                    baseColor: Colors.grey.withValues(alpha: 0.6),
+                    highlightColor: Colors.grey.withValues(alpha: 0.3),
+                    child: Container(
+                      height: 200,
+                      width: width,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withValues(alpha: 0.6),
+                      ),
+                    ),
+                );
               }),
             ),
             Positioned(
@@ -81,20 +82,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: width,
                         height: height - 400,
                         decoration: const BoxDecoration(
-                            color: AppColors.blackColor,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25),
-                            ),
+                          color: AppColors.blackColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25),
+                            topRight: Radius.circular(25),
+                          ),
                         ),
                         child: Column(
                           children: [
                             const Gap(20),
                             Obx(() => Column(
                                   children: [
-                                    CustomText(text: _controller.profile.value.data?.name ?? "", fontSize: 24,fontWeight: FontWeight.w800),
+                                    CustomText(
+                                        text: _controller.profile.value.data?.name ?? "",
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w800),
                                     const Gap(5),
-                                    CustomText(text: _controller.profile.value.data?.email ?? "", fontSize: 16),
+                                    CustomText(
+                                        text: _controller.profile.value.data?.email ?? "",
+                                        fontSize: 16),
                                   ],
                                 )),
                             Gap(12.h),
@@ -104,18 +110,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onTap: () => AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
                             ),
                             const Gap(24),
-                            widget.isUser
-                                ? const SizedBox()
-                                : Column(
-                                    children: [
-                                      CustomProfileTile(
-                                        text: "my_podcast",
-                                        onTap: () => AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
-                                        icon: Iconsax.music,
-                                      ),
-                                      const Gap(24),
-                                    ],
+                            if (!widget.isUser)
+                              Column(
+                                children: [
+                                  CustomProfileTile(
+                                    text: "my_podcast",
+                                    onTap: () =>
+                                        AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
+                                    icon: Iconsax.music,
                                   ),
+                                  const Gap(24),
+                                ],
+                              ),
                             CustomProfileTile(
                               text: "my_play_list",
                               onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
@@ -134,22 +140,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
                             ),
                             const Gap(24),
-                            widget.isUser
-                                ? Column(
-                                    children: [
-                                      CustomProfileTile(
-                                        text: "upgrade",
-                                        // widget: Assets.icons.updrade.svg(height: 20, width: 20, colorFilter: isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                                        onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
-                                        icon: Iconsax.diamonds,
-                                        isIcon: true,
-                                      ),
-                                      const Gap(24),
-                                    ],
-                                  )
-                                : const SizedBox(),
+                            if (widget.isUser)
+                              Column(
+                                children: [
+                                  CustomProfileTile(
+                                    text: "upgrade",
+                                    onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
+                                    icon: Iconsax.diamonds,
+                                    isIcon: true,
+                                  ),
+                                  const Gap(24),
+                                ],
+                              ),
                             GestureDetector(
-                              onTap: ()=>showLogoutDialog(context),
+                              onTap: () => showLogoutDialog(context),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 40),
                                 child: Container(
@@ -160,7 +164,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                     color: AppColors.whiteColor,
                                   ),
-                                  child: CustomText(text: "logout".tr, color: AppColors.blackColor,),
+                                  child: CustomText(
+                                    text: "logout".tr,
+                                    color: AppColors.blackColor,
+                                  ),
                                 ),
                               ),
                             ),
@@ -181,26 +188,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Obx(() {
-                          return _controller.profile.value.data?.avatar != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: CustomNetworkImage(
-                                    imageUrl: _controller.profile.value.data?.avatar ?? "",
-                                    height: 100,
-                                    width: 100,
-                                  ),
-                                )
-                              : Shimmer.fromColors(
-                                  baseColor: Colors.grey.withOpacity(0.6),
-                                  highlightColor: Colors.grey.withOpacity(0.3),
-                                  child: Container(
-                                    height: 100,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.withOpacity(0.6),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ));
+                          if (_controller.profile.value.data?.avatar != null) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: CustomNetworkImage(
+                                imageUrl: _controller.profile.value.data?.avatar ?? "",
+                                height: 100,
+                                width: 100,
+                              ),
+                            );
+                          }
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.withValues(alpha: 0.6),
+                            highlightColor: Colors.grey.withValues(alpha: 0.3),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withValues(alpha: 0.6),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          );
                         }),
                       ),
                     ),
@@ -219,9 +228,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withValues(alpha: 0.5),
       transitionDuration: const Duration(milliseconds: 500),
-      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
         return Center(
           child: Dialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -241,9 +251,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomText(text: "logout".tr, family: "Bola", fontWeight: FontWeight.w800, fontSize: 22, color: AppColors.blackColor),
+                  CustomText(
+                      text: "logout".tr,
+                      family: "Bola",
+                      fontWeight: FontWeight.w800,
+                      fontSize: 22,
+                      color: AppColors.blackColor),
                   const Gap(12),
-                  CustomText(text: "are_you_sure_you_want_logout".tr, fontWeight: FontWeight.w500, color: AppColors.blackColor),
+                  CustomText(
+                      text: "are_you_sure_you_want_logout".tr,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.blackColor),
                   const Gap(24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -252,7 +270,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onTap: () => AppRouter.route.pop(),
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
-                          decoration: BoxDecoration(border: Border.all(color: AppColors.blackColor), color: AppColors.whiteColor, borderRadius: BorderRadius.circular(20)),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.blackColor),
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(20)),
                           child: CustomText(
                             text: "no".tr,
                             color: AppColors.blackColor,
@@ -267,7 +288,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
-                          decoration: BoxDecoration(border: Border.all(color: AppColors.blackColor), color: AppColors.blackColor, borderRadius: BorderRadius.circular(20)),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.blackColor),
+                              color: AppColors.blackColor,
+                              borderRadius: BorderRadius.circular(20)),
                           child: CustomText(
                             text: "yes".tr,
                             color: AppColors.whiteColor,

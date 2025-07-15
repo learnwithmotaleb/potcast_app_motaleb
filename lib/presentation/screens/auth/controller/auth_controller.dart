@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -13,7 +14,7 @@ class AuthController extends GetxController{
   ApiClient apiClient = serviceLocator();
   DBHelper dbHelper = serviceLocator();
 
-  RxString selectedRoll = "USER".obs;
+  RxString selectedRoll = "user".obs;
 
   void updateRoll(String? value) {
     if(value != null){
@@ -30,30 +31,26 @@ class AuthController extends GetxController{
       var response = await apiClient.post(body: body, url: ApiUrl.login(), isBasic: true);
 
       if (response.statusCode == 200) {
-        final loginModel = LoginModel.fromJson(response.body);
-        if(loginModel.success == true){
-          dbHelper.saveUserdata(
-            token: loginModel.data?.accessToken??"",
-            id: loginModel.data?.auth?.id??"",
-            email: loginModel.data?.auth?.email??"",
-            role: loginModel.data?.auth?.role??"",
-          ).then((value){
-            loginMethod(false);
-            toastMessage(message: "Login Successful");
-            if(loginModel.data?.auth?.role == "USER"){
-              AppRouter.route.goNamed(RoutePath.userNavScreen);
-            }else if(loginModel.data?.auth?.role == "CREATOR"){
-              AppRouter.route.goNamed(RoutePath.creatorNavScreen);
-            }else{
-              toastMessage(message: "Please Try Again");
-            }
-          }).onError((error,stack){
-            loginMethod(false);
-            toastMessage(message: response.body?['message']?.toString()??"something want wrong");
-          });
+        final activeAccountModel = LoginModel.fromJson(response.body);
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(activeAccountModel.data?.accessToken ?? "");
+        final String role = decodedToken["role"];
+        await dbHelper.saveUserdata(
+          token: activeAccountModel.data?.accessToken??"",
+          refreshToken: activeAccountModel.data?.refreshToken??"",
+          id: decodedToken["id"],
+          profileId: decodedToken["profileId"],
+          role: decodedToken["role"],
+        );
+
+        activeMethod(false);
+        toastMessage(message: response.body['message'].toString());
+
+        if(role == "user"){
+          AppRouter.route.goNamed(RoutePath.userNavScreen);
+        }else if(role == "creator"){
+          AppRouter.route.goNamed(RoutePath.creatorNavScreen);
         }else{
-          loginMethod(false);
-          toastMessage(message: response.body?['message']?.toString()??"something want wrong");
+          AppRouter.route.goNamed(RoutePath.loginScreen);
         }
       } else {
         loginMethod(false);
@@ -67,21 +64,16 @@ class AuthController extends GetxController{
   /// ============================= Sign Up ===========================================
   RxBool signUpLoading = false.obs;
   signUpLoadingMethod(bool status) => signUpLoading.value = status;
-  void signUp({required Map<String, String> body, required String email}) async {
+
+  Future<void> signUp({required Map<String, String> body, required String email}) async {
     try{
       signUpLoadingMethod(true);
       var response = await apiClient.post(body: body,url: ApiUrl.register(),isBasic: true);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         signUpLoadingMethod(false);
         final model = SignUpModel.fromJson(response.body);
-        toastMessage(message: model.message??"something want wrong");
-        AppRouter.route.pushNamed(RoutePath.verificationScreen, extra: email);
-
-      }else if (response.statusCode == 200) {
-        signUpLoadingMethod(false);
-        final model = SignUpModel.fromJson(response.body);
-        if(model.success == true && model.data == false){
+        if(model.success == true){
           toastMessage(message: model.message??"something want wrong");
           AppRouter.route.pushNamed(RoutePath.verificationScreen, extra: email);
         }else{
@@ -99,32 +91,33 @@ class AuthController extends GetxController{
   /// ============================= Active Account =====================================
   RxBool activeLoading = false.obs;
   activeMethod(bool status) => activeLoading.value = status;
-  void activeAccount({required Map<String, String> body}) async {
+  void activeAccount({required Map<String, dynamic> body}) async {
     try {
       activeMethod(true);
       var response = await apiClient.post(body: body, url: ApiUrl.activate(), isBasic: true);
 
       if (response.statusCode == 200) {
         final activeAccountModel = LoginModel.fromJson(response.body);
-        dbHelper.saveUserdata(
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(activeAccountModel.data?.accessToken ?? "");
+        final String role = decodedToken["role"];
+        await dbHelper.saveUserdata(
           token: activeAccountModel.data?.accessToken??"",
-          id: activeAccountModel.data?.auth?.id??"",
-          email: activeAccountModel.data?.auth?.email??"",
-          role: activeAccountModel.data?.auth?.role??"",
-        ).then((value){
-          activeMethod(false);
-          toastMessage(message: response.body['message'].toString());
-          if(activeAccountModel.data?.auth?.role == "USER"){
-            AppRouter.route.goNamed(RoutePath.userNavScreen);
-          }else if(activeAccountModel.data?.auth?.role == "CREATOR"){
-            AppRouter.route.goNamed(RoutePath.creatorNavScreen);
-          }else{
-            AppRouter.route.goNamed(RoutePath.loginScreen);
-          }
-        }).onError((error,stack){
-          activeMethod(false);
-          toastMessage(message: error.toString());
-        });
+          refreshToken: activeAccountModel.data?.refreshToken??"",
+          id: decodedToken["id"],
+          profileId: decodedToken["profileId"],
+          role: decodedToken["role"],
+        );
+
+        activeMethod(false);
+        toastMessage(message: response.body['message'].toString());
+
+        if(role == "user"){
+          AppRouter.route.goNamed(RoutePath.userNavScreen);
+        }else if(role == "creator"){
+          AppRouter.route.goNamed(RoutePath.creatorNavScreen);
+        }else{
+          AppRouter.route.goNamed(RoutePath.loginScreen);
+        }
       } else {
         activeMethod(false);
         toastMessage(message: response.body?['message']?.toString()??"something want wrong");
@@ -156,10 +149,10 @@ class AuthController extends GetxController{
   /// ============================= Resend OTP =====================================
   RxBool resendLoading = false.obs;
   resendLoadingMethod(bool status) => resendLoading.value = status;
-  void resendOTP({required String email}) async {
+  void resendOTP({required String email, required String url}) async {
     try {
       resendLoadingMethod(true);
-      var response = await apiClient.post(body: {"email": email}, url: ApiUrl.forget(), isBasic: true);
+      var response = await apiClient.post(body: {"email": email}, url: url, isBasic: true);
       if (response.statusCode == 200) {
         resendLoadingMethod(false);
         toastMessage(message: response.body?['message']?.toString()??"something want wrong");
@@ -256,23 +249,15 @@ class AuthController extends GetxController{
 class SignUpModel {
   final bool? success;
   final String? message;
-  final bool? data;
 
   SignUpModel({
     this.success,
     this.message,
-    this.data,
   });
 
   factory SignUpModel.fromJson(Map<String, dynamic> json) => SignUpModel(
     success: json["success"],
     message: json["message"],
-    data: json["data"],
   );
-
-  Map<String, dynamic> toJson() => {
-    "success": success,
-    "message": message,
-    "data": data,
-  };
 }
+

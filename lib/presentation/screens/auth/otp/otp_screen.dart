@@ -9,6 +9,7 @@ import 'package:podcast/presentation/screens/auth/controller/auth_controller.dar
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     () => TextButton(
                       onPressed: () {
                         if (_controller.resendLoading.value == false) {
-                          _controller.resendOTP(email: widget.email);
+                          _controller.resendOTP(email: widget.email, url: ApiUrl.verifyOtpResend());
                         }
                       },
                       child: Text(

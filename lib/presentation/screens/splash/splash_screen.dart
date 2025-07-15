@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -15,40 +14,29 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final DBHelper dbHelper = serviceLocator<DBHelper>();
 
   Future<void> _navigation() async {
-
-    DBHelper dbHelper = serviceLocator();
-
     try{
       final String token = await dbHelper.getToken();
       final String roll = await dbHelper.getUserRole();
-      print(token);
       bool hasExpired = JwtDecoder.isExpired(token);
 
+      await Future.delayed(const Duration(seconds: 3));
+
       if(token != "" && roll != "" && !hasExpired){
-        if(roll == "USER"){
-          Future.delayed(const Duration(seconds: 3),(){
-            AppRouter.route.goNamed(RoutePath.userNavScreen);
-          });
-        }else if(roll == "CREATOR"){
-          Future.delayed(const Duration(seconds: 3),(){
-            AppRouter.route.goNamed(RoutePath.creatorNavScreen);
-          });
+        if(roll == "user"){
+          AppRouter.route.goNamed(RoutePath.userNavScreen);
+        }else if(roll == "creator"){
+          AppRouter.route.goNamed(RoutePath.creatorNavScreen);
         }else{
-          Future.delayed(const Duration(seconds: 3),(){
-            AppRouter.route.goNamed(RoutePath.loginScreen);
-          });
+          AppRouter.route.goNamed(RoutePath.loginScreen);
         }
       }else{
-        Future.delayed(const Duration(seconds: 3),(){
-          AppRouter.route.goNamed(RoutePath.introScreen);
-        });
-      }
-    }catch(e){
-      Future.delayed(const Duration(seconds: 3),(){
         AppRouter.route.goNamed(RoutePath.introScreen);
-      });
+      }
+    }catch(_){
+      AppRouter.route.goNamed(RoutePath.introScreen);
     }
   }
 
@@ -60,7 +48,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: Center(
         child: Assets.images.splashLogo.image(),

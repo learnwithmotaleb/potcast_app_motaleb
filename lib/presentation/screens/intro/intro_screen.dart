@@ -49,30 +49,36 @@ class _IntroScreenState extends State<IntroScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: (height / 2)+100,
+                height: (height / 2) + 100,
                 width: width,
                 child: Assets.images.startedLogo.image(fit: BoxFit.cover),
               ),
               if (_customImage != null)
                 Stack(
                   children: [
-          
-                    // Custom painted rectangle
                     CustomPaint(
-                      size: Size(width, (height / 2)-100),
+                      size: Size(width, (height / 2) - 100),
                       painter: RectanglePainter(image: _customImage!),
                     ),
-          
-                    // Add text and button
                     Positioned.fill(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CustomText(text: "get_started_intro".tr,fontSize: 20,color: AppColors.whiteColor,fontWeight: FontWeight.w800,textAlign: TextAlign.center,maxLines: 2),
+                            CustomText(
+                              text: "get_started_intro".tr,
+                              fontSize: 20,
+                              color: AppColors.whiteColor,
+                              fontWeight: FontWeight.w800,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                            ),
                             Gap(22.h),
-                            CustomButton(text: "get_started".tr,onTap: ()=>AppRouter.route.goNamed(RoutePath.loginScreen))
+                            CustomButton(
+                              text: "get_started".tr,
+                              onTap: () => AppRouter.route.goNamed(RoutePath.loginScreen),
+                            ),
                           ],
                         ),
                       ),
@@ -96,29 +102,26 @@ class RectanglePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Define the paint for the path
     Paint paint = Paint()..color = Colors.black;
 
-    // Create a custom path
     Path path = Path();
-    path.moveTo(0, 0); // Top-left corner
-    path.lineTo(size.width, 0); // Top-right corner
-    path.lineTo(size.width, size.height); // Bottom-right corner
+    path.moveTo(0, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height);
     path.quadraticBezierTo(
-      size.width * 0.5, size.height, // Control point
-      0, size.height, // Bottom-left corner
+      size.width * 0.5,
+      size.height,
+      0,
+      size.height,
     );
     path.close();
 
-    // Draw the custom path
     canvas.drawPath(path, paint);
-
-    // Draw the image inside the path
-    canvas.clipPath(path); // Clip the canvas to the path
+    canvas.clipPath(path);
     canvas.drawImageRect(
       image,
-      Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()), // Source rect
-      Rect.fromLTWH(0, 0, size.width, size.height), // Destination rect
+      Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
+      Rect.fromLTWH(0, 0, size.width, size.height),
       Paint(),
     );
   }

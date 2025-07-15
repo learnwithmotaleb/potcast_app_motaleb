@@ -3,11 +3,12 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
-import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+
+import 'widget/sign_up_choose_role.dart';
+import 'widget/sign_up_inputs_fields_widget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -17,7 +18,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
   final _controller = Get.find<AuthController>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -28,11 +28,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose() {
+    _name.dispose();
+    _email.dispose();
+    _dob.dispose();
+    _address.dispose();
+    _password.dispose();
+    _confirmPassword.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("create_account".tr),
       ),
       body: SingleChildScrollView(
@@ -43,182 +53,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("choose_your_role_in_our_community".tr, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18), textAlign: TextAlign.center),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Obx(() {
-                        return Radio<String>(
-                          value: "USER",
-                          groupValue: _controller.selectedRoll.value,
-                          activeColor: AppColors.greenLight,
-                          onChanged: _controller.updateRoll,
-                        );
-                      }),
-                      Text(
-                        'user'.tr,
-                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                  const Gap(12),
-                  Row(
-                    children: [
-                      Obx(() {
-                        return Radio<String>(
-                          value: "CREATOR",
-                          activeColor: AppColors.greenLight,
-                          groupValue: _controller.selectedRoll.value,
-                          onChanged: _controller.updateRoll,
-                        );
-                      }),
-                      Text('creator'.tr,
-                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ],
+              Text(
+                "choose_your_role_in_our_community".tr,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
               ),
-              CustomAlignText(text: "User Name".tr),
-              const Gap(8),
-              CustomTextField(
-                hintText: "Enter Your User Name".tr,
-                keyboardType: TextInputType.name,
-                controller: _name,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'User Name is required';
-                  }
-                  if (value.length < 2) {
-                    return 'User Name must be at least 2 characters';
-                  }
-                  final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
-                  if (!nameRegex.hasMatch(value)) {
-                    return 'User Name can only contain letters and spaces';
-                  }
-                  return null;
-                },
+              SignUpChooseRole(
+                controller: _controller,
               ),
-              const Gap(12),
-              CustomAlignText(text: "email_only".tr),
-              const Gap(8),
-              CustomTextField(
-                hintText: "enter_your_email_here".tr,
-                keyboardType: TextInputType.emailAddress,
-                controller: _email,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email is required';
-                  }
-                  final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-                  if (!emailRegex.hasMatch(value)) {
-                    return 'Enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              const Gap(12),
-              CustomAlignText(text: "date_of_birth".tr),
-              const Gap(8),
-              CustomTextField(
-                hintText: "dd-mm-yyy",
-                keyboardType: TextInputType.phone,
-                controller: _dob,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your ${'date_of_birth'.tr}';
-                  }
-                  return null;
-                },
-              ),
-              Obx(() {
-                return _controller.selectedRoll.value == "USER"?const SizedBox():
-                Column(
-                  children: [
-                    const Gap(12),
-                    CustomAlignText(text: "address".tr),
-                    const Gap(8),
-                    CustomTextField(
-                      hintText: "enter_your_address".tr,
-                      keyboardType: TextInputType.streetAddress,
-                      controller: _address,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please confirm your ${'address'.tr}';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                );
-              }),
-              const Gap(12),
-              CustomAlignText(text: "password".tr),
-              const Gap(8),
-              CustomTextField(
-                hintText: "Enter Your Password",
-                isPassword: true,
-                keyboardType: TextInputType.text,
-                controller: _password,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password is required';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
-              ),
-              const Gap(12),
-              CustomAlignText(text: "Repeat Your Password".tr),
-              const Gap(8),
-              CustomTextField(
-                hintText: "Repeat Your Password",
-                isPassword: true,
-                keyboardType: TextInputType.text,
-                controller: _confirmPassword,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please Repeat your password';
-                  }
-                  if (value != _password.text) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
+              SignUpInputsFieldsWidget(
+                name: _name,
+                email: _email,
+                dob: _dob,
+                address: _address,
+                password: _password,
+                confirmPassword: _confirmPassword,
+                controller: _controller,
               ),
               const Gap(24),
               Obx(
-                    () =>
-                    CustomButton(
-                      text: "sign_up".tr,
-                      onTap: () {
-                        if (_formKey.currentState!.validate()) {
-                          _controller.signUp(
-                            body: {
-                              "name": _name.text.trim(),
-                              "email": _email.text.trim(),
-                              "password": _password.text.trim(),
-                              "confirmPassword": _confirmPassword.text.trim(),
-                              "role": _controller.selectedRoll.value,
-                              "address": _address.text.trim(),
-                              "dateOfBirth": _dob.text.trim(),
-                            },
-                            email: _email.text.trim(),
-                          );
-                        }
-                      },
-                      isLoading: _controller.signUpLoading.value,
-                    ),
+                () => CustomButton(
+                  text: "sign_up".tr,
+                  isLoading: _controller.signUpLoading.value,
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      final body = {
+                        "name": _name.text.trim(),
+                        "email": _email.text.trim(),
+                        "password": _password.text.trim(),
+                        "confirmPassword": _confirmPassword.text.trim(),
+                        "role": _controller.selectedRoll.value,
+                        "address": _address.text.trim(),
+                        "dateOfBirth": _dob.text.trim(),
+                      };
+
+                      _controller.signUp(
+                        body: body,
+                        email: _email.text.trim(),
+                      );
+                    }
+                  },
+                ),
               ),
               const Gap(8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Flexible(child: CustomText(text: "already_have_an_account".tr)),
+                  Flexible(
+                    child: CustomText(
+                      text: "already_have_an_account".tr,
+                    ),
+                  ),
                   TextButton(
                     onPressed: () => AppRouter.route.pop(),
                     child: Text(
@@ -229,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         color: AppColors.redColor,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

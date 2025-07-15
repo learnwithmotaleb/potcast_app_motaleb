@@ -8,10 +8,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DBHelper {
 
   /// ====================== Get Token ====================
-
   Future<String> getToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences.getString(AppConstants.token)??"";
+  }
+
+  Future<String> getRefreshToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getString(AppConstants.refreshToken)??"";
   }
 
   /// ====================== Get User ID ==================
@@ -21,18 +25,16 @@ class DBHelper {
     return sharedPreferences.getString(AppConstants.id)??"";
   }
 
+  Future<String> getProfileId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getString(AppConstants.profileId)??"";
+  }
+
   /// ====================== Get User Role ==================
 
   Future<String> getUserRole() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences.getString(AppConstants.role)??"";
-  }
-
-  /// ====================== Get User Role ==================
-
-  Future<String> getUserEmail() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(AppConstants.email)??"";
   }
 
   /// ====================== Get User Role ==================
@@ -46,14 +48,16 @@ class DBHelper {
 
   Future saveUserdata({
     required String token,
+    required String refreshToken,
     required String id,
-    required String email,
+    required String profileId,
     required String role,
   }) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString(AppConstants.token, token);
+    sharedPreferences.setString(AppConstants.refreshToken, refreshToken);
     sharedPreferences.setString(AppConstants.id, id);
-    sharedPreferences.setString(AppConstants.email, email);
+    sharedPreferences.setString(AppConstants.profileId, profileId);
     sharedPreferences.setString(AppConstants.role, role);
   }
 

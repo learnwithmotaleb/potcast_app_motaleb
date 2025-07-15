@@ -18,45 +18,15 @@ class LoginModel {
 
 class Data {
   final String? accessToken;
-  final Auth? auth;
+  final String? refreshToken;
 
   Data({
     this.accessToken,
-    this.auth,
+    this.refreshToken,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     accessToken: json["accessToken"],
-    auth: json["auth"] == null ? null : Auth.fromJson(json["auth"]),
-  );
-}
-
-class Auth {
-  final String? id;
-  final String? email;
-  final String? password;
-  final String? role;
-  final bool? isVerified;
-  final bool? isBlocked;
-  final String? subscriptionType;
-
-  Auth({
-    this.id,
-    this.email,
-    this.password,
-    this.role,
-    this.isVerified,
-    this.isBlocked,
-    this.subscriptionType,
-  });
-
-  factory Auth.fromJson(Map<String, dynamic> json) => Auth(
-    id: json["_id"],
-    email: json["email"],
-    password: json["password"],
-    role: json["role"],
-    isVerified: json["isVerified"],
-    isBlocked: json["isBlocked"],
-    subscriptionType: json["subscriptionType"],
+    refreshToken: json["refreshToken"],
   );
 }

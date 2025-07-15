@@ -17,9 +17,10 @@ class AppConstants {
   static const String bannerIOS = 'ca-app-pub-3940256099942544/2435281174';
   //SharedPreferences
   static const String token = "token";
+  static const String refreshToken = "refresh_token";
   static const String id = "id";
   static const String role = "role";
-  static const String email = "email";
+  static const String profileId = "profile_id";
   static const String location = "location";
 }
 
