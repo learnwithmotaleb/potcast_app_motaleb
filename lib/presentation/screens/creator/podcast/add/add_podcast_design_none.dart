@@ -37,8 +37,8 @@ class _AddPodcastNoneDesignState extends State<AddPodcastNoneDesign> {
                     left: 0,
                     right: 0,
                     child: Obx(() {
-                      return _controller.profile.value.data?.backgroundImage != null ? CustomNetworkImage(
-                        imageUrl: _controller.profile.value.data?.backgroundImage ?? "",
+                      return _controller.profile.value.data?.profileImage != null ? CustomNetworkImage(
+                        imageUrl: _controller.profile.value.data?.profileImage ?? "",
                         height: 200,
                         width: width,
                         borderRadius: BorderRadius.circular(12),
@@ -70,10 +70,10 @@ class _AddPodcastNoneDesignState extends State<AddPodcastNoneDesign> {
                         shape: BoxShape.circle,
                       ),
                       child: Obx(() {
-                        return _controller.profile.value.data?.avatar != null ? ClipRRect(
+                        return _controller.profile.value.data?.profileImage != null ? ClipRRect(
                           borderRadius: BorderRadius.circular(50),
                           child: CustomNetworkImage(
-                            imageUrl: _controller.profile.value.data?.avatar ?? "",
+                            imageUrl: _controller.profile.value.data?.profileImage ?? "",
                             height: 100,
                             width: 100,
                           ),

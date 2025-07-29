@@ -45,9 +45,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               left: 0,
               right: 0,
               child: Obx(() {
-                if(_controller.profile.value.data?.backgroundImage != null){
+                final cover = _controller.profile.value.data?.profileCover;
+
+                if(cover != null){
                   return CustomNetworkImage(
-                    imageUrl: _controller.profile.value.data?.backgroundImage ?? "",
+                    imageUrl: cover.isNotEmpty? cover : "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e",
                     height: 200,
                     width: width,
                   );
@@ -80,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       right: 10,
                       child: Container(
                         width: width,
-                        height: height - 400,
+                        height: height,
                         decoration: const BoxDecoration(
                           color: AppColors.blackColor,
                           borderRadius: BorderRadius.only(
@@ -90,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Column(
                           children: [
-                            const Gap(20),
+                            const Gap(100),
                             Obx(() => Column(
                                   children: [
                                     CustomText(
@@ -188,11 +190,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Obx(() {
-                          if (_controller.profile.value.data?.avatar != null) {
+                          final profileImage = _controller.profile.value.data?.profileImage;
+                          if (profileImage != null) {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: CustomNetworkImage(
-                                imageUrl: _controller.profile.value.data?.avatar ?? "",
+                                imageUrl: profileImage.isNotEmpty? profileImage : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
                                 height: 100,
                                 width: 100,
                               ),
@@ -256,12 +259,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       family: "Bola",
                       fontWeight: FontWeight.w800,
                       fontSize: 22,
-                      color: AppColors.blackColor),
+                      color: AppColors.blackColor,
+                  ),
                   const Gap(12),
                   CustomText(
                       text: "are_you_sure_you_want_logout".tr,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.blackColor),
+                      color: AppColors.blackColor,
+                  ),
                   const Gap(24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

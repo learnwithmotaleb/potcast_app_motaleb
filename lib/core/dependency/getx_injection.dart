@@ -34,7 +34,7 @@ void initGetX() {
   Get.lazyPut(() => FavoriteController(), fenix: true);
   Get.lazyPut(() => HistoryController(), fenix: true);
   Get.lazyPut(() => PlaylistController(), fenix: true);
-  Get.lazyPut(() => AdminPodcastController(), fenix: true);
+  // Get.lazyPut(() => AdminPodcastController(), fenix: true);
 
   //User
   Get.lazyPut(() => UserHomeController(), fenix: true);

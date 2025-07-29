@@ -78,7 +78,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       _controller.otpVerify(
                         body: {
                           "email": widget.email,
-                          "verificationOTP": _otp.text.trim(),
+                          "resetCode": int.tryParse(_otp.text.trim()),
                         },
                         email: widget.email,
                       );

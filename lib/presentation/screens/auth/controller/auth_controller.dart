@@ -11,8 +11,8 @@ import 'package:podcast/service/api_url.dart';
 import 'package:podcast/service/check_api.dart';
 
 class AuthController extends GetxController{
-  ApiClient apiClient = serviceLocator();
-  DBHelper dbHelper = serviceLocator();
+  final ApiClient apiClient = serviceLocator<ApiClient>();
+  final DBHelper dbHelper = serviceLocator<DBHelper>();
 
   RxString selectedRoll = "user".obs;
 
@@ -25,6 +25,7 @@ class AuthController extends GetxController{
   /// ============================= Login Account =====================================
   RxBool loginLoading = false.obs;
   loginMethod(bool status) => loginLoading.value = status;
+
   void login({required Map<String, String> body}) async {
     try {
       loginMethod(true);
@@ -32,14 +33,20 @@ class AuthController extends GetxController{
 
       if (response.statusCode == 200) {
         final activeAccountModel = LoginModel.fromJson(response.body);
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(activeAccountModel.data?.accessToken ?? "");
-        final String role = decodedToken["role"];
+        final String accessToken = activeAccountModel.data?.accessToken ?? "";
+        final String refreshToken = activeAccountModel.data?.refreshToken ?? "";
+
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+        final String role = decodedToken["role"] ?? "";
+        final String id = decodedToken["id"] ?? "";
+        final String profileId = decodedToken["profileId"] ?? "";
+
         await dbHelper.saveUserdata(
-          token: activeAccountModel.data?.accessToken??"",
-          refreshToken: activeAccountModel.data?.refreshToken??"",
-          id: decodedToken["id"],
-          profileId: decodedToken["profileId"],
-          role: decodedToken["role"],
+          token: accessToken,
+          refreshToken: refreshToken,
+          id: id,
+          profileId: profileId,
+          role: role,
         );
 
         activeMethod(false);
@@ -98,14 +105,20 @@ class AuthController extends GetxController{
 
       if (response.statusCode == 200) {
         final activeAccountModel = LoginModel.fromJson(response.body);
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(activeAccountModel.data?.accessToken ?? "");
-        final String role = decodedToken["role"];
+        final String accessToken = activeAccountModel.data?.accessToken ?? "";
+        final String refreshToken = activeAccountModel.data?.refreshToken ?? "";
+
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+        final String role = decodedToken["role"] ?? "";
+        final String id = decodedToken["id"] ?? "";
+        final String profileId = decodedToken["profileId"] ?? "";
+
         await dbHelper.saveUserdata(
-          token: activeAccountModel.data?.accessToken??"",
-          refreshToken: activeAccountModel.data?.refreshToken??"",
-          id: decodedToken["id"],
-          profileId: decodedToken["profileId"],
-          role: decodedToken["role"],
+          token: accessToken,
+          refreshToken: refreshToken,
+          id: id,
+          profileId: profileId,
+          role: role,
         );
 
         activeMethod(false);
@@ -201,7 +214,7 @@ class AuthController extends GetxController{
   /// ============================= Active Account =====================================
   RxBool otpLoading = false.obs;
   otpMethod(bool status) => otpLoading.value = status;
-  void otpVerify({required Map<String, String> body, required String email}) async {
+  void otpVerify({required Map<String, dynamic> body, required String email}) async {
     try {
       otpMethod(true);
       var response = await apiClient.post(body: body, url: ApiUrl.verifyOtp(), isBasic: true);
@@ -230,7 +243,7 @@ class AuthController extends GetxController{
   void resetPassword({required Map<String, String> body}) async {
     try {
       resetMethod(true);
-      var response = await apiClient.put(body: body, url: ApiUrl.reset(), isBasic: true);
+      var response = await apiClient.post(body: body, url: ApiUrl.reset(), isBasic: true);
 
       if (response.statusCode == 200) {
         resetMethod(false);

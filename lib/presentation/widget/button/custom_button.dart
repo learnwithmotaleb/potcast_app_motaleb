@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
+import '../loading/loading_widget.dart';
+
 class CustomButton extends StatelessWidget {
   const CustomButton({super.key,
     required this.text,
@@ -30,7 +32,7 @@ class CustomButton extends StatelessWidget {
           color: isBgWhite?AppColors.whiteColor:null,
           border: isBgWhite?(isDarkMode?null:Border.all(color: AppColors.blackColor)):Border.all(color: AppColors.primaryColor),
         ),
-        child: isLoading?const Center(child: CircularProgressIndicator()):
+        child: isLoading?const LoadingWidget():
         CustomText(text: text,color: isBgWhite?AppColors.blackColor:AppColors.primaryColor,fontSize: 16),
       ),
     );

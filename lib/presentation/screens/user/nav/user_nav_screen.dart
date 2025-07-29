@@ -51,8 +51,11 @@ class _UserNavScreenState extends State<UserNavScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Obx(() {
+                  final image = _controller.profile.value.data?.profileImage ?? "";
+                  const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
                   return CustomNetworkImage(
-                    imageUrl: _controller.profile.value.data?.avatar,
+                    imageUrl:  image.isNotEmpty? image : defaultImage,
                     errorIcon: Iconsax.user,
                   );
                 }),

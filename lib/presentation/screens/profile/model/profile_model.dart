@@ -24,28 +24,30 @@ class ProfileModel {
 
 class Data {
   final Location? location;
+  final DateTime? dateOfBirth;
+  final String? gender;
   final String? id;
   final String? user;
   final String? name;
-  final String? phone;
   final String? email;
-  final String? address;
   final String? profileImage;
-  final DateTime? dateOfBirth;
+  final String? profileCover;
+  final String? address;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int? v;
 
   Data({
     this.location,
+    this.dateOfBirth,
+    this.gender,
     this.id,
     this.user,
     this.name,
-    this.phone,
     this.email,
-    this.address,
     this.profileImage,
-    this.dateOfBirth,
+    this.profileCover,
+    this.address,
     this.createdAt,
     this.updatedAt,
     this.v,
@@ -53,14 +55,15 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     location: json["location"] == null ? null : Location.fromJson(json["location"]),
+    dateOfBirth: json["dateOfBirth"] == null ? null : DateTime.parse(json["dateOfBirth"]),
+    gender: json["gender"],
     id: json["_id"],
     user: json["user"],
     name: json["name"],
-    phone: json["phone"],
     email: json["email"],
-    address: json["address"],
     profileImage: json["profile_image"],
-    dateOfBirth: json["dateOfBirth"] == null ? null : DateTime.parse(json["dateOfBirth"]),
+    profileCover: json["profile_cover"],
+    address: json["address"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
@@ -68,14 +71,15 @@ class Data {
 
   Map<String, dynamic> toJson() => {
     "location": location?.toJson(),
+    "dateOfBirth": dateOfBirth,
+    "gender": gender,
     "_id": id,
     "user": user,
     "name": name,
-    "phone": phone,
     "email": email,
-    "address": address,
     "profile_image": profileImage,
-    "dateOfBirth": dateOfBirth?.toIso8601String(),
+    "profile_cover": profileCover,
+    "address": address,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,

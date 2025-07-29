@@ -46,7 +46,6 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: _pages[_selectedPage],
       bottomNavigationBar: BottomNavigationBar(
@@ -81,7 +80,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 borderRadius: BorderRadius.circular(16),
                 child: Obx(() {
                   return CustomNetworkImage(
-                    imageUrl: _controller.profile.value.data?.avatar,
+                    imageUrl: _controller.profile.value.data?.profileImage,
                     errorIcon: Iconsax.user,
                   );
                 }),
@@ -94,7 +93,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
     );
   }
 
-  Future<dynamic> buildShowModalBottomSheet(BuildContext context) {
+  Future<void> buildShowModalBottomSheet(BuildContext context) {
     return showModalBottomSheet(
             context: context,
             builder: (context) => Container(

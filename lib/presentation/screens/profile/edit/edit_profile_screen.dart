@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
@@ -23,18 +26,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController name = TextEditingController();
-  TextEditingController phone = TextEditingController();
   TextEditingController address = TextEditingController();
-  TextEditingController birth = TextEditingController();
-  TextEditingController country = TextEditingController();
+  final ValueNotifier<DateTime> dob = ValueNotifier(DateTime(2000));
 
   @override
   void initState() {
     super.initState();
+    final data = controller.profile.value.data;
     name = TextEditingController(text: controller.profile.value.data?.name ?? "");
-    phone = TextEditingController(text: controller.profile.value.data?.contact ?? "");
+    controller.updateGender(value: ["Male", "Female", "Other"].contains(controller.profile.value.data?.gender)?controller.profile.value.data?.gender ?? "": "");
     address = TextEditingController(text: controller.profile.value.data?.address ?? "");
-    birth = TextEditingController(text: controller.profile.value.data?.dateOfBirth ?? "");
+    dob.value = data?.dateOfBirth != null ? data?.dateOfBirth ?? DateTime(2000) : DateTime(2000);
+  }
+
+  @override
+  void dispose() {
+    name.dispose();
+    address.dispose();
+    dob.dispose();
+    super.dispose();
   }
 
   @override
@@ -59,6 +69,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     children: [
                       const Gap(12),
                       Obx(() {
+                        final profileImage = controller.profile.value.data?.profileImage ?? "";
                         return Align(
                           alignment: Alignment.center,
                           child: GestureDetector(
@@ -68,18 +79,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               width: 100,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: controller.profile.value.data?.avatar != null ? null : AppColors.whiteColor,
+                                color: profileImage.isNotEmpty ? null : AppColors.blackColor,
+                                border: Border.all(color: AppColors.whiteColor),
                               ),
                               child: controller.selectedImage.value != null
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.file(File(controller.selectedImage.value?.path ?? ""), fit: BoxFit.cover),
-                              )
-                                  : controller.profile.value.data?.avatar != null
-                                  ? ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: CustomNetworkImage(imageUrl: controller.profile.value.data?.avatar??""),
-                              ) : const Icon(Icons.image_outlined,color: AppColors.blackColor),
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: Image.file(
+                                          File(controller.selectedImage.value?.path ?? ""),
+                                          fit: BoxFit.cover),
+                                    )
+                                  : profileImage.isNotEmpty
+                                      ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(50),
+                                          child: CustomNetworkImage(imageUrl: profileImage),
+                                        )
+                                      : const Icon(
+                                          Iconsax.gallery,
+                                          color: AppColors.whiteColor,
+                                        ),
                             ),
                           ),
                         );
@@ -88,6 +106,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       CustomAlignText(text: "Cover".tr),
                       const Gap(8),
                       Obx(() {
+                        final isSelectedImage = controller.selectedCoverImage.value != null;
+                        final profileImage = controller.profile.value.data?.profileCover;
                         return Align(
                           alignment: Alignment.center,
                           child: GestureDetector(
@@ -96,24 +116,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               height: 100,
                               width: width,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFF093028),
-                                    Color(0xFF237A57),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              child: controller.selectedCoverImage.value != null
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: AppColors.blackColor,
+                                  border: Border.all(color: AppColors.whiteColor)),
+                              child: isSelectedImage
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: Image.file(File(controller.selectedCoverImage.value?.path ?? ""), fit: BoxFit.cover),
-                              ) : controller.profile.value.data?.backgroundImage != null ? ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: CustomNetworkImage(imageUrl: controller.profile.value.data?.backgroundImage??""),
-                              ) : const Icon(Icons.image_outlined,color: AppColors.blackColor),
+                                      borderRadius: BorderRadius.circular(5),
+                                      child: Image.file(
+                                          File(controller.selectedCoverImage.value?.path ?? ""),
+                                          fit: BoxFit.cover),
+                                    )
+                                  : profileImage != null && profileImage.isNotEmpty
+                                      ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(5),
+                                          child: CustomNetworkImage(imageUrl: profileImage),
+                                        )
+                                      : const Icon(
+                                          Iconsax.gallery,
+                                          color: AppColors.whiteColor,
+                                          size: 30,
+                                        ),
                             ),
                           ),
                         );
@@ -142,15 +164,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const Gap(12),
                       CustomAlignText(text: "date_of_birth".tr),
                       const Gap(8),
-                      CustomTextField(
-                        hintText: "dd-mm-yyy".tr,
-                        keyboardType: TextInputType.name,
-                        controller: birth,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please confirm your ${'date_of_birth'.tr}';
-                          }
-                          return null;
+                      ValueListenableBuilder(
+                        valueListenable: dob,
+                        builder: (_, date, child) {
+                          return GestureDetector(
+                            onTap: () {
+                              DatePicker.showDatePicker(
+                                context,
+                                showTitleActions: true,
+                                minTime: DateTime(1990),
+                                maxTime: DateTime.now(),
+                                onConfirm: (value) {
+                                  dob.value = value;
+                                },
+                                currentTime: DateTime(2000),
+                              );
+                            },
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: AppColors.whiteColor),
+                              ),
+                              child: CustomText(
+                                text: DateFormat("dd MMMM yyyy - EEEE").format(date),
+                              ),
+                            ),
+                          );
                         },
                       ),
                       const Gap(12),
@@ -167,7 +208,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           return null;
                         },
                       ),
-                      const Gap(12),
+                      /*const Gap(12),
                       CustomAlignText(text: "phone_number".tr),
                       const Gap(8),
                       CustomTextField(
@@ -180,27 +221,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           }
                           return null;
                         },
-                      ),
+                      ),*/
                       const Gap(12),
                       CustomAlignText(text: "gender".tr),
                       Obx(() {
                         return Row(
                           children: [
                             Radio<String>(
-                              value: "male",
+                              value: "Male",
                               groupValue: controller.gender.value,
                               onChanged: (value) {
-                                controller.updateGender(value: "male");
+                                controller.updateGender(value: "Male");
                               },
                               activeColor: AppColors.redColor,
                             ),
                             CustomText(text: "male".tr),
                             const Gap(12),
                             Radio<String>(
-                              value: "female",
+                              value: "Female",
                               groupValue: controller.gender.value,
                               onChanged: (value) {
-                                controller.updateGender(value: "female");
+                                controller.updateGender(value: "Female");
+                              },
+                              activeColor: AppColors.redColor,
+                            ),
+                            CustomText(text: "female".tr),
+                            const Gap(12),
+                            Radio<String>(
+                              value: "Other",
+                              groupValue: controller.gender.value,
+                              onChanged: (value) {
+                                controller.updateGender(value: "Other");
                               },
                               activeColor: AppColors.redColor,
                             ),
@@ -213,21 +264,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         return CustomButton(
                           text: "update_profile".tr,
                           onTap: () {
-                            if(_formKey.currentState!.validate()){
-                              if(controller.gender.value != ""){
-                                final Map<String, String> body = {
-                                  "name": name.text,
-                                  "dateOfBirth": birth.text,
-                                  "gender": controller.gender.value,
-                                  "contact": phone.text.trim(),
-                                  "address": address.text,
-                                };
+                            if (_formKey.currentState!.validate()) {
+                              final data = controller.profile.value.data;
 
-                                if(controller.selectedImage.value != null || controller.selectedCoverImage.value != null){
-                                  controller.editProfile(body: body);
-                                }else{
-                                  controller.editProfileOnlyBody(body: body);
-                                }
+                              final String nameValue = name.text.trim();
+                              final String genderValue = controller.gender.value.trim();
+                              final String addressValue = address.text.trim();
+                              final DateTime dobValue = dob.value;
+
+                              final String? oldName = data?.name?.trim();
+                              final String? oldGender = data?.gender?.trim();
+                              final String? oldAddress = data?.address?.trim();
+                              final DateTime? oldDob = data?.dateOfBirth;
+
+                              final Map<String, String?> rawBody = {};
+
+                              if (nameValue.isNotEmpty && nameValue != oldName) {
+                                rawBody["name"] = nameValue;
+                              }
+                              if (genderValue.isNotEmpty && genderValue != oldGender) {
+                                rawBody["gender"] = genderValue;
+                              }
+                              if (addressValue.isNotEmpty && addressValue != oldAddress) {
+                                rawBody["address"] = addressValue;
+                              }
+                              if (oldDob == null || !isSameDate(dobValue, oldDob)) {
+                                rawBody["dateOfBirth"] = dobValue.toUtc().toIso8601String();
+                              }
+
+                              final Map<String, String> body = Map.from(rawBody)..removeWhere((key, String? value) => value == null || value.trim().isEmpty);
+
+                              if (controller.selectedImage.value != null || controller.selectedCoverImage.value != null) {
+                                controller.editProfile(body: body);
+                              } else {
+                                controller.editProfileOnlyBody(body: body);
                               }
                             }
                           },
@@ -244,5 +314,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+  bool isSameDate(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }

@@ -76,6 +76,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   google_mobile_ads: ^5.3.1
   marquee: ^2.3.0
+  flutter_datetime_picker_plus: ^2.2.0
 
   permission_handler: ^11.4.0
 

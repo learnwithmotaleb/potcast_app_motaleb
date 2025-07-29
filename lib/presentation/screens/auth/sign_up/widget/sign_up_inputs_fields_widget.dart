@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
+
+import '../../../../../utils/app_colors/app_colors.dart';
+import '../../../../widget/custom_text/custom_text.dart';
 
 class SignUpInputsFieldsWidget extends StatelessWidget {
   const SignUpInputsFieldsWidget({
@@ -20,7 +25,7 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
   final AuthController controller;
   final TextEditingController name;
   final TextEditingController email;
-  final TextEditingController dob;
+  final ValueNotifier<DateTime> dob;
   final TextEditingController address;
   final TextEditingController password;
   final TextEditingController confirmPassword;
@@ -72,15 +77,33 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
         const Gap(12),
         CustomAlignText(text: "date_of_birth".tr),
         const Gap(8),
-        CustomTextField(
-          hintText: "dd-mm-yyy",
-          keyboardType: TextInputType.phone,
-          controller: dob,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please confirm your ${'date_of_birth'.tr}';
-            }
-            return null;
+        ValueListenableBuilder(
+          valueListenable: dob,
+          builder: (_, date, child) {
+            return GestureDetector(
+              onTap: () {
+                DatePicker.showDatePicker(context,
+                  showTitleActions: true,
+                  minTime: DateTime(1990),
+                  maxTime: DateTime.now(),
+                  onConfirm: (value) {
+                    dob.value = value;
+                  },
+                  currentTime: DateTime(2000),
+                );
+              },
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.whiteColor),
+                ),
+                child: CustomText(
+                  text: DateFormat("dd MMMM yyyy - EEEE").format(date),
+                ),
+              ),
+            );
           },
         ),
         Obx(() {

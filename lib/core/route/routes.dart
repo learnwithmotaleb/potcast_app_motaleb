@@ -263,7 +263,7 @@ class AppRouter {
               child: CategoryAllPodcast(id: state.extra as String),
               state: state,
             ),
-        ),
+        ),/*
         GoRoute(
             name: RoutePath.adminPodcastScreen,
             path: RoutePath.adminPodcastScreen.addBasePath,
@@ -271,7 +271,7 @@ class AppRouter {
               child: AdminPodcastScreen(name: state.extra as String),
               state: state,
             ),
-        ),
+        ),*/
 
         ///======================= Creator Route =======================
         GoRoute(

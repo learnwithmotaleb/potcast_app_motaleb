@@ -45,9 +45,9 @@ class ProfileController extends GetxController{
       if (response.statusCode == 200) {
         profile.value = ProfileModel.fromJson(response.body);
         loadingMethod(Status.completed);
-        if(profile.value.data?.gender != null && profile.value.data?.gender != ""){
+        /*if(profile.value.data?.gender != null && profile.value.data?.gender != ""){
           gender.value = profile.value.data?.gender??"male";
-        }
+        }*/
       } else {
         if (response.statusCode == 503) {
           loadingMethod(Status.internetError);
@@ -71,16 +71,18 @@ class ProfileController extends GetxController{
       editLoadingMethod(true);
       final List<MultipartBody> multipartBody = [];
       if(selectedImage.value != null){
-        multipartBody.add(MultipartBody("avatar", File(selectedImage.value?.path??"")));
+        multipartBody.add(MultipartBody("profile_image", File(selectedImage.value?.path??"")));
       }
       if(selectedCoverImage.value != null){
-        multipartBody.add(MultipartBody("backgroundImage", File(selectedCoverImage.value?.path??"")));
+        multipartBody.add(MultipartBody("profile_cover", File(selectedCoverImage.value?.path??"")));
       }
-      var response = await apiClient.multipartRequest(url: ApiUrl.profileEdit(),body: body, reqType: "PUT", multipartBody: multipartBody);
+      var response = await apiClient.multipartRequest(url: ApiUrl.profileEdit(),body: body, reqType: "PATCH", multipartBody: multipartBody);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);
         AppRouter.route.pop();
+        selectedImage.value = null;
+        selectedCoverImage.value = null;
         getProfile();
       } else {
         editLoadingMethod(false);
@@ -96,7 +98,7 @@ class ProfileController extends GetxController{
   void editProfileOnlyBody({required Map<String, String> body}) async {
     try{
       editLoadingMethod(true);
-      var response = await apiClient.put(url: ApiUrl.profileEdit(),body: body);
+      var response = await apiClient.patch(url: ApiUrl.profileEdit(),body: body, showResult: true);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);

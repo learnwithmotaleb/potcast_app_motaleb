@@ -31,7 +31,7 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           child: Obx(()=>controller.loading.value == Status.completed?ClipRRect(
             borderRadius: BorderRadius.circular(25),
-            child: CustomNetworkImage(imageUrl: controller.profile.value.data?.avatar??"")
+            child: CustomNetworkImage(imageUrl: controller.profile.value.data?.profileImage??"")
           ):Shimmer.fromColors(
             baseColor: isDarkMode?AppColors.whiteColor.withOpacity(0.2):AppColors.blackColor.withOpacity(0.2),
             highlightColor: isDarkMode?AppColors.whiteColor.withOpacity(0.5):AppColors.blackColor.withOpacity(0.5),

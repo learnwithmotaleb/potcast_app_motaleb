@@ -35,7 +35,7 @@ class CreatorTopSection extends StatelessWidget {
                 width: 50.w,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(25.0.r),
-                  child: CustomNetworkImage(imageUrl: _controller.profile.value.data?.avatar??""),
+                  child: CustomNetworkImage(imageUrl: _controller.profile.value.data?.profileImage??""),
                 ),
               ),
               const Gap(12),
@@ -91,7 +91,7 @@ class CreatorTopSection extends StatelessWidget {
                                   ),
                                   child: ClipRRect(
                                       borderRadius: BorderRadius.circular(40.r),
-                                      child: CustomNetworkImage(imageUrl: "")
+                                      child: const CustomNetworkImage(imageUrl: "")
                                   ),
                                 ),
                               ),
@@ -149,8 +149,8 @@ class MyInfoLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: isDarkMode?AppColors.whiteColor.withOpacity(0.2):AppColors.blackColor.withOpacity(0.2),
-      highlightColor: isDarkMode?AppColors.whiteColor.withOpacity(0.5):AppColors.blackColor.withOpacity(0.5),
+      baseColor: AppColors.blackColor.withValues(alpha: 0.2),
+      highlightColor: AppColors.blackColor.withValues(alpha: 0.5),
       child: Row(
         children: [
           Container(

@@ -5,7 +5,7 @@ import '../utils/app_const/app_const.dart';
 class ApiUrl {
   ApiUrl._();
 
-  static const String base = "http://10.0.60.137:5090";
+  static const String base = "http://10.10.11.15:5088";
   static String googleSearchApi({required String search}) => 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
   static String googleLetLongToAddressApi({required LatLng location}) => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
 
@@ -15,7 +15,7 @@ class ApiUrl {
   static String activeOTPResend() => '$base/user/resend-verify-code';
 
   static String login() => '$base/auth/login';
-  static String forget() => '$base/auth/forgot-password';
+  static String forget() => '$base/auth/forget-password';
   static String verifyOtp() => '$base/auth/verify-reset-otp';
   static String verifyOtpResend() => '$base/auth/resend-reset-code';
   static String reset() => '$base/auth/reset-password';

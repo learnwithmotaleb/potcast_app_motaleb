@@ -21,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _controller = Get.find<AuthController>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
-  final TextEditingController _dob = TextEditingController();
+  final ValueNotifier<DateTime> dob = ValueNotifier(DateTime(2000));
   final TextEditingController _address = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
@@ -31,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void dispose() {
     _name.dispose();
     _email.dispose();
-    _dob.dispose();
+    dob.dispose();
     _address.dispose();
     _password.dispose();
     _confirmPassword.dispose();
@@ -67,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SignUpInputsFieldsWidget(
                 name: _name,
                 email: _email,
-                dob: _dob,
+                dob: dob,
                 address: _address,
                 password: _password,
                 confirmPassword: _confirmPassword,
@@ -87,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         "confirmPassword": _confirmPassword.text.trim(),
                         "role": _controller.selectedRoll.value,
                         "address": _address.text.trim(),
-                        "dateOfBirth": _dob.text.trim(),
+                        "dateOfBirth": dob.value.toUtc().toIso8601String(),
                       };
 
                       _controller.signUp(

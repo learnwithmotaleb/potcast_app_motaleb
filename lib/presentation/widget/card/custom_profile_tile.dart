@@ -29,7 +29,7 @@ class CustomProfileTile extends StatelessWidget {
           children: [
             isIcon?Icon(icon, size: 24,):(widget??const SizedBox()),
             const Gap(12),
-            Flexible(child: CustomText(text: text.tr, fontSize: 20)),
+            Flexible(child: CustomText(text: text.tr, fontSize: 16)),
           ],
         ),
       ),
