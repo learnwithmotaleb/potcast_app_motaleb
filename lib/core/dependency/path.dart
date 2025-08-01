@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:podcast/core/network/connection_checker.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/service/api_service.dart';

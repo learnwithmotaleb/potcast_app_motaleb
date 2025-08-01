@@ -5,7 +5,8 @@ import '../utils/app_const/app_const.dart';
 class ApiUrl {
   ApiUrl._();
 
-  static const String base = "http://10.10.11.15:5088";
+  static const String base = "http://10.10.20.9:5088";
+  static String generatePreSignedURL()=> "$base/generate-presigned-url";
   static String googleSearchApi({required String search}) => 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
   static String googleLetLongToAddressApi({required LatLng location}) => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
 
@@ -27,7 +28,7 @@ class ApiUrl {
   static String delete() => '$base/user/delete-account';
 
   ///Global
-  static String category() => '$base/category';
+  static String category() => '$base/category/all-categories';
   static String play({required String id}) => '$base/podcast/play/$id';
   static String playNext({required String id}) => '$base/podcast/play-next/$id';
   static String like({required String id}) => '$base/like/$id';

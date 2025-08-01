@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
@@ -216,4 +217,4 @@ class PodcastRecordController extends GetxController{
       createLoadingMethod(false);
     }
   }
-}
+}*/

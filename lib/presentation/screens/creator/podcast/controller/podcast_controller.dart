@@ -6,7 +6,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
-import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/single_podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
@@ -16,16 +15,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class PodcastController extends GetxController{
-  ApiClient apiClient = ApiClient();
+/*  ApiClient apiClient = ApiClient();
   Rx<PodcastCategoriesModel> categories = PodcastCategoriesModel().obs;
   RxList<SubCategory> subCategories = <SubCategory>[].obs;
   final ImagePicker _picker = ImagePicker();
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
   final Rx<File?> audioFile = Rx<File?>(null);
   RxString categoriesId = "".obs;
-  RxString subCategoriesId = "".obs;
+  RxString subCategoriesId = "".obs;*/
   Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
-
+/*
   Future<void> pickImage() async {
     try {
       XFile? image = await _picker.pickImage(
@@ -308,6 +307,6 @@ class PodcastController extends GetxController{
   void onClose() {
     pagingController.dispose();
     super.onClose();
-  }
+  }*/
 }
 

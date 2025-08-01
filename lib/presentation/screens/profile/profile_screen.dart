@@ -45,25 +45,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               left: 0,
               right: 0,
               child: Obx(() {
-                final cover = _controller.profile.value.data?.profileCover;
-
-                if(cover != null){
-                  return CustomNetworkImage(
-                    imageUrl: cover.isNotEmpty? cover : "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e",
-                    height: 200,
-                    width: width,
-                  );
-                }
-                return Shimmer.fromColors(
-                    baseColor: Colors.grey.withValues(alpha: 0.6),
-                    highlightColor: Colors.grey.withValues(alpha: 0.3),
-                    child: Container(
-                      height: 200,
-                      width: width,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withValues(alpha: 0.6),
-                      ),
-                    ),
+                final cover = _controller.profile.value.data?.profileCover ?? "";
+                return CustomNetworkImage(
+                  imageUrl: cover.isNotEmpty? cover : "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e",
+                  height: 200,
+                  width: width,
                 );
               }),
             ),

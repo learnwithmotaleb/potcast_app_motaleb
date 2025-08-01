@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hms_room_kit/hms_room_kit.dart';
@@ -30,6 +31,7 @@ class _GoLiveScreenState extends State<GoLiveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+*/
 /*      body: Obx((){
         return HMSPrebuilt(
           roomCode: widget.authToken,
@@ -45,7 +47,9 @@ class _GoLiveScreenState extends State<GoLiveScreen> {
               debugInfo: true
           ),
         );
-      }),*/
+      }),*//*
+
     );
   }
 }
+*/

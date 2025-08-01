@@ -1,54 +1,32 @@
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
-import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
-class PodcastAudioController extends GetxController{
-  final ApiClient apiClient = serviceLocator();
+import '../../../../../helper/function/file_upload.dart';
 
-  final title = TextEditingController();
-  final description = TextEditingController();
-  final tag = TextEditingController();
+class PodcastAudioController extends GetxController {
+  final ApiClient apiClient = serviceLocator<ApiClient>();
+  final Dio dio = serviceLocator<Dio>();
 
   /// ============================= Place Location Information =====================================
   RxString selectedAddress = "Please select your location".obs;
-
-  /// ============================= Category =====================================
-  RxList<SubCategory> subCategories = <SubCategory>[].obs;
-  RxString selectedCategory = "".obs;
-  RxString selectedSubCategories = ''.obs;
-  RxString categoriesId = "".obs;
-  RxString subCategoriesId = "".obs;
-
-  void updateSubCategories(String category, PodcastCategoriesModel categories) {
-    subCategories.clear();
-    selectedCategory.value = category;
-    try {
-      var categoryData = categories.data?.firstWhere((categoryItem) => categoryItem.title == category, orElse: () => CategoriesData());
-      categoriesId.value = categoryData?.id??"";
-      if (categoryData?.subCategories == null || categoryData!.subCategories!.isEmpty) {
-        subCategories.assignAll([]);
-      } else {
-        subCategories.assignAll(categoryData.subCategories!);
-      }
-    } catch (e) {
-      log("Error updating subcategories: $e");
-    }
-  }
-
+  final RxString selectedCategoryId = ''.obs;
+  final RxString selectedSubcategoryId = ''.obs;
 
   /// ============================= Image And Audio =====================================
   final ImagePicker _picker = ImagePicker();
   final AudioPlayer _audioPlayer = AudioPlayer();
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
   final Rx<File?> audioFile = Rx<File?>(null);
+  final Rx<File?> videoFile = Rx<File?>(null);
 
   Future<void> pickImage() async {
     try {
@@ -87,29 +65,78 @@ class PodcastAudioController extends GetxController{
     }
   }
 
+  Future<void> uploadAllFiles({
+    required List<MultipartBody> selectedFiles,
+    required Map<String, dynamic> body,
+  }) async {
+    List<Future<void>> uploadTasks = selectedFiles.map((fileModel) async {
+      final fileBytes = await fileModel.file.readAsBytes();
+      final mimeType = lookupMimeType(fileModel.file.path) ?? 'application/octet-stream';
+      final category = detectCategoryFromMime(mimeType);
+
+      final preSignedUrl = await getPreSignedUrl(
+        fileCategory: category,
+        mimeType: mimeType,
+        apiClient: apiClient,
+        dio: dio,
+      );
+
+      if (preSignedUrl != null) {
+        final uploadedUrl = await uploadFileToS3(
+          fileBytes: fileBytes,
+          uploadUrl: preSignedUrl,
+          mimeType: mimeType,
+          dio: dio,
+          onProgress: (sent, total) {
+            final percent = (sent / total * 100).toStringAsFixed(0);
+            print("${fileModel.file.path} uploading... $percent%");
+          },
+        );
+
+        if (uploadedUrl != null) {
+          switch (category) {
+            case 'podcast_cover':
+              body['coverImage'] = uploadedUrl;
+              break;
+            case 'podcast_audio':
+              body['audio_url'] = uploadedUrl;
+              break;
+            case 'podcast_video':
+              body['video_url'] = uploadedUrl;
+              break;
+          }
+        }
+      }
+    }).toList();
+
+    await Future.wait(uploadTasks);
+    createPodcast(body: Map<String, String>.from(body));
+  }
+
+  String detectCategoryFromMime(String mime) {
+    if (mime.startsWith('image/')) return 'podcast_cover';
+    if (mime.startsWith('audio/')) return 'podcast_audio';
+    if (mime.startsWith('video/')) return 'podcast_video';
+    return 'unknown';
+  }
 
   /// ============================= Create Podcast =====================================
   RxBool createLoading = false.obs;
+
   createLoadingMethod(bool status) => createLoading.value = status;
-  void createPodcast({required Map<String, String> body, required List<MultipartBody> multipartBody}) async {
-    try{
+
+  void createPodcast({required Map<String, String> body}) async {
+    try {
       createLoadingMethod(true);
-      var response = await apiClient.multipartRequest(
+      var response = await apiClient.post(
         url: ApiUrl.podcastCreate(),
         body: body,
-        reqType: "POST",
-        multipartBody: multipartBody,
-        onProgress: (progress) {
-          print("Upload progress: ${(progress * 100).toStringAsFixed(2)}%");
-        },
       );
 
-      if (response.statusCode == 201 || response.statusCode == 200 ) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         createLoadingMethod(false);
         audioFile.value = null;
         selectedImage.value = null;
-        title.clear();
-        description.clear();
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       } else {
@@ -117,7 +144,7 @@ class PodcastAudioController extends GetxController{
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
-    }catch (err){
+    } catch (_) {
       createLoadingMethod(false);
     }
   }

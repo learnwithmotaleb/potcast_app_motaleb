@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -20,9 +21,10 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _controller = Get.find<AuthController>();
-  final TextEditingController _email = TextEditingController(text: "jowexif304@devdigs.com");
-  /// jowexif304@devdigs.com - CREATOR
-  final TextEditingController _password = TextEditingController(text: "123456");
+  final TextEditingController _email = TextEditingController(text: kDebugMode? "mowiha6440@devdigs.com" : "");
+  /// jowexif304@devdigs.com - USER
+  /// mowiha6440@devdigs.com - CREATOR
+  final TextEditingController _password = TextEditingController(text: kDebugMode? "123456" : "");
   final _formKey = GlobalKey<FormState>();
 
   @override

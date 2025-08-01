@@ -27,10 +27,10 @@ class AppConstants {
 enum Status { loading, error, completed, internetError, noDataFound }
 
 enum SelectedAddPostScreenType {
-  video,
+  // video,
   audio,
-  record,
-  live,
+  // record,
+  // live,
   none
 }
 

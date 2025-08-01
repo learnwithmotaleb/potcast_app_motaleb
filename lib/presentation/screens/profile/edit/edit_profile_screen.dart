@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
@@ -255,7 +256,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               },
                               activeColor: AppColors.redColor,
                             ),
-                            CustomText(text: "female".tr),
+                            CustomText(text: "Other".tr),
                           ],
                         );
                       }),
@@ -293,11 +294,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               }
 
                               final Map<String, String> body = Map.from(rawBody)..removeWhere((key, String? value) => value == null || value.trim().isEmpty);
+                              final Map<String, String> finalBody = {
+                                "data": jsonEncode(body),
+                              };
 
                               if (controller.selectedImage.value != null || controller.selectedCoverImage.value != null) {
-                                controller.editProfile(body: body);
+                                controller.editProfile(body: finalBody);
                               } else {
-                                controller.editProfileOnlyBody(body: body);
+                                controller.editProfileOnlyBody(body: finalBody);
                               }
                             }
                           },

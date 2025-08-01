@@ -1,19 +1,17 @@
 import 'dart:io';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/controller/categories_controller.dart';
+import 'package:podcast/controller/global_controller.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
-import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:podcast/presentation/widget/map/search_my_location.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
@@ -21,6 +19,8 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:path/path.dart' as path;
+
+import '../../../../widget/common/category_subcategory_picker.dart';
 
 class PodcastAudioScreen extends StatefulWidget {
   const PodcastAudioScreen({super.key});
@@ -31,15 +31,28 @@ class PodcastAudioScreen extends StatefulWidget {
 
 class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
   final controller = Get.find<PodcastAudioController>();
-  final category = Get.find<GlobalCategoriesController>();
+  final globalController = Get.find<GlobalController>();
   final _formKey = GlobalKey<FormState>();
+
+  final title = TextEditingController();
+  final description = TextEditingController();
+  final tag = TextEditingController();
+
+
+  @override
+  void dispose() {
+    title.dispose();
+    description.dispose();
+    tag.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("ddd_podcast".tr),
+        title: Text("Add Podcast".tr),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -47,32 +60,29 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
           key: _formKey,
           child: Column(
             children: [
-              Obx(
-                () {
-                  switch (category.loading.value) {
-                    case Status.loading:
-                      return const Center(child: CircularProgressIndicator());
-                    case Status.internetError:
-                      return NoInternetCard(onTap: () => category.getCategories());
-                    case Status.noDataFound:
-                      return const Center(child: CustomText(text: "No data found!"));
-                    case Status.error:
-                      return NoInternetCard(onTap: () => category.getCategories());
-                    case Status.completed:
-                      return Column(
-                        children: [
-                          CustomAlignText(text: "category".tr),
-                          const Gap(8),
-                          CategoriesWidget(),
-                          const Gap(12),
-                          CustomAlignText(text: "sub_category".tr),
-                          const Gap(8),
-                        ],
-                      );
-                  }
-                },
-              ),
-              SubCategoriesWidget(),
+              Obx(() {
+                final globalState = globalController.loading.value;
+                if (globalState == Status.loading) return const LoadingWidget(color: AppColors.whiteColor);
+                if (globalState == Status.internetError || globalState == Status.error) {
+                  return NoInternetCard(onTap: () => globalController.getCategories());
+                }
+                if (globalState == Status.noDataFound) {
+                  return const Center(child: CustomText(text: "No data found!"));
+                }
+
+                return Obx(() => CategorySubcategoryPicker(
+                  selectedCategoryId: controller.selectedCategoryId.value,
+                  selectedSubcategoryId: controller.selectedSubcategoryId.value,
+                  globalController: globalController,
+                  onCategoryChanged: (id) {
+                    controller.selectedCategoryId.value = id ?? '';
+                    controller.selectedSubcategoryId.value = '';
+                  },
+                  onSubcategoryChanged: (id) {
+                    controller.selectedSubcategoryId.value = id ?? '';
+                  },
+                ));
+              }),
               const Gap(12),
               CustomAlignText(text: "cover_page_upload".tr),
               const Gap(8),
@@ -87,7 +97,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
               CustomTextField(
                 hintText: "enter_podcast_title".tr,
                 keyboardType: TextInputType.text,
-                controller: controller.title,
+                controller: title,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'enter_podcast_title'.tr;
@@ -102,8 +112,8 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
                 onTap: () async {
                   final location = await showMapDialog(context: context);
 
-                  if (location != null && location.isNotEmpty) {
-                    controller.selectedAddress.value = location;
+                  if (location != null && location.address.isNotEmpty) {
+                    controller.selectedAddress.value = location.address;
                   } else {
                     print("User dismissed the dialog or nothing selected");
                   }
@@ -134,7 +144,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
                 keyboardType: TextInputType.multiline,
                 maxLines: 6,
                 minLines: 3,
-                controller: controller.description,
+                controller: description,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'enter_your_description'.tr;
@@ -148,7 +158,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
               CustomTextField(
                 hintText: "Enter tags like 'Explanation, Explanation'".tr,
                 keyboardType: TextInputType.text,
-                controller: controller.tag,
+                controller: tag,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter at least one tag'.tr;
@@ -173,116 +183,33 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
 
   void uploadAudio() {
     final validate = _formKey.currentState!.validate();
-    final cat = controller.categoriesId.value.isNotEmpty;
-    final subCat = controller.subCategoriesId.value.isNotEmpty;
+    final cat = controller.selectedCategoryId.isNotEmpty;
+    final subCat = controller.selectedSubcategoryId.isNotEmpty;
     final city = controller.selectedAddress.value;
     final allFile = controller.selectedImage.value != null && controller.audioFile.value != null;
 
     if (validate && cat && subCat) {
       if (allFile) {
         final Map<String, String> body = {
-          "categoryId": controller.categoriesId.value,
-          "subCategoryId": controller.subCategoriesId.value,
-          "title": controller.title.text,
-          "description": controller.description.text,
-          "location": city,
+          "category": controller.selectedCategoryId.value,
+          "subCategory": controller.selectedSubcategoryId.value,
+          "name": title.text,
+          "description": description.text,
+          "address": city,
         };
         final List<MultipartBody> multipartBody = [
           MultipartBody('audio', File(controller.audioFile.value?.path ?? "")),
           MultipartBody('cover', File(controller.selectedImage.value?.path ?? "")),
+          MultipartBody('video', File(controller.videoFile.value?.path ?? "")),
         ];
 
-        controller.createPodcast(body: body, multipartBody: multipartBody);
+        controller.uploadAllFiles(body: body, selectedFiles: multipartBody);
       } else {
         toastMessage(message: "Please Provide all information");
       }
     } else {
       toastMessage(message: "Please Provide all information");
     }
-  }
-}
-
-class SubCategoriesWidget extends StatelessWidget {
-  SubCategoriesWidget({super.key});
-
-  final controller = Get.find<PodcastAudioController>();
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => DropdownButtonFormField2<String>(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        isExpanded: true,
-        value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
-        hint: Text('sub categories'.tr),
-        items: controller.subCategories.isNotEmpty
-            ? controller.subCategories.map((subCategory) {
-                return DropdownMenuItem<String>(
-                  value: subCategory.title ?? "",
-                  child: Text(subCategory.title ?? ""),
-                );
-              }).toList()
-            : [
-                const DropdownMenuItem<String>(
-                  value: "",
-                  child: Text("No subcategories available"),
-                ),
-              ],
-        onChanged: (String? newValue) {
-          if (newValue != null && newValue != "") {
-            controller.selectedSubCategories.value = newValue;
-            var selectedSubCategory = controller.subCategories.firstWhere(
-                (subCategory) => subCategory.title == newValue,
-                orElse: () => SubCategory(id: "", title: ""));
-            controller.subCategoriesId.value = selectedSubCategory.id ?? "";
-          }
-        },
-      ),
-    );
-  }
-}
-
-class CategoriesWidget extends StatelessWidget {
-  CategoriesWidget({super.key});
-
-  final controller = Get.find<PodcastAudioController>();
-  final category = Get.find<GlobalCategoriesController>();
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      return DropdownButtonFormField2(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        isExpanded: true,
-        hint: const Text('Category'),
-        items: category.categories.value.data != null && category.categories.value.data!.isNotEmpty
-            ? category.categories.value.data!.map((category) {
-                return DropdownMenuItem<String>(
-                  value: category.title,
-                  child: Text(category.title ?? ""),
-                );
-              }).toList()
-            : [
-                const DropdownMenuItem<String>(
-                  value: "",
-                  child: Text("No categories available"),
-                )
-              ],
-        onChanged: (String? newValue) {
-          if (newValue != null) {
-            controller.updateSubCategories(newValue, category.categories.value);
-          }
-        },
-      );
-    });
   }
 }
 

@@ -12,6 +12,7 @@ import 'package:podcast/presentation/screens/profile/controller/profile_controll
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
@@ -38,7 +39,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
         () {
           switch (_controller.loading.value) {
             case Status.loading:
-              return const Center(child: CircularProgressIndicator());
+              return const LoadingWidget(color: AppColors.whiteColor);
             case Status.internetError:
               return NoInternetCard(onTap: () {
                 _controller.getProfile();

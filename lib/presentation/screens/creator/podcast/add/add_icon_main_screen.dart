@@ -25,14 +25,15 @@ class _AddIconMainScreenState extends State<AddIconMainScreen> {
       switch(controller.selectedScreenType.value){
         case SelectedAddPostScreenType.audio:
           return const PodcastAudioScreen();
-        case SelectedAddPostScreenType.video:
-          return const PodcastVideoAddScreen();
-        case SelectedAddPostScreenType.record:
-          return const AudioRecordScreen();
-        case SelectedAddPostScreenType.live:
-          return const GoLiveScreen();
+        // case SelectedAddPostScreenType.video:
+        //   return const PodcastVideoAddScreen();
+        // case SelectedAddPostScreenType.record:
+        //   return const AudioRecordScreen();
+        // case SelectedAddPostScreenType.live:
+        //   return const GoLiveScreen();
         case SelectedAddPostScreenType.none:
-          return const AddPodcastNoneDesign();
+          return Container();
+          // return const AddPodcastNoneDesign();
       }
     });
   }

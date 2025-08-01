@@ -42,10 +42,10 @@ class CustomDropdownField extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
         filled: false,
-        hintStyle: const TextStyle(color: AppColors.primaryColor),
-        errorStyle: const TextStyle(color: AppColors.primaryColor),
+        hintStyle: const TextStyle(color: AppColors.whiteColor),
+        errorStyle: const TextStyle(color: AppColors.whiteColor),
       ),
-      hint: CustomText(text: hintText, color: AppColors.primaryColor, fontSize: 16),
+      hint: CustomText(text: hintText, color: AppColors.whiteColor, fontSize: 16),
       items:
           safeItems
               .map(
@@ -60,19 +60,19 @@ class CustomDropdownField extends StatelessWidget {
       onChanged: safeItems.isEmpty ? null : onChanged,
       validator: validationFunction,
       style: const TextStyle(
-        color: AppColors.primaryColor,
+        color: AppColors.whiteColor,
         fontSize: 16,
         fontWeight: FontWeight.w600,
       ),
       buttonStyleData: const ButtonStyleData(padding: EdgeInsets.only(right: 8)),
       iconStyleData: const IconStyleData(
-        icon: Icon(Icons.keyboard_arrow_down, color: AppColors.primaryColor),
+        icon: Icon(Icons.keyboard_arrow_down, color: AppColors.whiteColor),
         iconSize: 24,
       ),
       dropdownStyleData: DropdownStyleData(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.whiteColor,
+          color: AppColors.blackColor,
         ),
       ),
       menuItemStyleData: const MenuItemStyleData(padding: EdgeInsets.symmetric(horizontal: 16)),

@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -24,6 +25,7 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
         title: Text("my_podcast".tr,),
         centerTitle: true,
       ),
+*/
 /*      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 20.0, bottom: 20),
@@ -32,7 +34,8 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
           backgroundColor: AppColors.blackColor,
           child: const Center(child: Icon(Iconsax.add, size: 80)),
         ),
-      ),*/
+      ),*//*
+
       body: RefreshIndicator(
         onRefresh: ()async{
           _controller.pagingController.refresh();
@@ -58,3 +61,4 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
     );
   }
 }
+*/

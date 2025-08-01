@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:podcast/presentation/screens/user/categories/controller/categories_controller.dart';
+import 'package:podcast/presentation/screens/user/categories/controller/global_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 
 class SubCategoriesSection extends StatelessWidget {

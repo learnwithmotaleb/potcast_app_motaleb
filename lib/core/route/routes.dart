@@ -290,14 +290,14 @@ class AppRouter {
             state: state,
           ),
         ),
-        GoRoute(
+/*        GoRoute(
           name: RoutePath.myPodcastScreen,
           path: RoutePath.myPodcastScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const MyPodcastScreen(),
             state: state,
           ),
-        ),
+        ),*/
 /*        GoRoute(
           name: RoutePath.podcastAddScreen,
           path: RoutePath.podcastAddScreen.addBasePath,
@@ -306,14 +306,14 @@ class AppRouter {
             state: state,
           ),
         ),*/
-        GoRoute(
+/*        GoRoute(
           name: RoutePath.podcastEditScreen,
           path: RoutePath.podcastEditScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: PodcastEditScreen(id: state.extra as String),
             state: state,
           ),
-        ),
+        ),*/
 
 
         ///======================= Other Route =======================

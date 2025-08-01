@@ -4,14 +4,17 @@ import 'package:gap/gap.dart';
 import 'package:podcast/controller/search_my_location_controller.dart';
 import "package:get/get.dart";
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
-Future<String?> showMapDialog({required BuildContext context, bool isShotAddress = false}) async {
+import '../../../model/basic/selected_location_model.dart';
+
+Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bool isShotAddress = false}) async {
   final controller = Get.put(SearchMyLocationController());
 
-  final result = await showModalBottomSheet<String>(
+  final result = await showModalBottomSheet<SelectedLocationResult>(
     context: context,
     barrierColor: Colors.black.withAlpha(120),
     isDismissible: true,
@@ -32,7 +35,7 @@ Future<String?> showMapDialog({required BuildContext context, bool isShotAddress
                 child: CupertinoSearchTextField(
                   controller: controller.searchText,
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                  onSubmitted: (String value) {
+                  onChanged: (String value) {
                     controller.searchLocationByGoogle(context: context);
                   },
                   placeholder: "Search your location",
@@ -48,7 +51,7 @@ Future<String?> showMapDialog({required BuildContext context, bool isShotAddress
               Obx(() {
                 switch (controller.searchLoading.value) {
                   case Status.loading:
-                    return const Center(child: CircularProgressIndicator());
+                    return const LoadingWidget(color: AppColors.whiteColor);
                   case Status.internetError:
                     return NoInternetCard(onTap: () => controller.searchLocationByGoogle(context: context));
                   case Status.noDataFound:
@@ -80,7 +83,7 @@ Future<String?> showMapDialog({required BuildContext context, bool isShotAddress
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.location_on, color: AppColors.blackColor),
+                                    const Icon(Icons.location_on, color: AppColors.whiteColor),
                                     const Gap(5),
                                     Expanded(
                                       child: Column(

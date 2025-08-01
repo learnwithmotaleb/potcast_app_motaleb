@@ -13,7 +13,7 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 class PodcastCard extends StatelessWidget {
   PodcastCard({super.key, required this.data});
   final AudioPlayerModel data;
-  final _controller = Get.find<PodcastController>();
+  // final _controller = Get.find<PodcastController>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,8 +65,8 @@ class PodcastCard extends StatelessWidget {
                           ),
                         ),
                         const Gap(3),
-                        GestureDetector(
-                          onTap: () => _controller.deletePodcast(id: data.id),
+                        /*GestureDetector(
+                          // onTap: () => _controller.deletePodcast(id: data.id),
                           child: Obx(() => Container(
                             height: 25.h,
                             width: 25.h,
@@ -85,7 +85,7 @@ class PodcastCard extends StatelessWidget {
                               ),
                             ): Assets.icons.delete.svg(height: 17.h, width: 17.h),
                           )),
-                        ),
+                        ),*/
                       ],
                     ),
                   ],

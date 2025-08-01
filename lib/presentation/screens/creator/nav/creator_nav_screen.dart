@@ -79,8 +79,11 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Obx(() {
+                  final image = _controller.profile.value.data?.profileImage ?? "";
+                  const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
                   return CustomNetworkImage(
-                    imageUrl: _controller.profile.value.data?.profileImage,
+                    imageUrl:  image.isNotEmpty? image : defaultImage,
                     errorIcon: Iconsax.user,
                   );
                 }),
@@ -111,7 +114,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       color: AppColors.whiteColor,
                     ),
                     title: const Text("Upload Video"),
-                    onTap: () {
+                    /*onTap: () {
                       controller.selectedScreenType.value = SelectedAddPostScreenType.video;
                       AppRouter.route.pop();
                       Future.delayed(const Duration(milliseconds: 300), () {
@@ -119,7 +122,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                           _selectedPage = 2;
                         });
                       });
-                    },
+                    },*/
                   ),
                   ListTile(
                     leading: Assets.images.headphones.image(
@@ -145,7 +148,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       color: AppColors.whiteColor,
                     ),
                     title: const Text("Record Audio"),
-                    onTap: () {
+                    /*onTap: () {
                       controller.selectedScreenType.value = SelectedAddPostScreenType.record;
                       AppRouter.route.pop();
                       Future.delayed(const Duration(milliseconds: 300), () {
@@ -153,7 +156,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                           _selectedPage = 2;
                         });
                       });
-                    },
+                    },*/
                   ),
                   ListTile(
                     leading: Assets.images.liveStream.image(
@@ -162,7 +165,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       color: AppColors.whiteColor,
                     ),
                     title: const Text("Go Live"),
-                    onTap: () {
+                    /*onTap: () {
                       controller.selectedScreenType.value = SelectedAddPostScreenType.live;
                       AppRouter.route.pop();
                       Future.delayed(const Duration(milliseconds: 300), () {
@@ -170,7 +173,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                           _selectedPage = 2;
                         });
                       });
-                    },
+                    },*/
                   ),
                   const Gap(44),
                 ],

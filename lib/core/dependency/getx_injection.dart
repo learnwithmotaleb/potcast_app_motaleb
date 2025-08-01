@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:podcast/controller/categories_controller.dart';
+import 'package:podcast/controller/global_controller.dart';
 import 'package:podcast/controller/language_controller.dart';
 import 'package:podcast/presentation/screens/admin/controller/admin_podcast_controller.dart';
 import 'package:podcast/presentation/screens/auth/controller/auth_controller.dart';
@@ -25,7 +25,7 @@ void initGetX() {
 
   //Global
   Get.lazyPut(() => LanguageController(), fenix: true);
-  Get.lazyPut(() => GlobalCategoriesController(), fenix: true);
+  Get.lazyPut(() => GlobalController(), fenix: true);
   Get.lazyPut(() => CategoriesController(), fenix: true);
   Get.lazyPut(() => AuthController(), fenix: true);
   Get.lazyPut(() => ProfileController(), fenix: true);
@@ -48,6 +48,6 @@ void initGetX() {
   Get.lazyPut(() => DonateController(), fenix: true);
   Get.lazyPut(() => PodcastController(), fenix: true);
   Get.lazyPut(() => PodcastAudioController(), fenix: true);
-  Get.lazyPut(() => PodcastVideoController(), fenix: true);
-  Get.lazyPut(() => PodcastRecordController(), fenix: true);
+  // Get.lazyPut(() => PodcastVideoController(), fenix: true);
+  // Get.lazyPut(() => PodcastRecordController(), fenix: true);
 }
