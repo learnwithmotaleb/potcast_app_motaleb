@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:podcast/controller/global_controller.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
@@ -113,7 +115,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
                   final location = await showMapDialog(context: context);
 
                   if (location != null && location.address.isNotEmpty) {
-                    controller.selectedAddress.value = location.address;
+                    controller.selectedAddress.value = location;
                   } else {
                     print("User dismissed the dialog or nothing selected");
                   }
@@ -129,7 +131,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(child: Obx(() {
-                        return Text(controller.selectedAddress.value.tr);
+                        return Text(controller.selectedAddress.value?.address ?? "");
                       })),
                       const Icon(Iconsax.location),
                     ],
@@ -181,35 +183,99 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
     );
   }
 
-  void uploadAudio() {
+  void uploadAudio() async{
     final validate = _formKey.currentState!.validate();
-    final cat = controller.selectedCategoryId.isNotEmpty;
-    final subCat = controller.selectedSubcategoryId.isNotEmpty;
-    final city = controller.selectedAddress.value;
-    final allFile = controller.selectedImage.value != null && controller.audioFile.value != null;
+    final hasCategory = controller.selectedCategoryId.isNotEmpty;
+    final hasSubCategory = controller.selectedSubcategoryId.isNotEmpty;
+    final city = controller.selectedAddress.value?.address ?? "";
+    final double longitude = controller.selectedAddress.value?.longitude ?? 0;
+    final double latitude = controller.selectedAddress.value?.latitude ?? 0;
 
-    if (validate && cat && subCat) {
-      if (allFile) {
-        final Map<String, String> body = {
+    final File? audioFile = controller.audioFile.value;
+    final File? videoFile = controller.videoFile.value;
+    final File? imageFile = controller.selectedImage.value;
+
+    // 🛑 Validate required cover image
+    if (imageFile == null) {
+      toastMessage(message: "Cover image is required");
+      return;
+    }
+
+    // 🛑 Validate either audio or video, but not both
+    if (audioFile != null && videoFile != null) {
+      toastMessage(message: "Please provide only audio or only video, not both");
+      return;
+    }
+
+    if (audioFile == null && videoFile == null) {
+      toastMessage(message: "Please provide either an audio or a video file");
+      return;
+    }
+
+    final File mediaFile = audioFile ?? videoFile!;
+    final duration = await getAudioDuration(mediaFile);
+
+    try{
+      if (validate && hasCategory && hasSubCategory) {
+        final Map<String, dynamic> body = {
           "category": controller.selectedCategoryId.value,
           "subCategory": controller.selectedSubcategoryId.value,
           "name": title.text,
+          "title": title.text,
           "description": description.text,
           "address": city,
+          "duration": 200,
+          "location": {
+            "type": "Point",
+            "coordinates": [
+              longitude,
+              latitude,
+            ]
+          },
         };
-        final List<MultipartBody> multipartBody = [
-          MultipartBody('audio', File(controller.audioFile.value?.path ?? "")),
-          MultipartBody('cover', File(controller.selectedImage.value?.path ?? "")),
-          MultipartBody('video', File(controller.videoFile.value?.path ?? "")),
-        ];
+        final List<MultipartBody> multipartBody = [];
+
+        final audioPath = controller.audioFile.value?.path;
+        if (audioPath != null && audioPath.isNotEmpty) {
+          multipartBody.add(MultipartBody('audio', File(audioPath)));
+        }
+
+        final imagePath = controller.selectedImage.value?.path;
+        if (imagePath != null && imagePath.isNotEmpty) {
+          multipartBody.add(MultipartBody('cover', File(imagePath)));
+        }
+
+        final videoPath = controller.videoFile.value?.path;
+        if (videoPath != null && videoPath.isNotEmpty) {
+          multipartBody.add(MultipartBody('video', File(videoPath)));
+        }
 
         controller.uploadAllFiles(body: body, selectedFiles: multipartBody);
       } else {
         toastMessage(message: "Please Provide all information");
       }
-    } else {
-      toastMessage(message: "Please Provide all information");
+    }catch(_){
+      toastMessage(message: "Please complete all required fields");
     }
+  }
+}
+
+Future<Duration?> getAudioDuration(File file) async {
+  final player = AudioPlayer();
+
+  try {
+    final audioSource = AudioSource.uri(
+      Uri.file(file.path),
+      tag: MediaItem(
+        id: file.path,
+        title: 'Temporary Audio', // Dummy title
+      ),
+    );
+
+    await player.setAudioSource(audioSource);
+    return player.duration;
+  } finally {
+    await player.dispose();
   }
 }
 

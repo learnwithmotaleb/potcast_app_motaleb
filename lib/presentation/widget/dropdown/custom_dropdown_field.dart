@@ -46,18 +46,16 @@ class CustomDropdownField extends StatelessWidget {
         errorStyle: const TextStyle(color: AppColors.whiteColor),
       ),
       hint: CustomText(text: hintText, color: AppColors.whiteColor, fontSize: 16),
-      items:
-          safeItems
-              .map(
-                (item) => DropdownMenuItem<String>(
-                  value: item,
-                  child: CustomText(
-                    text: item + (isExtraTextNotEmpty ? " $extraText" : ""),
-                  ),
-                ),
-              )
-              .toList(),
-      onChanged: safeItems.isEmpty ? null : onChanged,
+      items: safeItems
+          .map(
+            (item) => DropdownMenuItem<String>(
+          value: item,
+          child: CustomText(
+            text: item + (isExtraTextNotEmpty ? " $extraText" : ""),
+          ),
+        ),
+      ).toList(),
+      onChanged: onChanged,
       validator: validationFunction,
       style: const TextStyle(
         color: AppColors.whiteColor,

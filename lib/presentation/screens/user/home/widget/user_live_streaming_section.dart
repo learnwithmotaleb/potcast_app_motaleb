@@ -44,7 +44,7 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
             width: width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: (controller.model.value.data?.creators?.length??0)+1,
+              itemCount: (controller.model.value.data?.topCreators?.length??0)+1,
               itemBuilder: (BuildContext context, int index){
                 if(index ==0){
                   return Padding(
@@ -52,7 +52,7 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: ()=>controller.model.value.data?.admin?.podcast != null?AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""):null,
+                          // onTap: ()=>controller.model.value.data?.admin?.podcast != null?AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""):null,
                           child: Container(
                             height: 80.w,
                             width: 80.w,
@@ -63,14 +63,15 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                             ),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(40.r),
-                                child: controller.model.value.data?.admin?.avatar != null?
-                                CustomNetworkImage(imageUrl: controller.model.value.data?.admin?.avatar??""):
+                                child: /*controller.model.value.data?.admin?.avatar != null?
+                                CustomNetworkImage(imageUrl: controller.model.value.data?.admin?.avatar??""):*/
                                 Assets.images.splashLogo.image()
                             ),
                           ),
                         ),
                         const Gap(5),
-                        CustomText(text: controller.model.value.data?.admin?.name??"", fontSize: 16,),
+                        const CustomText(text: "Podcast", fontSize: 16,),
+                        // CustomText(text: controller.model.value.data?.admin?.name??"", fontSize: 16,),
                       ],
                     ),
                   );
@@ -80,7 +81,7 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                   child: Column(
                     children: [
                       GestureDetector(
-                        onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.creators?[index-1].podcast??""),
+                        // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.topCreators?[index-1].podcast??""),
                         child: Container(
                           height: 80.0.h,
                           width: 80.0.h,
@@ -103,7 +104,7 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                                   padding: const EdgeInsets.all(5),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(40.0.r), // Make it circular
-                                    child: CustomNetworkImage(imageUrl: controller.model.value.data?.creators?[index-1].avatar??""),
+                                    child: CustomNetworkImage(imageUrl: controller.model.value.data?.topCreators?[index-1].profileImage??""),
                                   ),
                                 ),
                               ),
@@ -112,7 +113,7 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: controller.model.value.data?.creators?[index-1].name??"", fontSize: 16),
+                      CustomText(text: controller.model.value.data?.topCreators?[index-1].name??"", fontSize: 16),
                     ],
                   ),
                 );

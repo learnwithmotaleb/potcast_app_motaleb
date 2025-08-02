@@ -50,11 +50,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             return NoInternetCard(onTap: ()=>controller.getHome());
 
           case Status.completed:
+            final data = controller.model.value.data;
 
-            final List<CategoryElement>? categories = controller.model.value.data?.categories != null && controller.model.value.data!.categories!.isNotEmpty?controller.model.value.data?.categories:[];
-            final List<Podcast>? newItem = controller.model.value.data?.newPodcasts != null && controller.model.value.data!.newPodcasts!.isNotEmpty?controller.model.value.data?.newPodcasts:[];
-            final List<Podcast>? popularItem = controller.model.value.data?.popularPodcasts != null && controller.model.value.data!.popularPodcasts!.isNotEmpty?controller.model.value.data?.popularPodcasts:[];
-            final List<Podcast>? reelsItem = controller.model.value.data?.realsList != null && controller.model.value.data!.realsList!.isNotEmpty?controller.model.value.data?.realsList:[];
+            final categoryNotEmpty = data?.categories != null && data!.categories!.isNotEmpty;
+            final newNotEmpty = data?.newestPodcasts != null && data!.newestPodcasts!.isNotEmpty;
+            final popularNotEmpty = data?.popularPodcasts != null && data!.popularPodcasts!.isNotEmpty;
+            final reelsNotEmpty = data?.reels != null && data!.reels!.isNotEmpty;
+            final albumNotEmpty = data?.albums != null && data!.albums!.isNotEmpty;
+
+            final List<CategoryElement>? categories = categoryNotEmpty ? data.categories : [];
+            final List<Podcast>? newItem = newNotEmpty ? data.newestPodcasts : [];
+            final List<Podcast>? popularItem = popularNotEmpty ? data.popularPodcasts : [];
+            final List<Podcast>? reelsItem = reelsNotEmpty ? data.reels : [];
+            final List<Podcast>? albumItem = albumNotEmpty ? data.albums : [];
 
             return RefreshIndicator(
               onRefresh: ()async{
@@ -122,9 +130,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             data: AudioPlayerModel(
                                 id: newItem?[index].id??"",
                                 title: newItem?[index].title??"",
-                                categories: newItem?[index].category?.title??"",
-                                image: newItem?[index].cover??"",
-                                duration: newItem?[index].audioDuration??""
+                                // categories: newItem?[index].category?.title??"",
+                                image: newItem?[index].coverImage??"",
+                                duration: formatDuration(newItem?[index].duration??0),
                             ),
                             onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: newItem?[index].id??""),
                           );
@@ -165,9 +173,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             data: AudioPlayerModel(
                                 id: popularItem?[index].id??"",
                                 title: popularItem?[index].title??"",
-                                categories: popularItem?[index].category?.title??"",
-                                image: popularItem?[index].cover??"",
-                                duration: popularItem?[index].audioDuration??""
+                                // categories: popularItem?[index].category?.title??"",
+                                image: popularItem?[index].coverImage??"",
+                              duration: formatDuration(popularItem?[index].duration??0),
                             ),
                             onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??""),
                           );
@@ -208,9 +216,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             data: AudioPlayerModel(
                                 id: reelsItem?[index].id??"",
                                 title: reelsItem?[index].title??"",
-                                categories: reelsItem?[index].category?.title??"",
-                                image: reelsItem?[index].cover??"",
-                                duration: reelsItem?[index].audioDuration??""
+                                // categories: reelsItem?[index].category?.title??"",
+                                image: reelsItem?[index].coverImage??"",
+                              duration: formatDuration(reelsItem?[index].duration??0),
                             ),
                             onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: reelsItem?[index].id??""),
                           );
@@ -244,18 +252,18 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       height: 200,
                       child: ListView.builder(
                         padding: const EdgeInsets.only(left: 12, right: 12),
-                        itemCount: popularItem?.length,
+                        itemCount: albumItem?.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (BuildContext context, int index){
                           return HomeMusicCard(
                             data: AudioPlayerModel(
-                                id: popularItem?[index].id??"",
-                                title: popularItem?[index].title??"",
-                                categories: popularItem?[index].category?.title??"",
-                                image: popularItem?[index].cover??"",
-                                duration: popularItem?[index].audioDuration??""
+                                id: albumItem?[index].id??"",
+                                title: albumItem?[index].title??"",
+                                // categories: albumItem?[index].category?.title??"",
+                                image: albumItem?[index].coverImage??"",
+                              duration: formatDuration(albumItem?[index].duration??0),
                             ),
-                            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??""),
+                            onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: albumItem?[index].id??""),
                           );
                         },
                       ),
@@ -269,5 +277,14 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       },
       ),
     );
+  }
+
+  String formatDuration(num seconds) {
+    if (seconds < 60) {
+      return '$seconds sec';
+    } else {
+      final minutes = (seconds / 60).floor();
+      return '$minutes min';
+    }
   }
 }

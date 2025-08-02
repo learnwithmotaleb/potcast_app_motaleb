@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podcast/controller/search_my_location_controller.dart';
 import "package:get/get.dart";
+import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
@@ -35,7 +37,7 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
                 child: CupertinoSearchTextField(
                   controller: controller.searchText,
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                  onChanged: (String value) {
+                  onSubmitted: (String value) {
                     controller.searchLocationByGoogle(context: context);
                   },
                   placeholder: "Search your location",
@@ -69,11 +71,26 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
                         final value = address.description ?? shotAddress;
 
                         return GestureDetector(
-                          onTap: () {
-                            if(isShotAddress){
-                              Navigator.pop(context, shotAddress);
-                            }else{
-                              Navigator.pop(context, value);
+                          onTap: () async {
+                            try{
+                              final LatLng? latLng = await controller.placeIdToLatLng(placeId: "");
+                              if(isShotAddress){
+                                final finalValue = SelectedLocationResult(
+                                  address: shotAddress,
+                                  latitude: latLng?.latitude ?? 0,
+                                  longitude: latLng?.longitude ?? 0,
+                                );
+                                AppRouter.route.pop(finalValue);
+                              }else{
+                                final finalValue = SelectedLocationResult(
+                                  address: value,
+                                  latitude: latLng?.latitude ?? 0,
+                                  longitude: latLng?.longitude ?? 0,
+                                );
+                                AppRouter.route.pop(finalValue);
+                              }
+                            }catch(_){
+
                             }
                           },
                           child: Container(

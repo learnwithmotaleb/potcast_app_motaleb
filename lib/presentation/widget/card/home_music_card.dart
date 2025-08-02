@@ -42,7 +42,7 @@ class HomeMusicCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomNetworkImage(
-                      imageUrl: data.image??"",
+                      imageUrl: data.image??"https://static.vecteezy.com/system/resources/previews/024/295/098/non_2x/music-notes-background-illustration-ai-generative-free-photo.jpg",
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),

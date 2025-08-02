@@ -9,6 +9,7 @@ class ApiUrl {
   static String generatePreSignedURL()=> "$base/generate-presigned-url";
   static String googleSearchApi({required String search}) => 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
   static String googleLetLongToAddressApi({required LatLng location}) => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
+  static String placeIdToLatLng({required String placeId}) => 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=${AppConstants.googleMapAPI}';
 
   ///Auth
   static String register() => '$base/user/register-user';
@@ -52,7 +53,7 @@ class ApiUrl {
   static String adminPodcast({required int page}) => '$base/admin/podcasts?page=$page&limit=10';
 
   ///User
-  static String home() => '$base/home';
+  static String home() => '$base/podcast/get-home-data';
   static String plan() => '$base/plan';
   static String payment({required String id}) => '$base/subscription/create/$id';
 

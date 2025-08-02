@@ -9,17 +9,6 @@ class HomeModel {
     this.data,
   });
 
-  HomeModel copyWith({
-    bool? success,
-    String? message,
-    Data? data,
-  }) =>
-      HomeModel(
-        success: success ?? this.success,
-        message: message ?? this.message,
-        data: data ?? this.data,
-      );
-
   factory HomeModel.fromJson(Map<String, dynamic> json) => HomeModel(
     success: json["success"],
     message: json["message"],
@@ -34,200 +23,213 @@ class HomeModel {
 }
 
 class Data {
-  final dynamic location;
   final List<CategoryElement>? categories;
-  final dynamic admin;
-  final List<Creator>? creators;
-  final List<Podcast>? newPodcasts;
+  final List<Podcast>? newestPodcasts;
   final List<Podcast>? popularPodcasts;
-  final List<Podcast>? realsList;
+  final List<Podcast>? reels;
+  final List<Podcast>? albums;
+  final List<TopCreator>? topCreators;
 
   Data({
-    this.location,
     this.categories,
-    this.admin,
-    this.creators,
-    this.newPodcasts,
+    this.newestPodcasts,
     this.popularPodcasts,
-    this.realsList,
+    this.reels,
+    this.albums,
+    this.topCreators,
   });
 
-  Data copyWith({
-    dynamic location,
-    List<CategoryElement>? categories,
-    dynamic admin,
-    List<Creator>? creators,
-    List<Podcast>? newPodcasts,
-    List<Podcast>? popularPodcasts,
-    List<Podcast>? realsList,
-  }) =>
-      Data(
-        location: location ?? this.location,
-        categories: categories ?? this.categories,
-        admin: admin ?? this.admin,
-        creators: creators ?? this.creators,
-        newPodcasts: newPodcasts ?? this.newPodcasts,
-        popularPodcasts: popularPodcasts ?? this.popularPodcasts,
-        realsList: realsList ?? this.realsList,
-      );
-
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    location: json["location"],
     categories: json["categories"] == null ? [] : List<CategoryElement>.from(json["categories"]!.map((x) => CategoryElement.fromJson(x))),
-    admin: json["admin"],
-    creators: json["creators"] == null ? [] : List<Creator>.from(json["creators"]!.map((x) => Creator.fromJson(x))),
-    newPodcasts: json["newPodcasts"] == null ? [] : List<Podcast>.from(json["newPodcasts"]!.map((x) => Podcast.fromJson(x))),
+    newestPodcasts: json["newestPodcasts"] == null ? [] : List<Podcast>.from(json["newestPodcasts"]!.map((x) => Podcast.fromJson(x))),
     popularPodcasts: json["popularPodcasts"] == null ? [] : List<Podcast>.from(json["popularPodcasts"]!.map((x) => Podcast.fromJson(x))),
-    realsList: json["realsList"] == null ? [] : List<Podcast>.from(json["realsList"]!.map((x) => Podcast.fromJson(x))),
+    reels: json["reels"] == null ? [] : List<Podcast>.from(json["reels"]!.map((x) => x)),
+    albums: json["albums"] == null ? [] : List<Podcast>.from(json["albums"]!.map((x) => x)),
+    topCreators: json["topCreators"] == null ? [] : List<TopCreator>.from(json["topCreators"]!.map((x) => TopCreator.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "location": location,
     "categories": categories == null ? [] : List<dynamic>.from(categories!.map((x) => x.toJson())),
-    "admin": admin,
-    "creators": creators == null ? [] : List<dynamic>.from(creators!.map((x) => x.toJson())),
-    "newPodcasts": newPodcasts == null ? [] : List<dynamic>.from(newPodcasts!.map((x) => x.toJson())),
+    "newestPodcasts": newestPodcasts == null ? [] : List<dynamic>.from(newestPodcasts!.map((x) => x.toJson())),
     "popularPodcasts": popularPodcasts == null ? [] : List<dynamic>.from(popularPodcasts!.map((x) => x.toJson())),
-    "shortPodcasts": realsList == null ? [] : List<dynamic>.from(realsList!.map((x) => x.toJson())),
+    "reels": reels == null ? [] : List<dynamic>.from(reels!.map((x) => x)),
+    "albums": albums == null ? [] : List<dynamic>.from(albums!.map((x) => x)),
+    "topCreators": topCreators == null ? [] : List<dynamic>.from(topCreators!.map((x) => x.toJson())),
   };
 }
 
 class CategoryElement {
   final String? id;
-  final String? title;
+  final String? name;
   final String? categoryImage;
+  final bool? isDeleted;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final num? v;
 
   CategoryElement({
     this.id,
-    this.title,
+    this.name,
     this.categoryImage,
+    this.isDeleted,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
   });
-
-  CategoryElement copyWith({
-    String? id,
-    String? title,
-    String? categoryImage,
-  }) =>
-      CategoryElement(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        categoryImage: categoryImage ?? this.categoryImage,
-      );
 
   factory CategoryElement.fromJson(Map<String, dynamic> json) => CategoryElement(
     id: json["_id"],
-    title: json["title"],
-    categoryImage: json["categoryImage"],
+    name: json["name"],
+    categoryImage: json["category_image"],
+    isDeleted: json["isDeleted"],
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    v: json["__v"],
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
-    "title": title,
-    "categoryImage": categoryImage,
-  };
-}
-
-class Creator {
-  final String? podcast;
-  final String? name;
-  final String? avatar;
-
-  Creator({
-    this.podcast,
-    this.name,
-    this.avatar,
-  });
-
-  Creator copyWith({
-    String? podcast,
-    String? name,
-    String? avatar,
-  }) =>
-      Creator(
-        podcast: podcast ?? this.podcast,
-        name: name ?? this.name,
-        avatar: avatar ?? this.avatar,
-      );
-
-  factory Creator.fromJson(Map<String, dynamic> json) => Creator(
-    podcast: json["podcast"],
-    name: json["name"],
-    avatar: json["avatar"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "podcast": podcast,
     "name": name,
-    "avatar": avatar,
+    "category_image": categoryImage,
+    "isDeleted": isDeleted,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "__v": v,
   };
 }
 
 class Podcast {
+  final Location? location;
   final String? id;
-  final NewPodcastCategory? category;
+  final String? creator;
+  final String? category;
+  final String? subCategory;
+  final String? coverImage;
+  final String? audioUrl;
   final String? title;
-  final String? cover;
-  final String? audioDuration;
+  final String? description;
+  final String? address;
+  final List<String>? tags;
+  final num? totalView;
+  final num? duration;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final num? v;
 
   Podcast({
+    this.location,
     this.id,
+    this.creator,
     this.category,
+    this.subCategory,
+    this.coverImage,
+    this.audioUrl,
     this.title,
-    this.cover,
-    this.audioDuration,
+    this.description,
+    this.address,
+    this.tags,
+    this.totalView,
+    this.duration,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
   });
 
-  Podcast copyWith({
-    String? id,
-    NewPodcastCategory? category,
-    String? title,
-    String? cover,
-    String? audioDuration,
-  }) =>
-      Podcast(
-        id: id ?? this.id,
-        category: category ?? this.category,
-        title: title ?? this.title,
-        cover: cover ?? this.cover,
-        audioDuration: audioDuration ?? this.audioDuration,
-      );
-
   factory Podcast.fromJson(Map<String, dynamic> json) => Podcast(
+    location: json["location"] == null ? null : Location.fromJson(json["location"]),
     id: json["_id"],
-    category: json["category"] == null ? null : NewPodcastCategory.fromJson(json["category"]),
+    creator: json["creator"],
+    category: json["category"],
+    subCategory: json["subCategory"],
+    coverImage: json["coverImage"],
+    audioUrl: json["audio_url"],
     title: json["title"],
-    cover: json["cover"],
-    audioDuration: json["audioDuration"],
+    description: json["description"],
+    address: json["address"],
+    tags: json["tags"] == null ? [] : List<String>.from(json["tags"]!.map((x) => x)),
+    totalView: json["totalView"],
+    duration: json["duration"],
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    v: json["__v"],
   );
 
   Map<String, dynamic> toJson() => {
+    "location": location?.toJson(),
     "_id": id,
-    "category": category?.toJson(),
+    "creator": creator,
+    "category": category,
+    "subCategory": subCategory,
+    "coverImage": coverImage,
+    "audio_url": audioUrl,
     "title": title,
-    "cover": cover,
-    "audioDuration": audioDuration,
+    "description": description,
+    "address": address,
+    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
+    "totalView": totalView,
+    "duration": duration,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "__v": v,
   };
 }
 
-class NewPodcastCategory {
-  final String? title;
+class Location {
+  final String? type;
+  final List<num>? coordinates;
 
-  NewPodcastCategory({
-    this.title,
+  Location({
+    this.type,
+    this.coordinates,
   });
 
-  NewPodcastCategory copyWith({
-    String? title,
-  }) =>
-      NewPodcastCategory(
-        title: title ?? this.title,
-      );
-
-  factory NewPodcastCategory.fromJson(Map<String, dynamic> json) => NewPodcastCategory(
-    title: json["title"],
+  factory Location.fromJson(Map<String, dynamic> json) => Location(
+    type: json["type"],
+    coordinates: json["coordinates"] == null ? [] : List<int>.from(json["coordinates"]!.map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
-    "title": title,
+    "type": type,
+    "coordinates": coordinates == null ? [] : List<dynamic>.from(coordinates!.map((x) => x)),
+  };
+}
+
+class TopCreator {
+  final num? totalViews;
+  final String? creatorId;
+  final String? name;
+  final String? email;
+  final String? profileImage;
+  final String? profileCover;
+  final Location? location;
+
+  TopCreator({
+    this.totalViews,
+    this.creatorId,
+    this.name,
+    this.email,
+    this.profileImage,
+    this.profileCover,
+    this.location,
+  });
+
+  factory TopCreator.fromJson(Map<String, dynamic> json) => TopCreator(
+    totalViews: json["totalViews"],
+    creatorId: json["creatorId"],
+    name: json["name"],
+    email: json["email"],
+    profileImage: json["profile_image"],
+    profileCover: json["profile_cover"],
+    location: json["location"] == null ? null : Location.fromJson(json["location"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "totalViews": totalViews,
+    "creatorId": creatorId,
+    "name": name,
+    "email": email,
+    "profile_image": profileImage,
+    "profile_cover": profileCover,
+    "location": location?.toJson(),
   };
 }

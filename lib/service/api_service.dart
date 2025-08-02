@@ -132,7 +132,7 @@ class ApiClient {
   Future<Response> post(
       {required String url,
         bool isBasic = false,
-        Map<String, dynamic>? body,
+        required Map<String, dynamic> body,
         int duration = 30,
         bool showResult = true}) async {
     try {

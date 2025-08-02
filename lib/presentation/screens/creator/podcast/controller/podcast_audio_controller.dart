@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
+import 'package:podcast/model/basic/selected_location_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
@@ -17,14 +18,14 @@ class PodcastAudioController extends GetxController {
   final Dio dio = serviceLocator<Dio>();
 
   /// ============================= Place Location Information =====================================
-  RxString selectedAddress = "Please select your location".obs;
+  Rx<SelectedLocationResult?> selectedAddress = Rx<SelectedLocationResult?>(null);
   final RxString selectedCategoryId = ''.obs;
   final RxString selectedSubcategoryId = ''.obs;
 
   /// ============================= Image And Audio =====================================
   final ImagePicker _picker = ImagePicker();
   final AudioPlayer _audioPlayer = AudioPlayer();
-  Rx<XFile?> selectedImage = Rx<XFile?>(null);
+  Rx<File?> selectedImage = Rx<File?>(null);
   final Rx<File?> audioFile = Rx<File?>(null);
   final Rx<File?> videoFile = Rx<File?>(null);
 
@@ -32,7 +33,7 @@ class PodcastAudioController extends GetxController {
     try {
       XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
-        selectedImage.value = image;
+        selectedImage.value = File(image.path);
       } else {
         toastMessage(message: "Cover Image not selected.");
       }
@@ -69,6 +70,7 @@ class PodcastAudioController extends GetxController {
     required List<MultipartBody> selectedFiles,
     required Map<String, dynamic> body,
   }) async {
+    createLoadingMethod(true);
     List<Future<void>> uploadTasks = selectedFiles.map((fileModel) async {
       final fileBytes = await fileModel.file.readAsBytes();
       final mimeType = lookupMimeType(fileModel.file.path) ?? 'application/octet-stream';
@@ -78,10 +80,10 @@ class PodcastAudioController extends GetxController {
         fileCategory: category,
         mimeType: mimeType,
         apiClient: apiClient,
-        dio: dio,
       );
 
       if (preSignedUrl != null) {
+        print("preSignedUrl ${preSignedUrl}");
         final uploadedUrl = await uploadFileToS3(
           fileBytes: fileBytes,
           uploadUrl: preSignedUrl,
@@ -94,6 +96,7 @@ class PodcastAudioController extends GetxController {
         );
 
         if (uploadedUrl != null) {
+          print("URL : $uploadedUrl");
           switch (category) {
             case 'podcast_cover':
               body['coverImage'] = uploadedUrl;
@@ -110,7 +113,7 @@ class PodcastAudioController extends GetxController {
     }).toList();
 
     await Future.wait(uploadTasks);
-    createPodcast(body: Map<String, String>.from(body));
+    createPodcast(body: body);
   }
 
   String detectCategoryFromMime(String mime) {
@@ -125,9 +128,10 @@ class PodcastAudioController extends GetxController {
 
   createLoadingMethod(bool status) => createLoading.value = status;
 
-  void createPodcast({required Map<String, String> body}) async {
+  void createPodcast({required Map<String, dynamic> body}) async {
     try {
-      createLoadingMethod(true);
+
+      print(body);
       var response = await apiClient.post(
         url: ApiUrl.podcastCreate(),
         body: body,

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/model/google_search_location_model.dart';
 import 'package:podcast/service/api_service.dart';
@@ -42,4 +45,36 @@ class SearchMyLocationController extends GetxController{
       isDirection.value = false;
     }
   }
+
+  /// ============================= Search Location By Google =====================================
+  bool isPlaceToLatLng = false;
+
+  Future<LatLng?> placeIdToLatLng({required String placeId}) async {
+    if (isPlaceToLatLng || placeId.isEmpty) return null;
+    isPlaceToLatLng = true;
+
+    try{
+      var response = await apiClient.get(url: ApiUrl.placeIdToLatLng(placeId: placeId), isBasic: true, showResult: true);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final location = data['result']?['geometry']?['location'];
+        if (location != null) {
+          final double lat = location['lat'];
+          final double lng = location['lng'];
+          return LatLng(lat, lng);
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }catch (_){
+      return null;
+    }finally{
+      isPlaceToLatLng = false;
+    }
+  }
+
+
 }

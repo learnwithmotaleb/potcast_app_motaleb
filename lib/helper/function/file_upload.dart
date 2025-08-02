@@ -7,7 +7,6 @@ Future<String?> getPreSignedUrl({
   required String fileCategory,
   required String mimeType,
   required ApiClient apiClient,
-  required Dio dio,
 }) async {
   final body = {
     "fileType": mimeType,
@@ -17,12 +16,12 @@ Future<String?> getPreSignedUrl({
   final response = await apiClient.post(
     url: ApiUrl.generatePreSignedURL(),
     body: body,
+    showResult: false,
   );
 
   if (response.statusCode == 200) {
     return response.body['uploadURL'];
   } else {
-    print("Failed to get pre-signed URL: ${response.body}");
     return null;
   }
 }
@@ -37,14 +36,16 @@ Future<String?> uploadFileToS3({
   try {
     final response = await dio.put(
       uploadUrl,
-      data: Stream.fromIterable(fileBytes.map((e) => [e])),
+      data: fileBytes,
       options: Options(
         headers: {"Content-Type": mimeType},
       ),
       onSendProgress: onProgress,
     );
 
+    print(response);
     if (response.statusCode == 200) {
+      print("uploadUrl.split('?').first ${uploadUrl.split('?').first}");
       return uploadUrl.split('?').first;
     } else {
       print("Upload failed: ${response.statusCode}");
