@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -6,17 +5,15 @@ import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/presentation/widget/map/search_my_location.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserHomeTopSection extends StatefulWidget {
   const UserHomeTopSection({super.key, this.categories});
 
-  final CategoryElement? categories;
+  final HomeCategoryElement? categories;
 
   @override
   State<UserHomeTopSection> createState() => _UserHomeTopSectionState();
@@ -28,7 +25,6 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

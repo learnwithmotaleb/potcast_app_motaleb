@@ -21,6 +21,8 @@ import 'package:podcast/presentation/screens/user/search/controller/user_search_
 import 'package:podcast/presentation/screens/user/upgrade/controller/upgrade_controller.dart';
 import 'package:podcast/presentation/screens/user/categories/controller/categories_controller.dart';
 
+import '../../presentation/screens/creator/nav/controller/creator_nav_controller.dart';
+
 void initGetX() {
 
   //Global
@@ -44,6 +46,7 @@ void initGetX() {
 
 
   //Creator
+  Get.lazyPut(() => CreatorNavController(), fenix: true);
   Get.lazyPut(() => CreatorHomeController(), fenix: true);
   Get.lazyPut(() => DonateController(), fenix: true);
   Get.lazyPut(() => PodcastController(), fenix: true);

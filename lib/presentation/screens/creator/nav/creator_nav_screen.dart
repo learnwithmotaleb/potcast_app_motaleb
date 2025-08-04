@@ -16,6 +16,8 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
+import 'controller/creator_nav_controller.dart';
+
 class CreatorNavScreen extends StatefulWidget {
   const CreatorNavScreen({super.key, required this.index});
 
@@ -26,9 +28,9 @@ class CreatorNavScreen extends StatefulWidget {
 }
 
 class _CreatorNavScreenState extends State<CreatorNavScreen> {
-  int _selectedPage = 0;
   final controller = Get.find<PodcastController>();
   final _controller = Get.find<ProfileController>();
+  final navController = Get.find<CreatorNavController>();
 
   final List<Widget> _pages = [
     const UserHomeScreen(),
@@ -40,59 +42,63 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
 
   @override
   void initState() {
-    _selectedPage = widget.index;
+    navController.selectedPage.value = widget.index;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedPage],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedPage,
-        elevation: 0,
-        selectedIconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        unselectedIconTheme: const IconThemeData(
-          color: Color(0xFF5E5E60),
-        ),
-        type: BottomNavigationBarType.fixed,
-        onTap: (int index) {
-          if (index == 2) {
-            buildShowModalBottomSheet(context);
-          } else {
-            setState(() {
-              _selectedPage = index;
-            });
-          }
-        },
-        items: [
-          const BottomNavigationBarItem(icon: Icon(Iconsax.home, size: 32), label: ""),
-          const BottomNavigationBarItem(icon: Icon(Iconsax.clock, size: 32), label: ""),
-          const BottomNavigationBarItem(icon: Icon(Iconsax.add, size: 32), label: ""),
-          const BottomNavigationBarItem(icon: Icon(Iconsax.lovely, size: 32), label: ""),
-          BottomNavigationBarItem(
-            icon: SizedBox(
-              height: 32,
-              width: 32,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Obx(() {
-                  final image = _controller.profile.value.data?.profileImage ?? "";
-                  const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-
-                  return CustomNetworkImage(
-                    imageUrl:  image.isNotEmpty? image : defaultImage,
-                    errorIcon: Iconsax.user,
-                  );
-                }),
-              ),
-            ),
-            label: "",
+      body: Obx((){
+        return _pages[navController.selectedPage.value];
+      }),
+      bottomNavigationBar: Obx((){
+        final index = navController.selectedPage.value;
+        
+        return BottomNavigationBar(
+          currentIndex: index,
+          elevation: 0,
+          selectedIconTheme: const IconThemeData(
+            color: Colors.white,
           ),
-        ],
-      ),
+          unselectedIconTheme: const IconThemeData(
+            color: Color(0xFF5E5E60),
+          ),
+          type: BottomNavigationBarType.fixed,
+          onTap: (int newIndex) {
+            if (newIndex == 2) {
+              buildShowModalBottomSheet(context);
+            } else {
+              navController.changeIndex(newIndex);
+            }
+          },
+          items: [
+            const BottomNavigationBarItem(icon: Icon(Iconsax.home, size: 32), label: ""),
+            const BottomNavigationBarItem(icon: Icon(Iconsax.clock, size: 32), label: ""),
+            const BottomNavigationBarItem(icon: Icon(Iconsax.add, size: 32), label: ""),
+            const BottomNavigationBarItem(icon: Icon(Iconsax.lovely, size: 32), label: ""),
+            BottomNavigationBarItem(
+              icon: SizedBox(
+                height: 32,
+                width: 32,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Obx(() {
+                    final image = _controller.profile.value.data?.profileImage ?? "";
+                    const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+                    return CustomNetworkImage(
+                      imageUrl:  image.isNotEmpty? image : defaultImage,
+                      errorIcon: Iconsax.user,
+                    );
+                  }),
+                ),
+              ),
+              label: "",
+            ),
+          ],
+        );
+      }),
     );
   }
 
@@ -114,15 +120,13 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       color: AppColors.whiteColor,
                     ),
                     title: const Text("Upload Video"),
-                    /*onTap: () {
+                    onTap: () {
                       controller.selectedScreenType.value = SelectedAddPostScreenType.video;
                       AppRouter.route.pop();
                       Future.delayed(const Duration(milliseconds: 300), () {
-                        setState(() {
-                          _selectedPage = 2;
-                        });
+                        navController.changeIndex(2);
                       });
-                    },*/
+                    },
                   ),
                   ListTile(
                     leading: Assets.images.headphones.image(
@@ -135,9 +139,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       controller.selectedScreenType.value = SelectedAddPostScreenType.audio;
                       AppRouter.route.pop();
                       Future.delayed(const Duration(milliseconds: 300), () {
-                        setState(() {
-                          _selectedPage = 2;
-                        });
+                        navController.changeIndex(2);
                       });
                     },
                   ),
@@ -148,15 +150,13 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                       color: AppColors.whiteColor,
                     ),
                     title: const Text("Record Audio"),
-                    /*onTap: () {
+                    onTap: () {
                       controller.selectedScreenType.value = SelectedAddPostScreenType.record;
                       AppRouter.route.pop();
                       Future.delayed(const Duration(milliseconds: 300), () {
-                        setState(() {
-                          _selectedPage = 2;
-                        });
+                        navController.changeIndex(2);
                       });
-                    },*/
+                    },
                   ),
                   ListTile(
                     leading: Assets.images.liveStream.image(

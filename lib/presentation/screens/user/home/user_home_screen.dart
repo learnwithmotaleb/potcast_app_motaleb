@@ -58,11 +58,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             final reelsNotEmpty = data?.reels != null && data!.reels!.isNotEmpty;
             final albumNotEmpty = data?.albums != null && data!.albums!.isNotEmpty;
 
-            final List<CategoryElement>? categories = categoryNotEmpty ? data.categories : [];
-            final List<Podcast>? newItem = newNotEmpty ? data.newestPodcasts : [];
-            final List<Podcast>? popularItem = popularNotEmpty ? data.popularPodcasts : [];
-            final List<Podcast>? reelsItem = reelsNotEmpty ? data.reels : [];
-            final List<Podcast>? albumItem = albumNotEmpty ? data.albums : [];
+            final List<HomeCategoryElement>? categories = categoryNotEmpty ? data.categories : [];
+            final List<HomeNewestPodcast>? newItem = newNotEmpty ? data.newestPodcasts : [];
+            final List<HomeNewestPodcast>? popularItem = popularNotEmpty ? data.popularPodcasts : [];
+            final List<HomeNewestPodcast>? reelsItem = reelsNotEmpty ? data.reels : [];
+            final List<HomeAlbumItem>? albumItem = albumNotEmpty ? data.albums : [];
 
             return RefreshIndicator(
               onRefresh: ()async{
@@ -72,7 +72,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               child: CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: UserHomeTopSection(categories: categories != null && categories.isNotEmpty?categories.first:CategoryElement()),
+                    child: UserHomeTopSection(categories: categories != null && categories.isNotEmpty?categories.first:HomeCategoryElement()),
                   ),
                   const SliverGap(8),
                   SliverPadding(
@@ -258,10 +258,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           return HomeMusicCard(
                             data: AudioPlayerModel(
                                 id: albumItem?[index].id??"",
-                                title: albumItem?[index].title??"",
-                                // categories: albumItem?[index].category?.title??"",
+                                title: albumItem?[index].name??"",
+                                categories: albumItem?[index].description,
                                 image: albumItem?[index].coverImage??"",
-                              duration: formatDuration(albumItem?[index].duration??0),
+                              // duration: formatDuration(albumItem?[index].duration??0),
                             ),
                             onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: albumItem?[index].id??""),
                           );

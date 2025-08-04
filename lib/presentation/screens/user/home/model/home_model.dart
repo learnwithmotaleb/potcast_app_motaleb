@@ -23,12 +23,12 @@ class HomeModel {
 }
 
 class Data {
-  final List<CategoryElement>? categories;
-  final List<Podcast>? newestPodcasts;
-  final List<Podcast>? popularPodcasts;
-  final List<Podcast>? reels;
-  final List<Podcast>? albums;
-  final List<TopCreator>? topCreators;
+  final List<HomeCategoryElement>? categories;
+  final List<HomeNewestPodcast>? newestPodcasts;
+  final List<HomeNewestPodcast>? popularPodcasts;
+  final List<HomeNewestPodcast>? reels;
+  final List<HomeAlbumItem>? albums;
+  final List<HomeTopCreator>? topCreators;
 
   Data({
     this.categories,
@@ -40,51 +40,96 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    categories: json["categories"] == null ? [] : List<CategoryElement>.from(json["categories"]!.map((x) => CategoryElement.fromJson(x))),
-    newestPodcasts: json["newestPodcasts"] == null ? [] : List<Podcast>.from(json["newestPodcasts"]!.map((x) => Podcast.fromJson(x))),
-    popularPodcasts: json["popularPodcasts"] == null ? [] : List<Podcast>.from(json["popularPodcasts"]!.map((x) => Podcast.fromJson(x))),
-    reels: json["reels"] == null ? [] : List<Podcast>.from(json["reels"]!.map((x) => x)),
-    albums: json["albums"] == null ? [] : List<Podcast>.from(json["albums"]!.map((x) => x)),
-    topCreators: json["topCreators"] == null ? [] : List<TopCreator>.from(json["topCreators"]!.map((x) => TopCreator.fromJson(x))),
+    categories: json["categories"] == null ? [] : List<HomeCategoryElement>.from(json["categories"]!.map((x) => HomeCategoryElement.fromJson(x))),
+    newestPodcasts: json["newestPodcasts"] == null ? [] : List<HomeNewestPodcast>.from(json["newestPodcasts"]!.map((x) => HomeNewestPodcast.fromJson(x))),
+    popularPodcasts: json["popularPodcasts"] == null ? [] : List<HomeNewestPodcast>.from(json["popularPodcasts"]!.map((x) => HomeNewestPodcast.fromJson(x))),
+    reels: json["reels"] == null ? [] : List<HomeNewestPodcast>.from(json["reels"]!.map((x) => HomeNewestPodcast.fromJson(x))),
+    albums: json["albums"] == null ? [] : List<HomeAlbumItem>.from(json["albums"]!.map((x) => HomeAlbumItem.fromJson(x))),
+    topCreators: json["topCreators"] == null ? [] : List<HomeTopCreator>.from(json["topCreators"]!.map((x) => HomeTopCreator.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "categories": categories == null ? [] : List<dynamic>.from(categories!.map((x) => x.toJson())),
     "newestPodcasts": newestPodcasts == null ? [] : List<dynamic>.from(newestPodcasts!.map((x) => x.toJson())),
     "popularPodcasts": popularPodcasts == null ? [] : List<dynamic>.from(popularPodcasts!.map((x) => x.toJson())),
-    "reels": reels == null ? [] : List<dynamic>.from(reels!.map((x) => x)),
-    "albums": albums == null ? [] : List<dynamic>.from(albums!.map((x) => x)),
+    "reels": reels == null ? [] : List<dynamic>.from(reels!.map((x) => x.toJson())),
+    "albums": albums == null ? [] : List<dynamic>.from(albums!.map((x) => x.toJson())),
     "topCreators": topCreators == null ? [] : List<dynamic>.from(topCreators!.map((x) => x.toJson())),
   };
 }
 
-class CategoryElement {
+class HomeAlbumItem {
+  final String? id;
+  final String? name;
+  final String? description;
+  final List<String>? tags;
+  final String? coverImage;
+  final List<String>? podcasts;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final num? v;
+
+  HomeAlbumItem({
+    this.id,
+    this.name,
+    this.description,
+    this.tags,
+    this.coverImage,
+    this.podcasts,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
+  });
+
+  factory HomeAlbumItem.fromJson(Map<String, dynamic> json) => HomeAlbumItem(
+    id: json["_id"],
+    name: json["name"],
+    description: json["description"],
+    tags: json["tags"] == null ? [] : List<String>.from(json["tags"]!.map((x) => x)),
+    coverImage: json["cover_image"],
+    podcasts: json["podcasts"] == null ? [] : List<String>.from(json["podcasts"]!.map((x) => x)),
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    v: json["__v"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "name": name,
+    "description": description,
+    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
+    "cover_image": coverImage,
+    "podcasts": podcasts == null ? [] : List<dynamic>.from(podcasts!.map((x) => x)),
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "__v": v,
+  };
+}
+
+class HomeCategoryElement {
   final String? id;
   final String? name;
   final String? categoryImage;
   final bool? isDeleted;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final num? v;
 
-  CategoryElement({
+  HomeCategoryElement({
     this.id,
     this.name,
     this.categoryImage,
     this.isDeleted,
     this.createdAt,
     this.updatedAt,
-    this.v,
   });
 
-  factory CategoryElement.fromJson(Map<String, dynamic> json) => CategoryElement(
+  factory HomeCategoryElement.fromJson(Map<String, dynamic> json) => HomeCategoryElement(
     id: json["_id"],
     name: json["name"],
     categoryImage: json["category_image"],
     isDeleted: json["isDeleted"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-    v: json["__v"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -94,11 +139,10 @@ class CategoryElement {
     "isDeleted": isDeleted,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
-    "__v": v,
   };
 }
 
-class Podcast {
+class HomeNewestPodcast {
   final Location? location;
   final String? id;
   final String? creator;
@@ -109,14 +153,14 @@ class Podcast {
   final String? title;
   final String? description;
   final String? address;
-  final List<String>? tags;
+  final List<String?>? tags;
   final num? totalView;
   final num? duration;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final num? v;
 
-  Podcast({
+  HomeNewestPodcast({
     this.location,
     this.id,
     this.creator,
@@ -135,7 +179,7 @@ class Podcast {
     this.v,
   });
 
-  factory Podcast.fromJson(Map<String, dynamic> json) => Podcast(
+  factory HomeNewestPodcast.fromJson(Map<String, dynamic> json) => HomeNewestPodcast(
     location: json["location"] == null ? null : Location.fromJson(json["location"]),
     id: json["_id"],
     creator: json["creator"],
@@ -146,7 +190,7 @@ class Podcast {
     title: json["title"],
     description: json["description"],
     address: json["address"],
-    tags: json["tags"] == null ? [] : List<String>.from(json["tags"]!.map((x) => x)),
+    tags: json["tags"] == null ? [] : List<String?>.from(json["tags"]?.map((x) => x)),
     totalView: json["totalView"],
     duration: json["duration"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
@@ -165,7 +209,7 @@ class Podcast {
     "title": title,
     "description": description,
     "address": address,
-    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
+    "tags": tags == null ? [] : List<String?>.from(tags!.map((x) => x)),
     "totalView": totalView,
     "duration": duration,
     "createdAt": createdAt?.toIso8601String(),
@@ -185,7 +229,7 @@ class Location {
 
   factory Location.fromJson(Map<String, dynamic> json) => Location(
     type: json["type"],
-    coordinates: json["coordinates"] == null ? [] : List<int>.from(json["coordinates"]!.map((x) => x)),
+    coordinates: json["coordinates"] == null ? [] : List<num>.from(json["coordinates"]!.map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
@@ -194,7 +238,7 @@ class Location {
   };
 }
 
-class TopCreator {
+class HomeTopCreator {
   final num? totalViews;
   final String? creatorId;
   final String? name;
@@ -203,7 +247,7 @@ class TopCreator {
   final String? profileCover;
   final Location? location;
 
-  TopCreator({
+  HomeTopCreator({
     this.totalViews,
     this.creatorId,
     this.name,
@@ -213,7 +257,7 @@ class TopCreator {
     this.location,
   });
 
-  factory TopCreator.fromJson(Map<String, dynamic> json) => TopCreator(
+  factory HomeTopCreator.fromJson(Map<String, dynamic> json) => HomeTopCreator(
     totalViews: json["totalViews"],
     creatorId: json["creatorId"],
     name: json["name"],

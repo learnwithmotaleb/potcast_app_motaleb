@@ -149,7 +149,6 @@ class PodcastRecordController extends GetxController{
     }
   }
 
-
   @override
   void onClose() {
     recorderController.dispose();

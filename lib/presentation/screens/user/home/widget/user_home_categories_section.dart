@@ -9,7 +9,7 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserHomeCategoriesSection extends StatelessWidget {
   const UserHomeCategoriesSection({super.key, required this.category});
-  final CategoryElement? category;
+  final HomeCategoryElement? category;
 
   @override
   Widget build(BuildContext context) {

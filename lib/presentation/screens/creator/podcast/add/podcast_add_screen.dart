@@ -46,6 +46,16 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
     title.dispose();
     description.dispose();
     tag.dispose();
+
+    Future.microtask(() {
+      controller.selectedImage.value = null;
+      controller.audioFile.value = null;
+      controller.videoFile.value = null;
+      controller.selectedCategoryId.value = "";
+      controller.selectedSubcategoryId.value = "";
+      controller.createLoading.value = false;
+    });
+
     super.dispose();
   }
 
@@ -117,7 +127,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
                   if (location != null && location.address.isNotEmpty) {
                     controller.selectedAddress.value = location;
                   } else {
-                    print("User dismissed the dialog or nothing selected");
+                    debugPrint("User dismissed the dialog or nothing selected");
                   }
                 },
                 child: Container(
@@ -176,6 +186,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
                   isLoading: controller.createLoading.value,
                 );
               }),
+              const Gap(24),
             ],
           ),
         ),
@@ -195,15 +206,23 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
     final File? videoFile = controller.videoFile.value;
     final File? imageFile = controller.selectedImage.value;
 
-    // 🛑 Validate required cover image
-    if (imageFile == null) {
-      toastMessage(message: "Cover image is required");
+    if (!hasCategory) {
+      toastMessage(message: "Please select a category.");
       return;
     }
 
-    // 🛑 Validate either audio or video, but not both
-    if (audioFile != null && videoFile != null) {
-      toastMessage(message: "Please provide only audio or only video, not both");
+    if (!hasSubCategory) {
+      toastMessage(message: "Please select a subcategory.");
+      return;
+    }
+
+    if (city.isEmpty || latitude == 0 || longitude == 0) {
+      toastMessage(message: "Please select a valid location.");
+      return;
+    }
+
+    if (imageFile == null) {
+      toastMessage(message: "Cover image is required");
       return;
     }
 
@@ -213,7 +232,14 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
     }
 
     final File mediaFile = audioFile ?? videoFile!;
+    debugPrint("Logger 1");
     final duration = await getAudioDuration(mediaFile);
+    debugPrint("Logger 2");
+
+    if (duration?.inSeconds == null) {
+      toastMessage(message: "Please try again, duration get issue");
+      return;
+    }
 
     try{
       if (validate && hasCategory && hasSubCategory) {
@@ -224,7 +250,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
           "title": title.text,
           "description": description.text,
           "address": city,
-          "duration": 200,
+          "duration": 9,
           "location": {
             "type": "Point",
             "coordinates": [
@@ -268,16 +294,31 @@ Future<Duration?> getAudioDuration(File file) async {
       Uri.file(file.path),
       tag: MediaItem(
         id: file.path,
-        title: 'Temporary Audio', // Dummy title
+        title: 'Temporary Audio',
       ),
     );
 
     await player.setAudioSource(audioSource);
-    return player.duration;
+
+    Duration? duration;
+    int retryCount = 0;
+
+    while (duration == null && retryCount < 30) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      duration = player.duration;
+      retryCount++;
+    }
+
+    return duration;
+  } catch (e) {
+    debugPrint("Logger 3");
+    debugPrint(e.toString());
+    return null;
   } finally {
     await player.dispose();
   }
 }
+
 
 class PickCoverWidget extends StatelessWidget {
   PickCoverWidget({super.key});
@@ -354,7 +395,55 @@ class PickAudioWidget extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(1),
         child: Obx(
-          () => Container(
+          () => controller.createLoading.value ? Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.cloud_upload_rounded, size: 28),
+                      const SizedBox(width: 8),
+                      CustomText(
+                        text: "uploading_video".tr,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      const Spacer(),
+                      CustomText(
+                        text: "${(controller.uploadProgress.value * 100).toStringAsFixed(0)}%",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ],
+                  ),
+                  const Gap(12),
+                  LinearProgressIndicator(
+                    value: controller.uploadProgress.value,
+                    minHeight: 10,
+                    borderRadius: BorderRadius.circular(16),
+                    backgroundColor: Colors.grey.shade300,
+                    color: Colors.blueAccent,
+                  ),
+                  const Gap(12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        text: "${controller.uploadedMB.value.toStringAsFixed(2)} MB / ${controller.totalMB.value.toStringAsFixed(2)} MB",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ],
+                  ),
+                  const Gap(8),
+                ],
+              ),
+            ),
+          ) : Container(
             width: width,
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
@@ -363,68 +452,67 @@ class PickAudioWidget extends StatelessWidget {
             ),
             child: controller.audioFile.value == null
                 ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Assets.icons.cloudAdd.svg(
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.whiteColor,
-                          BlendMode.srcIn,
-                        ),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Assets.icons.cloudAdd.svg(
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.whiteColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                const Gap(8),
+                CustomText(
+                  text: "Choose_a_audio".tr,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.whiteColor,
+                  fontSize: 16,
+                ),
+                const Gap(8),
+                CustomText(
+                  text: "max_10_MB_files_are_allowed".tr,
+                  fontWeight: FontWeight.w100,
+                )
+              ],
+            ) : SizedBox(
+              width: width,
+              height: 50.h,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 50.h,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: AppColors.blackColor,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const Gap(8),
-                      CustomText(
-                        text: "Choose_a_audio".tr,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.whiteColor,
-                        fontSize: 16,
+                      child: CustomText(
+                        text: controller.audioFile.value?.path != null
+                            ? path.basename(
+                          controller.audioFile.value!.path,
+                        )
+                            : "",
                       ),
-                      const Gap(8),
-                      CustomText(
-                        text: "max_10_MB_files_are_allowed".tr,
-                        fontWeight: FontWeight.w100,
-                      )
-                    ],
-                  )
-                : SizedBox(
-                    width: width,
-                    height: 50.h,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50.h,
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: AppColors.blackColor,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: CustomText(
-                              text: controller.audioFile.value?.path != null
-                                  ? path.basename(
-                                      controller.audioFile.value!.path,
-                                    )
-                                  : "",
-                            ),
-                          ),
-                        ),
-                        const Gap(5),
-                        GestureDetector(
-                          onTap: () => controller.audioFile.value = null,
-                          child: Container(
-                            height: 25.h,
-                            width: 25.w,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: AppColors.whiteColor),
-                                shape: BoxShape.circle),
-                            padding: const EdgeInsets.all(2),
-                            child: Assets.images.delete.image(color: AppColors.whiteColor),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
+                  const Gap(5),
+                  GestureDetector(
+                    onTap: () => controller.audioFile.value = null,
+                    child: Container(
+                      height: 25.h,
+                      width: 25.w,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.whiteColor),
+                          shape: BoxShape.circle),
+                      padding: const EdgeInsets.all(2),
+                      child: Assets.images.delete.image(color: AppColors.whiteColor),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

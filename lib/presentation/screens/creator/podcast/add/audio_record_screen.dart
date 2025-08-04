@@ -1,16 +1,15 @@
-/*
 import 'dart:io';
+import 'package:audio_service/audio_service.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/controller/categories_controller.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_record_controller.dart';
-import 'package:podcast/presentation/screens/creator/podcast/model/categories_model.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -21,6 +20,11 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
+import '../../../../../controller/global_controller.dart';
+import '../../../../widget/common/category_subcategory_picker.dart';
+import '../../../../widget/loading/loading_widget.dart';
+import '../controller/podcast_audio_controller.dart';
+
 class AudioRecordScreen extends StatefulWidget {
   const AudioRecordScreen({super.key});
 
@@ -29,9 +33,37 @@ class AudioRecordScreen extends StatefulWidget {
 }
 
 class _AudioRecordScreenState extends State<AudioRecordScreen> {
-  final controller = Get.find<PodcastRecordController>();
-  final category = Get.find<GlobalCategoriesController>();
+  final controller = Get.find<PodcastAudioController>();
+  final globalController = Get.find<GlobalController>();
   final _formKey = GlobalKey<FormState>();
+
+  final recorderController = RecorderController();
+  final PlayerController playerController = PlayerController();
+
+  final title = TextEditingController();
+  final description = TextEditingController();
+  final tag = TextEditingController();
+
+  @override
+  void dispose() {
+    title.dispose();
+    description.dispose();
+    tag.dispose();
+
+    recorderController.dispose();
+    playerController.dispose();
+
+    Future.microtask(() {
+      controller.selectedImage.value = null;
+      controller.audioFile.value = null;
+      controller.videoFile.value = null;
+      controller.selectedCategoryId.value = "";
+      controller.selectedSubcategoryId.value = "";
+      controller.createLoading.value = false;
+    });
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,47 +78,48 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
           key: _formKey,
           child: Column(
             children: [
-              Obx(
-                () {
-                  switch (category.loading.value) {
-                    case Status.loading:
-                      return const Center(child: CircularProgressIndicator());
-                    case Status.internetError:
-                      return NoInternetCard(onTap: () => category.getCategories());
-                    case Status.noDataFound:
-                      return const Center(child: CustomText(text: "No data found!"));
-                    case Status.error:
-                      return NoInternetCard(onTap: () => category.getCategories());
-                    case Status.completed:
-                      return Column(
-                        children: [
-                          CustomAlignText(text: "category".tr),
-                          const Gap(8),
-                          CategoriesWidget(),
-                          const Gap(12),
-                          CustomAlignText(text: "sub_category".tr),
-                          const Gap(8),
-                          SubCategoriesWidget(),
-                          const Gap(12),
-                        ],
-                      );
-                  }
-                },
-              ),
+              Obx(() {
+                final globalState = globalController.loading.value;
+                if (globalState == Status.loading) {
+                  return const LoadingWidget(color: AppColors.whiteColor);
+                }
+                if (globalState == Status.internetError || globalState == Status.error) {
+                  return NoInternetCard(onTap: () => globalController.getCategories());
+                }
+                if (globalState == Status.noDataFound) {
+                  return const Center(child: CustomText(text: "No data found!"));
+                }
+
+                return Obx(() => CategorySubcategoryPicker(
+                      selectedCategoryId: controller.selectedCategoryId.value,
+                      selectedSubcategoryId: controller.selectedSubcategoryId.value,
+                      globalController: globalController,
+                      onCategoryChanged: (id) {
+                        controller.selectedCategoryId.value = id ?? '';
+                        controller.selectedSubcategoryId.value = '';
+                      },
+                      onSubcategoryChanged: (id) {
+                        controller.selectedSubcategoryId.value = id ?? '';
+                      },
+                    ));
+              }),
               CustomAlignText(text: "cover_page_upload".tr),
               const Gap(8),
               PickCoverWidget(),
               const Gap(12),
               CustomAlignText(text: "record_audio".tr),
               const Gap(8),
-              RecordAudioWidget(),
+              RecordAudioWidget(
+                playerController: playerController,
+                recorderController: recorderController,
+              ),
               const Gap(12.0),
               CustomAlignText(text: "podcast_title".tr),
               const Gap(8.0),
               CustomTextField(
                 hintText: "enter_podcast_title".tr,
                 keyboardType: TextInputType.text,
-                controller: controller.title,
+                controller: title,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'enter_podcast_title'.tr;
@@ -101,7 +134,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                 onTap: () async {
                   final location = await showMapDialog(context: context);
 
-                  if (location != null && location.isNotEmpty) {
+                  if (location != null && location.address.isNotEmpty) {
                     controller.selectedAddress.value = location;
                   } else {
                     print("User dismissed the dialog or nothing selected");
@@ -118,7 +151,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(child: Obx(() {
-                        return Text(controller.selectedAddress.value.tr);
+                        return Text(controller.selectedAddress.value?.address ?? "");
                       })),
                       const Icon(Iconsax.location),
                     ],
@@ -133,7 +166,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                 keyboardType: TextInputType.multiline,
                 maxLines: 6,
                 minLines: 3,
-                controller: controller.description,
+                controller: description,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'enter_your_description'.tr;
@@ -147,7 +180,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
               CustomTextField(
                 hintText: "Enter tags like 'Explanation, Explanation'".tr,
                 keyboardType: TextInputType.text,
-                controller: controller.tag,
+                controller: tag,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter at least one tag'.tr;
@@ -163,6 +196,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                   isLoading: controller.createLoading.value,
                 );
               }),
+              const Gap(24),
             ],
           ),
         ),
@@ -170,126 +204,135 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
     );
   }
 
-  void uploadAudio() {
+  void uploadAudio() async {
     final validate = _formKey.currentState!.validate();
-    final cat = controller.categoriesId.value.isNotEmpty;
-    final subCat = controller.subCategoriesId.value.isNotEmpty;
-    final city = controller.selectedAddress.value;
-    final allFile =
-        controller.selectedImage.value != null && controller.recordedFilePath.value != null;
+    final hasCategory = controller.selectedCategoryId.isNotEmpty;
+    final hasSubCategory = controller.selectedSubcategoryId.isNotEmpty;
+    final city = controller.selectedAddress.value?.address ?? "";
+    final double longitude = controller.selectedAddress.value?.longitude ?? 0;
+    final double latitude = controller.selectedAddress.value?.latitude ?? 0;
 
-    if (validate && cat && subCat) {
-      if (allFile) {
-        final Map<String, String> body = {
-          "categoryId": controller.categoriesId.value,
-          "subCategoryId": controller.subCategoriesId.value,
-          "title": controller.title.text,
-          "description": controller.description.text,
-          "location": city,
+    final File? audioFile = controller.audioFile.value;
+    final File? videoFile = controller.videoFile.value;
+    final File? imageFile = controller.selectedImage.value;
+
+    if (!hasCategory) {
+      toastMessage(message: "Please select a category.");
+      return;
+    }
+
+    if (!hasSubCategory) {
+      toastMessage(message: "Please select a subcategory.");
+      return;
+    }
+
+    if (city.isEmpty || latitude == 0 || longitude == 0) {
+      toastMessage(message: "Please select a valid location.");
+      return;
+    }
+
+    if (imageFile == null) {
+      toastMessage(message: "Cover image is required");
+      return;
+    }
+
+    if (audioFile == null && videoFile == null) {
+      toastMessage(message: "Please provide either an audio or a video file");
+      return;
+    }
+
+    final File mediaFile = audioFile ?? videoFile!;
+    debugPrint("Logger 1");
+    final duration = await getAudioDuration(mediaFile);
+    debugPrint("Logger 2");
+
+    if (duration?.inSeconds == null) {
+      toastMessage(message: "Please try again, duration get issue");
+      return;
+    }
+
+    try {
+      if (validate && hasCategory && hasSubCategory) {
+        final Map<String, dynamic> body = {
+          "category": controller.selectedCategoryId.value,
+          "subCategory": controller.selectedSubcategoryId.value,
+          "name": title.text,
+          "title": title.text,
+          "description": description.text,
+          "address": city,
+          "duration": 9,
+          "location": {
+            "type": "Point",
+            "coordinates": [
+              longitude,
+              latitude,
+            ]
+          },
         };
-        final List<MultipartBody> multipartBody = [
-          MultipartBody('audio', File(controller.recordedFilePath.value ?? "")),
-          MultipartBody('cover', File(controller.selectedImage.value?.path ?? "")),
-        ];
+        final List<MultipartBody> multipartBody = [];
 
-        controller.createPodcast(body: body, multipartBody: multipartBody);
+        final audioPath = controller.audioFile.value?.path;
+        if (audioPath != null && audioPath.isNotEmpty) {
+          multipartBody.add(MultipartBody('audio', File(audioPath)));
+        }
+
+        final imagePath = controller.selectedImage.value?.path;
+        if (imagePath != null && imagePath.isNotEmpty) {
+          multipartBody.add(MultipartBody('cover', File(imagePath)));
+        }
+
+        final videoPath = controller.videoFile.value?.path;
+        if (videoPath != null && videoPath.isNotEmpty) {
+          multipartBody.add(MultipartBody('video', File(videoPath)));
+        }
+
+        controller.uploadAllFiles(body: body, selectedFiles: multipartBody);
       } else {
         toastMessage(message: "Please Provide all information");
       }
-    } else {
-      toastMessage(message: "Please Provide all information");
+    } catch (_) {
+      toastMessage(message: "Please complete all required fields");
     }
   }
 }
 
-class SubCategoriesWidget extends StatelessWidget {
-  SubCategoriesWidget({super.key});
+Future<Duration?> getAudioDuration(File file) async {
+  final player = AudioPlayer();
 
-  final controller = Get.find<PodcastRecordController>();
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => DropdownButtonFormField2<String>(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        isExpanded: true,
-        value: controller.subCategories.isEmpty ? "" : controller.subCategories.first.title,
-        hint: Text('sub categories'.tr),
-        items: controller.subCategories.isNotEmpty
-            ? controller.subCategories.map((subCategory) {
-                return DropdownMenuItem<String>(
-                  value: subCategory.title ?? "",
-                  child: Text(subCategory.title ?? ""),
-                );
-              }).toList()
-            : [
-                const DropdownMenuItem<String>(
-                  value: "",
-                  child: Text("No subcategories available"),
-                ),
-              ],
-        onChanged: (String? newValue) {
-          if (newValue != null && newValue != "") {
-            controller.selectedSubCategories.value = newValue;
-            var selectedSubCategory = controller.subCategories.firstWhere(
-                (subCategory) => subCategory.title == newValue,
-                orElse: () => SubCategory(id: "", title: ""));
-            controller.subCategoriesId.value = selectedSubCategory.id ?? "";
-          }
-        },
+  try {
+    final audioSource = AudioSource.uri(
+      Uri.file(file.path),
+      tag: MediaItem(
+        id: file.path,
+        title: 'Temporary Audio',
       ),
     );
-  }
-}
 
-class CategoriesWidget extends StatelessWidget {
-  CategoriesWidget({super.key});
+    await player.setAudioSource(audioSource);
 
-  final controller = Get.find<PodcastRecordController>();
-  final category = Get.find<GlobalCategoriesController>();
+    Duration? duration;
+    int retryCount = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      return DropdownButtonFormField2(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        isExpanded: true,
-        hint: const Text('Category'),
-        items: category.categories.value.data != null && category.categories.value.data!.isNotEmpty
-            ? category.categories.value.data!.map((category) {
-                return DropdownMenuItem<String>(
-                  value: category.title,
-                  child: Text(category.title ?? ""),
-                );
-              }).toList()
-            : [
-                const DropdownMenuItem<String>(
-                  value: "",
-                  child: Text("No categories available"),
-                )
-              ],
-        onChanged: (String? newValue) {
-          if (newValue != null) {
-            controller.updateSubCategories(newValue, category.categories.value);
-          }
-        },
-      );
-    });
+    while (duration == null && retryCount < 30) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      duration = player.duration;
+      retryCount++;
+    }
+
+    return duration;
+  } catch (e) {
+    debugPrint("Logger 3");
+    debugPrint(e.toString());
+    return null;
+  } finally {
+    await player.dispose();
   }
 }
 
 class PickCoverWidget extends StatelessWidget {
   PickCoverWidget({super.key});
 
-  final controller = Get.find<PodcastRecordController>();
+  final controller = Get.find<PodcastAudioController>();
 
   @override
   Widget build(BuildContext context) {
@@ -342,9 +385,15 @@ class PickCoverWidget extends StatelessWidget {
 }
 
 class RecordAudioWidget extends StatelessWidget {
-  RecordAudioWidget({super.key});
+  RecordAudioWidget({
+    super.key,
+    required this.playerController,
+    required this.recorderController,
+  });
 
-  final controller = Get.find<PodcastRecordController>();
+  final PlayerController playerController;
+  final RecorderController recorderController;
+  final controller = Get.find<PodcastAudioController>();
 
   @override
   Widget build(BuildContext context) {
@@ -370,10 +419,10 @@ class RecordAudioWidget extends StatelessWidget {
             return controller.isPlaying.value
                 ? AudioFileWaveforms(
                     size: Size(width, 70),
-                    playerController: controller.playerController,
+                    playerController: playerController,
                     waveformType: WaveformType.long,
                     enableSeekGesture: true,
-                    waveformData: controller.playerController.waveformData,
+                    waveformData: playerController.waveformData,
                     playerWaveStyle: const PlayerWaveStyle(
                       fixedWaveColor: Colors.grey,
                       liveWaveColor: Colors.white,
@@ -382,7 +431,7 @@ class RecordAudioWidget extends StatelessWidget {
                 : AudioWaveforms(
                     enableGesture: false,
                     size: Size(width, 80),
-                    recorderController: controller.recorderController,
+                    recorderController: recorderController,
                     waveStyle: WaveStyle(
                       showMiddleLine: true,
                       extendWaveform: true,
@@ -410,7 +459,9 @@ class RecordAudioWidget extends StatelessWidget {
               return Column(
                 children: [
                   ElevatedButton(
-                    onPressed: controller.startRecording,
+                    onPressed: (){
+                      controller.startRecording(playerController, recorderController);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey,
                       minimumSize: const Size(150, 40),
@@ -428,7 +479,9 @@ class RecordAudioWidget extends StatelessWidget {
                             Obx(() {
                               return controller.isPausePlaying.value
                                   ? ElevatedButton(
-                                      onPressed: controller.resumeAudio,
+                                      onPressed: (){
+                                        controller.resumeAudio(playerController);
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.green,
                                         minimumSize: const Size(150, 40),
@@ -439,7 +492,9 @@ class RecordAudioWidget extends StatelessWidget {
                                       ),
                                     )
                                   : ElevatedButton(
-                                      onPressed: controller.pauseAudio,
+                                      onPressed: (){
+                                        controller.pauseAudio(playerController);
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.orangeAccent,
                                         minimumSize: const Size(150, 40),
@@ -452,7 +507,9 @@ class RecordAudioWidget extends StatelessWidget {
                             }),
                             const Gap(8),
                             ElevatedButton(
-                              onPressed: controller.stopAudio,
+                              onPressed: (){
+                                controller.stopAudio(playerController);
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
                                 minimumSize: const Size(150, 40),
@@ -465,7 +522,9 @@ class RecordAudioWidget extends StatelessWidget {
                           ],
                         )
                       : ElevatedButton(
-                          onPressed: controller.playAudio,
+                          onPressed: (){
+                            controller.playAudio(playerController);
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey,
                             minimumSize: const Size(150, 40),
@@ -479,7 +538,9 @@ class RecordAudioWidget extends StatelessWidget {
               );
             }
             return ElevatedButton(
-              onPressed: controller.startRecording,
+              onPressed: (){
+                controller.startRecording(playerController, recorderController);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.grey,
                 minimumSize: const Size(150, 40),
@@ -494,7 +555,9 @@ class RecordAudioWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: controller.resumeRecording,
+                  onPressed: (){
+                    controller.resumeRecording(recorderController);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orangeAccent,
                     minimumSize: const Size(150, 40),
@@ -504,9 +567,11 @@ class RecordAudioWidget extends StatelessWidget {
                     style: TextStyle(color: AppColors.blackColor),
                   ),
                 ),
-                Gap(8),
+                const Gap(8),
                 ElevatedButton(
-                  onPressed: controller.stopRecording,
+                  onPressed: (){
+                    controller.stopRecording(recorderController);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     minimumSize: const Size(150, 40),
@@ -523,7 +588,9 @@ class RecordAudioWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: controller.pauseRecording,
+                  onPressed: (){
+                    controller.pauseRecording(recorderController);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     minimumSize: const Size(150, 40),
@@ -533,9 +600,11 @@ class RecordAudioWidget extends StatelessWidget {
                     style: TextStyle(color: AppColors.whiteColor),
                   ),
                 ),
-                Gap(8),
+                const Gap(8),
                 ElevatedButton(
-                  onPressed: controller.stopRecording,
+                  onPressed: (){
+                    controller.stopRecording(recorderController);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     minimumSize: const Size(150, 40),
@@ -554,4 +623,3 @@ class RecordAudioWidget extends StatelessWidget {
     );
   }
 }
-*/
