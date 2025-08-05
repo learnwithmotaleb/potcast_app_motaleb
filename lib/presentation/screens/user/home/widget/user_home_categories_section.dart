@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -19,6 +18,7 @@ class UserHomeCategoriesSection extends StatelessWidget {
         extra: category?.id ?? "",
       ),
       child: Container(
+        height: 100,
         decoration: BoxDecoration(
           color: const Color(0xFF2A2B31),
           borderRadius: BorderRadius.circular(5),
@@ -26,7 +26,7 @@ class UserHomeCategoriesSection extends StatelessWidget {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 10.0, top: 8, right: 100, bottom: 2),
+              padding: const EdgeInsets.only(left: 10.0, top: 8, right: 90, bottom: 2),
               child: CustomText(
                 text: category?.name ?? "",
                 color: AppColors.whiteColor,

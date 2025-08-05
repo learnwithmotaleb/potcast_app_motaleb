@@ -63,7 +63,8 @@ class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
 
               return MusicCard(
                 data: data,
-                onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                onTap: (){},
+                // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
               );
             },
           ),

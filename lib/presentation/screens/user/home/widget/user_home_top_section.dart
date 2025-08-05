@@ -6,14 +6,11 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
-import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class UserHomeTopSection extends StatefulWidget {
-  const UserHomeTopSection({super.key, this.categories});
-
-  final HomeCategoryElement? categories;
+  const UserHomeTopSection({super.key});
 
   @override
   State<UserHomeTopSection> createState() => _UserHomeTopSectionState();
@@ -46,7 +43,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 12.0),
+              padding: const EdgeInsets.only(right: 8.0),
               child: GestureDetector(
                 onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
                 child: Assets.icons.notification.svg(height: 30.h, width: 30.w),
@@ -56,7 +53,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
         ),
         const Gap(24),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: GestureDetector(
             onTap: () => AppRouter.route.pushNamed(RoutePath.searchScreen, extra: "all"),
             child: Container(

@@ -50,28 +50,49 @@ class SearchMyLocationController extends GetxController{
   bool isPlaceToLatLng = false;
 
   Future<LatLng?> placeIdToLatLng({required String placeId}) async {
-    if (isPlaceToLatLng || placeId.isEmpty) return null;
+    if (isPlaceToLatLng || placeId.isEmpty) {
+      debugPrint("⚠️ Skipped placeIdToLatLng call: already loading or placeId is empty");
+      return null;
+    }
+
     isPlaceToLatLng = true;
 
-    try{
-      var response = await apiClient.get(url: ApiUrl.placeIdToLatLng(placeId: placeId), isBasic: true, showResult: true);
+    try {
+      final response = await apiClient.get(
+        url: ApiUrl.placeIdToLatLng(placeId: placeId),
+        isBasic: true,
+        showResult: true,
+      );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final location = data['result']?['geometry']?['location'];
-        if (location != null) {
-          final double lat = location['lat'];
-          final double lng = location['lng'];
-          return LatLng(lat, lng);
-        } else {
+        final Map<String, dynamic> data = response.body;
+
+        if (data['status'] != 'OK') {
+          debugPrint("❌ Google API error: ${data['status']}");
           return null;
         }
+
+        final location = data['result']?['geometry']?['location'];
+
+        if (location == null || location['lat'] == null || location['lng'] == null) {
+          debugPrint("❌ Location data is missing in API response");
+          return null;
+        }
+
+        final double lat = (location['lat'] as num).toDouble();
+        final double lng = (location['lng'] as num).toDouble();
+
+        debugPrint("✅ LatLng parsed successfully: ($lat, $lng)");
+        return LatLng(lat, lng);
       } else {
+        debugPrint("❌ HTTP Error: ${response.statusCode} - ${response.statusText}");
         return null;
       }
-    }catch (_){
+    } catch (e, stackTrace) {
+      debugPrint("🔥 Exception in placeIdToLatLng: $e");
+      debugPrintStack(stackTrace: stackTrace);
       return null;
-    }finally{
+    } finally {
       isPlaceToLatLng = false;
     }
   }

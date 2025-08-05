@@ -50,7 +50,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               );
               return MusicCard(
                 data: data,
-                onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                onTap: (){},
+                // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
               );
             },
           ),

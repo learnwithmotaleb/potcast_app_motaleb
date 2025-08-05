@@ -38,7 +38,7 @@ class _SeeAllTopCreatorState extends State<SeeAllTopCreator> {
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: item.podcast??""),
+                    // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: item.podcast??""),
                     child: Container(
                       height: 70.0,
                       width: 70.0,

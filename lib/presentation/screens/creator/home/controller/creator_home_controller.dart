@@ -1,3 +1,4 @@
+/*
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
@@ -48,3 +49,4 @@ class CreatorHomeController extends GetxController{
     super.onClose();
   }
 }
+*/

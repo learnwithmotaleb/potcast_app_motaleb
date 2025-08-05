@@ -46,7 +46,7 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
           controller.pagingController.refresh();
         },
         child: PagedListView<int, SeeAllPodcast>(
-          padding: EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           pagingController: controller.pagingController,
           builderDelegate: PagedChildBuilderDelegate<SeeAllPodcast>(
             itemBuilder: (context, item, index) {
@@ -59,7 +59,8 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
               );
               return MusicCard(
                 data: data,
-                onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                onTap: (){},
+                // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
               );
             },
           ),

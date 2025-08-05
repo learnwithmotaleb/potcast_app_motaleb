@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:video_player/video_player.dart';
 import 'widget/audio_play_bottom.dart';
 import 'widget/audio_play_control.dart';
@@ -14,20 +16,19 @@ import 'widget/audio_play_progress.dart';
 import 'widget/user_play_loading.dart';
 
 class UserPlayScreen extends StatefulWidget {
-  const UserPlayScreen({super.key, required this.id});
-
-  final String id;
+  const UserPlayScreen({super.key, required this.audioPlayerModel});
+  final AudioPlayerModel audioPlayerModel;
 
   @override
   State<UserPlayScreen> createState() => _UserPlayScreenState();
 }
 
 class _UserPlayScreenState extends State<UserPlayScreen> {
-  final controller = Get.put(AudioPlayController());
+  final controller = Get.find<AudioPlayController>();
 
   @override
   void initState() {
-    controller.playPodcast(id: widget.id);
+    controller.playPodcast(id: widget.audioPlayerModel.id);
     super.initState();
   }
 
@@ -36,9 +37,29 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
     // controller.loadAd(width: constant.maxWidth.toInt() - 20, height: constant.maxHeight.toInt());
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: Obx(() {
-          return Text(controller.postModel.value.data?.podcast?.title??"Play");
+          final title = controller.postModel.value.data?.podcast?.title;
+          final title1 = widget.audioPlayerModel.title;
+          final isLoaded =  title != null && title.isNotEmpty;
+          if(isLoaded ||  (title1 != null && title1.isNotEmpty)){
+            return Text(
+              title1 ?? controller.postModel.value.data!.podcast!.title!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            );
+          }
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.withValues(alpha: 0.6),
+            highlightColor: Colors.grey.withValues(alpha: 0.3),
+            child: Container(
+              height: 30,
+              width: 120,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          );
         }),
         elevation: 0,
         leading: IconButton(
@@ -62,11 +83,11 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
             return const Center(child: Text("No data found"));
           case Status.internetError:
             return Center(child: NoInternetCard(
-              onTap: () => controller.playPodcast(id: widget.id),
+              onTap: () => controller.playPodcast(id: widget.audioPlayerModel.id),
               text: "No Internet Connection",));
           case Status.error:
             return Center(child: NoInternetCard(
-                onTap: () => controller.playPodcast(id: widget.id)));
+                onTap: () => controller.playPodcast(id: widget.audioPlayerModel.id)));
           case Status.completed:
             return Column(
               children: [
@@ -81,7 +102,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                           }else if(controller.loading.value == Status.internetError){
                             return const Center(child: CircularProgressIndicator());
                           }else if(controller.loading.value == Status.noDataFound){
-                            return Center(child: NoInternetCard(onTap: ()=> controller.playPodcast(id: widget.id)));
+                            return Center(child: NoInternetCard(onTap: ()=> controller.playPodcast(id: widget.audioPlayerModel.id)));
                           }else{
                             if (controller.isAudioMode.value) {
                               return Padding(
@@ -93,7 +114,6 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                                 ),
                               );
                             } else {
-                              print(controller.videoPlayerController.value?.value.isInitialized);
                               if (controller.videoPlayerController.value?.value.isInitialized?? false) {
                                 return AspectRatio(
                                   aspectRatio: controller.videoPlayerController.value?.value.aspectRatio?? 9/16,

@@ -105,7 +105,6 @@ class HomeAlbumItem {
     "__v": v,
   };
 }
-
 class HomeCategoryElement {
   final String? id;
   final String? name;
@@ -145,9 +144,9 @@ class HomeCategoryElement {
 class HomeNewestPodcast {
   final Location? location;
   final String? id;
-  final String? creator;
-  final String? category;
-  final String? subCategory;
+  final HomeCreator? creator;
+  final SubCategoryClass? category;
+  final SubCategoryClass? subCategory;
   final String? coverImage;
   final String? audioUrl;
   final String? title;
@@ -182,9 +181,9 @@ class HomeNewestPodcast {
   factory HomeNewestPodcast.fromJson(Map<String, dynamic> json) => HomeNewestPodcast(
     location: json["location"] == null ? null : Location.fromJson(json["location"]),
     id: json["_id"],
-    creator: json["creator"],
-    category: json["category"],
-    subCategory: json["subCategory"],
+    creator: json["creator"] == null ? null : HomeCreator.fromJson(json["creator"]),
+    category: json["category"] == null ? null : SubCategoryClass.fromJson(json["category"]),
+    subCategory: json["subCategory"] == null ? null : SubCategoryClass.fromJson(json["subCategory"]),
     coverImage: json["coverImage"],
     audioUrl: json["audio_url"],
     title: json["title"],
@@ -201,9 +200,9 @@ class HomeNewestPodcast {
   Map<String, dynamic> toJson() => {
     "location": location?.toJson(),
     "_id": id,
-    "creator": creator,
-    "category": category,
-    "subCategory": subCategory,
+    "creator": creator?.toJson(),
+    "category": category?.toJson(),
+    "subCategory": subCategory?.toJson(),
     "coverImage": coverImage,
     "audio_url": audioUrl,
     "title": title,
@@ -215,6 +214,51 @@ class HomeNewestPodcast {
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
+  };
+}
+
+class HomeCreator {
+  final String? id;
+  final String? name;
+  final String? profileImage;
+
+  HomeCreator({
+    this.id,
+    this.name,
+    this.profileImage,
+  });
+
+  factory HomeCreator.fromJson(Map<String, dynamic> json) => HomeCreator(
+    id: json["_id"],
+    name: json["name"],
+    profileImage: json["profile_image"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "name": name,
+    "profile_image": profileImage,
+  };
+}
+
+
+class SubCategoryClass {
+  final String? id;
+  final String? name;
+
+  SubCategoryClass({
+    this.id,
+    this.name,
+  });
+
+  factory SubCategoryClass.fromJson(Map<String, dynamic> json) => SubCategoryClass(
+    id: json["_id"],
+    name: json["name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "name": name,
   };
 }
 

@@ -1,15 +1,11 @@
 import 'dart:io';
-import 'package:audio_service/audio_service.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
+import 'package:podcast/helper/function/get_audio_duration.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
-import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_record_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -24,6 +20,8 @@ import '../../../../../controller/global_controller.dart';
 import '../../../../widget/common/category_subcategory_picker.dart';
 import '../../../../widget/loading/loading_widget.dart';
 import '../controller/podcast_audio_controller.dart';
+import '../widget/pick_cover_image_widget.dart';
+import '../widget/record_audio_widget.dart';
 
 class AudioRecordScreen extends StatefulWidget {
   const AudioRecordScreen({super.key});
@@ -60,6 +58,11 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
       controller.selectedCategoryId.value = "";
       controller.selectedSubcategoryId.value = "";
       controller.createLoading.value = false;
+      controller.isRecording.value = false;
+      controller.isPaused.value = false;
+      controller.isPlaying.value = false;
+      controller.isPausePlaying.value = false;
+      controller.recordedFilePath.value = null;
     });
 
     super.dispose();
@@ -70,7 +73,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("add_video".tr),
+        title: Text("Record Podcast".tr),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -105,7 +108,12 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
               }),
               CustomAlignText(text: "cover_page_upload".tr),
               const Gap(8),
-              PickCoverWidget(),
+              Obx(() {
+                return PickCoverImageWidget(
+                  onTap: () => controller.pickImage(),
+                  selectedImage: controller.selectedImage.value,
+                );
+              }),
               const Gap(12),
               CustomAlignText(text: "record_audio".tr),
               const Gap(8),
@@ -135,9 +143,11 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                   final location = await showMapDialog(context: context);
 
                   if (location != null && location.address.isNotEmpty) {
+                    debugPrint(location.longitude.toString());
+                    debugPrint(location.latitude.toString());
                     controller.selectedAddress.value = location;
                   } else {
-                    print("User dismissed the dialog or nothing selected");
+                    debugPrint("User dismissed the dialog or nothing selected");
                   }
                 },
                 child: Container(
@@ -151,7 +161,9 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(child: Obx(() {
-                        return Text(controller.selectedAddress.value?.address ?? "");
+                        return Text(
+                          controller.selectedAddress.value?.address ?? "Select Your Location",
+                        );
                       })),
                       const Icon(Iconsax.location),
                     ],
@@ -260,7 +272,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
           "title": title.text,
           "description": description.text,
           "address": city,
-          "duration": 9,
+          "duration": duration?.inSeconds,
           "location": {
             "type": "Point",
             "coordinates": [
@@ -293,333 +305,5 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
     } catch (_) {
       toastMessage(message: "Please complete all required fields");
     }
-  }
-}
-
-Future<Duration?> getAudioDuration(File file) async {
-  final player = AudioPlayer();
-
-  try {
-    final audioSource = AudioSource.uri(
-      Uri.file(file.path),
-      tag: MediaItem(
-        id: file.path,
-        title: 'Temporary Audio',
-      ),
-    );
-
-    await player.setAudioSource(audioSource);
-
-    Duration? duration;
-    int retryCount = 0;
-
-    while (duration == null && retryCount < 30) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      duration = player.duration;
-      retryCount++;
-    }
-
-    return duration;
-  } catch (e) {
-    debugPrint("Logger 3");
-    debugPrint(e.toString());
-    return null;
-  } finally {
-    await player.dispose();
-  }
-}
-
-class PickCoverWidget extends StatelessWidget {
-  PickCoverWidget({super.key});
-
-  final controller = Get.find<PodcastAudioController>();
-
-  @override
-  Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    return GestureDetector(
-      onTap: () => controller.pickImage(),
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.whiteColor)),
-        padding: const EdgeInsets.all(1),
-        child: Obx(
-          () => controller.selectedImage.value == null
-              ? Container(
-                  width: width,
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Assets.icons.cloudAdd.svg(
-                          colorFilter:
-                              const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
-                      const Gap(8),
-                      CustomText(
-                          text: "Choose_a_file_or_it_here".tr,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.whiteColor,
-                          fontSize: 16),
-                      const Gap(8),
-                      CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
-                    ],
-                  ),
-                )
-              : SizedBox(
-                  height: 150,
-                  width: width,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(File(controller.selectedImage.value?.path ?? ""),
-                        fit: BoxFit.cover),
-                  ),
-                ),
-        ),
-      ),
-    );
-  }
-}
-
-class RecordAudioWidget extends StatelessWidget {
-  RecordAudioWidget({
-    super.key,
-    required this.playerController,
-    required this.recorderController,
-  });
-
-  final PlayerController playerController;
-  final RecorderController recorderController;
-  final controller = Get.find<PodcastAudioController>();
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    return Column(
-      children: [
-        const Gap(12),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color(0xFF1E1E1E),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
-            border: Border.all(color: Colors.grey.shade700, width: 0.8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Obx(() {
-            return controller.isPlaying.value
-                ? AudioFileWaveforms(
-                    size: Size(width, 70),
-                    playerController: playerController,
-                    waveformType: WaveformType.long,
-                    enableSeekGesture: true,
-                    waveformData: playerController.waveformData,
-                    playerWaveStyle: const PlayerWaveStyle(
-                      fixedWaveColor: Colors.grey,
-                      liveWaveColor: Colors.white,
-                    ),
-                  )
-                : AudioWaveforms(
-                    enableGesture: false,
-                    size: Size(width, 80),
-                    recorderController: recorderController,
-                    waveStyle: WaveStyle(
-                      showMiddleLine: true,
-                      extendWaveform: true,
-                      spacing: 6,
-                      showTop: true,
-                      showBottom: true,
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFFBBD2C5),
-                          Color(0xFF536976),
-                          Color(0xFF292E49),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ).createShader(Rect.fromLTWH(0, 0, width, 70)),
-                    ),
-                  );
-          }),
-        ),
-        const Gap(24),
-        Obx(() {
-          if (!controller.isRecording.value) {
-            if (controller.recordedFilePath.value != null &&
-                controller.recordedFilePath.value!.isNotEmpty) {
-              return Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: (){
-                      controller.startRecording(playerController, recorderController);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                      minimumSize: const Size(150, 40),
-                    ),
-                    child: const Text(
-                      "Start Recording",
-                      style: TextStyle(color: AppColors.blackColor),
-                    ),
-                  ),
-                  const Gap(8),
-                  controller.isPlaying.value
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Obx(() {
-                              return controller.isPausePlaying.value
-                                  ? ElevatedButton(
-                                      onPressed: (){
-                                        controller.resumeAudio(playerController);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green,
-                                        minimumSize: const Size(150, 40),
-                                      ),
-                                      child: const Text(
-                                        "Resume Audio",
-                                        style: TextStyle(color: AppColors.blackColor),
-                                      ),
-                                    )
-                                  : ElevatedButton(
-                                      onPressed: (){
-                                        controller.pauseAudio(playerController);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.orangeAccent,
-                                        minimumSize: const Size(150, 40),
-                                      ),
-                                      child: const Text(
-                                        "Pause Audio",
-                                        style: TextStyle(color: AppColors.blackColor),
-                                      ),
-                                    );
-                            }),
-                            const Gap(8),
-                            ElevatedButton(
-                              onPressed: (){
-                                controller.stopAudio(playerController);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                minimumSize: const Size(150, 40),
-                              ),
-                              child: const Text(
-                                "Stop Audio",
-                                style: TextStyle(color: AppColors.blackColor),
-                              ),
-                            )
-                          ],
-                        )
-                      : ElevatedButton(
-                          onPressed: (){
-                            controller.playAudio(playerController);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey,
-                            minimumSize: const Size(150, 40),
-                          ),
-                          child: const Text(
-                            "Play Audio",
-                            style: TextStyle(color: AppColors.blackColor),
-                          ),
-                        ),
-                ],
-              );
-            }
-            return ElevatedButton(
-              onPressed: (){
-                controller.startRecording(playerController, recorderController);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
-                minimumSize: const Size(150, 40),
-              ),
-              child: const Text(
-                "Start Recording",
-                style: TextStyle(color: AppColors.blackColor),
-              ),
-            );
-          } else if (controller.isPaused.value) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: (){
-                    controller.resumeRecording(recorderController);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent,
-                    minimumSize: const Size(150, 40),
-                  ),
-                  child: const Text(
-                    "Resume",
-                    style: TextStyle(color: AppColors.blackColor),
-                  ),
-                ),
-                const Gap(8),
-                ElevatedButton(
-                  onPressed: (){
-                    controller.stopRecording(recorderController);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    minimumSize: const Size(150, 40),
-                  ),
-                  child: const Text(
-                    "Stop",
-                    style: TextStyle(color: AppColors.whiteColor),
-                  ),
-                ),
-              ],
-            );
-          } else {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: (){
-                    controller.pauseRecording(recorderController);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    minimumSize: const Size(150, 40),
-                  ),
-                  child: const Text(
-                    "Pause",
-                    style: TextStyle(color: AppColors.whiteColor),
-                  ),
-                ),
-                const Gap(8),
-                ElevatedButton(
-                  onPressed: (){
-                    controller.stopRecording(recorderController);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    minimumSize: const Size(150, 40),
-                  ),
-                  child: const Text(
-                    "Stop",
-                    style: TextStyle(color: AppColors.whiteColor),
-                  ),
-                ),
-              ],
-            );
-          }
-        }),
-        const Gap(12),
-      ],
-    );
   }
 }

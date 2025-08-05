@@ -22,6 +22,7 @@ import 'package:podcast/presentation/screens/user/upgrade/controller/upgrade_con
 import 'package:podcast/presentation/screens/user/categories/controller/categories_controller.dart';
 
 import '../../presentation/screens/creator/nav/controller/creator_nav_controller.dart';
+import '../../presentation/screens/play/controller/audio_play_controller.dart';
 
 void initGetX() {
 
@@ -36,6 +37,7 @@ void initGetX() {
   Get.lazyPut(() => FavoriteController(), fenix: true);
   Get.lazyPut(() => HistoryController(), fenix: true);
   Get.lazyPut(() => PlaylistController(), fenix: true);
+  Get.lazyPut(() => AudioPlayController(), fenix: true);
   // Get.lazyPut(() => AdminPodcastController(), fenix: true);
 
   //User
@@ -47,9 +49,9 @@ void initGetX() {
 
   //Creator
   Get.lazyPut(() => CreatorNavController(), fenix: true);
-  Get.lazyPut(() => CreatorHomeController(), fenix: true);
+  // Get.lazyPut(() => CreatorHomeController(), fenix: true);
   Get.lazyPut(() => DonateController(), fenix: true);
-  Get.lazyPut(() => PodcastController(), fenix: true);
+  // Get.lazyPut(() => PodcastController(), fenix: true);
   Get.lazyPut(() => PodcastAudioController(), fenix: true);
   // Get.lazyPut(() => PodcastVideoController(), fenix: true);
   // Get.lazyPut(() => PodcastRecordController(), fenix: true);

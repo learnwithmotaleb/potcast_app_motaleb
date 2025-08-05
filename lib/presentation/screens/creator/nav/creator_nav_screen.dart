@@ -6,7 +6,6 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/creator/podcast/add/add_icon_main_screen.dart';
-import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_controller.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
@@ -16,6 +15,7 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
+import '../podcast/controller/podcast_audio_controller.dart';
 import 'controller/creator_nav_controller.dart';
 
 class CreatorNavScreen extends StatefulWidget {
@@ -28,8 +28,8 @@ class CreatorNavScreen extends StatefulWidget {
 }
 
 class _CreatorNavScreenState extends State<CreatorNavScreen> {
-  final controller = Get.find<PodcastController>();
-  final _controller = Get.find<ProfileController>();
+  final controller = Get.find<PodcastAudioController>();
+  final profileController = Get.find<ProfileController>();
   final navController = Get.find<CreatorNavController>();
 
   final List<Widget> _pages = [
@@ -84,7 +84,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: Obx(() {
-                    final image = _controller.profile.value.data?.profileImage ?? "";
+                    final image = profileController.profile.value.data?.profileImage ?? "";
                     const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
                     return CustomNetworkImage(

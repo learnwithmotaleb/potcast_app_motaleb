@@ -7,27 +7,35 @@ import 'package:podcast/model/basic/language_model.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class LanguageController extends GetxController implements GetxService {
-
-  Locale _locale = Locale(AppConstants.languages[0].languageCode, AppConstants.languages[0].countryCode);
+  Locale _locale = Locale(
+    AppConstants.languages.first.languageCode,
+    AppConstants.languages.first.countryCode,
+  );
   List<LanguageModel> _languages = [];
 
   Locale get locale => _locale;
+
   List<LanguageModel> get languages => _languages;
 
   void setLanguage(Locale locale, int selectedValue) {
     Get.updateLocale(locale);
     _locale = locale;
-    saveLanguage(_locale,selectedValue);
+    saveLanguage(_locale, selectedValue);
     update();
   }
 
   void loadCurrentLanguage() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    _locale = Locale(sharedPreferences.getString(AppConstants.languageCode) ?? AppConstants.languages[0].languageCode, sharedPreferences.getString(AppConstants.countryCode) ?? AppConstants.languages[0].countryCode);
+    _locale = Locale(
+      sharedPreferences.getString(AppConstants.languageCode) ??
+          AppConstants.languages.first.languageCode,
+      sharedPreferences.getString(AppConstants.countryCode) ??
+          AppConstants.languages.first.countryCode,
+    );
     Get.updateLocale(_locale);
 
-    for(int index = 0; index<AppConstants.languages.length; index++) {
-      if(AppConstants.languages[index].languageCode == _locale.languageCode) {
+    for (int index = 0; index < AppConstants.languages.length; index++) {
+      if (AppConstants.languages[index].languageCode == _locale.languageCode) {
         _selectedIndex = index;
         break;
       }
@@ -37,7 +45,7 @@ class LanguageController extends GetxController implements GetxService {
     update();
   }
 
-  void saveLanguage(Locale locale,int selectedValue) async {
+  void saveLanguage(Locale locale, int selectedValue) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString(AppConstants.languageCode, locale.languageCode);
     sharedPreferences.setString(AppConstants.countryCode, locale.countryCode!);
@@ -53,10 +61,11 @@ class LanguageController extends GetxController implements GetxService {
     update();
   }
 
-  static Future<Map<String, Map<String, String>>> getLanguages () async{
+  static Future<Map<String, Map<String, String>>> getLanguages() async {
     Map<String, Map<String, String>> languages = {};
-    for(LanguageModel languageModel in AppConstants.languages) {
-      String jsonStringValues =  await rootBundle.loadString('assets/languages/${languageModel.languageCode}.json');
+    for (LanguageModel languageModel in AppConstants.languages) {
+      String jsonStringValues =
+          await rootBundle.loadString('assets/languages/${languageModel.languageCode}.json');
       Map<String, dynamic> mappedJson = jsonDecode(jsonStringValues);
       Map<String, String> json = {};
       mappedJson.forEach((key, value) {
@@ -76,6 +85,7 @@ class LanguageController extends GetxController implements GetxService {
 
 class Messages extends Translations {
   final Map<String, Map<String, String>>? languages;
+
   Messages({required this.languages});
 
   @override

@@ -23,7 +23,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   final controller = Get.find<HistoryController>();
-  final playController = Get.put(AudioPlayController());
+  final playController = Get.find<AudioPlayController>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,21 +56,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              sliver: PagedSliverList<int, HistoryPodcast>(
+              sliver: PagedSliverList<int, HistoryItem>(
                 pagingController: controller.pagingController,
-                builderDelegate: PagedChildBuilderDelegate<HistoryPodcast>(
+                builderDelegate: PagedChildBuilderDelegate<HistoryItem>(
                   itemBuilder: (context, item, index) {
                     final data = AudioPlayerModel(
-                      id: item.id??"",
-                      title: item.title??"",
-                      image: item.cover??"",
-                      categories: item.category?.title??"",
-                      duration: item.audioDuration.toString(),
-                      artist: item.creator?.user?.name??"",
+                      id: item.podcast?.id ?? "",
+                      title: item.podcast?.title ?? "",
+                      image: item.podcast?.coverImage ?? "",
+                      categories: item.podcast?.category?.name ?? "",
+                      duration: item.podcast?.duration.toString(),
+                      artist: item.podcast?.creator?.name ?? "",
                     );
                     return MusicCard(
                       data: data,
-                      onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                      onTap: (){},
+                      // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
                     );
                   },
                 ),

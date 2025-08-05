@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/helper/extension/base_extension.dart';
-import 'package:podcast/presentation/screens/admin/admin_podcast_screen.dart';
+import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/auth/forget/forget_screen.dart';
 import 'package:podcast/presentation/screens/auth/login/login_screen.dart';
 import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
@@ -12,10 +12,6 @@ import 'package:podcast/presentation/screens/auth/verification/verification_scre
 import 'package:podcast/presentation/screens/comments/comments_screen.dart';
 import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
-import 'package:podcast/presentation/screens/creator/podcast/add/podcast_add_screen.dart';
-import 'package:podcast/presentation/screens/creator/podcast/edit/podcast_edit_screen.dart';
-import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
-import 'package:podcast/presentation/screens/creator/podcast/add/audio_record_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/notification/notification_screen.dart';
 import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
@@ -215,12 +211,16 @@ class AppRouter {
             ),
         ),
         GoRoute(
-            name: RoutePath.userPlayScreen,
-            path: RoutePath.userPlayScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?UserPlayScreen(id: state.extra as String):const UserPlayScreen(id: ""),
-              state: state,
-            ),
+            name: RoutePath.audioPlayScreen,
+            path: RoutePath.audioPlayScreen.addBasePath,
+            pageBuilder: (context, state){
+              final checking = state.extra != null && state is AudioPlayerModel;
+              final model = checking ? state.extra as AudioPlayerModel : AudioPlayerModel(id: "");
+              return _buildPageWithAnimation(
+                child: UserPlayScreen(audioPlayerModel: model),
+                state: state,
+              );
+            },
         ),
         GoRoute(
             name: RoutePath.seeAllScreen,

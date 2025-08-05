@@ -73,7 +73,11 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
                         return GestureDetector(
                           onTap: () async {
                             try{
-                              final LatLng? latLng = await controller.placeIdToLatLng(placeId: "");
+                              final LatLng? latLng = await controller.placeIdToLatLng(placeId: address.placeId ?? "");
+
+                              print(latLng?.latitude  ?? "lat");
+                              print(latLng?.longitude?? "lng");
+
                               if(isShotAddress){
                                 final finalValue = SelectedLocationResult(
                                   address: shotAddress,

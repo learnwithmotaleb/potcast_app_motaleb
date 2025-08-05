@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 
 class HomeMusicCard extends StatelessWidget {
   const HomeMusicCard({
@@ -29,33 +29,33 @@ class HomeMusicCard extends StatelessWidget {
         onTap: onTap,
         onLongPress: onLongPress,
         child: SizedBox(
-          height: 180,
-          width: (width/2)-30,
+          height: 200,
+          width: (width / 2) - 50,
           child: Padding(
-            padding: EdgeInsets.only(bottom: bgColor != null?12.0:0),
+            padding: EdgeInsets.only(bottom: bgColor != null ? 12.0 : 0),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 3.0),
-              color: bgColor??Colors.transparent,
+              color: bgColor ?? Colors.transparent,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: CustomNetworkImage(
-                      imageUrl: data.image??"https://static.vecteezy.com/system/resources/previews/024/295/098/non_2x/music-notes-background-illustration-ai-generative-free-photo.jpg",
-                      borderRadius: BorderRadius.circular(8.r),
+                      imageUrl: data.image ?? AppConstants.defaultCoverImage,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   const Gap(8),
-                  CustomText(
-                      text: data.title??"",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                  ),
-                  CustomText(
-                    text: data.categories??"",
-                  ),
-                  // CustomText(text: data.duration??""),
+                  if (data.title != null)
+                    CustomText(
+                      text: data.title ?? "Unknown",
+                      fontSize: 14,
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.visible,
+                      maxLines: 1,
+                    ),
                 ],
               ),
             ),

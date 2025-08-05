@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,16 +16,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class PodcastController extends GetxController{
-/*  ApiClient apiClient = ApiClient();
+  ApiClient apiClient = ApiClient();
   Rx<PodcastCategoriesModel> categories = PodcastCategoriesModel().obs;
   RxList<SubCategory> subCategories = <SubCategory>[].obs;
   final ImagePicker _picker = ImagePicker();
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
   final Rx<File?> audioFile = Rx<File?>(null);
   RxString categoriesId = "".obs;
-  RxString subCategoriesId = "".obs;*/
+  RxString subCategoriesId = "".obs;
   Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
-/*
   Future<void> pickImage() async {
     try {
       XFile? image = await _picker.pickImage(
@@ -307,6 +307,7 @@ class PodcastController extends GetxController{
   void onClose() {
     pagingController.dispose();
     super.onClose();
-  }*/
+  }
 }
 
+*/

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/presentation/screens/history/model/history_model.dart';
@@ -7,7 +8,7 @@ import 'package:podcast/service/api_url.dart';
 class HistoryController extends GetxController{
   ApiClient apiClient = ApiClient();
 
-  final PagingController<int, HistoryPodcast> pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, HistoryItem> pagingController = PagingController(firstPageKey: 1);
   RxBool isLoadingMove = false.obs;
 
   Future<void> getPodcast(int pageKey) async {
@@ -19,7 +20,7 @@ class HistoryController extends GetxController{
 
       if (response.statusCode == 200) {
         final userServiceAll = HistoryModel.fromJson(response.body);
-        final newItems = userServiceAll.data?.podcasts ?? [];
+        final newItems = userServiceAll.data?.result ?? [];
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
         } else {
@@ -29,7 +30,8 @@ class HistoryController extends GetxController{
         pagingController.error = 'Error fetching data';
       }
     } catch (e) {
-      pagingController.error = 'An error occurred';
+      debugPrint(e.toString());
+      pagingController.error = e.toString();
     } finally {
       isLoadingMove.value = false;
     }

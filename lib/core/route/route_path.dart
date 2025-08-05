@@ -26,7 +26,7 @@ class RoutePath {
   static const String selectCountryScreen = 'selectCountryScreen';
   static const String categoriesScreen = 'categoriesScreen';
   static const String searchScreen = 'searchScreen';
-  static const String userPlayScreen = 'userPlayScreen';
+  static const String audioPlayScreen = 'userPlayScreen';
   static const String playlistSongsScreen = 'playlistSongsScreen';
   static const String seeAllScreen = 'seeAllScreen';
   static const String upgradeScreen = 'upgradeScreen';

@@ -39,7 +39,7 @@ class ApiUrl {
   static String details({required String id}) => '$base/podcast/$id';
   static String subCategory({required String id, required String search}) => '$base/search/subcategories/$id?query=$search';
   static String favorite({required int page}) => '$base/favorite?limit=10&page=$page';
-  static String history({required int page}) => '$base/history?page=$page&limit=10';
+  static String history({required int page}) => '$base/watch-history/get-all?page=$page&limit=10';
   static String search({required int page, required String search}) => '$base/search/podcasts?query=$search&page=$page&limit=10';
   static String playListCreate() => '$base/playlist/create';
   static String playList({required int page}) => '$base/playlist/?page=$page&limit=10';

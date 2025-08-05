@@ -28,32 +28,11 @@ class HomeReelsCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         onLongPress: onLongPress,
-        child: SizedBox(
+        child: CustomNetworkImage(
+          borderRadius: BorderRadius.circular(5.r),
+          imageUrl: data.image ?? "",
           height: 250,
-          width: (width/3)-10,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: bgColor != null?5.0:0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 3.0),
-              color: bgColor??Colors.transparent,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: CustomNetworkImage(
-                      borderRadius: BorderRadius.circular(5.r),
-                      imageUrl: data.image??"",
-                    ),
-                  ),
-                  const Gap(8),
-                  CustomText(text: data.title??"",fontSize: 16,fontWeight: FontWeight.w800),
-                  CustomText(text: data.categories??""),
-                  // CustomText(text: data.duration??""),
-                ],
-              ),
-            ),
-          ),
+          width: (width/3),
         ),
       ),
     );

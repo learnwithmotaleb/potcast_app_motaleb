@@ -20,10 +20,10 @@ class UserTopArtistsSection extends StatefulWidget {
 
 class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
   final controller = Get.find<UserHomeController>();
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0),
@@ -34,8 +34,13 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomText(text: "top_artists".tr,fontSize: 22, fontWeight: FontWeight.w800),
-              TextButton(onPressed: ()=>AppRouter.route.pushNamed(RoutePath.seeAllTopCreator), child: CustomText(text: "see_all".tr,color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor))
+              CustomText(text: "top_artists".tr, fontSize: 18, fontWeight: FontWeight.w800),
+              TextButton(
+                onPressed: () => AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),
+                child: Text(
+                  "see_all".tr,
+                ),
+              ),
             ],
           ),
           const Gap(12),
@@ -44,77 +49,97 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
             width: width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: (controller.model.value.data?.topCreators?.length??0)+1,
-              itemBuilder: (BuildContext context, int index){
-                if(index ==0){
+              itemCount: (controller.model.value.data?.topCreators?.length ?? 0) + 1,
+              itemBuilder: (BuildContext context, int index) {
+                final creators = controller.model.value.data?.topCreators;
+
+                if (index == 0) {
                   return Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          // onTap: ()=>controller.model.value.data?.admin?.podcast != null?AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""):null,
-                          child: Container(
-                            height: 80.w,
-                            width: 80.w,
-                            padding: EdgeInsets.all(index ==0?3:5),
-                            decoration: BoxDecoration(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: SizedBox(
+                      height: 100.0,
+                      width: 80.0,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            // onTap: ()=>controller.model.value.data?.admin?.podcast != null?AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""):null,
+                            child: Container(
+                              height: 80,
+                              width: 80,
+                              padding: const EdgeInsets.all(3),
+                              decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: index ==0?Border.all(color: const Color(0xFFEF4849),width: 3):Border.all(color: isDarkMode? AppColors.whiteColor : Colors.green, width: 1)
+                                border: Border.all(
+                                  color: const Color(0xFFEF4849),
+                                  width: 3,
+                                ),
+                              ),
+                              child: Assets.images.splashLogo.image(),
                             ),
-                            child: /*controller.model.value.data?.admin?.avatar != null?
-                            CustomNetworkImage(
-                                imageUrl: controller.model.value.data?.admin?.avatar??"",
-                              borderRadius: BorderRadius.circular(40.r),
-                            ):*/
-                            Assets.images.splashLogo.image(),
                           ),
-                        ),
-                        const Gap(5),
-                        const CustomText(text: "Podcast", fontSize: 16, color: AppColors.blackColor,),
-                        // CustomText(text: controller.model.value.data?.admin?.name??"", fontSize: 16, color: AppColors.blackColor,),
-                      ],
+                          const Gap(5),
+                          const CustomText(
+                            text: "Joe",
+                            fontSize: 16,
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
+
+                final item = creators != null && index - 1 < creators.length ? creators[index - 1] : null;
+
+                if (item == null) return const SizedBox.shrink();
+
                 return Padding(
                   padding: const EdgeInsets.only(right: 12.0),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.topCreators?[index-1].podcast??""),
-                        child: Container(
-                          height: 80.0.h,
-                          width: 80.0.h,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CustomPaint(
-                                size: Size(80.0.h, 80.0.h),
-                                painter: PartialCirclePainter(
-                                  color: isDarkMode ? AppColors.whiteColor : AppColors.primaryColor,
-                                  strokeWidth: 1.0,
-                                ),
-                              ),
-                              // Circle with CachedNetworkImage
-                              Positioned.fill(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(40.0.r), // Make it circular
-                                    child: CustomNetworkImage(imageUrl: controller.model.value.data?.topCreators?[index-1].profileImage??""),
+                  child: SizedBox(
+                    height: 100.0,
+                    width: 80.0,
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.topCreators?[index-1].podcast??""),
+                          child: Container(
+                            height: 80.0,
+                            width: 80.0,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CustomPaint(
+                                  size: const Size(80.0, 80.0),
+                                  painter: PartialCirclePainter(
+                                    color: AppColors.whiteColor,
+                                    strokeWidth: 1.0,
                                   ),
                                 ),
-                              ),
-                            ],
+                                // Circle with CachedNetworkImage
+                                Positioned.fill(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(40.0),
+                                      child: CustomNetworkImage(
+                                        imageUrl: item.profileImage ?? "",
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const Gap(5),
-                      CustomText(text: controller.model.value.data?.topCreators?[index-1].name??"", fontSize: 16, color: AppColors.blackColor,),
-                    ],
+                        const Gap(5),
+                        CustomText(
+                          text: _formatName(item.name),
+                          fontSize: 16,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -123,6 +148,21 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
         ],
       ),
     );
+  }
+
+  String _formatName(String? name) {
+    if (name == null || name.trim().isEmpty) return "Unknown";
+
+    final parts = name.trim().split(RegExp(r'\s+'));
+
+    final first = parts[0];
+    final second = parts.length > 1 ? parts[1] : '';
+
+    if (first.length < 6 && second.isNotEmpty) {
+      return '$first $second';
+    }
+
+    return first;
   }
 }
 

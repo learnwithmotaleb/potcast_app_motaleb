@@ -13,6 +13,7 @@ import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/model/basic/selected_location_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 
 import '../../../../../helper/function/file_upload.dart';
 import '../../nav/controller/creator_nav_controller.dart';
@@ -20,6 +21,8 @@ import '../../nav/controller/creator_nav_controller.dart';
 class PodcastAudioController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final Dio dio = serviceLocator<Dio>();
+
+  Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
 
   /// ============================= Place Location Information =====================================
   Rx<SelectedLocationResult?> selectedAddress = Rx<SelectedLocationResult?>(null);
@@ -32,6 +35,8 @@ class PodcastAudioController extends GetxController {
   final RxBool isPlaying = false.obs;
   final RxBool isPausePlaying = false.obs;
   final recordedFilePath = RxnString();
+
+
 
   /// ============================= Image And Audio =====================================
   final ImagePicker _picker = ImagePicker();
@@ -52,7 +57,7 @@ class PodcastAudioController extends GetxController {
       } else {
         toastMessage(message: "Cover Image not selected.");
       }
-    } catch (e) {
+    } catch (_) {
       toastMessage(message: "Cover Image not selected for permission error.");
     }
   }
@@ -76,7 +81,7 @@ class PodcastAudioController extends GetxController {
           }
         }
       }
-    } catch (e) {
+    } catch (_) {
       toastMessage(message: "Audio not selected for permission error.");
     }
   }
@@ -91,7 +96,7 @@ class PodcastAudioController extends GetxController {
         File audio = File(result.files.single.path ?? "");
         videoFile.value = audio;
       }
-    } catch (e) {
+    } catch (_) {
       toastMessage(message: "Audio not selected for permission error.");
     }
   }
@@ -239,6 +244,16 @@ class PodcastAudioController extends GetxController {
       await recorderController.stop();
       isRecording.value = false;
       isPaused.value = false;
+
+      if (recordedFilePath.value != null && recordedFilePath.value!.isNotEmpty) {
+        final file = File(recordedFilePath.value!);
+        if (await file.exists()) {
+          audioFile.value = file;
+          debugPrint("🎙️ Recorded file saved to audioFile: ${file.path}");
+        } else {
+          debugPrint("⚠️ File does not exist at path: ${file.path}");
+        }
+      }
     }catch(e){
       debugPrint(e.toString());
     }

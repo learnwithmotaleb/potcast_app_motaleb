@@ -4,6 +4,7 @@ import 'package:marquee/marquee.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 import 'package:get/get.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -12,7 +13,7 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 class BottomNavPlayCard extends StatelessWidget {
   BottomNavPlayCard({super.key});
 
-  final playController = Get.put(AudioPlayController());
+  final playController = Get.find<AudioPlayController>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,13 @@ class BottomNavPlayCard extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: playController.postModel.value.data?.podcast?.id);
+                final data = playController.postModel.value.data?.podcast;
+                AppRouter.route.pushNamed(RoutePath.audioPlayScreen, extra: AudioPlayerModel(
+                  id: data?.id ?? "",
+                  title: data?.title ?? "",
+                  categories: data?.category?.title ?? "",
+                  image: data?.cover ?? "",
+                ));
               },
               child: SizedBox(
                 height: 60,

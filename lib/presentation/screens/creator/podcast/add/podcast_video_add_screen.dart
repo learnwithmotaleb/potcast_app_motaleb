@@ -1,12 +1,8 @@
 import 'dart:io';
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
@@ -17,12 +13,14 @@ import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
-import 'package:path/path.dart' as path;
 
 import '../../../../../controller/global_controller.dart';
+import '../../../../../helper/function/get_audio_duration.dart';
 import '../../../../widget/common/category_subcategory_picker.dart';
 import '../../../../widget/loading/loading_widget.dart';
 import '../controller/podcast_audio_controller.dart';
+import '../widget/pick_cover_image_widget.dart';
+import '../widget/pick_video_widget.dart';
 
 class PodcastVideoAddScreen extends StatefulWidget {
   const PodcastVideoAddScreen({super.key});
@@ -98,11 +96,16 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
               }),
               CustomAlignText(text: "cover_page_upload".tr),
               const Gap(8),
-              PickCoverWidget(),
+              Obx(() {
+                return PickCoverImageWidget(
+                  onTap: ()=> controller.pickImage(),
+                  selectedImage: controller.selectedImage.value,
+                );
+              }),
               const Gap(12),
               CustomAlignText(text: "add_video".tr),
               const Gap(8),
-              PickAudioWidget(),
+              PickVideoWidget(),
               const Gap(12.0),
               CustomAlignText(text: "podcast_title".tr),
               const Gap(8.0),
@@ -126,7 +129,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
                   if (location != null && location.address.isNotEmpty) {
                     controller.selectedAddress.value = location;
                   } else {
-                    print("User dismissed the dialog or nothing selected");
+                    debugPrint("User dismissed the dialog or nothing selected");
                   }
                 },
                 child: Container(
@@ -140,7 +143,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(child: Obx(() {
-                        return Text(controller.selectedAddress.value?.address ?? "");
+                        return Text(controller.selectedAddress.value?.address ?? "Select Your Location");
                       })),
                       const Icon(Iconsax.location),
                     ],
@@ -280,237 +283,5 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
     }catch(_){
       toastMessage(message: "Please complete all required fields");
     }
-  }
-}
-
-Future<Duration?> getAudioDuration(File file) async {
-  final player = AudioPlayer();
-
-  try {
-    final audioSource = AudioSource.uri(
-      Uri.file(file.path),
-      tag: MediaItem(
-        id: file.path,
-        title: 'Temporary Audio',
-      ),
-    );
-
-    await player.setAudioSource(audioSource);
-
-    Duration? duration;
-    int retryCount = 0;
-
-    while (duration == null && retryCount < 30) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      duration = player.duration;
-      retryCount++;
-    }
-
-    return duration;
-  } catch (e) {
-    debugPrint("Logger 3");
-    debugPrint(e.toString());
-    return null;
-  } finally {
-    await player.dispose();
-  }
-}
-
-class PickCoverWidget extends StatelessWidget {
-  PickCoverWidget({super.key});
-
-  final controller = Get.find<PodcastAudioController>();
-
-  @override
-  Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    return GestureDetector(
-      onTap: () => controller.pickImage(),
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.whiteColor)),
-        padding: const EdgeInsets.all(1),
-        child: Obx(
-              () => controller.selectedImage.value == null
-              ? Container(
-            width: width,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0), color: AppColors.blackColor),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Assets.icons.cloudAdd.svg(
-                    colorFilter:
-                    const ColorFilter.mode(AppColors.whiteColor, BlendMode.srcIn)),
-                const Gap(8),
-                CustomText(
-                    text: "Choose_a_file_or_it_here".tr,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.whiteColor,
-                    fontSize: 16),
-                const Gap(8),
-                CustomText(text: "JPEG_PNG_and_MP4_formats".tr, fontWeight: FontWeight.w100)
-              ],
-            ),
-          )
-              : SizedBox(
-            height: 150,
-            width: width,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.file(File(controller.selectedImage.value?.path ?? ""),
-                  fit: BoxFit.cover),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PickAudioWidget extends StatelessWidget {
-  PickAudioWidget({super.key});
-
-  final controller = Get.find<PodcastAudioController>();
-
-  @override
-  Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    return GestureDetector(
-      onTap: () => controller.pickVideo(),
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.whiteColor,
-          ),
-        ),
-        padding: const EdgeInsets.all(1),
-        child: Obx(
-          () => controller.createLoading.value ? Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.cloud_upload_rounded, size: 28),
-                      const SizedBox(width: 8),
-                      CustomText(
-                        text: "uploading_video".tr,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      const Spacer(),
-                      CustomText(
-                        text: "${(controller.uploadProgress.value * 100).toStringAsFixed(0)}%",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ],
-                  ),
-                  const Gap(12),
-                  LinearProgressIndicator(
-                    value: controller.uploadProgress.value,
-                    minHeight: 10,
-                    borderRadius: BorderRadius.circular(16),
-                    backgroundColor: Colors.grey.shade300,
-                    color: Colors.blueAccent,
-                  ),
-                  const Gap(12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomText(
-                        text: "${controller.uploadedMB.value.toStringAsFixed(2)} MB / ${controller.totalMB.value.toStringAsFixed(2)} MB",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ],
-                  ),
-                  const Gap(8),
-                ],
-              ),
-            ),
-          ) : Container(
-            width: width,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              color: AppColors.blackColor,
-            ),
-            child: controller.videoFile.value == null
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Assets.icons.cloudAdd.svg(
-                        colorFilter: const ColorFilter.mode(
-                          AppColors.whiteColor,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      const Gap(8),
-                      CustomText(
-                        text: "Pick a Video".tr,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.whiteColor,
-                        fontSize: 16,
-                      ),
-                      const Gap(8),
-                      CustomText(
-                        text: "max_10_MB_files_are_allowed".tr,
-                        fontWeight: FontWeight.w100,
-                      )
-                    ],
-                  )
-                : SizedBox(
-                    width: width,
-                    height: 50.h,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50.h,
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: AppColors.blackColor,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: CustomText(
-                              text: controller.videoFile.value?.path != null
-                                  ? path.basename(controller.videoFile.value!.path)
-                                  : "",
-                            ),
-                          ),
-                        ),
-                        const Gap(5),
-                        GestureDetector(
-                          onTap: () => controller.videoFile.value = null,
-                          child: Container(
-                            height: 25.h,
-                            width: 25.w,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: AppColors.whiteColor),
-                                shape: BoxShape.circle),
-                            padding: const EdgeInsets.all(2),
-                            child: Assets.images.delete.image(color: AppColors.whiteColor),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-          ),
-        ),
-      ),
-    );
   }
 }
