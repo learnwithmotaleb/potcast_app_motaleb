@@ -121,7 +121,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 title: "Test Title",
                                                 categories: controller.categoryModel.value.data?.category?.title,
                                                 image: "https://plus.unsplash.com/premium_photo-1681335986095-5a9585e77246",
-                                                duration: "1.0"
+                                                duration: "1.0",
+                                              url: "",
                                             ),
                                             onTap: (){
                                               //AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??"");

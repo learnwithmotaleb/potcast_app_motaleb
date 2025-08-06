@@ -139,9 +139,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               data: AudioPlayerModel(
                                 id: newItem?[index].id ?? "",
                                 title: newItem?[index].title ?? "",
-                                // categories: newItem?[index].category?.title??"",
+                                categories: newItem?[index].category?.name??"",
                                 image: newItem?[index].coverImage ?? "",
                                 duration: formatDuration(newItem?[index].duration ?? 0),
+                                url: newItem?[index].audioUrl ?? ""
                               ),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
                                   extra: AudioPlayerModel(
@@ -149,6 +150,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     title: newItem?[index].title ?? "",
                                     categories: newItem?[index].category?.name ?? "",
                                     image: newItem?[index].coverImage ?? "",
+                                    url: newItem?[index].audioUrl ?? "",
+                                    duration: formatDuration(newItem?[index].duration ?? 0),
                                   )),
                             );
                           },
@@ -185,8 +188,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               data: AudioPlayerModel(
                                 id: popularItem?[index].id ?? "",
                                 title: popularItem?[index].title ?? "",
-                                // categories: popularItem?[index].category?.title??"",
+                                categories: popularItem?[index].category?.name??"",
                                 image: popularItem?[index].coverImage ?? "",
+                                url: popularItem?[index].audioUrl ?? "",
                                 duration: formatDuration(popularItem?[index].duration ?? 0),
                               ),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
@@ -195,6 +199,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     title: popularItem?[index].title ?? "",
                                     categories: popularItem?[index].category?.name ?? "",
                                     image: popularItem?[index].coverImage ?? "",
+                                    url: popularItem?[index].audioUrl ?? "",
+                                    duration: formatDuration(popularItem?[index].duration ?? 0),
                                   )),
                             );
                           },
@@ -234,9 +240,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               data: AudioPlayerModel(
                                 id: reelsItem?[index].id ?? "",
                                 title: reelsItem?[index].title ?? "",
-                                // categories: reelsItem?[index].category?.title??"",
+                                categories: reelsItem?[index].category?.name??"",
                                 image: reelsItem?[index].coverImage ?? "",
                                 duration: formatDuration(reelsItem?[index].duration ?? 0),
+                                url: reelsItem?[index].audioUrl ?? "",
                               ),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
                                   extra: AudioPlayerModel(
@@ -244,6 +251,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     title: reelsItem?[index].title ?? "",
                                     categories: reelsItem?[index].category?.name ?? "",
                                     image: reelsItem?[index].coverImage ?? "",
+                                    url: reelsItem?[index].audioUrl ?? "",
+                                    duration: formatDuration(reelsItem?[index].duration ?? 0),
                                   )),
                             );
                           },
@@ -284,10 +293,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             return HomeMusicCard(
                               data: AudioPlayerModel(
                                 id: albumItem?[index].id ?? "",
-                                // title: albumItem?[index].name ?? "",
+                                title: albumItem?[index].name ?? "",
                                 categories: albumItem?[index].description,
                                 image: albumItem?[index].coverImage ?? "",
-                                // duration: formatDuration(albumItem?[index].duration??0),
+                                duration: formatDuration(0),
+                                url: "",
                               ),
                               onTap: () {},
                             );

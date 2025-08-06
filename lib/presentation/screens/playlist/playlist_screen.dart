@@ -67,7 +67,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       id: item.id??"",
                       title: item.title??"",
                       image: item.cover??"",
-                      categories: "Total Songs ${item.total??0.0}"
+                      categories: "Total Songs ${item.total??0.0}",
+                      url: "",
+                      duration: "",
                     );
                     return MusicCard(
                       data: data,

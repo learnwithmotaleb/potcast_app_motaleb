@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 
-class AudioPlayProgress extends StatefulWidget {
-  const AudioPlayProgress({super.key});
+class AudioPlayProgress extends StatelessWidget {
+  const AudioPlayProgress({
+    super.key,
+    required this.controller,
+  });
 
-  @override
-  State<AudioPlayProgress> createState() => _AudioPlayProgressState();
-}
+  final AudioPlayController controller;
 
-class _AudioPlayProgressState extends State<AudioPlayProgress> {
-  final controller = Get.find<AudioPlayController>();
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -26,18 +25,15 @@ class _AudioPlayProgressState extends State<AudioPlayProgress> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Custom Progress Bar with Buffered Position
           Stack(
             children: [
-              // Base line (Background)
               Container(
                 height: 5,
                 decoration: BoxDecoration(
-                  color: isDarkMode ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(2.5),
                 ),
               ),
-              // Buffered progress
               Positioned.fill(
                 child: FractionallySizedBox(
                   widthFactor: totalMillis > 0 ? bufferedMillis / totalMillis : 0,
@@ -45,7 +41,7 @@ class _AudioPlayProgressState extends State<AudioPlayProgress> {
                   child: Container(
                     height: 5,
                     decoration: BoxDecoration(
-                      color: isDarkMode ? Colors.white.withOpacity(0.4) : Colors.black.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(2.5),
                     ),
                   ),
@@ -74,11 +70,9 @@ class _AudioPlayProgressState extends State<AudioPlayProgress> {
             children: [
               Text(
                 _formatDuration(position),
-                style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
               ),
               Text(
                 _formatDuration(total),
-                style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
               ),
             ],
           ),

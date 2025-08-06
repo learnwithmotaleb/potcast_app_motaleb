@@ -12,6 +12,7 @@ import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
 import 'package:podcast/presentation/screens/notification/controller/notification_controller.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/presentation/screens/playlist/controller/playlist_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/settings/controller/settings_controller.dart';
@@ -38,6 +39,7 @@ void initGetX() {
   Get.lazyPut(() => HistoryController(), fenix: true);
   Get.lazyPut(() => PlaylistController(), fenix: true);
   Get.lazyPut(() => AudioPlayController(), fenix: true);
+  Get.lazyPut(() => PodcastFeedController(), fenix: true);
   // Get.lazyPut(() => AdminPodcastController(), fenix: true);
 
   //User

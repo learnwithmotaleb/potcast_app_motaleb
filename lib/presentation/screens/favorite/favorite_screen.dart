@@ -47,6 +47,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 categories: item.category?.title??"",
                 duration: item.audioDuration.toString(),
                 artist: item.creator?.user?.name??"",
+                url: "",
               );
               return MusicCard(
                 data: data,

@@ -87,6 +87,7 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                     categories: item.category?.title ?? "",
                     duration: item.audioDuration.toString(),
                     artist: item.creator?.user?.name ?? "",
+                    url: "",
                   );
                   return Obx(() {
                     return MusicCard(

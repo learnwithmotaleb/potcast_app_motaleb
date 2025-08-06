@@ -20,9 +20,9 @@ class BottomNavPlayCard extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     return Obx(() {
       final isVisible = playController.isShowBottom.value;
-      final podcastIdAvailable = playController.postModel.value.data?.podcast?.id != null;
+      final podcastIdAvailable = playController.updatedAudioPlayModel.value.id;
 
-      if (!isVisible || !podcastIdAvailable) {
+      if (!isVisible || !podcastIdAvailable.isNotEmpty) {
         return const SizedBox();
       }
 
@@ -35,20 +35,14 @@ class BottomNavPlayCard extends StatelessWidget {
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(12),
               topLeft: Radius.circular(12),
-            )
-        ),
+            )),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
               onTap: () {
-                final data = playController.postModel.value.data?.podcast;
-                AppRouter.route.pushNamed(RoutePath.audioPlayScreen, extra: AudioPlayerModel(
-                  id: data?.id ?? "",
-                  title: data?.title ?? "",
-                  categories: data?.category?.title ?? "",
-                  image: data?.cover ?? "",
-                ));
+                AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
+                    extra: playController.updatedAudioPlayModel.value);
               },
               child: SizedBox(
                 height: 60,
@@ -56,7 +50,7 @@ class BottomNavPlayCard extends StatelessWidget {
                 child: Obx(() {
                   return CustomNetworkImage(
                     borderRadius: BorderRadius.circular(8.0),
-                    imageUrl: playController.postModel.value.data?.podcast?.cover ?? "",
+                    imageUrl: playController.updatedAudioPlayModel.value.image,
                   );
                 }),
               ),
@@ -67,9 +61,9 @@ class BottomNavPlayCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Obx(() {
-                    final title = playController.postModel.value.data?.podcast?.title;
-                    bool isPodcast = title?.isNotEmpty == true;
-                    final category = playController.postModel.value.data?.podcast?.category?.title;
+                    final title = playController.updatedAudioPlayModel.value.title;
+                    bool isPodcast = title.isNotEmpty == true;
+                    final category = playController.updatedAudioPlayModel.value.categories;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +72,7 @@ class BottomNavPlayCard extends StatelessWidget {
                           height: 30,
                           width: width - 180,
                           child: Marquee(
-                            text: isPodcast ? (title ?? "Untitled Podcast") : "Untitled Podcast",
+                            text: isPodcast ? (title) : "Untitled Podcast",
                             blankSpace: 39,
                           ),
                         ),
@@ -98,11 +92,13 @@ class BottomNavPlayCard extends StatelessWidget {
                       height: 35,
                       width: 35,
                       decoration: const BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle
+                        color: Colors.green,
+                        shape: BoxShape.circle,
                       ),
                       child: Obx(() {
-                        return Icon(playController.isPlaying.value ? Icons.pause : Icons.play_arrow);
+                        return Icon(
+                          playController.isPlaying.value ? Icons.pause : Icons.play_arrow,
+                        );
                       }),
                     ),
                   ),

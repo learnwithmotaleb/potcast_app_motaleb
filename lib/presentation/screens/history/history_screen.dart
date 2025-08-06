@@ -33,11 +33,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
         centerTitle: true,
         title: Text("history".tr),
       ),
-      bottomNavigationBar: Obx((){
-        return playController.isPlaying.value? BottomNavPlayCard(): const SizedBox();
+      bottomNavigationBar: Obx(() {
+        return playController.isPlaying.value ? BottomNavPlayCard() : const SizedBox();
       }),
       body: RefreshIndicator(
-        onRefresh: ()async{
+        onRefresh: () async {
           controller.pagingController.refresh();
         },
         child: CustomScrollView(
@@ -47,9 +47,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
                 child: Row(
                   children: [
-                    Assets.icons.sort.svg(height: 15,width: 15,color: isDarkMode?null:AppColors.blackColor),
+                    Assets.icons.sort.svg(
+                      height: 15,
+                      width: 15,
+                      colorFilter: isDarkMode
+                          ? null
+                          : const ColorFilter.mode(
+                              AppColors.blackColor,
+                              BlendMode.srcIn,
+                            ),
+                    ),
                     const Gap(5),
-                    CustomText(text: "recently_played".tr,fontWeight: FontWeight.w600,fontSize: 16),
+                    CustomText(
+                      text: "recently_played".tr,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
                   ],
                 ),
               ),
@@ -65,12 +78,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       title: item.podcast?.title ?? "",
                       image: item.podcast?.coverImage ?? "",
                       categories: item.podcast?.category?.name ?? "",
-                      duration: item.podcast?.duration.toString(),
+                      duration: item.podcast?.duration.toString() ?? "0.0",
                       artist: item.podcast?.creator?.name ?? "",
+                      url: item.podcast?.audioUrl ?? "",
                     );
                     return MusicCard(
                       data: data,
-                      onTap: (){},
+                      onTap: () {},
                       // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
                     );
                   },

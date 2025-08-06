@@ -1,19 +1,31 @@
 class AudioPlayerModel {
   final String id;
-  final String? title;
+  final String title;
   final String? categories;
-  final String? image;
+  final String image;
   final String? artist;
-  final String? duration;
-  final String? url;
+  final String duration;
+  final String url;
 
   AudioPlayerModel({
     required this.id,
-    this.title,
+    required this.title,
     this.categories,
-    this.image,
+    required this.image,
     this.artist,
-    this.duration,
-    this.url,
+    required this.duration,
+    required this.url,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'categories': categories,
+      'image': image,
+      'artist': artist,
+      'duration': duration,
+      'url': url,
+    };
+  }
 }

@@ -56,6 +56,7 @@ class _CategoryAllPodcastState extends State<CategoryAllPodcast> {
                 image: item.cover ?? "",
                 categories: item.category?.title ?? "",
                 duration: item.audioDuration.toString(),
+                url: ""
               );
               return MusicCard(
                 data: data,

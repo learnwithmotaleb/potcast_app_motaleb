@@ -42,7 +42,6 @@ class AppRouter {
       initialLocation: RoutePath.splashScreen.addBasePath,
       debugLogDiagnostics: true,
       routes: [
-
         ///======================= Initial Route =======================
         GoRoute(
           name: RoutePath.splashScreen,
@@ -54,7 +53,7 @@ class AppRouter {
         ),
 
         ///======================= Auth Route =======================
-       /* GoRoute(
+        /* GoRoute(
             name: RoutePath.roleScreen,
             path: RoutePath.roleScreen.addBasePath,
             pageBuilder: (context, state) => _buildPageWithAnimation(
@@ -63,60 +62,66 @@ class AppRouter {
             ),
         ),*/
         GoRoute(
-            name: RoutePath.introScreen,
-            path: RoutePath.introScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const IntroScreen(),
-              state: state,
-            ),
+          name: RoutePath.introScreen,
+          path: RoutePath.introScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const IntroScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.loginScreen,
-            path: RoutePath.loginScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const LoginScreen(),
-              state: state,
-            ),
+          name: RoutePath.loginScreen,
+          path: RoutePath.loginScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const LoginScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.signUpScreen,
-            path: RoutePath.signUpScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const SignUpScreen(),
-              state: state,
-            ),
+          name: RoutePath.signUpScreen,
+          path: RoutePath.signUpScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const SignUpScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.verificationScreen,
-            path: RoutePath.verificationScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?VerificationScreen(email: state.extra as String):const VerificationScreen(email: ""),
-              state: state,
-            ),
+          name: RoutePath.verificationScreen,
+          path: RoutePath.verificationScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: state.extra != null
+                ? VerificationScreen(email: state.extra as String)
+                : const VerificationScreen(email: ""),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.forgetScreen,
-            path: RoutePath.forgetScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const ForgetScreen(),
-              state: state,
-            ),
+          name: RoutePath.forgetScreen,
+          path: RoutePath.forgetScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const ForgetScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.otpScreen,
-            path: RoutePath.otpScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?OtpScreen(email: state.extra as String):const OtpScreen(email: ""),
-              state: state,
-            ),
+          name: RoutePath.otpScreen,
+          path: RoutePath.otpScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: state.extra != null
+                ? OtpScreen(email: state.extra as String)
+                : const OtpScreen(email: ""),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.resetScreen,
-            path: RoutePath.resetScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null? ResetScreen(email: state.extra as String):const ResetScreen(email: ""),
-              state: state,
-            ),
+          name: RoutePath.resetScreen,
+          path: RoutePath.resetScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: state.extra != null
+                ? ResetScreen(email: state.extra as String)
+                : const ResetScreen(email: ""),
+            state: state,
+          ),
         ),
 
         ///======================= Global Route =======================
@@ -179,91 +184,105 @@ class AppRouter {
 
         ///======================= User Route =======================
         GoRoute(
-            name: RoutePath.userNavScreen,
-            path: RoutePath.userNavScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const UserNavScreen(),
-              state: state,
-            ),
+          name: RoutePath.userNavScreen,
+          path: RoutePath.userNavScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const UserNavScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.selectCountryScreen,
-            path: RoutePath.selectCountryScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const SelectCountryScreen(),
-              state: state,
-            ),
+          name: RoutePath.selectCountryScreen,
+          path: RoutePath.selectCountryScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const SelectCountryScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.categoriesScreen,
-            path: RoutePath.categoriesScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: CategoriesScreen(id: state.extra as String),
-              state: state,
-            ),
+          name: RoutePath.categoriesScreen,
+          path: RoutePath.categoriesScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: CategoriesScreen(id: state.extra as String),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.searchScreen,
-            path: RoutePath.searchScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const SearchScreen(),
-              state: state,
-            ),
+          name: RoutePath.searchScreen,
+          path: RoutePath.searchScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const SearchScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.audioPlayScreen,
-            path: RoutePath.audioPlayScreen.addBasePath,
-            pageBuilder: (context, state){
-              final checking = state.extra != null && state is AudioPlayerModel;
-              final model = checking ? state.extra as AudioPlayerModel : AudioPlayerModel(id: "");
-              return _buildPageWithAnimation(
-                child: UserPlayScreen(audioPlayerModel: model),
-                state: state,
-              );
-            },
+          name: RoutePath.audioPlayScreen,
+          path: RoutePath.audioPlayScreen.addBasePath,
+          pageBuilder: (context, state) {
+            final checking = state.extra != null;
+
+            final audioModel = AudioPlayerModel(
+              id: "id",
+              title: "title",
+              image: "image",
+              duration: "duration",
+              url: "url",
+            );
+
+            final model = checking ? state.extra as AudioPlayerModel : audioModel;
+
+            print(model.toJson());
+            return _buildPageWithAnimation(
+              child: UserPlayScreen(audioPlayerModel: model),
+              state: state,
+            );
+          },
         ),
         GoRoute(
-            name: RoutePath.seeAllScreen,
-            path: RoutePath.seeAllScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: state.extra != null?SeeAllScreen(
-                title: state.extra as String,
-              ):const SeeAllScreen(title: ""),
-              state: state,
-            ),
+          name: RoutePath.seeAllScreen,
+          path: RoutePath.seeAllScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: state.extra != null
+                ? SeeAllScreen(
+                    title: state.extra as String,
+                  )
+                : const SeeAllScreen(title: ""),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.upgradeScreen,
-            path: RoutePath.upgradeScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const UpgradeScreen(),
-              state: state,
-            ),
+          name: RoutePath.upgradeScreen,
+          path: RoutePath.upgradeScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const UpgradeScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.playlistSongsScreen,
-            path: RoutePath.playlistSongsScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: PlaylistSongsScreen(id: state.extra as String),
-              state: state,
-            ),
+          name: RoutePath.playlistSongsScreen,
+          path: RoutePath.playlistSongsScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: PlaylistSongsScreen(id: state.extra as String),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.paymentWebViewScreen,
-            path: RoutePath.paymentWebViewScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: PaymentWebViewScreen(paymentUrl: state.extra as String),
-              state: state,
-            ),
+          name: RoutePath.paymentWebViewScreen,
+          path: RoutePath.paymentWebViewScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: PaymentWebViewScreen(paymentUrl: state.extra as String),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.categoryAllPodcast,
-            path: RoutePath.categoryAllPodcast.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: CategoryAllPodcast(id: state.extra as String),
-              state: state,
-            ),
-        ),/*
+          name: RoutePath.categoryAllPodcast,
+          path: RoutePath.categoryAllPodcast.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: CategoryAllPodcast(id: state.extra as String),
+            state: state,
+          ),
+        ),
+        /*
         GoRoute(
             name: RoutePath.adminPodcastScreen,
             path: RoutePath.adminPodcastScreen.addBasePath,
@@ -278,7 +297,7 @@ class AppRouter {
           name: RoutePath.creatorNavScreen,
           path: RoutePath.creatorNavScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: CreatorNavScreen(index: (state.extra is int)? state.extra as int: 0),
+            child: CreatorNavScreen(index: (state.extra is int) ? state.extra as int : 0),
             state: state,
           ),
         ),
@@ -315,59 +334,59 @@ class AppRouter {
           ),
         ),*/
 
-
         ///======================= Other Route =======================
         GoRoute(
-            name: RoutePath.settingsScreen,
-            path: RoutePath.settingsScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const SettingsScreen(),
-              state: state,
-            ),
+          name: RoutePath.settingsScreen,
+          path: RoutePath.settingsScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const SettingsScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.privacyPolicy,
-            path: RoutePath.privacyPolicy.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const PrivacyPolicy(),
-              state: state,
-            ),
+          name: RoutePath.privacyPolicy,
+          path: RoutePath.privacyPolicy.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const PrivacyPolicy(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.termsOfCondition,
-            path: RoutePath.termsOfCondition.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const TermsOfCondition(),
-              state: state,
-            ),
+          name: RoutePath.termsOfCondition,
+          path: RoutePath.termsOfCondition.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const TermsOfCondition(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.aboutUsScreen,
-            path: RoutePath.aboutUsScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const AboutUsScreen(),
-              state: state,
-            ),
+          name: RoutePath.aboutUsScreen,
+          path: RoutePath.aboutUsScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const AboutUsScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.changePasswordScreen,
-            path: RoutePath.changePasswordScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const ChangePasswordScreen(),
-              state: state,
-            ),
+          name: RoutePath.changePasswordScreen,
+          path: RoutePath.changePasswordScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const ChangePasswordScreen(),
+            state: state,
+          ),
         ),
         GoRoute(
-            name: RoutePath.supportScreen,
-            path: RoutePath.supportScreen.addBasePath,
-            pageBuilder: (context, state) => _buildPageWithAnimation(
-              child: const SupportScreen(),
-              state: state,
-            ),
+          name: RoutePath.supportScreen,
+          path: RoutePath.supportScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const SupportScreen(),
+            state: state,
+          ),
         ),
       ]);
 
-  static CustomTransitionPage _buildPageWithAnimation({required Widget child, required GoRouterState state}) {
+  static CustomTransitionPage _buildPageWithAnimation(
+      {required Widget child, required GoRouterState state}) {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,

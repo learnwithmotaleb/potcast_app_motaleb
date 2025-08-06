@@ -56,6 +56,7 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
                 image: item.cover??"",
                 categories: item.category?.title??"",
                 duration: item.audioDuration.toString(),
+                url: "",
               );
               return MusicCard(
                 data: data,

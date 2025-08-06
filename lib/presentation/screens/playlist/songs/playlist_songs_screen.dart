@@ -59,6 +59,7 @@ class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
                 categories: item.category?.title??"",
                 duration: item.audioDuration.toString(),
                 artist: item.creator?.user?.name??"",
+                url: ""
               );
 
               return MusicCard(

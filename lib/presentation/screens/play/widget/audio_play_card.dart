@@ -21,16 +21,21 @@ class _AudioPlayCardState extends State<AudioPlayCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(
+        CustomNetworkImage(
+          imageUrl: controller.updatedAudioPlayModel.value.image,
+          borderRadius: BorderRadius.circular(8.0.r),
           height: 80.h,
           width: 100,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.0.r),
-            child: CustomNetworkImage(imageUrl: controller.postModel.value.data?.podcast?.cover ?? ""),
-          ),
         ),
         const Gap(5),
-        Flexible(child: CustomText(text: controller.postModel.value.data?.podcast?.description ?? "", maxLines: 3, fontWeight: FontWeight.w600, textAlign: TextAlign.start))
+        Flexible(
+          child: CustomText(
+            text: controller.updatedAudioPlayModel.value.title,
+            maxLines: 3,
+            fontWeight: FontWeight.w600,
+            textAlign: TextAlign.start,
+          ),
+        ),
       ],
     );
   }
