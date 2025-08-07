@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 
 class AudioPlayProgress extends StatelessWidget {
   const AudioPlayProgress({
@@ -8,7 +8,7 @@ class AudioPlayProgress extends StatelessWidget {
     required this.controller,
   });
 
-  final AudioPlayController controller;
+  final PodcastFeedController controller;
 
   @override
   Widget build(BuildContext context) {

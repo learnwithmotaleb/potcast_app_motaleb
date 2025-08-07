@@ -6,6 +6,8 @@ class AudioPlayerModel {
   final String? artist;
   final String duration;
   final String url;
+  final bool reels;
+  final bool popular;
 
   AudioPlayerModel({
     required this.id,
@@ -15,6 +17,8 @@ class AudioPlayerModel {
     this.artist,
     required this.duration,
     required this.url,
+    this.reels = false,
+    this.popular = false,
   });
 
   Map<String, dynamic> toJson() {
@@ -26,6 +30,8 @@ class AudioPlayerModel {
       'artist': artist,
       'duration': duration,
       'url': url,
+      'reels': reels,
+      'popular': popular,
     };
   }
 }

@@ -30,8 +30,21 @@ class ApiUrl {
 
   ///Global
   static String category() => '$base/category/all-categories';
-  static String play({required String id}) => '$base/podcast/play/$id';
-  static String playNext({required String id}) => '$base/podcast/play-next/$id';
+  static String playFeed({
+    String? cursor,
+    bool? reels,
+    bool? popular,
+  }) {
+    final Map<String, String> queryParams = {};
+
+    if (cursor != null) queryParams['cursor'] = cursor;
+    if (reels != null) queryParams['reels'] = reels.toString();
+    if (popular != null) queryParams['popular'] = popular.toString();
+
+    final queryString = Uri(queryParameters: queryParams).query;
+    return '$base/podcast/get-podcast-feed${queryString.isNotEmpty ? '?$queryString' : ''}';
+  }
+
   static String like({required String id}) => '$base/like/$id';
   static String favoriteAdd() => '$base/favorite/toggle';
   static String comments({required String id, required int page}) => '$base/comment/$id?page=$page&limit=10';

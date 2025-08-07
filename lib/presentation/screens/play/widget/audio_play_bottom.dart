@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
-import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AudioPlayBottom extends StatelessWidget {
   const AudioPlayBottom({super.key, required this.controller});
 
-  final AudioPlayController controller;
+  final PodcastFeedController controller;
 
   @override
   Widget build(BuildContext context) {

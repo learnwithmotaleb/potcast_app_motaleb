@@ -201,6 +201,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     image: popularItem?[index].coverImage ?? "",
                                     url: popularItem?[index].audioUrl ?? "",
                                     duration: formatDuration(popularItem?[index].duration ?? 0),
+                                    popular: true,
                                   )),
                             );
                           },
@@ -253,6 +254,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     image: reelsItem?[index].coverImage ?? "",
                                     url: reelsItem?[index].audioUrl ?? "",
                                     duration: formatDuration(reelsItem?[index].duration ?? 0),
+                                    reels: true,
                                   )),
                             );
                           },

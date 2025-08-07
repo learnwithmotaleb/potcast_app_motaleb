@@ -4,9 +4,9 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-Future<Duration?> getAudioDuration(File file) async {
-  final player = AudioPlayer();
+final sharedPlayer = AudioPlayer();
 
+Future<Duration?> getAudioDuration(File file) async {
   try {
     final audioSource = AudioSource.uri(
       Uri.file(file.path),
@@ -16,14 +16,14 @@ Future<Duration?> getAudioDuration(File file) async {
       ),
     );
 
-    await player.setAudioSource(audioSource);
+    await sharedPlayer.setAudioSource(audioSource);
 
     Duration? duration;
     int retryCount = 0;
 
     while (duration == null && retryCount < 30) {
       await Future.delayed(const Duration(milliseconds: 100));
-      duration = player.duration;
+      duration = sharedPlayer.duration;
       retryCount++;
     }
 
@@ -33,6 +33,6 @@ Future<Duration?> getAudioDuration(File file) async {
     debugPrint(e.toString());
     return null;
   } finally {
-    await player.dispose();
+    await sharedPlayer.dispose();
   }
 }

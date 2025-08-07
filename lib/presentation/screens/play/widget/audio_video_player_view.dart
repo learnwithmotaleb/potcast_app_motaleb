@@ -4,16 +4,18 @@ import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:video_player/video_player.dart';
 
+import '../model/play_feed_model.dart';
+
 class AudioVideoPlayerView extends StatelessWidget {
   const AudioVideoPlayerView({
     super.key,
-    required this.imageUrl,
+    required this.item,
     required this.isAudioMode,
     required this.videoController,
     required this.loadingStatus,
   });
 
-  final String imageUrl;
+  final PlayPodcastItem item;
   final RxBool isAudioMode;
   final Rx<Status> loadingStatus;
   final Rx<VideoPlayerController?> videoController;
@@ -52,7 +54,7 @@ class AudioVideoPlayerView extends StatelessWidget {
   Widget _buildImage() {
     return CustomNetworkImage(
       borderRadius: BorderRadius.circular(12),
-      imageUrl: imageUrl,
+      imageUrl: item.coverImage,
     );
   }
 }

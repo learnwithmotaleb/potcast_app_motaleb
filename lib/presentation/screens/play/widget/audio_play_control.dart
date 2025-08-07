@@ -11,9 +11,13 @@ class AudioPlayControl extends StatelessWidget {
   const AudioPlayControl({
     super.key,
     required this.controller,
+    required this.currentPageIndex,
+    required this.pageController,
   });
 
   final PodcastFeedController controller;
+  final RxInt currentPageIndex;
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,10 @@ class AudioPlayControl extends StatelessWidget {
           ),
           onTap: (value) async {
             return true;
-            /*return await controller.favoritePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value).then((value){
+            /*return await controller
+                .favoritePodcast(
+                    id: controller.postModel.value.data?.podcast?.id ?? "", current: value)
+                .then((value) {
               controller.isFavorite.value = value;
               return value;
             });*/
@@ -49,10 +56,10 @@ class AudioPlayControl extends StatelessWidget {
         ),
         IconButton(
           icon: Assets.icons.audioLeft.svg(
-              height: 20.w,
-              width: 20.w,
-              colorFilter: isDarkMode ? null :
-              const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn),
+            height: 20.w,
+            width: 20.w,
+            colorFilter:
+                isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn),
           ),
           onPressed: controller.skipBackward,
           iconSize: 36,
@@ -66,8 +73,13 @@ class AudioPlayControl extends StatelessWidget {
         }),
         IconButton(
           icon: const Icon(Icons.skip_next),
-          onPressed: () {},
-          // onPressed: controller.playNext(),
+          onPressed: () {
+            _goToNextPage(
+              pageController: pageController,
+              currentPageIndex: currentPageIndex,
+              feedController: controller,
+            );
+          },
           iconSize: 36,
         ),
         LikeButton(
@@ -79,7 +91,9 @@ class AudioPlayControl extends StatelessWidget {
           ),
           onTap: (value) async {
             return true;
-            /*return await controller.likePodcast(id: controller.postModel.value.data?.podcast?.id ?? "", current: value).then((value){
+            /*return await controller
+                .likePodcast(id: "", current: value)
+                .then((value) {
               controller.isFavorite.value = value;
               return value;
             });*/
@@ -99,5 +113,20 @@ class AudioPlayControl extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _goToNextPage({
+    required PodcastFeedController feedController,
+    required RxInt currentPageIndex,
+    required PageController pageController,
+  }) {
+    final items = feedController.pagingController.itemList;
+    if (items != null && currentPageIndex.value < items.length - 1) {
+      pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      feedController.playNextPodcast();
+    }
   }
 }
