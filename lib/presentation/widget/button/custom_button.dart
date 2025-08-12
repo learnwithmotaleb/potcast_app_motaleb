@@ -5,7 +5,8 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 import '../loading/loading_widget.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({super.key,
+  const CustomButton({
+    super.key,
     required this.text,
     this.onTap,
     this.isLoading = false,
@@ -29,11 +30,18 @@ class CustomButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: isBgWhite?AppColors.whiteColor:null,
-          border: isBgWhite?(isDarkMode?null:Border.all(color: AppColors.blackColor)):Border.all(color: AppColors.primaryColor),
+          color: isBgWhite ? AppColors.whiteColor : null,
+          border: isBgWhite
+              ? (isDarkMode ? null : Border.all(color: AppColors.blackColor))
+              : Border.all(color: AppColors.primaryColor),
         ),
-        child: isLoading?const LoadingWidget():
-        CustomText(text: text,color: isBgWhite?AppColors.blackColor:AppColors.primaryColor,fontSize: 16),
+        child: isLoading
+            ? const LoadingWidget()
+            : CustomText(
+                text: text,
+                color:
+                    isBgWhite ? AppColors.blackColor : AppColors.primaryColor,
+                fontSize: 16),
       ),
     );
   }

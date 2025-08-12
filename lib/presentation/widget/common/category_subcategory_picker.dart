@@ -26,9 +26,13 @@ class CategorySubcategoryPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final categories = globalController.categories.value.data?.result ?? [];
 
-    final subcategories = categories.firstWhere((cat) => cat.id == selectedCategoryId,
-      orElse: () => CategoryItem(id: '', name: '', subcategories: []),
-    ).subcategories ?? [];
+    final subcategories = categories
+            .firstWhere(
+              (cat) => cat.id == selectedCategoryId,
+              orElse: () => CategoryItem(id: '', name: '', subcategories: []),
+            )
+            .subcategories ??
+        [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +40,9 @@ class CategorySubcategoryPicker extends StatelessWidget {
         CustomDropdownField(
           hintText: "Select Category",
           items: categories.map((e) => e.name ?? "").toList(),
-          value: categories.firstWhereOrNull((e) => e.id == selectedCategoryId)?.name,
+          value: categories
+              .firstWhereOrNull((e) => e.id == selectedCategoryId)
+              ?.name,
           onChanged: (name) {
             final matched = categories.firstWhereOrNull((e) => e.name == name);
             onCategoryChanged?.call(matched?.id);
@@ -47,9 +53,12 @@ class CategorySubcategoryPicker extends StatelessWidget {
         CustomDropdownField(
           hintText: "Select Subcategory",
           items: subcategories.map((e) => e.name ?? "").toList(),
-          value: subcategories.firstWhereOrNull((e) => e.id == selectedSubcategoryId)?.name,
+          value: subcategories
+              .firstWhereOrNull((e) => e.id == selectedSubcategoryId)
+              ?.name,
           onChanged: (name) {
-            final matched = subcategories.firstWhereOrNull((e) => e.name == name);
+            final matched =
+                subcategories.firstWhereOrNull((e) => e.name == name);
             onSubcategoryChanged?.call(matched?.id);
           },
           isRequired: isRequired,

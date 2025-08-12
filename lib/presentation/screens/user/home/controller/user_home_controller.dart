@@ -6,7 +6,6 @@ import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class UserHomeController extends GetxController {
-
   ApiClient apiClient = ApiClient();
   Rx<HomeModel> model = HomeModel().obs;
   RxBool isLocationSaveLoading = false.obs;
@@ -35,13 +34,12 @@ class UserHomeController extends GetxController {
     }
   }
 
-
   /// ============================= GET Profile Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
   Future<void> getHome() async {
     loadingMethod(Status.loading);
-    var response = await apiClient.get(url: ApiUrl.home(),showResult: true);
+    var response = await apiClient.get(url: ApiUrl.home(), showResult: true);
     if (response.statusCode == 200) {
       model.value = HomeModel.fromJson(response.body);
       loadingMethod(Status.completed);

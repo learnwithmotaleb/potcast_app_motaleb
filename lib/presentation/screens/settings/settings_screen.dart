@@ -17,7 +17,9 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("settings".tr),
       ),
       body: SingleChildScrollView(
@@ -25,7 +27,8 @@ class SettingsScreen extends StatelessWidget {
         child: Column(
           children: [
             SettingsCard(
-              onTap: () => AppRouter.route.pushNamed(RoutePath.changePasswordScreen),
+              onTap: () =>
+                  AppRouter.route.pushNamed(RoutePath.changePasswordScreen),
               text: "change_password",
             ),
             const Gap(12),
@@ -35,7 +38,8 @@ class SettingsScreen extends StatelessWidget {
             ),
             const Gap(12),
             SettingsCard(
-              onTap: () => AppRouter.route.pushNamed(RoutePath.termsOfCondition),
+              onTap: () =>
+                  AppRouter.route.pushNamed(RoutePath.termsOfCondition),
               text: "terms_of_condition",
             ),
             const Gap(12),
@@ -62,20 +66,16 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void showDeleteAccountDialog(BuildContext context) {
-    final double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double width = MediaQuery.of(context).size.width;
     final controller = Get.find<SettingsController>();
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 500),
-      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
         return Center(
           child: Dialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -84,10 +84,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             elevation: 16,
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.whiteColor,
@@ -98,47 +95,57 @@ class SettingsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CustomText(text: "do_you_want_to_delete_your".tr, fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.blackColor),
+                  CustomText(
+                      text: "do_you_want_to_delete_your".tr,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.blackColor),
                   const Gap(24),
                   Obx(() {
-                    return controller.deleteLoading.value?
-                    const Center(child: CircularProgressIndicator()):
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            controller.deleteAccount();
-                          },
-                          child: Container(
-                            width: (width / 2) - 50,
-                            height: 38.h,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: AppColors.blackColor),
-                                color: AppColors.whiteColor,
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: CustomText(text: "yes".tr, color: AppColors.blackColor,),
-                          ),
-                        ),
-                        const Gap(12),
-                        GestureDetector(
-                          onTap: () => AppRouter.route.pop(),
-                          child: Container(
-                            width: (width / 2) - 50,
-                            height: 38.h,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: AppColors.blackColor),
-                                color: AppColors.blackColor,
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: CustomText(text: "no".tr, color: AppColors.whiteColor,),
-                          ),
-                        ),
-                      ],
-                    );
+                    return controller.deleteLoading.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  controller.deleteAccount();
+                                },
+                                child: Container(
+                                  width: (width / 2) - 50,
+                                  height: 38.h,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColors.blackColor),
+                                      color: AppColors.whiteColor,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: CustomText(
+                                    text: "yes".tr,
+                                    color: AppColors.blackColor,
+                                  ),
+                                ),
+                              ),
+                              const Gap(12),
+                              GestureDetector(
+                                onTap: () => AppRouter.route.pop(),
+                                child: Container(
+                                  width: (width / 2) - 50,
+                                  height: 38.h,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColors.blackColor),
+                                      color: AppColors.blackColor,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: CustomText(
+                                    text: "no".tr,
+                                    color: AppColors.whiteColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
                   }),
                   const Gap(12),
                 ],
@@ -161,7 +168,8 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class SettingsCard extends StatelessWidget {
-  const SettingsCard({super.key, required this.onTap, required this.text, this.isRed = false});
+  const SettingsCard(
+      {super.key, required this.onTap, required this.text, this.isRed = false});
 
   final VoidCallback onTap;
   final String text;

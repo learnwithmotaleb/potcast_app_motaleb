@@ -45,7 +45,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         title: Text(
           "comments".tr,
           style: const TextStyle(
-              color: AppColors.whiteColor,
+            color: AppColors.whiteColor,
           ),
         ),
       ),
@@ -65,7 +65,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       return Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 3),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,11 +76,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                   width: 50.w,
                                   padding: const EdgeInsets.all(2),
                                   decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: AppColors.whiteColor,
-                                          width: 2,
-                                      ),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: AppColors.whiteColor,
+                                      width: 2,
+                                    ),
                                   ),
                                   child: CustomNetworkImage(
                                     imageUrl: item.user?.avatar ?? "",
@@ -95,7 +96,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                     colorClickableText: Colors.pink,
                                     trimCollapsedText: 'Show more',
                                     trimExpandedText: 'Show less',
-                                    moreStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                    moreStyle: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -135,33 +138,42 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         },
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           hintText: "Write a comment...",
-                          hintStyle: const TextStyle(color: AppColors.whiteColor),
-                          suffixIcon: IconButton(onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              controller.commentsAdd(id: widget.id);
-                            }
-                          }, icon: const Icon(Iconsax.send_1)),
+                          hintStyle:
+                              const TextStyle(color: AppColors.whiteColor),
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  controller.commentsAdd(id: widget.id);
+                                }
+                              },
+                              icon: const Icon(Iconsax.send_1)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                            borderSide:
+                                const BorderSide(color: AppColors.whiteColor),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                            borderSide:
+                                const BorderSide(color: AppColors.whiteColor),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                            borderSide:
+                                const BorderSide(color: AppColors.whiteColor),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                            borderSide:
+                                const BorderSide(color: AppColors.whiteColor),
                           ),
                           disabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(color: AppColors.whiteColor),
+                            borderSide:
+                                const BorderSide(color: AppColors.whiteColor),
                           ),
                         ),
                       ),

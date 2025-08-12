@@ -5,10 +5,11 @@ import 'package:podcast/presentation/screens/history/model/history_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
-class HistoryController extends GetxController{
+class HistoryController extends GetxController {
   ApiClient apiClient = ApiClient();
 
-  final PagingController<int, HistoryItem> pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, HistoryItem> pagingController =
+      PagingController(firstPageKey: 1);
   RxBool isLoadingMove = false.obs;
 
   Future<void> getPodcast(int pageKey) async {
@@ -16,7 +17,8 @@ class HistoryController extends GetxController{
     isLoadingMove.value = true;
 
     try {
-      final response = await apiClient.get(url: ApiUrl.history(page: pageKey), showResult: true);
+      final response = await apiClient.get(
+          url: ApiUrl.history(page: pageKey), showResult: true);
 
       if (response.statusCode == 200) {
         final userServiceAll = HistoryModel.fromJson(response.body);
@@ -36,7 +38,6 @@ class HistoryController extends GetxController{
       isLoadingMove.value = false;
     }
   }
-
 
   @override
   void onInit() {

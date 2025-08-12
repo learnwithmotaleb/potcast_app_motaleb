@@ -9,8 +9,9 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
-class SearchMyLocationController extends GetxController{
+class SearchMyLocationController extends GetxController {
   final ApiClient apiClient = serviceLocator();
+
   /// ============================= Search Location By Google =====================================
   RxBool isDirection = false.obs;
   var searchLoading = Status.completed.obs;
@@ -22,13 +23,17 @@ class SearchMyLocationController extends GetxController{
     if (isDirection.value) return;
     isDirection.value = true;
 
-    try{
+    try {
       searchLoadingMethod(Status.loading);
 
-      var response = await apiClient.get(url: ApiUrl.googleSearchApi(search: searchText.text),isBasic: true,showResult: true);
+      var response = await apiClient.get(
+          url: ApiUrl.googleSearchApi(search: searchText.text),
+          isBasic: true,
+          showResult: true);
 
       if (response.statusCode == 200) {
-        addressList.value = List<Prediction>.from(response.body["predictions"].map((x) => Prediction.fromJson(x)));
+        addressList.value = List<Prediction>.from(
+            response.body["predictions"].map((x) => Prediction.fromJson(x)));
         searchLoadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -39,9 +44,9 @@ class SearchMyLocationController extends GetxController{
           searchLoadingMethod(Status.error);
         }
       }
-    }catch (err){
+    } catch (err) {
       searchLoadingMethod(Status.error);
-    }finally{
+    } finally {
       isDirection.value = false;
     }
   }
@@ -51,7 +56,8 @@ class SearchMyLocationController extends GetxController{
 
   Future<LatLng?> placeIdToLatLng({required String placeId}) async {
     if (isPlaceToLatLng || placeId.isEmpty) {
-      debugPrint("⚠️ Skipped placeIdToLatLng call: already loading or placeId is empty");
+      debugPrint(
+          "⚠️ Skipped placeIdToLatLng call: already loading or placeId is empty");
       return null;
     }
 
@@ -74,7 +80,9 @@ class SearchMyLocationController extends GetxController{
 
         final location = data['result']?['geometry']?['location'];
 
-        if (location == null || location['lat'] == null || location['lng'] == null) {
+        if (location == null ||
+            location['lat'] == null ||
+            location['lng'] == null) {
           debugPrint("❌ Location data is missing in API response");
           return null;
         }
@@ -85,7 +93,8 @@ class SearchMyLocationController extends GetxController{
         debugPrint("✅ LatLng parsed successfully: ($lat, $lng)");
         return LatLng(lat, lng);
       } else {
-        debugPrint("❌ HTTP Error: ${response.statusCode} - ${response.statusText}");
+        debugPrint(
+            "❌ HTTP Error: ${response.statusCode} - ${response.statusText}");
         return null;
       }
     } catch (e, stackTrace) {
@@ -96,6 +105,4 @@ class SearchMyLocationController extends GetxController{
       isPlaceToLatLng = false;
     }
   }
-
-
 }

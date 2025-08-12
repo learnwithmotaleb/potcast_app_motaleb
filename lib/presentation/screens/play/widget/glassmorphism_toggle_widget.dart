@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
+
+class GlassMorphismToggle extends StatelessWidget {
+  final PodcastFeedController feedController;
+
+  const GlassMorphismToggle({
+    super.key,
+    required this.feedController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final isLoading = feedController.isLoading.value == Status.loading;
+      final isAudioMode = feedController.isAudioMode.value;
+
+      return Container(
+        margin: const EdgeInsets.only(right: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withValues(alpha: 0.1),
+              Colors.white.withValues(alpha: 0.05),
+            ],
+          ),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.1),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: isLoading
+                ? null
+                : () => feedController.toggleMode(
+                    url: feedController.currentItem.value.podcastUrl ?? ""),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: Icon(
+                      isAudioMode ? Iconsax.video : Iconsax.music,
+                      key: ValueKey(isAudioMode),
+                      size: 20,
+                      color: isLoading
+                          ? Colors.grey.withValues(alpha: 0.5)
+                          : Colors.white.withValues(alpha: 0.9),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 300),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isLoading
+                          ? Colors.grey.withValues(alpha: 0.5)
+                          : Colors.white.withValues(alpha: 0.9),
+                    ),
+                    child: Text(isAudioMode ? 'Video' : 'Audio'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    });
+  }
+}

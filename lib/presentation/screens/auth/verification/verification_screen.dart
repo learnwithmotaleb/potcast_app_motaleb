@@ -27,7 +27,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("verify_email".tr),
       ),
       body: SingleChildScrollView(
@@ -39,11 +41,19 @@ class _VerificationScreenState extends State<VerificationScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Gap(12),
-              CustomText(text: "verification_code".tr, fontWeight: FontWeight.w800, fontSize: 20),
+              CustomText(
+                  text: "verification_code".tr,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20),
               const Gap(5),
               CustomText(text: widget.email, fontSize: 12, family: "Light"),
               const Gap(12),
-              CustomText(text: "we_send_you_a_verification_code_to_verify_your_email".tr, fontSize: 16, family: "Light", maxLines: 2),
+              CustomText(
+                  text:
+                      "we_send_you_a_verification_code_to_verify_your_email".tr,
+                  fontSize: 16,
+                  family: "Light",
+                  maxLines: 2),
               const Gap(24),
               CustomAlignText(text: "enter_your_code_here".tr),
               const Gap(8),
@@ -55,12 +65,17 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     () => TextButton(
                       onPressed: () {
                         if (_controller.resendLoading.value == false) {
-                          _controller.resendOTP(email: widget.email, url: ApiUrl.activeOTPResend());
+                          _controller.resendOTP(
+                              email: widget.email,
+                              url: ApiUrl.activeOTPResend());
                         }
                       },
                       child: Text(
-                        _controller.resendLoading.value ? "Loading...." : "resend_otp".tr,
-                        style: const TextStyle(decoration: TextDecoration.underline),
+                        _controller.resendLoading.value
+                            ? "Loading...."
+                            : "resend_otp".tr,
+                        style: const TextStyle(
+                            decoration: TextDecoration.underline),
                       ),
                     ),
                   ),

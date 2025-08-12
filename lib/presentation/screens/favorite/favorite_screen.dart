@@ -28,36 +28,56 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         centerTitle: true,
         title: Text("favorite".tr),
       ),
-      bottomNavigationBar: Obx((){
-        return playController.isPlaying.value? BottomNavPlayCard(): const SizedBox();
+      bottomNavigationBar: Obx(() {
+        return playController.isPlaying.value
+            ? BottomNavPlayCard()
+            : const SizedBox();
       }),
       body: RefreshIndicator(
-        onRefresh: ()async{
+        onRefresh: () async {
           controller.pagingController.refresh();
         },
-        child: PagedListView<int, FavoritePodcast>(
+        child: PagedListView<int, FavoriteItem>(
           pagingController: controller.pagingController,
-          padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
-          builderDelegate: PagedChildBuilderDelegate<FavoritePodcast>(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          builderDelegate: PagedChildBuilderDelegate<FavoriteItem>(
             itemBuilder: (context, item, index) {
               final data = AudioPlayerModel(
-                id: item.id??"",
-                title: item.title??"",
-                image: item.cover??"",
-                categories: item.category?.title??"",
-                duration: item.audioDuration.toString(),
-                artist: item.creator?.user?.name??"",
+                id: item.id ?? "",
+                title: item.podcast?.title ?? "",
+                image: item.podcast?.creator?.profileImage ?? "",
+                categories: item.podcast?.category?.name ?? "",
+                duration: formatDuration(item.podcast?.duration ?? 0),
+                artist: item.podcast?.creator?.name ?? "",
                 url: "",
               );
               return MusicCard(
                 data: data,
-                onTap: (){},
-                // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                onTap: () => AppRouter.route.pushNamed(
+                  RoutePath.audioPlayScreen,
+                  extra: AudioPlayerModel(
+                    id: item.podcast?.id ?? "",
+                    title: item.podcast?.title ?? "",
+                    categories: item.podcast?.category?.name ?? "",
+                    image: item.podcast?.coverImage ?? "",
+                    url: "",
+                    duration: formatDuration(item.podcast?.duration ?? 0),
+                  ),
+                ),
               );
             },
           ),
         ),
       ),
     );
+  }
+
+  String formatDuration(num seconds) {
+    if (seconds < 60) {
+      return '$seconds sec';
+    } else {
+      final minutes = (seconds / 60).floor();
+      return '$minutes min';
+    }
   }
 }

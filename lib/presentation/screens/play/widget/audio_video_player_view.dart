@@ -1,60 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:video_player/video_player.dart';
-
-import '../model/play_feed_model.dart';
 
 class AudioVideoPlayerView extends StatelessWidget {
   const AudioVideoPlayerView({
     super.key,
-    required this.item,
-    required this.isAudioMode,
-    required this.videoController,
-    required this.loadingStatus,
+    required this.feedController,
   });
 
-  final PlayPodcastItem item;
-  final RxBool isAudioMode;
-  final Rx<Status> loadingStatus;
-  final Rx<VideoPlayerController?> videoController;
+  final PodcastFeedController feedController;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Obx(() {
-        final status = loadingStatus.value;
+        final status = feedController.isLoading.value;
+        final imageUrl = feedController.currentItem.value.coverImage;
 
         if (status == Status.loading) {
-          return _buildImage();
+          return _buildImage(imageUrl);
         }
 
         if (status == Status.error) {
-          return _buildImage();
+          return _buildImage(imageUrl);
         }
 
-        if (isAudioMode.value) {
-          return _buildImage();
+        if (feedController.isAudioMode.value) {
+          return _buildImage(imageUrl);
         }
 
-        final video = videoController.value;
+        final video = feedController.videoPlayerController.value;
         if (video != null && video.value.isInitialized) {
-          return AspectRatio(
-            aspectRatio: video.value.aspectRatio,
-            child: VideoPlayer(video),
-          );
+          return VideoPlayer(video);
         }
-        return _buildImage();
+        return _buildImage(imageUrl);
       }),
     );
   }
 
-  Widget _buildImage() {
+  Widget _buildImage(String? imageUrl) {
     return CustomNetworkImage(
       borderRadius: BorderRadius.circular(12),
-      imageUrl: item.coverImage,
+      imageUrl: imageUrl,
     );
   }
 }

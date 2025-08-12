@@ -38,7 +38,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
             text: "pay_now".tr,
             isLoading: controller.loading.value,
             onTap: () {
-              if(controller.selectedId.value.isNotEmpty){
+              if (controller.selectedId.value.isNotEmpty) {
                 controller.makeStripePayment(id: controller.selectedId.value);
               }
             },
@@ -56,7 +56,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                   plan: item,
                   onTap: () {
                     controller.index.value = index;
-                    controller.selectedId.value = item.id??"";
+                    controller.selectedId.value = item.id ?? "";
                   },
                 ));
           },

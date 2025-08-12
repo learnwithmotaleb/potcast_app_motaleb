@@ -10,10 +10,10 @@ class LoginModel {
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) => LoginModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 }
 
 class Data {
@@ -26,7 +26,7 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    accessToken: json["accessToken"],
-    refreshToken: json["refreshToken"],
-  );
+        accessToken: json["accessToken"],
+        refreshToken: json["refreshToken"],
+      );
 }

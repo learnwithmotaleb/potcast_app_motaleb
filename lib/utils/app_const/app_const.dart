@@ -6,12 +6,17 @@ class AppConstants {
   static const String countryCode = "countryCode";
   static const String selectedValue = "selectedValue";
   static List<LanguageModel> languages = [
-    LanguageModel(imageUrl: "", languageName: 'English', countryCode: 'US', languageCode: 'en'),
+    LanguageModel(
+        imageUrl: "",
+        languageName: 'English',
+        countryCode: 'US',
+        languageCode: 'en'),
     // LanguageModel(imageUrl: "", languageName: 'Spanish', countryCode: 'ES', languageCode: 'es'),
   ];
 
-  static const String googleMapAPI = "AIzaSyAszXC1be8aJ37eHuNcBm_-O1clWkPUwV4";
-  static const String defaultCoverImage = "https://img.freepik.com/free-photo/man-plays-acoustic-guitar-closeup_169016-20618.jpg";
+  static const String googleMapAPI = "AIzaSyCKcH-bWVaa5B2ol6NCShyi463MpqoR_44";
+  static const String defaultCoverImage =
+      "https://img.freepik.com/free-photo/man-plays-acoustic-guitar-closeup_169016-20618.jpg";
 
   static const String baseUrl = "http://182.252.68.230:7003";
   static const String bannerAndroid = "ca-app-pub-3940256099942544/9214589741";
@@ -34,5 +39,3 @@ enum SelectedAddPostScreenType {
   // live,
   none
 }
-
-

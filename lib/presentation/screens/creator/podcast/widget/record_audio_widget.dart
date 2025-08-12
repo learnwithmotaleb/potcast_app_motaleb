@@ -24,7 +24,8 @@ class RecordAudioWidget extends StatelessWidget {
       if (controller.createLoading.value) {
         return Card(
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -41,7 +42,8 @@ class RecordAudioWidget extends StatelessWidget {
                     ),
                     const Spacer(),
                     CustomText(
-                      text: "${(controller.uploadProgress.value * 100).toStringAsFixed(0)}%",
+                      text:
+                          "${(controller.uploadProgress.value * 100).toStringAsFixed(0)}%",
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
                     ),
@@ -92,7 +94,7 @@ class RecordAudioWidget extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Obx(() {
-              if(controller.isPlaying.value){
+              if (controller.isPlaying.value) {
                 return AudioFileWaveforms(
                   size: Size(width, 70),
                   playerController: playerController,
@@ -116,7 +118,11 @@ class RecordAudioWidget extends StatelessWidget {
                   showTop: true,
                   showBottom: true,
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFBBD2C5), Color(0xFF536976), Color(0xFF292E49)],
+                    colors: [
+                      Color(0xFFBBD2C5),
+                      Color(0xFF536976),
+                      Color(0xFF292E49)
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ).createShader(Rect.fromLTWH(0, 0, width, 70)),
@@ -125,7 +131,8 @@ class RecordAudioWidget extends StatelessWidget {
             }),
           ),
           const Gap(24),
-          Obx(() => _buildControlButtons(controller, playerController, recorderController)),
+          Obx(() => _buildControlButtons(
+              controller, playerController, recorderController)),
           const Gap(12),
         ],
       );
@@ -133,8 +140,8 @@ class RecordAudioWidget extends StatelessWidget {
   }
 }
 
-Widget _buildControlButtons(
-    PodcastAudioController controller, PlayerController player, RecorderController recorder) {
+Widget _buildControlButtons(PodcastAudioController controller,
+    PlayerController player, RecorderController recorder) {
   if (!controller.isRecording.value) {
     if (controller.recordedFilePath.value?.isNotEmpty ?? false) {
       return Column(
@@ -148,8 +155,12 @@ Widget _buildControlButtons(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 PrimaryButton(
-                  text: controller.isPausePlaying.value ? "Resume Audio" : "Pause Audio",
-                  color: controller.isPausePlaying.value ? Colors.green : Colors.orangeAccent,
+                  text: controller.isPausePlaying.value
+                      ? "Resume Audio"
+                      : "Pause Audio",
+                  color: controller.isPausePlaying.value
+                      ? Colors.green
+                      : Colors.orangeAccent,
                   onPressed: () => controller.isPausePlaying.value
                       ? controller.resumeAudio(player)
                       : controller.pauseAudio(player),
@@ -242,7 +253,8 @@ class PrimaryButton extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
       ),
     );
   }

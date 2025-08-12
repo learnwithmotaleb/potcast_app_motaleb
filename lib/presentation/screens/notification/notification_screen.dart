@@ -22,13 +22,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () => AppRouter.route.pop(),
-            icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => AppRouter.route.pop(),
+          icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: Text("notification".tr,),
+        title: Text(
+          "notification".tr,
+        ),
       ),
       body: RefreshIndicator(
-        onRefresh: ()async{
+        onRefresh: () async {
           controller.pagingController.refresh();
         },
         child: PagedListView<int, NotificationData>(

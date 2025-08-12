@@ -9,11 +9,12 @@ class NotificationModel {
     this.data,
   });
 
-  factory NotificationModel.fromJson(Map<String, dynamic> json) => NotificationModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory NotificationModel.fromJson(Map<String, dynamic> json) =>
+      NotificationModel(
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 }
 
 class Data {
@@ -24,8 +25,11 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    notifications: json["notifications"] == null ? [] : List<NotificationData>.from(json["notifications"]!.map((x) => NotificationData.fromJson(x))),
-  );
+        notifications: json["notifications"] == null
+            ? []
+            : List<NotificationData>.from(json["notifications"]!
+                .map((x) => NotificationData.fromJson(x))),
+      );
 }
 
 class NotificationData {
@@ -45,12 +49,17 @@ class NotificationData {
     this.id,
   });
 
-  factory NotificationData.fromJson(Map<String, dynamic> json) => NotificationData(
-    subject: json["subject"],
-    podcast: json["podcast"],
-    message: json["message"],
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-    id: json["_id"],
-  );
+  factory NotificationData.fromJson(Map<String, dynamic> json) =>
+      NotificationData(
+        subject: json["subject"],
+        podcast: json["podcast"],
+        message: json["message"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+        id: json["_id"],
+      );
 }

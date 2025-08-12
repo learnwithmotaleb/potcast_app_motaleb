@@ -1,12 +1,11 @@
 import 'dart:io';
-
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-
-final sharedPlayer = AudioPlayer();
+import 'package:just_audio_background/just_audio_background.dart';
 
 Future<Duration?> getAudioDuration(File file) async {
+  final sharedPlayer = AudioPlayer();
+
   try {
     final audioSource = AudioSource.uri(
       Uri.file(file.path),
@@ -26,13 +25,12 @@ Future<Duration?> getAudioDuration(File file) async {
       duration = sharedPlayer.duration;
       retryCount++;
     }
-
+    await sharedPlayer.dispose();
     return duration;
   } catch (e) {
     debugPrint("Logger 3");
     debugPrint(e.toString());
-    return null;
-  } finally {
     await sharedPlayer.dispose();
+    return null;
   }
 }

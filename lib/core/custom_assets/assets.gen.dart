@@ -205,6 +205,7 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/add.png
   AssetGenImage get add => const AssetGenImage('assets/images/add.png');
+
   /// File path: assets/images/add.png
   AssetGenImage get remove => const AssetGenImage('assets/images/remove.png');
 
@@ -284,7 +285,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/video.png
   AssetGenImage get video => const AssetGenImage('assets/images/video.png');
 
-
   /// File path: assets/images/video.png
   AssetGenImage get delete => const AssetGenImage('assets/images/delete.png');
 
@@ -312,8 +312,8 @@ class $AssetsImagesGen {
         upload,
         verification,
         video,
-    remove,
-    delete
+        remove,
+        delete
       ];
 }
 

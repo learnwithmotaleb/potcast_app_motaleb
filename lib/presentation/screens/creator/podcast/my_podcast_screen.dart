@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
-import 'package:podcast/presentation/widget/card/podcast_card.dart';
+import 'package:podcast/presentation/widget/card/creator_card.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'controller/podcast_controller.dart';
 import 'model/my_podcast_model.dart';
@@ -34,7 +34,7 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
           backgroundColor: AppColors.blackColor,
           child: const Center(child: Icon(Iconsax.add, size: 80)),
         ),
-      ),*//*
+      ),*/ /*
 
       body: RefreshIndicator(
         onRefresh: ()async{

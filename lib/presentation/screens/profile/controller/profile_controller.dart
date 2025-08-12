@@ -9,7 +9,7 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
-class ProfileController extends GetxController{
+class ProfileController extends GetxController {
   ApiClient apiClient = ApiClient();
   final ImagePicker _picker = ImagePicker();
   Rx<ProfileModel> profile = ProfileModel().obs;
@@ -18,30 +18,33 @@ class ProfileController extends GetxController{
   RxString gender = "".obs;
 
   Future<void> pickImage() async {
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile? image =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
       selectedImage.value = image;
     }
   }
+
   Future<void> pickCoverImage() async {
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile? image =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
       selectedCoverImage.value = image;
     }
   }
 
-  void updateGender({required String value}){
+  void updateGender({required String value}) {
     gender.value = value;
   }
-
 
   /// ============================= GET Profile Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
   Future<void> getProfile() async {
-    try{
+    try {
       loadingMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.profile(),showResult: true);
+      var response =
+          await apiClient.get(url: ApiUrl.profile(), showResult: true);
       if (response.statusCode == 200) {
         profile.value = ProfileModel.fromJson(response.body);
         loadingMethod(Status.completed);
@@ -57,7 +60,7 @@ class ProfileController extends GetxController{
           loadingMethod(Status.error);
         }
       }
-    }catch(e){
+    } catch (e) {
       loadingMethod(Status.error);
     }
   }
@@ -67,16 +70,22 @@ class ProfileController extends GetxController{
   editLoadingMethod(bool status) => editLoading.value = status;
 
   void editProfile({required Map<String, String> body}) async {
-    try{
+    try {
       editLoadingMethod(true);
       final List<MultipartBody> multipartBody = [];
-      if(selectedImage.value != null){
-        multipartBody.add(MultipartBody("profile_image", File(selectedImage.value?.path??"")));
+      if (selectedImage.value != null) {
+        multipartBody.add(MultipartBody(
+            "profile_image", File(selectedImage.value?.path ?? "")));
       }
-      if(selectedCoverImage.value != null){
-        multipartBody.add(MultipartBody("profile_cover", File(selectedCoverImage.value?.path??"")));
+      if (selectedCoverImage.value != null) {
+        multipartBody.add(MultipartBody(
+            "profile_cover", File(selectedCoverImage.value?.path ?? "")));
       }
-      var response = await apiClient.multipartRequest(url: ApiUrl.profileEdit(),body: body, reqType: "PATCH", multipartBody: multipartBody);
+      var response = await apiClient.multipartRequest(
+          url: ApiUrl.profileEdit(),
+          body: body,
+          reqType: "PATCH",
+          multipartBody: multipartBody);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);
@@ -86,19 +95,21 @@ class ProfileController extends GetxController{
         getProfile();
       } else {
         editLoadingMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
-    }catch (err){
+    } catch (err) {
       editLoadingMethod(false);
     }
   }
 
   /// ============================= EDIT Profile Info =====================================
   void editProfileOnlyBody({required Map<String, String> body}) async {
-    try{
+    try {
       editLoadingMethod(true);
-      var response = await apiClient.patch(url: ApiUrl.profileEdit(),body: body, showResult: true);
+      var response = await apiClient.patch(
+          url: ApiUrl.profileEdit(), body: body, showResult: true);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);
@@ -106,14 +117,14 @@ class ProfileController extends GetxController{
         getProfile();
       } else {
         editLoadingMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
-    }catch (err){
+    } catch (err) {
       editLoadingMethod(false);
     }
   }
-
 
   @override
   void onInit() {

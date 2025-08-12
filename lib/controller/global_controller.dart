@@ -6,9 +6,10 @@ import 'package:podcast/utils/app_const/app_const.dart';
 
 import '../presentation/screens/creator/podcast/model/categories_subcategories_model.dart';
 
-class GlobalController extends GetxController{
+class GlobalController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
-  Rx<CategoriesSubcategoriesModel> categories = CategoriesSubcategoriesModel().obs;
+  Rx<CategoriesSubcategoriesModel> categories =
+      CategoriesSubcategoriesModel().obs;
 
   /// ============================= GET Categories =====================================
   var loading = Status.completed.obs;
@@ -17,7 +18,8 @@ class GlobalController extends GetxController{
   Future<void> getCategories() async {
     try {
       loadingMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.category(), showResult: true);
+      var response =
+          await apiClient.get(url: ApiUrl.category(), showResult: true);
 
       if (response.statusCode == 200) {
         categories.value = CategoriesSubcategoriesModel.fromJson(response.body);

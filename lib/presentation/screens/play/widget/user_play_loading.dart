@@ -16,8 +16,12 @@ class UserPlayLoading extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width;
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Shimmer.fromColors(
-      baseColor: isDarkMode?AppColors.whiteColor.withOpacity(0.2):AppColors.blackColor.withOpacity(0.2),
-      highlightColor: isDarkMode?AppColors.whiteColor.withOpacity(0.5):AppColors.blackColor.withOpacity(0.5),
+      baseColor: isDarkMode
+          ? AppColors.whiteColor.withOpacity(0.2)
+          : AppColors.blackColor.withOpacity(0.2),
+      highlightColor: isDarkMode
+          ? AppColors.whiteColor.withOpacity(0.5)
+          : AppColors.blackColor.withOpacity(0.5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +36,10 @@ class UserPlayLoading extends StatelessWidget {
                 ),
                 Positioned(
                   top: 30,
-                  child: IconButton(icon: const Icon(Icons.arrow_back_ios,color: AppColors.blackColor),onPressed: (){}),
+                  child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios,
+                          color: AppColors.blackColor),
+                      onPressed: () {}),
                 ),
               ],
             ),
@@ -57,11 +64,10 @@ class UserPlayLoading extends StatelessWidget {
                   children: [
                     Container(
                       height: 80.h,
-                      width: width/3,
+                      width: width / 3,
                       decoration: BoxDecoration(
-                        color: AppColors.searchBoxColor,
-                        borderRadius: BorderRadius.circular(12)
-                      ),
+                          color: AppColors.searchBoxColor,
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     const Gap(5),
                     Column(
@@ -70,19 +76,19 @@ class UserPlayLoading extends StatelessWidget {
                       children: [
                         Container(
                           height: 5,
-                          width: width/3,
+                          width: width / 3,
                           color: AppColors.searchBoxColor,
                         ),
                         const Gap(3),
                         Container(
                           height: 5,
-                          width: width/2-10,
+                          width: width / 2 - 10,
                           color: AppColors.searchBoxColor,
                         ),
                         const Gap(3),
                         Container(
                           height: 5,
-                          width: width/2+20,
+                          width: width / 2 + 20,
                           color: AppColors.searchBoxColor,
                         ),
                       ],
@@ -101,13 +107,25 @@ class UserPlayLoading extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: Assets.icons.favorite.svg(height: 20.w,width: 20.w,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                      onPressed: (){},
+                      icon: Assets.icons.favorite.svg(
+                          height: 20.w,
+                          width: 20.w,
+                          colorFilter: isDarkMode
+                              ? null
+                              : const ColorFilter.mode(
+                                  AppColors.blackColor, BlendMode.srcIn)),
+                      onPressed: () {},
                       iconSize: 36,
                     ),
                     IconButton(
-                      icon: Assets.icons.audioLeft.svg(height: 20.w,width: 20.w,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                      onPressed: (){},
+                      icon: Assets.icons.audioLeft.svg(
+                          height: 20.w,
+                          width: 20.w,
+                          colorFilter: isDarkMode
+                              ? null
+                              : const ColorFilter.mode(
+                                  AppColors.blackColor, BlendMode.srcIn)),
+                      onPressed: () {},
                       iconSize: 36,
                     ),
                     IconButton(
@@ -116,13 +134,22 @@ class UserPlayLoading extends StatelessWidget {
                       iconSize: 48,
                     ),
                     IconButton(
-                      icon: Assets.icons.audioRight.svg(height: 20.w,width: 20.w,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
-                      onPressed: (){},
+                      icon: Assets.icons.audioRight.svg(
+                          height: 20.w,
+                          width: 20.w,
+                          colorFilter: isDarkMode
+                              ? null
+                              : const ColorFilter.mode(
+                                  AppColors.blackColor, BlendMode.srcIn)),
+                      onPressed: () {},
                       iconSize: 36,
                     ),
                     LikeButton(
                       likeBuilder: (bool isLiked) {
-                        return Icon(Iconsax.like_1, color:isDarkMode?AppColors.whiteColor:AppColors.blackColor);
+                        return Icon(Iconsax.like_1,
+                            color: isDarkMode
+                                ? AppColors.whiteColor
+                                : AppColors.blackColor);
                       },
                     ),
                   ],
@@ -130,16 +157,16 @@ class UserPlayLoading extends StatelessWidget {
                 const Gap(24),
                 Container(
                   width: width,
-                  padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   decoration: BoxDecoration(
-                      color:const  Color(0xFF1C1C77),
-                      borderRadius: BorderRadius.circular(8.r)
-                  ),
+                      color: const Color(0xFF1C1C77),
+                      borderRadius: BorderRadius.circular(8.r)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Assets.icons.comments.svg(height: 20.h,width: 20.h),
-                      Assets.icons.donate.svg(height: 20.h,width: 20.h),
+                      Assets.icons.comments.svg(height: 20.h, width: 20.h),
+                      Assets.icons.donate.svg(height: 20.h, width: 20.h),
                     ],
                   ),
                 ),

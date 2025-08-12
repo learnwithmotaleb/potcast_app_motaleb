@@ -27,56 +27,77 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("my_play_list".tr),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 20.0, bottom: 20),
         child: FloatingActionButton(
-          onPressed: () => AppRouter.route.pushNamed(RoutePath.playlistAddScreen),
+          onPressed: () =>
+              AppRouter.route.pushNamed(RoutePath.playlistAddScreen),
           backgroundColor: AppColors.blackColor,
-          child: const Center(child: Icon(Iconsax.add, size: 40, )),
+          child: const Center(
+              child: Icon(
+            Iconsax.add,
+            size: 40,
+          )),
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () async{
+        onRefresh: () async {
           controller.playListController.refresh();
         },
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
                 child: Row(
                   children: [
-                    Assets.icons.sort.svg(height: 15, width: 15, colorFilter: isDarkMode ? null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
+                    Assets.icons.sort.svg(
+                        height: 15,
+                        width: 15,
+                        colorFilter: isDarkMode
+                            ? null
+                            : const ColorFilter.mode(
+                                AppColors.blackColor, BlendMode.srcIn)),
                     const Gap(5),
-                    CustomText(text: "recently_added".tr, fontWeight: FontWeight.w600, fontSize: 16),
+                    CustomText(
+                        text: "recently_added".tr,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16),
                   ],
                 ),
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
               sliver: PagedSliverList<int, Playlist>(
                 pagingController: controller.playListController,
                 builderDelegate: PagedChildBuilderDelegate<Playlist>(
                   itemBuilder: (context, item, index) {
                     final data = AudioPlayerModel(
-                      id: item.id??"",
-                      title: item.title??"",
-                      image: item.cover??"",
-                      categories: "Total Songs ${item.total??0.0}",
+                      id: item.id ?? "",
+                      title: item.title ?? "",
+                      image: item.cover ?? "",
+                      categories: "Total Songs ${item.total ?? 0.0}",
                       url: "",
                       duration: "",
                     );
                     return MusicCard(
                       data: data,
-                      onTap: () => AppRouter.route.pushNamed(RoutePath.playlistSongsScreen, extra: item.id??""),
-                      onLongPress: (){
-                        if(!controller.deleteLoading.value){
-                          controller.playlistDelete(id: item.id??"", context: context);
+                      onTap: () => AppRouter.route.pushNamed(
+                          RoutePath.playlistSongsScreen,
+                          extra: item.id ?? ""),
+                      onLongPress: () {
+                        if (!controller.deleteLoading.value) {
+                          controller.playlistDelete(
+                              id: item.id ?? "", context: context);
                         }
                       },
                     );

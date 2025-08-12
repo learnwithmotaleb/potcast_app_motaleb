@@ -26,7 +26,8 @@ class UserHomeCategoriesSection extends StatelessWidget {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 10.0, top: 8, right: 90, bottom: 2),
+              padding: const EdgeInsets.only(
+                  left: 10.0, top: 8, right: 90, bottom: 2),
               child: CustomText(
                 text: category?.name ?? "",
                 color: AppColors.whiteColor,
@@ -57,4 +58,3 @@ class UserHomeCategoriesSection extends StatelessWidget {
     );
   }
 }
-

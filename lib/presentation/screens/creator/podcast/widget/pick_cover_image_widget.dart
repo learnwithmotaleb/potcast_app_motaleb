@@ -29,54 +29,52 @@ class PickCoverImageWidget extends StatelessWidget {
           border: Border.all(color: AppColors.whiteColor),
         ),
         padding: const EdgeInsets.all(1),
-        child: Builder(
-          builder: (context) {
-            if(selectedImage == null){
-              return Container(
-                width: width,
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: AppColors.blackColor,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Assets.icons.cloudAdd.svg(
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.whiteColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    const Gap(8),
-                    CustomText(
-                      text: "Choose_a_file_or_it_here".tr,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.whiteColor,
-                      fontSize: 16,
-                    ),
-                    const Gap(8),
-                    const CustomText(
-                      text: "JPEG and PNG formats",
-                      fontWeight: FontWeight.w100,
-                    ),
-                  ],
-                ),
-              );
-            }
-            return SizedBox(
-              height: 150,
+        child: Builder(builder: (context) {
+          if (selectedImage == null) {
+            return Container(
               width: width,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  File(selectedImage?.path ?? ""),
-                  fit: BoxFit.cover,
-                ),
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                color: AppColors.blackColor,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Assets.icons.cloudAdd.svg(
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.whiteColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  const Gap(8),
+                  CustomText(
+                    text: "Choose_a_file_or_it_here".tr,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.whiteColor,
+                    fontSize: 16,
+                  ),
+                  const Gap(8),
+                  const CustomText(
+                    text: "JPEG and PNG formats",
+                    fontWeight: FontWeight.w100,
+                  ),
+                ],
               ),
             );
           }
-        ),
+          return SizedBox(
+            height: 150,
+            width: width,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(selectedImage?.path ?? ""),
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

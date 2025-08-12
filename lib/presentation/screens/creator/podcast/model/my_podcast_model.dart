@@ -12,11 +12,16 @@ class MyPodcastModel {
   });
 
   factory MyPodcastModel.fromJson(Map<String, dynamic> json) => MyPodcastModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? [] : List<MyPodcastData>.from(json["data"]!.map((x) => MyPodcastData.fromJson(x))),
-    pagination: json["pagination"] == null ? null : Pagination.fromJson(json["pagination"]),
-  );
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null
+            ? []
+            : List<MyPodcastData>.from(
+                json["data"]!.map((x) => MyPodcastData.fromJson(x))),
+        pagination: json["pagination"] == null
+            ? null
+            : Pagination.fromJson(json["pagination"]),
+      );
 }
 
 class MyPodcastData {
@@ -61,25 +66,30 @@ class MyPodcastData {
   });
 
   factory MyPodcastData.fromJson(Map<String, dynamic> json) => MyPodcastData(
-    id: json["_id"],
-    creator: json["creator"] == null ? null : Creator.fromJson(json["creator"]),
-    category: json["category"] == null ? null : Category.fromJson(json["category"]),
-    subCategory: json["subCategory"] == null ? null : Category.fromJson(json["subCategory"]),
-    title: json["title"],
-    description: json["description"],
-    location: json["location"],
-    cover: json["cover"],
-    coverFormat: json["coverFormat"],
-    coverSize: json["coverSize"],
-    audio: json["audio"],
-    audioDuration: json["audioDuration"],
-    audioFormat: json["audioFormat"],
-    audioSize: json["audioSize"],
-    totalLikes: json["totalLikes"],
-    totalViews: json["totalViews"],
-    totalComments: json["totalComments"],
-    totalFavorites: json["totalFavorites"],
-  );
+        id: json["_id"],
+        creator:
+            json["creator"] == null ? null : Creator.fromJson(json["creator"]),
+        category: json["category"] == null
+            ? null
+            : Category.fromJson(json["category"]),
+        subCategory: json["subCategory"] == null
+            ? null
+            : Category.fromJson(json["subCategory"]),
+        title: json["title"],
+        description: json["description"],
+        location: json["location"],
+        cover: json["cover"],
+        coverFormat: json["coverFormat"],
+        coverSize: json["coverSize"],
+        audio: json["audio"],
+        audioDuration: json["audioDuration"],
+        audioFormat: json["audioFormat"],
+        audioSize: json["audioSize"],
+        totalLikes: json["totalLikes"],
+        totalViews: json["totalViews"],
+        totalComments: json["totalComments"],
+        totalFavorites: json["totalFavorites"],
+      );
 }
 
 class Category {
@@ -92,9 +102,9 @@ class Category {
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-    id: json["_id"],
-    title: json["title"],
-  );
+        id: json["_id"],
+        title: json["title"],
+      );
 }
 
 class Creator {
@@ -105,8 +115,8 @@ class Creator {
   });
 
   factory Creator.fromJson(Map<String, dynamic> json) => Creator(
-    user: json["user"] == null ? null : User.fromJson(json["user"]),
-  );
+        user: json["user"] == null ? null : User.fromJson(json["user"]),
+      );
 }
 
 class User {
@@ -117,8 +127,8 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    name: json["name"],
-  );
+        name: json["name"],
+      );
 }
 
 class Pagination {
@@ -133,8 +143,8 @@ class Pagination {
   });
 
   factory Pagination.fromJson(Map<String, dynamic> json) => Pagination(
-    page: json["page"],
-    limit: json["limit"],
-    total: json["total"],
-  );
+        page: json["page"],
+        limit: json["limit"],
+        total: json["total"],
+      );
 }

@@ -77,7 +77,8 @@ class _IntroScreenState extends State<IntroScreen> {
                             Gap(22.h),
                             CustomButton(
                               text: "get_started".tr,
-                              onTap: () => AppRouter.route.goNamed(RoutePath.loginScreen),
+                              onTap: () => AppRouter.route
+                                  .goNamed(RoutePath.loginScreen),
                             ),
                           ],
                         ),

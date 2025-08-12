@@ -1,4 +1,4 @@
-class PagingNextKey{
+class PagingNextKey {
   final int pageKey;
   final String cursor;
 

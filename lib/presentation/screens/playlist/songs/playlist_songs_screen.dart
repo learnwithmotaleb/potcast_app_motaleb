@@ -45,7 +45,7 @@ class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
         title: Text("my_play_list".tr),
       ),
       body: RefreshIndicator(
-        onRefresh: () async{
+        onRefresh: () async {
           controller.pagingController.refresh();
         },
         child: PagedListView<int, PlayListPodcast>(
@@ -53,18 +53,17 @@ class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
           builderDelegate: PagedChildBuilderDelegate<PlayListPodcast>(
             itemBuilder: (context, item, index) {
               final data = AudioPlayerModel(
-                id: item.id??"",
-                title: item.title??"",
-                image: item.cover??"",
-                categories: item.category?.title??"",
-                duration: item.audioDuration.toString(),
-                artist: item.creator?.user?.name??"",
-                url: ""
-              );
+                  id: item.id ?? "",
+                  title: item.title ?? "",
+                  image: item.cover ?? "",
+                  categories: item.category?.title ?? "",
+                  duration: item.audioDuration.toString(),
+                  artist: item.creator?.user?.name ?? "",
+                  url: "");
 
               return MusicCard(
                 data: data,
-                onTap: (){},
+                onTap: () {},
                 // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
               );
             },

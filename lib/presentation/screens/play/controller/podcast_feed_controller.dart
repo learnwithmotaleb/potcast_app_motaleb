@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/core/dependency/path.dart';
+import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
@@ -19,6 +20,7 @@ class PodcastFeedController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final Rx<VideoPlayerController?> videoPlayerController = Rx(null);
   final AudioPlayer audioPlayer = AudioPlayer();
+  final PageController pageController = PageController();
 
   final RxBool isAudioMode = true.obs;
   final RxBool isPlaying = false.obs;
@@ -30,18 +32,22 @@ class PodcastFeedController extends GetxController {
 
   final RxString currentMediaId = ''.obs;
   final Rx<PlayPodcastItem> currentItem = PlayPodcastItem().obs;
+  final RxInt currentIndex = 0.obs;
   final RxBool isLike = false.obs;
   final RxBool isFavorite = false.obs;
 
   bool isLoadingMove = false;
+  bool isPageAnimating = false;
 
   Future<void> getPodcast({
     String? cursor,
     required int pageKey,
     bool? reels,
     bool? popular,
+    String? firstPodcastId,
   }) async {
-    debugPrint('📡 getPodcast() called with cursor: $cursor, reels: $reels, popular: $popular');
+    debugPrint(
+        '📡 getPodcast() called with cursor: $cursor, reels: $reels, popular: $popular');
 
     if (isLoadingMove) {
       debugPrint('❌ getPodcast() already loading, returning early');
@@ -52,18 +58,26 @@ class PodcastFeedController extends GetxController {
     debugPrint('🔄 getPodcast() setting isLoadingMove = true');
 
     try {
-      debugPrint(
-          '🌐 Making API request to: ${ApiUrl.playFeed(cursor: cursor, reels: reels, popular: popular)}');
+      debugPrint('🌐 Making API request to: ${ApiUrl.playFeed(
+        cursor: cursor,
+        reels: reels,
+        popular: popular,
+        pageKey: pageKey,
+        firstPodcastId: firstPodcastId,
+      )}');
 
       final response = await apiClient.get(
           url: ApiUrl.playFeed(
             cursor: cursor,
             reels: reels,
             popular: popular,
+            pageKey: pageKey,
+            firstPodcastId: firstPodcastId,
           ),
           showResult: true);
 
-      debugPrint('📥 API Response received - Status Code: ${response.statusCode}');
+      debugPrint(
+          '📥 API Response received - Status Code: ${response.body["data"]["podcasts"].length}');
 
       if (response.statusCode == 200) {
         final userServiceAll = PlayFeedModel.fromJson(response.body);
@@ -75,29 +89,26 @@ class PodcastFeedController extends GetxController {
         debugPrint('   📊 New items count: ${newItems.length}');
         debugPrint('   🔄 Has more: $hasMore');
         debugPrint('   📍 Next cursor: $nextCursor');
-        debugPrint('   📋 Current total items: ${pagingController.itemList?.length ?? 0}');
+        debugPrint(
+            '   📋 Current total items: ${pagingController.itemList?.length ?? 0}');
 
         if (hasMore && nextCursor.isNotEmpty && newItems.isNotEmpty) {
           debugPrint('📄 Appending page with ${newItems.length} items');
-          pagingController.appendPage(
-              newItems, PagingNextKey(cursor: nextCursor, pageKey: pageKey + 1));
+          pagingController.appendPage(newItems,
+              PagingNextKey(cursor: nextCursor, pageKey: pageKey + 1));
         } else {
           debugPrint('🏁 Appending last page with ${newItems.length} items');
           pagingController.appendLastPage(newItems);
-          debugPrint('   📋 Current total items: ${pagingController.itemList?.length ?? 0}');
+          debugPrint(
+              '   📋 Current total items: ${pagingController.itemList?.length ?? 0}');
         }
 
         if (pageKey == 1) {
           final items = pagingController.itemList;
           if (items != null && items.isNotEmpty) {
             final firstItem = items.first;
-
-            if (currentMediaId.value != firstItem.id) {
-              debugPrint("[Feed] Auto-playing first podcast ID: ${firstItem.id}");
-              playPodcast(item: firstItem);
-            } else {
-              debugPrint("[Feed] First podcast already playing: ${firstItem.id}");
-            }
+            currentIndex.value = 0;
+            playPodcast(item: firstItem, updatePage: false);
           }
         }
       } else {
@@ -121,27 +132,40 @@ class PodcastFeedController extends GetxController {
     isLoading.value = status;
   }
 
-  Future<void> playPodcast({required PlayPodcastItem item}) async {
-    debugPrint('🎵 playPodcast() called for item: ${item.id} - "${item.title}"');
+  Future<void> playPodcast(
+      {required PlayPodcastItem item, bool updatePage = true}) async {
+    debugPrint(
+        '🎵 playPodcast() called for item: ${item.id} - "${item.title}"');
 
     try {
-      if (currentMediaId.value == item.id) {
-        debugPrint("⚠️ Media ID ${item.id} is already playing, skipping");
+/*      if (currentMediaId.value == item.id) {
+        debugPrint("⚠️ Media ID ${item.id}/ ${currentMediaId.value} is already playing, skipping");
         return;
-      }
+      }*/
 
-      debugPrint('📱 Setting current item and loading state');
       currentItem.value = item;
+      isFavorite.value = item.isBookmark ?? false;
       loadingMethod(Status.loading);
 
-      debugPrint('🧹 Cleaning up previous media resources');
+      // Update page if needed and not already animating
+      if (updatePage && !isPageAnimating) {
+        final items = pagingController.itemList;
+        if (items != null) {
+          final index = items.indexWhere((i) => i.id == item.id);
+          if (index != -1 && index != currentIndex.value) {
+            debugPrint('📄 Updating page to index: $index');
+            _animateToPage(index);
+          }
+        }
+      }
+
       videoPlayerController.value?.removeListener(_updateVideoProgress);
       videoPlayerController.value?.dispose();
       audioPlayer.stop();
       videoPlayerController.value = null;
 
-      debugPrint('🔍 Getting content type for URL: ${item.audioUrl}');
-      final contentType = await getContentType(item.audioUrl);
+      debugPrint('🔍 Getting content type for URL: ${item.podcastUrl}');
+      final contentType = await getContentType(item.podcastUrl);
       debugPrint('📁 Content type detected: $contentType');
 
       if (contentType != null) {
@@ -153,79 +177,91 @@ class PodcastFeedController extends GetxController {
           artUri: Uri.parse(item.coverImage ?? ""),
         );
 
-        debugPrint('🎼 Created MediaItem: ${mediaItem.title} by ${mediaItem.artist}');
+        debugPrint(
+            '🎼 Created MediaItem: ${mediaItem.title} by ${mediaItem.artist}');
 
         if (contentType.startsWith('video')) {
-          debugPrint('🎥 Content type is VIDEO, loading video and audio');
-          _loadVideo(item.audioUrl ?? "").then((value) {
+          _loadVideo(item.podcastUrl ?? "").then((value) {
             if (value) {
-              debugPrint('✅ Video loaded successfully, starting playback');
               loadingMethod(Status.completed);
               isPlaying.value = true;
               isAudioMode.value = false;
               videoPlayerController.value?.play();
               currentMediaId.value = item.id ?? "";
-              debugPrint('🎬 Video playback started, currentMediaId: ${currentMediaId.value}');
             } else {
-              debugPrint('❌ Video loading failed');
               currentMediaId.value = '';
               loadingMethod(Status.error);
             }
           });
-          _loadAudio(url: item.audioUrl ?? "", media: mediaItem);
+          _loadAudio(url: item.podcastUrl ?? "", media: mediaItem);
         } else if (contentType.startsWith('audio')) {
-          debugPrint('🔊 Content type is AUDIO, loading audio only');
-          final audioRes = await _loadAudio(url: item.audioUrl ?? "", media: mediaItem);
+          final audioRes =
+              await _loadAudio(url: item.podcastUrl ?? "", media: mediaItem);
           if (audioRes) {
-            debugPrint('✅ Audio loaded successfully, starting playback');
             loadingMethod(Status.completed);
             audioPlayer.play();
             isPlaying.value = true;
             currentMediaId.value = item.id ?? "";
             isAudioMode.value = true;
-            debugPrint('🎵 Audio playback started, currentMediaId: ${currentMediaId.value}');
           } else {
-            debugPrint('❌ Audio loading failed');
             currentMediaId.value = '';
             loadingMethod(Status.error);
           }
         } else {
-          debugPrint('❓ Unknown content type: $contentType');
           currentMediaId.value = '';
           loadingMethod(Status.noDataFound);
         }
       } else {
-        debugPrint('❌ Could not determine content type');
         currentMediaId.value = '';
         loadingMethod(Status.error);
       }
+
+      Future.delayed(const Duration(seconds: 5), () {
+        if (isLoading.value == Status.completed) {
+          debugPrint('⏰ 5 seconds passed, calling videoPodcast...');
+          viewPodcast(id: item.id ?? "");
+        }
+      });
     } catch (e) {
-      debugPrint("💥 playPodcast() Exception: ${e.toString()}");
-      debugPrint('📍 Stack trace: ${StackTrace.current}');
       currentMediaId.value = '';
       loadingMethod(Status.error);
     }
   }
 
+  // Helper method to animate to a specific page
+  void _animateToPage(int index) {
+    if (isPageAnimating) {
+      return;
+    }
+
+    isPageAnimating = true;
+
+    pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    ).then((_) {
+      isPageAnimating = false;
+    }).catchError((error) {
+      isPageAnimating = false;
+    });
+  }
+
   void _updateVideoProgress() {
-    if ((videoPlayerController.value?.value.isInitialized ?? false) && !isAudioMode.value) {
+    if ((videoPlayerController.value?.value.isInitialized ?? false) &&
+        !isAudioMode.value) {
       final controller = videoPlayerController.value!;
       final position = controller.value.position;
       final duration = controller.value.duration;
-      final buffered = controller.value.buffered.lastOrNull?.end ?? Duration.zero;
+      final buffered =
+          controller.value.buffered.lastOrNull?.end ?? Duration.zero;
 
       currentPosition.value = position;
       totalDuration.value = duration;
       bufferedPosition.value = buffered;
 
-      // Only log every 5 seconds to avoid spam
-      if (position.inSeconds % 5 == 0) {
-        debugPrint(
-            '🎬 Video progress: ${_formatDuration(position)} / ${_formatDuration(duration)}');
-      }
-
-      if (controller.value.position >= controller.value.duration && !controller.value.isPlaying) {
-        debugPrint('🏁 Video completed, playing next podcast');
+      if (controller.value.position >= controller.value.duration &&
+          !controller.value.isPlaying) {
         playNextPodcast();
       }
     }
@@ -257,7 +293,8 @@ class PodcastFeedController extends GetxController {
     return null;
   }
 
-  Future<bool> _loadAudio({required String url, required MediaItem media}) async {
+  Future<bool> _loadAudio(
+      {required String url, required MediaItem media}) async {
     final startTime = DateTime.now();
     debugPrint('🔊 _loadAudio() started at $startTime');
     debugPrint('   🎼 Media: "${media.title}" by ${media.artist}');
@@ -273,7 +310,8 @@ class PodcastFeedController extends GetxController {
         preload: true,
       );
 
-      debugPrint('⏯️ Seeking to position: ${_formatDuration(currentPosition.value)}');
+      debugPrint(
+          '⏯️ Seeking to position: ${_formatDuration(currentPosition.value)}');
       await audioPlayer.seek(currentPosition.value);
       debugPrint('✅ Audio source loaded successfully');
       return true;
@@ -284,7 +322,8 @@ class PodcastFeedController extends GetxController {
     } finally {
       final endTime = DateTime.now();
       final duration = endTime.difference(startTime).inMilliseconds;
-      debugPrint('✅ _loadAudio() finished at $endTime ⏱️ Duration: $duration ms');
+      debugPrint(
+          '✅ _loadAudio() finished at $endTime ⏱️ Duration: $duration ms');
     }
   }
 
@@ -295,7 +334,8 @@ class PodcastFeedController extends GetxController {
 
     try {
       debugPrint('⚙️ Creating VideoPlayerController...');
-      videoPlayerController.value = VideoPlayerController.networkUrl(Uri.parse(url));
+      videoPlayerController.value =
+          VideoPlayerController.networkUrl(Uri.parse(url));
 
       debugPrint('🔧 Initializing video player...');
       await videoPlayerController.value?.initialize();
@@ -304,7 +344,8 @@ class PodcastFeedController extends GetxController {
       videoPlayerController.value?.addListener(_updateVideoProgress);
 
       debugPrint('✅ Video controller initialized successfully');
-      debugPrint('   📐 Video size: ${videoPlayerController.value?.value.size}');
+      debugPrint(
+          '   📐 Video size: ${videoPlayerController.value?.value.size}');
       debugPrint(
           '   ⏱️ Video duration: ${_formatDuration(videoPlayerController.value?.value.duration ?? Duration.zero)}');
 
@@ -316,13 +357,14 @@ class PodcastFeedController extends GetxController {
     } finally {
       final endTime = DateTime.now();
       final duration = endTime.difference(startTime).inMilliseconds;
-      debugPrint('✅ _loadVideo() finished at $endTime ⏱️ Duration: $duration ms');
+      debugPrint(
+          '✅ _loadVideo() finished at $endTime ⏱️ Duration: $duration ms');
     }
   }
 
   bool isActive = false;
 
-  void toggleAudio() {
+/*  void toggleAudio() {
     debugPrint('🔄 toggleAudio() called');
 
     try {
@@ -350,13 +392,13 @@ class PodcastFeedController extends GetxController {
     } catch (e) {
       debugPrint("💥 toggleAudio() Exception: ${e.toString()}");
     }
-  }
+  }*/
 
-  void toggleMode() {
+  Future<void> toggleMode({required String url}) async {
     final startTime = DateTime.now();
     debugPrint('🔄 toggleMode() started at $startTime');
     debugPrint('   📊 Current mode: ${isAudioMode.value ? "Audio" : "Video"}');
-    debugPrint('   🔒 isActive: $isActive');
+    debugPrint('   🔒 isActive: $isActive / $url');
 
     if (isActive) {
       debugPrint('⚠️ toggleMode() already active, returning');
@@ -364,70 +406,104 @@ class PodcastFeedController extends GetxController {
     }
 
     try {
-      isActive = true;
-      debugPrint('🔒 Setting isActive = true');
+      final contentType = await getContentType(url);
+      if (contentType != null && contentType.startsWith('video')) {
+        isActive = true;
+        debugPrint('🔒 Setting isActive = true');
 
-      if (isAudioMode.value) {
-        debugPrint('🔊→🎬 Switching from audio to video mode');
+        if (isAudioMode.value) {
+          // Switching from Audio to Video mode
+          debugPrint('🔊→🎬 Switching from audio to video mode');
 
-        if (audioPlayer.playing) {
-          debugPrint('   ⏸️ Pausing audio player');
+          // Store current playing state and position
+          final wasAudioPlaying = audioPlayer.playing;
+          currentPosition.value = audioPlayer.position;
+          debugPrint('   ⏯️ Audio was playing: $wasAudioPlaying');
+          debugPrint(
+              '   ⏯️ Current audio position: ${_formatDuration(currentPosition.value)}');
 
-          if (videoPlayerController.value != null &&
-              videoPlayerController.value!.value.isInitialized) {
+          // Pause audio if playing
+          if (wasAudioPlaying) {
             audioPlayer.pause();
             debugPrint('   🔊 Audio paused');
+          }
 
-            isAudioMode.value = false;
-            debugPrint('   🎬 Video mode enabled');
+          // Switch to video mode
+          isAudioMode.value = false;
+          debugPrint('   🎬 Video mode enabled');
 
-            videoPlayerController.value?.seekTo(currentPosition.value);
-            debugPrint('   ⏯️ Video seeking to: ${_formatDuration(currentPosition.value)}');
+          // Initialize video if needed and seek to current position
+          if (videoPlayerController.value != null &&
+              videoPlayerController.value!.value.isInitialized) {
+            await videoPlayerController.value?.seekTo(currentPosition.value);
+            debugPrint(
+                '   ⏯️ Video seeking to: ${_formatDuration(currentPosition.value)}');
 
-            videoPlayerController.value?.play();
-            debugPrint('   ▶️ Video playback started');
+            // If audio was playing, start video playback
+            if (wasAudioPlaying) {
+              videoPlayerController.value?.play();
+              debugPrint('   ▶️ Video playback started');
+              isPlaying.value = true;
+            } else {
+              debugPrint('   ⏸️ Video remains paused (audio was paused)');
+              isPlaying.value = false;
+            }
           } else {
             debugPrint('❌ Video controller is not initialized');
+            isPlaying.value = false;
           }
         } else {
-          debugPrint('   ℹ️ Audio player not playing, no action needed');
-        }
-      } else {
-        debugPrint('🎬→🔊 Switching from video to audio mode');
+          // Switching from Video to Audio mode
+          debugPrint('🎬→🔊 Switching from video to audio mode');
 
-        if (videoPlayerController.value != null &&
-            videoPlayerController.value!.value.isInitialized) {
-          currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
-          debugPrint('   ⏯️ Current video position: ${_formatDuration(currentPosition.value)}');
+          // Store current playing state and position
+          final wasVideoPlaying =
+              videoPlayerController.value?.value.isPlaying ?? false;
+          currentPosition.value =
+              videoPlayerController.value?.value.position ?? Duration.zero;
+          debugPrint('   ⏯️ Video was playing: $wasVideoPlaying');
+          debugPrint(
+              '   ⏯️ Current video position: ${_formatDuration(currentPosition.value)}');
 
-          videoPlayerController.value?.pause();
-          debugPrint('   ⏸️ Video paused');
+          // Pause video if playing
+          if (wasVideoPlaying) {
+            videoPlayerController.value?.pause();
+            debugPrint('   🎬 Video paused');
+          }
 
+          // Switch to audio mode
           isAudioMode.value = true;
           debugPrint('   🔊 Audio mode enabled');
 
-          if (!audioPlayer.playing) {
-            audioPlayer.seek(currentPosition.value);
-            debugPrint('   ⏯️ Audio seeking to: ${_formatDuration(currentPosition.value)}');
+          // Seek audio to current position
+          await audioPlayer.seek(currentPosition.value);
+          debugPrint(
+              '   ⏯️ Audio seeking to: ${_formatDuration(currentPosition.value)}');
 
+          // If video was playing, start audio playback
+          if (wasVideoPlaying) {
             audioPlayer.play();
             debugPrint('   ▶️ Audio playback started');
+            isPlaying.value = true;
+          } else {
+            debugPrint('   ⏸️ Audio remains paused (video was paused)');
+            isPlaying.value = false;
           }
-        } else {
-          debugPrint('❌ Video controller is not initialized');
         }
+      } else {
+        debugPrint('❌ Content is not video, cannot toggle modes');
       }
     } catch (e) {
       debugPrint('💥 toggleMode() error: $e');
       debugPrint('📍 Stack trace: ${StackTrace.current}');
     } finally {
       final endTime = DateTime.now();
-      isPlaying.value = true;
       isActive = false;
       final duration = endTime.difference(startTime).inMilliseconds;
       debugPrint('🔓 Setting isActive = false');
-      debugPrint('▶️ Setting isPlaying = true');
-      debugPrint('✅ toggleMode() finished at $endTime ⏱️ Duration: $duration ms');
+      debugPrint('▶️ Final isPlaying state: ${isPlaying.value}');
+      debugPrint(
+          '✅ toggleMode() finished at $endTime ⏱️ Duration: $duration ms');
     }
   }
 
@@ -463,14 +539,16 @@ class PodcastFeedController extends GetxController {
         }
       }
 
-      debugPrint('✅ togglePlayPause() completed - isPlaying: ${isPlaying.value}');
+      debugPrint(
+          '✅ togglePlayPause() completed - isPlaying: ${isPlaying.value}');
     } catch (e) {
       debugPrint('💥 togglePlayPause() Exception: ${e.toString()}');
     }
   }
 
   void seekAudio(Duration position) {
-    debugPrint('⏯️ seekAudio() called - seeking to: ${_formatDuration(position)}');
+    debugPrint(
+        '⏯️ seekAudio() called - seeking to: ${_formatDuration(position)}');
     audioPlayer.seek(position);
   }
 
@@ -478,19 +556,23 @@ class PodcastFeedController extends GetxController {
     const skipDuration = Duration(seconds: 15);
     debugPrint('⏪ skipBackward() called - skipping ${skipDuration.inSeconds}s');
     debugPrint('   📊 Current mode: ${isAudioMode.value ? "Audio" : "Video"}');
-    debugPrint('   ⏯️ Current position: ${_formatDuration(currentPosition.value)}');
+    debugPrint(
+        '   ⏯️ Current position: ${_formatDuration(currentPosition.value)}');
 
     if (isAudioMode.value) {
       final newPosition = currentPosition.value - skipDuration;
-      final finalPosition = newPosition < Duration.zero ? Duration.zero : newPosition;
+      final finalPosition =
+          newPosition < Duration.zero ? Duration.zero : newPosition;
       debugPrint(
           '🔊 Audio skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)}');
       seekAudio(finalPosition);
     } else {
       final newPosition = currentPosition.value - skipDuration;
-      final finalPosition = newPosition < Duration.zero ? Duration.zero : newPosition;
+      final finalPosition =
+          newPosition < Duration.zero ? Duration.zero : newPosition;
 
-      if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+      if (videoPlayerController.value != null &&
+          videoPlayerController.value!.value.isInitialized) {
         debugPrint(
             '🎬 Video skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)}');
         videoPlayerController.value?.seekTo(finalPosition);
@@ -504,21 +586,25 @@ class PodcastFeedController extends GetxController {
     const skipDuration = Duration(seconds: 15);
     debugPrint('⏩ skipForward() called - skipping ${skipDuration.inSeconds}s');
     debugPrint('   📊 Current mode: ${isAudioMode.value ? "Audio" : "Video"}');
-    debugPrint('   ⏯️ Current position: ${_formatDuration(currentPosition.value)}');
+    debugPrint(
+        '   ⏯️ Current position: ${_formatDuration(currentPosition.value)}');
 
     if (isAudioMode.value) {
       final newPosition = currentPosition.value + skipDuration;
       final maxPosition = totalDuration.value;
-      final finalPosition = newPosition > maxPosition ? maxPosition : newPosition;
+      final finalPosition =
+          newPosition > maxPosition ? maxPosition : newPosition;
       debugPrint(
           '🔊 Audio skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)} (max: ${_formatDuration(maxPosition)})');
       seekAudio(finalPosition);
     } else {
       final newPosition = currentPosition.value + skipDuration;
 
-      if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+      if (videoPlayerController.value != null &&
+          videoPlayerController.value!.value.isInitialized) {
         final maxPosition = videoPlayerController.value!.value.duration;
-        final finalPosition = newPosition > maxPosition ? maxPosition : newPosition;
+        final finalPosition =
+            newPosition > maxPosition ? maxPosition : newPosition;
         debugPrint(
             '🎬 Video skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)} (max: ${_formatDuration(maxPosition)})');
         videoPlayerController.value?.seekTo(finalPosition);
@@ -528,33 +614,27 @@ class PodcastFeedController extends GetxController {
     }
   }
 
+  // Updated to use PageController
   void playNextPodcast() {
     debugPrint('⏭️ playNextPodcast() called');
 
     final currentItems = pagingController.itemList;
     debugPrint('   📋 Total items available: ${currentItems?.length ?? 0}');
-    debugPrint('   🎵 Current media ID: ${currentMediaId.value}');
+    debugPrint('   📍 Current index: ${currentIndex.value}');
 
     if (currentItems == null || currentItems.isEmpty) {
       debugPrint('❌ No items available');
       return;
     }
 
-    final currentIndex = currentItems.indexWhere((item) => item.id == currentMediaId.value);
-    debugPrint('   📍 Current index: $currentIndex');
-    debugPrint('   📊 Items length: ${currentItems.length}');
+    final nextIndex = currentIndex.value + 1;
 
-    if (currentIndex == -1) {
-      debugPrint('❌ Current item not found in list');
-      return;
-    }
-
-    if (currentIndex >= currentItems.length - 1) {
-      debugPrint('🏁 At last item (index $currentIndex)');
+    if (nextIndex >= currentItems.length) {
+      debugPrint('🏁 At last item (index ${currentIndex.value})');
 
       if (pagingController.nextPageKey != null) {
-        debugPrint('📄 More pages available, next key: ${pagingController.nextPageKey}');
-        // There are more pages, the paging controller will handle loading
+        debugPrint('📄 More pages available, loading next page...');
+        // This will trigger the page request listener
         return;
       }
 
@@ -562,39 +642,34 @@ class PodcastFeedController extends GetxController {
       return;
     }
 
-    final nextIndex = currentIndex + 1;
-    final nextItem = currentItems[nextIndex];
-    debugPrint('✅ Playing next: [$nextIndex] "${nextItem.title}" (ID: ${nextItem.id})');
-
-    playPodcast(item: nextItem);
+    debugPrint('📄 Navigating to next page: $nextIndex');
+    currentIndex.value = nextIndex;
+    _animateToPage(nextIndex);
   }
 
+  // Updated to use PageController
   void playPreviousPodcast() {
     debugPrint('⏮️ playPreviousPodcast() called');
 
     final currentItems = pagingController.itemList;
     debugPrint('   📋 Total items available: ${currentItems?.length ?? 0}');
-    debugPrint('   🎵 Current media ID: ${currentMediaId.value}');
+    debugPrint('   📍 Current index: ${currentIndex.value}');
 
     if (currentItems == null || currentItems.isEmpty) {
       debugPrint('❌ No items available');
       return;
     }
 
-    final currentIndex = currentItems.indexWhere((item) => item.id == currentMediaId.value);
-    debugPrint('   📍 Current index: $currentIndex');
-
-    if (currentIndex <= 0) {
-      debugPrint("🚫 No previous podcast available - at beginning (index: $currentIndex)");
+    if (currentIndex.value <= 0) {
+      debugPrint(
+          "🚫 No previous podcast available - at beginning (index: ${currentIndex.value})");
       return;
     }
 
-    final previousIndex = currentIndex - 1;
-    final previousItem = currentItems[previousIndex];
-    debugPrint(
-        '✅ Playing previous: [$previousIndex] "${previousItem.title}" (ID: ${previousItem.id})');
-
-    playPodcast(item: previousItem);
+    final previousIndex = currentIndex.value - 1;
+    debugPrint('📄 Navigating to previous page: $previousIndex');
+    currentIndex.value = previousIndex;
+    _animateToPage(previousIndex);
   }
 
   final RxBool likeLoading = false.obs;
@@ -613,7 +688,8 @@ class PodcastFeedController extends GetxController {
       debugPrint('🔄 Setting likeLoading = true');
 
       debugPrint('🌐 Making like API request...');
-      var response = await apiClient.post(url: ApiUrl.like(id: id), body: {}, showResult: true);
+      var response = await apiClient.post(
+          url: ApiUrl.like(id: id), body: {}, showResult: true);
       debugPrint('📥 Like API response: ${response.statusCode}');
 
       if (response.statusCode == 200) {
@@ -633,8 +709,10 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  Future<bool> favoritePodcast({required String id, required bool current}) async {
-    debugPrint('⭐ favoritePodcast() called for ID: $id, current state: $current');
+  Future<bool> favoritePodcast(
+      {required String id, required bool current}) async {
+    debugPrint(
+        '⭐ favoritePodcast() called for ID: $id, current state: $current');
 
     try {
       if (favoriteLoading.value) {
@@ -645,15 +723,17 @@ class PodcastFeedController extends GetxController {
       favoriteLoading.value = true;
       debugPrint('🔄 Setting favoriteLoading = true');
 
-      debugPrint('🌐 Making favorite API request...');
-      var response = await apiClient.post(
-          url: ApiUrl.favoriteAdd(), body: {"podcastId": id}, showResult: true);
+      debugPrint('🌐 Making favorite API request...$id');
+      var response =
+          await apiClient.post(url: ApiUrl.favoriteAdd(id: id), body: {});
       debugPrint('📥 Favorite API response: ${response.statusCode}');
 
-      if (response.statusCode == 200) {
-        final bool favorite = response.body?['data']?['favorite'] ?? false;
-        debugPrint('✅ Favorite operation successful: $current → $favorite');
-        return favorite;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final bool newBookmarkState = !current;
+        isFavorite.value = newBookmarkState;
+        final favoriteController = Get.find<FavoriteController>();
+        favoriteController.pagingController.refresh();
+        return newBookmarkState;
       } else {
         debugPrint('❌ Favorite API failed with status: ${response.statusCode}');
         return current;
@@ -667,7 +747,29 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  // Helper method to format duration
+  Future<void> viewPodcast({required String id}) async {
+    int attempts = 0;
+
+    while (attempts < 5) {
+      try {
+        var response = await apiClient.post(
+          url: ApiUrl.videPodcast(id: id),
+          body: {},
+        );
+
+        if (response.statusCode == 200) {
+          return;
+        }
+      } catch (_) {}
+
+      attempts++;
+
+      if (attempts < 5) {
+        await Future.delayed(const Duration(seconds: 5));
+      }
+    }
+  }
+
   String _formatDuration(Duration duration) {
     final minutes = duration.inMinutes;
     final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
@@ -684,7 +786,7 @@ class PodcastFeedController extends GetxController {
     audioPlayer.positionStream.listen((pos) {
       if (isAudioMode.value) {
         currentPosition.value = pos;
-        // Only log every 5 seconds to avoid spam
+
         if (pos.inSeconds % 5 == 0) {
           debugPrint('🔊 Audio position: ${_formatDuration(pos)}');
         }
@@ -711,7 +813,8 @@ class PodcastFeedController extends GetxController {
     audioPlayer.playerStateStream.listen((state) {
       debugPrint('🎵 Audio player state changed: ${state.processingState}');
 
-      if (isAudioMode.value && state.processingState == ProcessingState.completed) {
+      if (isAudioMode.value &&
+          state.processingState == ProcessingState.completed) {
         debugPrint('🏁 Audio completed, playing next podcast');
         playNextPodcast();
       }
@@ -728,6 +831,7 @@ class PodcastFeedController extends GetxController {
     audioPlayer.dispose();
     videoPlayerController.value?.dispose();
     pagingController.dispose();
+    pageController.dispose(); // Don't forget to dispose PageController
 
     debugPrint('✅ PodcastFeedController cleanup completed');
     super.onClose();

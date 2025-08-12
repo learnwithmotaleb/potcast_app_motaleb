@@ -10,10 +10,10 @@ class PlayListModel {
   });
 
   factory PlayListModel.fromJson(Map<String, dynamic> json) => PlayListModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 }
 
 class Data {
@@ -24,8 +24,11 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    playlists: json["playlists"] == null ? [] : List<Playlist>.from(json["playlists"]!.map((x) => Playlist.fromJson(x))),
-  );
+        playlists: json["playlists"] == null
+            ? []
+            : List<Playlist>.from(
+                json["playlists"]!.map((x) => Playlist.fromJson(x))),
+      );
 }
 
 class Playlist {
@@ -42,10 +45,9 @@ class Playlist {
   });
 
   factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
-    id: json["_id"],
-    title: json["title"],
-    cover: json["cover"],
-    total: json["total"],
-  );
+        id: json["_id"],
+        title: json["title"],
+        cover: json["cover"],
+        total: json["total"],
+      );
 }
-

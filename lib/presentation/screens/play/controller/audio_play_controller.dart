@@ -12,7 +12,7 @@ import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:video_player/video_player.dart';
 
-class AudioPlayController extends GetxController{
+class AudioPlayController extends GetxController {
   final Rx<VideoPlayerController?> videoPlayerController = Rx(null);
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -25,7 +25,8 @@ class AudioPlayController extends GetxController{
   final Rx<Duration> bufferedPosition = Duration.zero.obs;
 
   final RxString currentMediaId = ''.obs;
-  final Rx<AudioPlayerModel> updatedAudioPlayModel = AudioPlayerModel(id: "", title: "", image: "", duration: "", url: "").obs;
+  final Rx<AudioPlayerModel> updatedAudioPlayModel =
+      AudioPlayerModel(id: "", title: "", image: "", duration: "", url: "").obs;
   final RxBool isLike = false.obs;
   final RxBool isFavorite = false.obs;
 
@@ -33,7 +34,7 @@ class AudioPlayController extends GetxController{
   var loading = Status.loading.obs;
   loadingMethod(Status status) => loading.value = status;
   Future<void> playPodcast({required AudioPlayerModel audioPlayModel}) async {
-    try{
+    try {
       if (currentMediaId.value == audioPlayModel.id) {
         debugPrint("Media ID ${audioPlayModel.id} is already playing");
         return;
@@ -51,14 +52,14 @@ class AudioPlayController extends GetxController{
       if (contentType != null) {
         final mediaItem = MediaItem(
           id: audioPlayModel.id,
-          album:  audioPlayModel.categories,
-          title:  audioPlayModel.title,
-          artist:  audioPlayModel.artist,
+          album: audioPlayModel.categories,
+          title: audioPlayModel.title,
+          artist: audioPlayModel.artist,
           artUri: Uri.parse(audioPlayModel.image),
         );
 
         if (contentType.startsWith('video')) {
-          _loadVideo(audioPlayModel.url).then((value){
+          _loadVideo(audioPlayModel.url).then((value) {
             if (value) {
               loadingMethod(Status.completed);
               isPlaying.value = true;
@@ -72,7 +73,8 @@ class AudioPlayController extends GetxController{
           });
           _loadAudio(url: audioPlayModel.url, media: mediaItem);
         } else if (contentType.startsWith('audio')) {
-          final audioRes = await _loadAudio(url: audioPlayModel.url, media: mediaItem);
+          final audioRes =
+              await _loadAudio(url: audioPlayModel.url, media: mediaItem);
           if (audioRes) {
             loadingMethod(Status.completed);
             audioPlayer.play();
@@ -83,7 +85,7 @@ class AudioPlayController extends GetxController{
             currentMediaId.value = '';
             loadingMethod(Status.error);
           }
-        }else{
+        } else {
           currentMediaId.value = '';
           loadingMethod(Status.noDataFound);
         }
@@ -91,14 +93,15 @@ class AudioPlayController extends GetxController{
         currentMediaId.value = '';
         loadingMethod(Status.error);
       }
-    }catch(e){
+    } catch (e) {
       print("Error ${e.toString()}");
       currentMediaId.value = '';
       loadingMethod(Status.error);
     }
   }
 
-  Future<bool> _loadAudio({required String url, required MediaItem media}) async {
+  Future<bool> _loadAudio(
+      {required String url, required MediaItem media}) async {
     final startTime = DateTime.now();
     print('🔊 _loadAudio() started at $startTime');
 
@@ -117,7 +120,8 @@ class AudioPlayController extends GetxController{
       return false;
     } finally {
       final endTime = DateTime.now();
-      print('✅ _loadAudio() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+      print(
+          '✅ _loadAudio() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
     }
   }
 
@@ -126,7 +130,8 @@ class AudioPlayController extends GetxController{
     print('🎥 _loadVideo() started at $startTime');
 
     try {
-      videoPlayerController.value = VideoPlayerController.networkUrl(Uri.parse(url));
+      videoPlayerController.value =
+          VideoPlayerController.networkUrl(Uri.parse(url));
       await videoPlayerController.value?.initialize();
       videoPlayerController.value?.addListener(_updateVideoProgress);
       return true;
@@ -135,25 +140,29 @@ class AudioPlayController extends GetxController{
       return false;
     } finally {
       final endTime = DateTime.now();
-      print('✅ _loadVideo() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+      print(
+          '✅ _loadVideo() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
     }
   }
 
   void _updateVideoProgress() {
-    if ((videoPlayerController.value?.value.isInitialized ?? false) && !isAudioMode.value) {
+    if ((videoPlayerController.value?.value.isInitialized ?? false) &&
+        !isAudioMode.value) {
       final controller = videoPlayerController.value!;
       currentPosition.value = controller.value.position;
       totalDuration.value = controller.value.duration;
-      bufferedPosition.value = controller.value.buffered.lastOrNull?.end ?? Duration.zero;
+      bufferedPosition.value =
+          controller.value.buffered.lastOrNull?.end ?? Duration.zero;
 
-      if (controller.value.position >= controller.value.duration && !controller.value.isPlaying) {
+      if (controller.value.position >= controller.value.duration &&
+          !controller.value.isPlaying) {
         playNext(audioPlayerModel: updatedAudioPlayModel.value);
       }
     }
   }
 
   Future<String?> getContentType(String? url) async {
-    if(url == null) {
+    if (url == null) {
       return null;
     }
     final startTime = DateTime.now();
@@ -168,7 +177,8 @@ class AudioPlayController extends GetxController{
       print('❌ getContentType() error: $e');
     } finally {
       final endTime = DateTime.now();
-      print('✅ getContentType() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+      print(
+          '✅ getContentType() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
     }
 
     return null;
@@ -183,18 +193,23 @@ class AudioPlayController extends GetxController{
       seekAudio(newPosition < Duration.zero ? Duration.zero : newPosition);
     } else {
       final newPosition = currentPosition.value - skipDuration;
-      if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
-        videoPlayerController.value?.seekTo(newPosition < Duration.zero ? Duration.zero : newPosition);
+      if (videoPlayerController.value != null &&
+          videoPlayerController.value!.value.isInitialized) {
+        videoPlayerController.value
+            ?.seekTo(newPosition < Duration.zero ? Duration.zero : newPosition);
       }
     }
   }
 
   bool isActive = false;
 
-  void toggleAudio(){
-    try{
-      if (!(isAudioMode.value) && videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
-        currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+  void toggleAudio() {
+    try {
+      if (!(isAudioMode.value) &&
+          videoPlayerController.value != null &&
+          videoPlayerController.value!.value.isInitialized) {
+        currentPosition.value =
+            videoPlayerController.value?.value.position ?? Duration.zero;
         videoPlayerController.value?.pause();
         isAudioMode.value = true;
         if (!audioPlayer.playing) {
@@ -204,19 +219,20 @@ class AudioPlayController extends GetxController{
       } else {
         print('❌ Video controller is not initialized');
       }
-    }catch(e){
+    } catch (e) {
       print("toggle Only Audio ");
     }
   }
 
-  void openBottom(){
-    try{
-      if (!(isAudioMode.value) && videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
-
+  void openBottom() {
+    try {
+      if (!(isAudioMode.value) &&
+          videoPlayerController.value != null &&
+          videoPlayerController.value!.value.isInitialized) {
       } else {
         print('❌ Video controller is not initialized');
       }
-    }catch(e){
+    } catch (e) {
       print("toggle Only Audio ");
     }
   }
@@ -233,7 +249,8 @@ class AudioPlayController extends GetxController{
 
       if (isAudioMode.value) {
         if (audioPlayer.playing) {
-          if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+          if (videoPlayerController.value != null &&
+              videoPlayerController.value!.value.isInitialized) {
             audioPlayer.pause();
             isAudioMode.value = false;
             videoPlayerController.value?.seekTo(currentPosition.value);
@@ -243,8 +260,10 @@ class AudioPlayController extends GetxController{
           }
         }
       } else {
-        if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
-          currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+        if (videoPlayerController.value != null &&
+            videoPlayerController.value!.value.isInitialized) {
+          currentPosition.value =
+              videoPlayerController.value?.value.position ?? Duration.zero;
           videoPlayerController.value?.pause();
           isAudioMode.value = true;
           if (!audioPlayer.playing) {
@@ -262,12 +281,13 @@ class AudioPlayController extends GetxController{
       final endTime = DateTime.now();
       isPlaying.value = true;
       isActive = false;
-      print('✅ toggleMode() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
+      print(
+          '✅ toggleMode() finished at $endTime ⏱️ Duration: ${endTime.difference(startTime).inMilliseconds} ms');
     }
   }
 
   void togglePlayPause() {
-    try{
+    try {
       if (isAudioMode.value) {
         if (audioPlayer.playing) {
           audioPlayer.pause();
@@ -285,14 +305,14 @@ class AudioPlayController extends GetxController{
           isPlaying.value = true;
         }
       }
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
     }
   }
 
   void playNext({required AudioPlayerModel audioPlayerModel}) {
     playPodcast(
-        audioPlayModel: audioPlayerModel,
+      audioPlayModel: audioPlayerModel,
     );
   }
 
@@ -319,13 +339,15 @@ class AudioPlayController extends GetxController{
     });
 
     audioPlayer.playerStateStream.listen((state) {
-      if (isAudioMode.value && state.processingState == ProcessingState.completed) {
+      if (isAudioMode.value &&
+          state.processingState == ProcessingState.completed) {
         playNext(audioPlayerModel: updatedAudioPlayModel.value);
       }
     });
   }
 
-  final adUnitId = Platform.isAndroid ? AppConstants.bannerAndroid : AppConstants.bannerIOS;
+  final adUnitId =
+      Platform.isAndroid ? AppConstants.bannerAndroid : AppConstants.bannerIOS;
   BannerAd? bannerAd;
   RxBool isLoaded = false.obs;
   void loadAd({required int width, required int height}) async {

@@ -7,10 +7,11 @@ class TermsConditionsModel {
     this.data,
   });
 
-  factory TermsConditionsModel.fromJson(Map<String, dynamic> json) => TermsConditionsModel(
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory TermsConditionsModel.fromJson(Map<String, dynamic> json) =>
+      TermsConditionsModel(
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 }
 
 class Data {
@@ -21,6 +22,6 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    text: json["text"],
-  );
+        text: json["text"],
+      );
 }

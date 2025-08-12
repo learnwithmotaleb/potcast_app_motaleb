@@ -86,16 +86,20 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                 if (globalState == Status.loading) {
                   return const LoadingWidget(color: AppColors.whiteColor);
                 }
-                if (globalState == Status.internetError || globalState == Status.error) {
-                  return NoInternetCard(onTap: () => globalController.getCategories());
+                if (globalState == Status.internetError ||
+                    globalState == Status.error) {
+                  return NoInternetCard(
+                      onTap: () => globalController.getCategories());
                 }
                 if (globalState == Status.noDataFound) {
-                  return const Center(child: CustomText(text: "No data found!"));
+                  return const Center(
+                      child: CustomText(text: "No data found!"));
                 }
 
                 return Obx(() => CategorySubcategoryPicker(
                       selectedCategoryId: controller.selectedCategoryId.value,
-                      selectedSubcategoryId: controller.selectedSubcategoryId.value,
+                      selectedSubcategoryId:
+                          controller.selectedSubcategoryId.value,
                       globalController: globalController,
                       onCategoryChanged: (id) {
                         controller.selectedCategoryId.value = id ?? '';
@@ -162,7 +166,8 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
                     children: [
                       Flexible(child: Obx(() {
                         return Text(
-                          controller.selectedAddress.value?.address ?? "Select Your Location",
+                          controller.selectedAddress.value?.address ??
+                              "Select Your Location",
                         );
                       })),
                       const Icon(Iconsax.location),

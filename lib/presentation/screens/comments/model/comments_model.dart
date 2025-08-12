@@ -10,16 +10,16 @@ class CommentsModel {
   });
 
   factory CommentsModel.fromJson(Map<String, dynamic> json) => CommentsModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "success": success,
-    "message": message,
-    "data": data?.toJson(),
-  };
+        "success": success,
+        "message": message,
+        "data": data?.toJson(),
+      };
 }
 
 class Data {
@@ -34,16 +34,21 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    comments: json["comments"] == null ? [] : List<Comment>.from(json["comments"]!.map((x) => Comment.fromJson(x))),
-    currentPage: json["currentPage"],
-    limit: json["limit"],
-  );
+        comments: json["comments"] == null
+            ? []
+            : List<Comment>.from(
+                json["comments"]!.map((x) => Comment.fromJson(x))),
+        currentPage: json["currentPage"],
+        limit: json["limit"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "comments": comments == null ? [] : List<dynamic>.from(comments!.map((x) => x.toJson())),
-    "currentPage": currentPage,
-    "limit": limit,
-  };
+        "comments": comments == null
+            ? []
+            : List<dynamic>.from(comments!.map((x) => x.toJson())),
+        "currentPage": currentPage,
+        "limit": limit,
+      };
 }
 
 class Comment {
@@ -58,16 +63,16 @@ class Comment {
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
-    id: json["_id"],
-    user: json["user"] == null ? null : User.fromJson(json["user"]),
-    text: json["text"],
-  );
+        id: json["_id"],
+        user: json["user"] == null ? null : User.fromJson(json["user"]),
+        text: json["text"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "user": user?.toJson(),
-    "text": text,
-  };
+        "_id": id,
+        "user": user?.toJson(),
+        "text": text,
+      };
 }
 
 class User {
@@ -82,14 +87,14 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["_id"],
-    name: json["name"],
-    avatar: json["avatar"],
-  );
+        id: json["_id"],
+        name: json["name"],
+        avatar: json["avatar"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "avatar": avatar,
-  };
+        "_id": id,
+        "name": name,
+        "avatar": avatar,
+      };
 }

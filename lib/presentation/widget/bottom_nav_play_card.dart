@@ -61,9 +61,11 @@ class BottomNavPlayCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Obx(() {
-                    final title = playController.updatedAudioPlayModel.value.title;
+                    final title =
+                        playController.updatedAudioPlayModel.value.title;
                     bool isPodcast = title.isNotEmpty == true;
-                    final category = playController.updatedAudioPlayModel.value.categories;
+                    final category =
+                        playController.updatedAudioPlayModel.value.categories;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +99,9 @@ class BottomNavPlayCard extends StatelessWidget {
                       ),
                       child: Obx(() {
                         return Icon(
-                          playController.isPlaying.value ? Icons.pause : Icons.play_arrow,
+                          playController.isPlaying.value
+                              ? Icons.pause
+                              : Icons.play_arrow,
                         );
                       }),
                     ),

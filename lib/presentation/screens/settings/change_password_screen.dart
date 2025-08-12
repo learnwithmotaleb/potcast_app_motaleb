@@ -27,7 +27,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(onPressed: ()=>AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("change_password".tr),
       ),
       body: SingleChildScrollView(
@@ -87,21 +89,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 },
               ),
               Gap(24),
-              Obx(() => CustomButton(
-                text: "reset_password".tr,
-                isLoading: _controller.changePasswordLoading.value,
-                onTap: () {
-                  if (_formKey.currentState!.validate()) {
-                    _controller.changePassword(
-                      body: {
-                        "password" : _currentPassword.text.trim(),
-                        "newPassword": _newPassword.text.trim(),
-                        "confirmPassword": _confirmPassword.text.trim()
-                      },
-                    );
-                  }
-                },
-              ),
+              Obx(
+                () => CustomButton(
+                  text: "reset_password".tr,
+                  isLoading: _controller.changePasswordLoading.value,
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      _controller.changePassword(
+                        body: {
+                          "password": _currentPassword.text.trim(),
+                          "newPassword": _newPassword.text.trim(),
+                          "confirmPassword": _confirmPassword.text.trim()
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
               Gap(12),
             ],

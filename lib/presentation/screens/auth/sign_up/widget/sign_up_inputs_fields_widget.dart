@@ -67,7 +67,8 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
             if (value == null || value.isEmpty) {
               return 'Email is required';
             }
-            final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+            final emailRegex =
+                RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
             if (!emailRegex.hasMatch(value)) {
               return 'Enter a valid email';
             }
@@ -82,7 +83,8 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
           builder: (_, date, child) {
             return GestureDetector(
               onTap: () {
-                DatePicker.showDatePicker(context,
+                DatePicker.showDatePicker(
+                  context,
                   showTitleActions: true,
                   minTime: DateTime(1990),
                   maxTime: DateTime.now(),
@@ -94,10 +96,11 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
               },
               child: Container(
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.whiteColor),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.whiteColor),
                 ),
                 child: CustomText(
                   text: DateFormat("dd MMMM yyyy - EEEE").format(date),

@@ -17,25 +17,25 @@ class _SplashScreenState extends State<SplashScreen> {
   final DBHelper dbHelper = serviceLocator<DBHelper>();
 
   Future<void> _navigation() async {
-    try{
+    try {
       final String token = await dbHelper.getToken();
       final String roll = await dbHelper.getUserRole();
       bool hasExpired = JwtDecoder.isExpired(token);
 
       await Future.delayed(const Duration(seconds: 3));
 
-      if(token != "" && roll != "" && !hasExpired){
-        if(roll == "user"){
+      if (token != "" && roll != "" && !hasExpired) {
+        if (roll == "user") {
           AppRouter.route.goNamed(RoutePath.userNavScreen);
-        }else if(roll == "creator"){
+        } else if (roll == "creator") {
           AppRouter.route.goNamed(RoutePath.creatorNavScreen);
-        }else{
+        } else {
           AppRouter.route.goNamed(RoutePath.loginScreen);
         }
-      }else{
+      } else {
         AppRouter.route.goNamed(RoutePath.introScreen);
       }
-    }catch(_){
+    } catch (_) {
       AppRouter.route.goNamed(RoutePath.introScreen);
     }
   }

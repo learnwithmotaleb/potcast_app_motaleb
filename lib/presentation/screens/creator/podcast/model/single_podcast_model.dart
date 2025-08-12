@@ -9,11 +9,12 @@ class SinglePodcastModel {
     this.data,
   });
 
-  factory SinglePodcastModel.fromJson(Map<String, dynamic> json) => SinglePodcastModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory SinglePodcastModel.fromJson(Map<String, dynamic> json) =>
+      SinglePodcastModel(
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 }
 
 class Data {
@@ -64,14 +65,14 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    id: json["_id"],
+        id: json["_id"],
 /*    creator: json["creator"] == null ? null : Creator.fromJson(json["creator"]),
     category: json["category"] == null ? null : Category.fromJson(json["category"]),
     subCategory: json["subCategory"] == null ? null : Category.fromJson(json["subCategory"]),*/
-    title: json["title"],
-    description: json["description"],
-    location: json["location"],
-    cover: json["cover"],
+        title: json["title"],
+        description: json["description"],
+        location: json["location"],
+        cover: json["cover"],
 /*    coverFormat: json["coverFormat"],
     coverSize: json["coverSize"]?.toDouble(),
     audio: json["audio"],
@@ -85,7 +86,7 @@ class Data {
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],*/
-  );
+      );
 }
 
 class Category {
@@ -98,14 +99,14 @@ class Category {
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-    id: json["_id"],
-    title: json["title"],
-  );
+        id: json["_id"],
+        title: json["title"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "title": title,
-  };
+        "_id": id,
+        "title": title,
+      };
 }
 
 class Creator {
@@ -116,12 +117,12 @@ class Creator {
   });
 
   factory Creator.fromJson(Map<String, dynamic> json) => Creator(
-    user: json["user"] == null ? null : User.fromJson(json["user"]),
-  );
+        user: json["user"] == null ? null : User.fromJson(json["user"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "user": user?.toJson(),
-  };
+        "user": user?.toJson(),
+      };
 }
 
 class User {
@@ -132,10 +133,10 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    name: json["name"],
-  );
+        name: json["name"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-  };
+        "name": name,
+      };
 }

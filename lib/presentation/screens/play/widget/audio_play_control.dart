@@ -1,132 +1,103 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:like_button/like_button.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
-import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+import '../controller/podcast_feed_controller.dart';
 
 class AudioPlayControl extends StatelessWidget {
+  final PodcastFeedController controller;
+
   const AudioPlayControl({
     super.key,
     required this.controller,
-    required this.currentPageIndex,
-    required this.pageController,
   });
-
-  final PodcastFeedController controller;
-  final RxInt currentPageIndex;
-  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        LikeButton(
-          isLiked: controller.isFavorite.value,
-          circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-          bubblesColor: const BubblesColor(
-            dotPrimaryColor: Color(0xff33b5e5),
-            dotSecondaryColor: Color(0xff0099cc),
-          ),
-          onTap: (value) async {
-            return true;
-            /*return await controller
-                .favoritePodcast(
-                    id: controller.postModel.value.data?.podcast?.id ?? "", current: value)
-                .then((value) {
-              controller.isFavorite.value = value;
-              return value;
-            });*/
+        // Previous button
+        /*IconButton(
+          onPressed: () {
+            debugPrint('🎵 Previous button tapped');
+            controller.playPreviousPodcast();
           },
-          likeBuilder: (bool isLiked) {
-            return Obx(() {
-              return controller.favoriteLoading.value
-                  ? const Center(child: CircularProgressIndicator())
-                  : Icon(
-                      Icons.favorite,
-                      color: isLiked ? Colors.red : Colors.white,
-                      size: 30,
-                    );
-            });
-          },
-        ),
-        IconButton(
-          icon: Assets.icons.audioLeft.svg(
-            height: 20.w,
-            width: 20.w,
-            colorFilter:
-                isDarkMode ? null : const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn),
-          ),
-          onPressed: controller.skipBackward,
-          iconSize: 36,
-        ),
+          icon: const Icon(Iconsax.previous),
+          iconSize: 32,
+        ),*/
         Obx(() {
-          return GestureDetector(
-            onTap: () => controller.togglePlayPause(),
-            child: Icon(controller.isPlaying.value ? Icons.pause : Icons.play_circle_outline_sharp,
-                size: 45),
+          return IconButton(
+            onPressed: () {
+              controller
+                  .favoritePodcast(
+                      id: controller.currentItem.value.id ?? "",
+                      current: controller.isFavorite.value)
+                  .then((value) {
+                controller.isFavorite.value = value;
+                return value;
+              });
+            },
+            icon: Icon(
+              Icons.favorite,
+              size: 32,
+              color: controller.isFavorite.value
+                  ? AppColors.redColor
+                  : AppColors.whiteColor,
+            ),
           );
         }),
+
+        // Skip backward 15s
         IconButton(
-          icon: const Icon(Icons.skip_next),
           onPressed: () {
-            _goToNextPage(
-              pageController: pageController,
-              currentPageIndex: currentPageIndex,
-              feedController: controller,
-            );
+            debugPrint('⏪ Skip backward button tapped');
+            controller.skipBackward();
           },
-          iconSize: 36,
+          icon: const Icon(Iconsax.backward_15_seconds),
+          iconSize: 28,
         ),
-        LikeButton(
-          isLiked: controller.isLike.value,
-          circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-          bubblesColor: const BubblesColor(
-            dotPrimaryColor: Color(0xff33b5e5),
-            dotSecondaryColor: Color(0xff0099cc),
-          ),
-          onTap: (value) async {
-            return true;
-            /*return await controller
-                .likePodcast(id: "", current: value)
-                .then((value) {
-              controller.isFavorite.value = value;
-              return value;
-            });*/
+
+        // Play/Pause button
+        Obx(() => IconButton(
+              onPressed: () {
+                debugPrint('⏯️ Play/Pause button tapped');
+                controller.togglePlayPause();
+              },
+              icon: Icon(
+                controller.isPlaying.value ? Iconsax.pause : Icons.play_circle,
+              ),
+              iconSize: 48,
+            )),
+
+        // Skip forward 15s
+        /*IconButton(
+          onPressed: () {
+            debugPrint('⏩ Skip forward button tapped');
+            controller.skipForward();
           },
-          likeBuilder: (bool isLiked) {
-            return Obx(() {
-              return controller.likeLoading.value
-                  ? const Center(child: CircularProgressIndicator())
-                  : Icon(
-                      Iconsax.like_1,
-                      color: isLiked
-                          ? Colors.deepOrange
-                          : (isDarkMode ? AppColors.whiteColor : AppColors.blackColor),
-                    );
-            });
+          icon: const Icon(Iconsax.forward_15_seconds),
+          iconSize: 28,
+        ),*/
+
+        // Next button
+        IconButton(
+          onPressed: () {
+            debugPrint('🎵 Next button tapped');
+            controller.playNextPodcast();
           },
+          icon: const Icon(Iconsax.next),
+          iconSize: 32,
+        ),
+        IconButton(
+          onPressed: () {
+            debugPrint('⏩ Skip forward button tapped');
+            // controller.skipForward();
+          },
+          icon: const Icon(Iconsax.like_1),
+          iconSize: 28,
         ),
       ],
     );
-  }
-
-  void _goToNextPage({
-    required PodcastFeedController feedController,
-    required RxInt currentPageIndex,
-    required PageController pageController,
-  }) {
-    final items = feedController.pagingController.itemList;
-    if (items != null && currentPageIndex.value < items.length - 1) {
-      pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-      feedController.playNextPodcast();
-    }
   }
 }

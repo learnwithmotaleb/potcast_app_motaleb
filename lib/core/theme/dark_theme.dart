@@ -38,23 +38,24 @@ final InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
     borderRadius: BorderRadius.circular(8),
     borderSide: const BorderSide(color: AppColors.whiteColor),
   ),
-  hintStyle: const TextStyle(color: AppColors.hintTextColor,fontWeight: FontWeight.w100),
+  hintStyle: const TextStyle(
+      color: AppColors.hintTextColor, fontWeight: FontWeight.w100),
 );
-
 
 const AppBarTheme appBarTheme = AppBarTheme(
   elevation: 0,
   backgroundColor: AppColors.blackColor,
 );
 
-const BottomNavigationBarThemeData bottomNavigationBarTheme =  BottomNavigationBarThemeData(
+const BottomNavigationBarThemeData bottomNavigationBarTheme =
+    BottomNavigationBarThemeData(
   backgroundColor: AppColors.blackColor,
   elevation: 1,
   type: BottomNavigationBarType.fixed,
   selectedItemColor: AppColors.whiteColor,
   showUnselectedLabels: true,
   showSelectedLabels: true,
-  selectedIconTheme: IconThemeData(size: 24,color: AppColors.whiteColor),
+  selectedIconTheme: IconThemeData(size: 24, color: AppColors.whiteColor),
   unselectedItemColor: AppColors.primaryColor,
-  unselectedIconTheme: IconThemeData(size: 24,color: AppColors.primaryColor),
+  unselectedIconTheme: IconThemeData(size: 24, color: AppColors.primaryColor),
 );

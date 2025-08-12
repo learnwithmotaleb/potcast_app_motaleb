@@ -29,7 +29,9 @@ class _SupportScreenState extends State<SupportScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("support".tr),
       ),
       body: Obx(
@@ -50,12 +52,17 @@ class _SupportScreenState extends State<SupportScreen> {
 
             case Status.completed:
               return ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
                 itemCount: _controller.supportsData.value.data?.length ?? 0,
                 itemBuilder: (BuildContext context, int index) {
                   return FAQ(
-                    question: _controller.supportsData.value.data?[index].question ?? "",
-                    answer: _controller.supportsData.value.data?[index].answer ?? "",
+                    question:
+                        _controller.supportsData.value.data?[index].question ??
+                            "",
+                    answer:
+                        _controller.supportsData.value.data?[index].answer ??
+                            "",
                     queStyle: const TextStyle(
                       color: AppColors.whiteColor,
                       fontSize: 14,

@@ -22,34 +22,40 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
     _controller.getPrivacyPolicy();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(onPressed: ()=>AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("privacy_policy".tr),
       ),
       body: Obx(
-            () {
+        () {
           switch (_controller.privacyLoading.value) {
             case Status.loading:
               return const Center(child: CircularProgressIndicator());
             case Status.internetError:
-              return NoInternetCard(onTap: (){
+              return NoInternetCard(onTap: () {
                 _controller.getPrivacyPolicy();
               });
             case Status.noDataFound:
               return const Center(child: CustomText(text: "No data found!"));
             case Status.error:
-              return NoInternetCard(onTap: (){
+              return NoInternetCard(onTap: () {
                 _controller.getPrivacyPolicy();
               });
 
             case Status.completed:
               return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
-                child: Html(data: _controller.privacyConditionsData.value.data?.text??""),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
+                child: Html(
+                    data: _controller.privacyConditionsData.value.data?.text ??
+                        ""),
               );
           }
         },

@@ -46,7 +46,10 @@ class CountrySelectController extends GetxController {
     if (query.isEmpty) {
       filteredList.value = List.from(locationList);
     } else {
-      filteredList.value = locationList.where((location) => location.toLowerCase().contains(query.toLowerCase())).toList();
+      filteredList.value = locationList
+          .where((location) =>
+              location.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
   }
 
@@ -57,7 +60,8 @@ class CountrySelectController extends GetxController {
       showPopUpLoader(context: context);
       final body = {"location": filteredList[index]};
 
-      var response = await apiClient.post(url: ApiUrl.addLocation(), body: body,showResult: true);
+      var response = await apiClient.post(
+          url: ApiUrl.addLocation(), body: body, showResult: true);
 
       if (response.statusCode == 200) {
         AppRouter.route.pop();
@@ -65,7 +69,8 @@ class CountrySelectController extends GetxController {
         Get.find<UserHomeController>().getHome();
       } else {
         AppRouter.route.pop();
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (err) {

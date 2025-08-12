@@ -22,10 +22,12 @@ class PodcastAudioController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final Dio dio = serviceLocator<Dio>();
 
-  Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
+  Rx<SelectedAddPostScreenType> selectedScreenType =
+      SelectedAddPostScreenType.none.obs;
 
   /// ============================= Place Location Information =====================================
-  Rx<SelectedLocationResult?> selectedAddress = Rx<SelectedLocationResult?>(null);
+  Rx<SelectedLocationResult?> selectedAddress =
+      Rx<SelectedLocationResult?>(null);
   final RxString selectedCategoryId = ''.obs;
   final RxString selectedSubcategoryId = ''.obs;
 
@@ -35,8 +37,6 @@ class PodcastAudioController extends GetxController {
   final RxBool isPlaying = false.obs;
   final RxBool isPausePlaying = false.obs;
   final recordedFilePath = RxnString();
-
-
 
   /// ============================= Image And Audio =====================================
   final ImagePicker _picker = ImagePicker();
@@ -77,7 +77,9 @@ class PodcastAudioController extends GetxController {
 
         if (audioDuration != null) {
           if (audioDuration.inMinutes >= 10) {
-            toastMessage(message: "Your audio file is too long. can not upload reels section");
+            toastMessage(
+                message:
+                    "Your audio file is too long. can not upload reels section");
           }
         }
       }
@@ -108,7 +110,8 @@ class PodcastAudioController extends GetxController {
     createLoadingMethod(true);
     List<Future<void>> uploadTasks = selectedFiles.map((fileModel) async {
       final fileBytes = await fileModel.file.readAsBytes();
-      final mimeType = lookupMimeType(fileModel.file.path) ?? 'application/octet-stream';
+      final mimeType =
+          lookupMimeType(fileModel.file.path) ?? 'application/octet-stream';
       final category = detectCategoryFromMime(mimeType);
 
       final preSignedUrl = await getPreSignedUrl(
@@ -137,10 +140,10 @@ class PodcastAudioController extends GetxController {
               body['coverImage'] = uploadedUrl;
               break;
             case 'podcast_audio':
-              body['audio_url'] = uploadedUrl;
+              body['podcast_url'] = uploadedUrl;
               break;
             case 'podcast_video':
-              body['video_url'] = uploadedUrl;
+              body['podcast_url'] = uploadedUrl;
               break;
           }
         }
@@ -153,8 +156,8 @@ class PodcastAudioController extends GetxController {
 
   String detectCategoryFromMime(String mime) {
     if (mime.startsWith('image/')) return 'podcast_cover';
-    if (mime.startsWith('audio/')) return 'podcast_audio';
     if (mime.startsWith('video/')) return 'podcast_video';
+    if (mime.startsWith('audio/')) return 'podcast_audio';
     return 'unknown';
   }
 
@@ -176,11 +179,13 @@ class PodcastAudioController extends GetxController {
         videoFile.value = null;
         selectedImage.value = null;
         navController.changeIndex(0);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       } else {
         createLoadingMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (_) {
@@ -188,10 +193,9 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-
-  Future<void> startRecording(PlayerController playerController, RecorderController recorderController) async {
-    try{
-
+  Future<void> startRecording(PlayerController playerController,
+      RecorderController recorderController) async {
+    try {
       if (isPlaying.value || isPausePlaying.value) {
         await playerController.stopPlayer();
         isPlaying.value = false;
@@ -211,41 +215,43 @@ class PodcastAudioController extends GetxController {
       }
 
       final dir = await getTemporaryDirectory();
-      recordedFilePath.value = "${dir.path}/record_${DateTime.now().millisecondsSinceEpoch}.m4a";
+      recordedFilePath.value =
+          "${dir.path}/record_${DateTime.now().millisecondsSinceEpoch}.m4a";
 
       await recorderController.record(path: recordedFilePath.value);
       isRecording.value = true;
       isPaused.value = false;
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
     }
   }
 
   Future<void> pauseRecording(RecorderController recorderController) async {
-    try{
+    try {
       await recorderController.pause();
       isPaused.value = true;
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
     }
   }
 
   Future<void> resumeRecording(RecorderController recorderController) async {
-    try{
+    try {
       await recorderController.record();
       isPaused.value = false;
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
     }
   }
 
   Future<void> stopRecording(RecorderController recorderController) async {
-    try{
+    try {
       await recorderController.stop();
       isRecording.value = false;
       isPaused.value = false;
 
-      if (recordedFilePath.value != null && recordedFilePath.value!.isNotEmpty) {
+      if (recordedFilePath.value != null &&
+          recordedFilePath.value!.isNotEmpty) {
         final file = File(recordedFilePath.value!);
         if (await file.exists()) {
           audioFile.value = file;
@@ -254,19 +260,22 @@ class PodcastAudioController extends GetxController {
           debugPrint("⚠️ File does not exist at path: ${file.path}");
         }
       }
-    }catch(e){
+    } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  Future<void> playAudio(PlayerController playerController,) async {
+  Future<void> playAudio(
+    PlayerController playerController,
+  ) async {
     try {
       final path = recordedFilePath.value;
       final file = File(path ?? "");
 
       if (file.existsSync()) {
         debugPrint("Playing: $path");
-        await playerController.preparePlayer(path: path!, shouldExtractWaveform: true);
+        await playerController.preparePlayer(
+            path: path!, shouldExtractWaveform: true);
 
         await playerController.startPlayer();
         isPlaying.value = true;
@@ -278,7 +287,9 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-  Future<void> pauseAudio(PlayerController playerController,) async {
+  Future<void> pauseAudio(
+    PlayerController playerController,
+  ) async {
     try {
       await playerController.pausePlayer();
       isPausePlaying.value = true;
@@ -287,7 +298,9 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-  Future<void> resumeAudio(PlayerController playerController,) async {
+  Future<void> resumeAudio(
+    PlayerController playerController,
+  ) async {
     try {
       await playerController.startPlayer();
       isPausePlaying.value = false;
@@ -296,7 +309,9 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-  Future<void> stopAudio(PlayerController playerController,) async {
+  Future<void> stopAudio(
+    PlayerController playerController,
+  ) async {
     try {
       await playerController.stopPlayer();
       isPlaying.value = false;

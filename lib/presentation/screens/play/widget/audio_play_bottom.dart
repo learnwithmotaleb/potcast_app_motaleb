@@ -89,7 +89,7 @@ class AudioPlayBottom extends StatelessWidget {
     }
   }
 
-  Future<void> showModel({required BuildContext context}) async{
+  Future<void> showModel({required BuildContext context}) async {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -158,7 +158,7 @@ class AudioPlayBottom extends StatelessWidget {
                           ),
                           subtitle: CustomText(
                             text:
-                            "Production is where you make your app available to billions of users on Google Play.",
+                                "Production is where you make your app available to billions of users on Google Play.",
                             maxLines: 2,
                             color: AppColors.whiteColor.withOpacity(0.7),
                             textAlign: TextAlign.start,
@@ -168,7 +168,8 @@ class AudioPlayBottom extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0, vertical: 8),
                     child: TextFormField(
                       maxLines: 5,
                       minLines: 1,

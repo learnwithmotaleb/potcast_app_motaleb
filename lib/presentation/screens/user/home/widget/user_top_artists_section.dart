@@ -88,7 +88,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                   );
                 }
 
-                final item = creators != null && index - 1 < creators.length ? creators[index - 1] : null;
+                final item =
+                    creators != null && index - 1 < creators.length ? creators[index - 1] : null;
 
                 if (item == null) return const SizedBox.shrink();
 

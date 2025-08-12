@@ -4,10 +4,11 @@ import 'package:podcast/presentation/screens/notification/model/notification_mod
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
-class NotificationController extends GetxController{
+class NotificationController extends GetxController {
   ApiClient apiClient = ApiClient();
 
-  final PagingController<int, NotificationData> pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, NotificationData> pagingController =
+      PagingController(firstPageKey: 1);
   RxBool isLoadingMove = false.obs;
 
   Future<void> getNotification(int pageKey) async {
@@ -15,7 +16,8 @@ class NotificationController extends GetxController{
     isLoadingMove.value = true;
 
     try {
-      final response = await apiClient.get(url: ApiUrl.notification(page: pageKey), showResult: true);
+      final response = await apiClient.get(
+          url: ApiUrl.notification(page: pageKey), showResult: true);
 
       if (response.statusCode == 200) {
         final userServiceAll = NotificationModel.fromJson(response.body);
@@ -34,7 +36,6 @@ class NotificationController extends GetxController{
       isLoadingMove.value = false;
     }
   }
-
 
   @override
   void onInit() {

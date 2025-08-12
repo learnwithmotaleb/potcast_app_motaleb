@@ -27,7 +27,9 @@ class _ForgetScreenState extends State<ForgetScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("forgot_password".tr),
       ),
       body: SingleChildScrollView(
@@ -55,7 +57,8 @@ class _ForgetScreenState extends State<ForgetScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Email is required';
                   }
-                  final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                  final emailRegex = RegExp(
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
                   if (!emailRegex.hasMatch(value)) {
                     return 'Enter a valid email';
                   }

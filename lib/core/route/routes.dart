@@ -20,8 +20,6 @@ import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
 import 'package:podcast/presentation/screens/playlist/songs/playlist_songs_screen.dart';
 import 'package:podcast/presentation/screens/profile/edit/edit_profile_screen.dart';
 import 'package:podcast/presentation/screens/profile/view/view_profile_screen.dart';
-import 'package:podcast/presentation/screens/see/see_all_screen.dart';
-import 'package:podcast/presentation/screens/see/see_all_top_creator.dart';
 import 'package:podcast/presentation/screens/settings/about_us_screen.dart';
 import 'package:podcast/presentation/screens/settings/change_password_screen.dart';
 import 'package:podcast/presentation/screens/settings/privacy_policy.dart';
@@ -29,13 +27,16 @@ import 'package:podcast/presentation/screens/settings/settings_screen.dart';
 import 'package:podcast/presentation/screens/settings/support_screen.dart';
 import 'package:podcast/presentation/screens/settings/terms_of_condition.dart';
 import 'package:podcast/presentation/screens/splash/splash_screen.dart';
-import 'package:podcast/presentation/screens/user/categories/categories_screen.dart';
-import 'package:podcast/presentation/screens/user/categories/view/category_all_podcast.dart';
 import 'package:podcast/presentation/screens/user/country/select_country_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
-import 'package:podcast/presentation/screens/user/search/search_screen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
+
+import '../../presentation/screens/categories/categories_screen.dart';
+import '../../presentation/screens/search/search_screen.dart';
+import '../../presentation/screens/see_all/album_see_all_screen.dart';
+import '../../presentation/screens/see_all/podcast_list_screen.dart';
+import '../../presentation/screens/see_all/see_all_top_creator.dart';
 
 class AppRouter {
   static final GoRouter initRoute = GoRouter(
@@ -216,6 +217,14 @@ class AppRouter {
           ),
         ),
         GoRoute(
+          name: RoutePath.albumSeeAllScreen,
+          path: RoutePath.albumSeeAllScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const AlbumSeeAllScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
           name: RoutePath.audioPlayScreen,
           path: RoutePath.audioPlayScreen.addBasePath,
           pageBuilder: (context, state) {
@@ -229,27 +238,50 @@ class AppRouter {
               url: "url",
             );
 
-            final model = checking ? state.extra as AudioPlayerModel : audioModel;
+            final model =
+                checking ? state.extra as AudioPlayerModel : audioModel;
 
             print(model.toJson());
             return _buildPageWithAnimation(
-              child: UserPlayScreen(audioPlayerModel: model),
+              child: UserPlayScreen(
+                id: model.id,
+                title: model.title,
+                image: model.image,
+                duration: model.duration,
+                url: model.url,
+                reels: model.reels,
+                popular: model.popular,
+              ),
               state: state,
             );
           },
         ),
         GoRoute(
-          name: RoutePath.seeAllScreen,
-          path: RoutePath.seeAllScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: state.extra != null
-                ? SeeAllScreen(
-                    title: state.extra as String,
-                  )
-                : const SeeAllScreen(title: ""),
-            state: state,
-          ),
+          name: RoutePath.podcastListScreen,
+          path: RoutePath.podcastListScreen.addBasePath,
+          pageBuilder: (context, state) {
+            final extras = state.extra as Map<String, dynamic>? ?? {};
+            final title = extras['title'] as String? ?? '';
+            final searchTerm = extras['searchTerm'] as String? ?? '';
+            final category = extras['category'] as String? ?? '';
+            final subCategory = extras['subCategory'] as String? ?? '';
+            final reels = extras['reels'] as bool? ?? false;
+            final popular = extras['popular'] as bool? ?? false;
+
+            return _buildPageWithAnimation(
+              child: PodcastListScreen(
+                title: title,
+                searchTerm: searchTerm,
+                reels: reels,
+                popular: popular,
+                category: category,
+                subCategory: subCategory,
+              ),
+              state: state,
+            );
+          },
         ),
+
         GoRoute(
           name: RoutePath.upgradeScreen,
           path: RoutePath.upgradeScreen.addBasePath,
@@ -274,14 +306,14 @@ class AppRouter {
             state: state,
           ),
         ),
-        GoRoute(
+        /*GoRoute(
           name: RoutePath.categoryAllPodcast,
           path: RoutePath.categoryAllPodcast.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: CategoryAllPodcast(id: state.extra as String),
             state: state,
           ),
-        ),
+        ),*/
         /*
         GoRoute(
             name: RoutePath.adminPodcastScreen,
@@ -297,7 +329,8 @@ class AppRouter {
           name: RoutePath.creatorNavScreen,
           path: RoutePath.creatorNavScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: CreatorNavScreen(index: (state.extra is int) ? state.extra as int : 0),
+            child: CreatorNavScreen(
+                index: (state.extra is int) ? state.extra as int : 0),
             state: state,
           ),
         ),

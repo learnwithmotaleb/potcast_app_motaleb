@@ -45,9 +45,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               left: 0,
               right: 0,
               child: Obx(() {
-                final cover = _controller.profile.value.data?.profileCover ?? "";
+                final cover =
+                    _controller.profile.value.data?.profileCover ?? "";
                 return CustomNetworkImage(
-                  imageUrl: cover.isNotEmpty? cover : "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e",
+                  imageUrl: cover.isNotEmpty
+                      ? cover
+                      : "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e",
                   height: 200,
                   width: width,
                 );
@@ -82,12 +85,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Obx(() => Column(
                                   children: [
                                     CustomText(
-                                        text: _controller.profile.value.data?.name ?? "",
+                                        text: _controller
+                                                .profile.value.data?.name ??
+                                            "",
                                         fontSize: 24,
                                         fontWeight: FontWeight.w800),
                                     const Gap(5),
                                     CustomText(
-                                        text: _controller.profile.value.data?.email ?? "",
+                                        text: _controller
+                                                .profile.value.data?.email ??
+                                            "",
                                         fontSize: 16),
                                   ],
                                 )),
@@ -95,7 +102,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             CustomProfileTile(
                               text: "personal_information",
                               icon: Iconsax.user,
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
+                              onTap: () => AppRouter.route
+                                  .pushNamed(RoutePath.viewProfileScreen),
                             ),
                             const Gap(24),
                             if (!widget.isUser)
@@ -103,8 +111,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   CustomProfileTile(
                                     text: "my_podcast",
-                                    onTap: () =>
-                                        AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
+                                    onTap: () => AppRouter.route
+                                        .pushNamed(RoutePath.myPodcastScreen),
                                     icon: Iconsax.music,
                                   ),
                                   const Gap(24),
@@ -112,20 +120,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             CustomProfileTile(
                               text: "my_play_list",
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
+                              onTap: () => AppRouter.route
+                                  .pushNamed(RoutePath.playlistScreen),
                               icon: Iconsax.headphone,
                             ),
                             const Gap(24),
                             CustomProfileTile(
                               text: "settings",
                               icon: Iconsax.setting,
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
+                              onTap: () => AppRouter.route
+                                  .pushNamed(RoutePath.settingsScreen),
                             ),
                             const Gap(24),
                             CustomProfileTile(
                               text: "notification",
                               icon: Iconsax.notification,
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
+                              onTap: () => AppRouter.route
+                                  .pushNamed(RoutePath.notificationScreen),
                             ),
                             const Gap(24),
                             if (widget.isUser)
@@ -133,7 +144,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   CustomProfileTile(
                                     text: "upgrade",
-                                    onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
+                                    onTap: () => AppRouter.route
+                                        .pushNamed(RoutePath.upgradeScreen),
                                     icon: Iconsax.diamonds,
                                     isIcon: true,
                                   ),
@@ -143,7 +155,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             GestureDetector(
                               onTap: () => showLogoutDialog(context),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 40),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 40),
                                 child: Container(
                                   height: 45,
                                   width: width,
@@ -176,12 +189,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Obx(() {
-                          final profileImage = _controller.profile.value.data?.profileImage;
+                          final profileImage =
+                              _controller.profile.value.data?.profileImage;
                           if (profileImage != null) {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: CustomNetworkImage(
-                                imageUrl: profileImage.isNotEmpty? profileImage : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                                imageUrl: profileImage.isNotEmpty
+                                    ? profileImage
+                                    : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
                                 height: 100,
                                 width: 100,
                               ),
@@ -241,17 +257,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                      text: "logout".tr,
-                      family: "Bola",
-                      fontWeight: FontWeight.w800,
-                      fontSize: 22,
-                      color: AppColors.blackColor,
+                    text: "logout".tr,
+                    family: "Bola",
+                    fontWeight: FontWeight.w800,
+                    fontSize: 22,
+                    color: AppColors.blackColor,
                   ),
                   const Gap(12),
                   CustomText(
-                      text: "are_you_sure_you_want_logout".tr,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.blackColor,
+                    text: "are_you_sure_you_want_logout".tr,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.blackColor,
                   ),
                   const Gap(24),
                   Row(
@@ -260,7 +276,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       GestureDetector(
                         onTap: () => AppRouter.route.pop(),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 28, vertical: 10),
                           decoration: BoxDecoration(
                               border: Border.all(color: AppColors.blackColor),
                               color: AppColors.whiteColor,
@@ -278,7 +295,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           await helper.logOut();
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 28, vertical: 10),
                           decoration: BoxDecoration(
                               border: Border.all(color: AppColors.blackColor),
                               color: AppColors.blackColor,

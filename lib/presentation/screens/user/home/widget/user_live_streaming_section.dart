@@ -15,7 +15,8 @@ class UserLiveStreamingSection extends StatefulWidget {
   const UserLiveStreamingSection({super.key});
 
   @override
-  State<UserLiveStreamingSection> createState() => _UserLiveStreamingSectionState();
+  State<UserLiveStreamingSection> createState() =>
+      _UserLiveStreamingSectionState();
 }
 
 class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
@@ -34,8 +35,18 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomText(text: "Live Streaming".tr,fontSize: 22, fontWeight: FontWeight.w800),
-              TextButton(onPressed: ()=>AppRouter.route.pushNamed(RoutePath.seeAllTopCreator), child: CustomText(text: "see_all".tr,color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor))
+              CustomText(
+                  text: "Live Streaming".tr,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800),
+              TextButton(
+                  onPressed: () =>
+                      AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),
+                  child: CustomText(
+                      text: "see_all".tr,
+                      color: isDarkMode
+                          ? AppColors.whiteColor
+                          : AppColors.blackColor))
             ],
           ),
           const Gap(12),
@@ -44,9 +55,10 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
             width: width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: (controller.model.value.data?.topCreators?.length??0)+1,
-              itemBuilder: (BuildContext context, int index){
-                if(index ==0){
+              itemCount:
+                  (controller.model.value.data?.topCreators?.length ?? 0) + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 12.0),
                     child: Column(
@@ -56,21 +68,30 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                           child: Container(
                             height: 80.w,
                             width: 80.w,
-                            padding: EdgeInsets.all(index ==0?3:5),
+                            padding: EdgeInsets.all(index == 0 ? 3 : 5),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: index ==0?Border.all(color: const Color(0xFFFE7A15),width: 3):Border.all(color: isDarkMode?AppColors.whiteColor:AppColors.primaryColor,width: 1)
-                            ),
+                                border: index == 0
+                                    ? Border.all(
+                                        color: const Color(0xFFFE7A15),
+                                        width: 3)
+                                    : Border.all(
+                                        color: isDarkMode
+                                            ? AppColors.whiteColor
+                                            : AppColors.primaryColor,
+                                        width: 1)),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(40.r),
                                 child: /*controller.model.value.data?.admin?.avatar != null?
                                 CustomNetworkImage(imageUrl: controller.model.value.data?.admin?.avatar??""):*/
-                                Assets.images.splashLogo.image()
-                            ),
+                                    Assets.images.splashLogo.image()),
                           ),
                         ),
                         const Gap(5),
-                        const CustomText(text: "Podcast", fontSize: 16,),
+                        const CustomText(
+                          text: "Podcast",
+                          fontSize: 16,
+                        ),
                         // CustomText(text: controller.model.value.data?.admin?.name??"", fontSize: 16,),
                       ],
                     ),
@@ -94,7 +115,9 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                               CustomPaint(
                                 size: Size(80.0.h, 80.0.h),
                                 painter: PartialCirclePainter(
-                                  color: isDarkMode ? AppColors.whiteColor : AppColors.primaryColor,
+                                  color: isDarkMode
+                                      ? AppColors.whiteColor
+                                      : AppColors.primaryColor,
                                   strokeWidth: 1.0,
                                 ),
                               ),
@@ -103,8 +126,16 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(40.0.r), // Make it circular
-                                    child: CustomNetworkImage(imageUrl: controller.model.value.data?.topCreators?[index-1].profileImage??""),
+                                    borderRadius: BorderRadius.circular(
+                                        40.0.r), // Make it circular
+                                    child: CustomNetworkImage(
+                                        imageUrl: controller
+                                                .model
+                                                .value
+                                                .data
+                                                ?.topCreators?[index - 1]
+                                                .profileImage ??
+                                            ""),
                                   ),
                                 ),
                               ),
@@ -113,7 +144,11 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                         ),
                       ),
                       const Gap(5),
-                      CustomText(text: controller.model.value.data?.topCreators?[index-1].name??"", fontSize: 16),
+                      CustomText(
+                          text: controller.model.value.data
+                                  ?.topCreators?[index - 1].name ??
+                              "",
+                          fontSize: 16),
                     ],
                   ),
                 );

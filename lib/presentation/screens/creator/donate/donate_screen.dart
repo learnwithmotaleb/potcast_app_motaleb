@@ -26,13 +26,19 @@ class _DonateScreenState extends State<DonateScreen> {
       backgroundColor: AppColors.blackColor,
       appBar: AppBar(
         backgroundColor: AppColors.blackColor,
-        leading: IconButton(onPressed: ()=>AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios,color: AppColors.whiteColor)),
-        title: Text("donate".tr,style: const TextStyle(color: AppColors.whiteColor),),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon:
+                const Icon(Icons.arrow_back_ios, color: AppColors.whiteColor)),
+        title: Text(
+          "donate".tr,
+          style: const TextStyle(color: AppColors.whiteColor),
+        ),
       ),
       body: Column(
         children: [
           SizedBox(
-            height: height/5,
+            height: height / 5,
             width: width,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -40,7 +46,11 @@ class _DonateScreenState extends State<DonateScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CustomText(text: "\$2.99",fontWeight: FontWeight.w800,fontSize: 38.sp,color: AppColors.whiteColor),
+                  CustomText(
+                      text: "\$2.99",
+                      fontWeight: FontWeight.w800,
+                      fontSize: 38.sp,
+                      color: AppColors.whiteColor),
                   const Gap(12),
                   Container(
                     height: 48,
@@ -50,7 +60,10 @@ class _DonateScreenState extends State<DonateScreen> {
                       borderRadius: BorderRadius.circular(8),
                       color: const Color(0xFFF9C6C6),
                     ),
-                    child: CustomText(text: "withdraw".tr,color: AppColors.blackColor,fontSize: 16),
+                    child: CustomText(
+                        text: "withdraw".tr,
+                        color: AppColors.blackColor,
+                        fontSize: 16),
                   ),
                 ],
               ),
@@ -63,12 +76,10 @@ class _DonateScreenState extends State<DonateScreen> {
                   color: AppColors.whiteColor,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)
-                  )
-              ),
+                      topRight: Radius.circular(30))),
               child: ListView.builder(
                 itemCount: 10,
-                itemBuilder: (BuildContext context, int index){
+                itemBuilder: (BuildContext context, int index) {
                   return const DonationCard();
                 },
               ),

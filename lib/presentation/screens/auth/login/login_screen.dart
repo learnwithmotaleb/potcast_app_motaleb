@@ -21,10 +21,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _controller = Get.find<AuthController>();
-  final TextEditingController _email = TextEditingController(text: kDebugMode? "powexa8449@im5z.com" : "");
+  final TextEditingController _email =
+      TextEditingController(text: kDebugMode ? "powexa8449@im5z.com" : "");
+
   /// jowexif304@devdigs.com - USER
   /// powexa8449@im5z.com - CREATOR
-  final TextEditingController _password = TextEditingController(text: kDebugMode? "123456" : "");
+  final TextEditingController _password =
+      TextEditingController(text: kDebugMode ? "123456" : "");
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -61,7 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Email is required';
                     }
-                    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    final emailRegex = RegExp(
+                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
                     if (!emailRegex.hasMatch(value)) {
                       return 'Enter a valid email';
                     }
@@ -90,8 +94,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () => AppRouter.route.pushNamed(RoutePath.forgetScreen),
-                      child: Text("forget_password".tr, style: const TextStyle(color: AppColors.hintTextColor)),
+                      onPressed: () =>
+                          AppRouter.route.pushNamed(RoutePath.forgetScreen),
+                      child: Text("forget_password".tr,
+                          style:
+                              const TextStyle(color: AppColors.hintTextColor)),
                     )
                   ],
                 ),
@@ -102,7 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         _controller.login(
-                          body: {"email": _email.text.trim(), "password": _password.text.trim()},
+                          body: {
+                            "email": _email.text.trim(),
+                            "password": _password.text.trim()
+                          },
                         );
                       }
                     },
@@ -115,8 +125,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Flexible(child: CustomText(text: "don't_have_account".tr)),
                     TextButton(
-                      onPressed: () => AppRouter.route.pushNamed(RoutePath.signUpScreen),
-                      child: CustomText(text: "sign_up".tr, color: AppColors.redColor, fontWeight: FontWeight.w800),
+                      onPressed: () =>
+                          AppRouter.route.pushNamed(RoutePath.signUpScreen),
+                      child: CustomText(
+                          text: "sign_up".tr,
+                          color: AppColors.redColor,
+                          fontWeight: FontWeight.w800),
                     ),
                   ],
                 ),

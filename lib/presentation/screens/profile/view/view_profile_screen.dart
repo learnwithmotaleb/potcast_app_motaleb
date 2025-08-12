@@ -55,8 +55,10 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
               final dateOfBirth = _controller.profile.value.data?.dateOfBirth;
               final address = _controller.profile.value.data?.address;
               final isHaveDate = dateOfBirth != null && dateOfBirth.isUtc;
-              final profileImage = _controller.profile.value.data?.profileImage ?? "";
-              final coverImage = _controller.profile.value.data?.profileCover ?? "";
+              final profileImage =
+                  _controller.profile.value.data?.profileImage ?? "";
+              final coverImage =
+                  _controller.profile.value.data?.profileCover ?? "";
               final gender = _controller.profile.value.data?.gender ?? "";
               final name = _controller.profile.value.data?.name ?? "";
               final email = _controller.profile.value.data?.email ?? "";
@@ -69,15 +71,19 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                         height: 150,
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                         decoration: BoxDecoration(
-                          color: isDarkMode ? AppColors.whiteColor : const Color(0xFFB6B4B4),
+                          color: isDarkMode
+                              ? AppColors.whiteColor
+                              : const Color(0xFFB6B4B4),
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(30),
                             bottomRight: Radius.circular(30),
                           ),
                           image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(coverImage.isNotEmpty? coverImage: "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e")
-                          ),
+                              image: CachedNetworkImageProvider(coverImage
+                                      .isNotEmpty
+                                  ? coverImage
+                                  : "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e")),
                         ),
                         child: Column(
                           children: [
@@ -85,7 +91,9 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                               height: 100.h,
                               width: 100.h,
                               decoration: BoxDecoration(
-                                color: profileImage.isNotEmpty ? null : AppColors.blackColor,
+                                color: profileImage.isNotEmpty
+                                    ? null
+                                    : AppColors.blackColor,
                                 borderRadius: BorderRadius.circular(50.0.r),
                               ),
                               child: ClipRRect(
@@ -116,7 +124,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       ),
                       Gap(44.h),
                       CustomProfileTile(
-                        text:  name.isNotEmpty? name : "No data found!",
+                        text: name.isNotEmpty ? name : "No data found!",
                         // widget: Assets.icons.person.svg(height: 24, width: 24,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: () {},
                         icon: Iconsax.user_copy,
@@ -124,7 +132,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       ),
                       const Gap(24),
                       CustomProfileTile(
-                        text:  email.isNotEmpty? email : "No data found!",
+                        text: email.isNotEmpty ? email : "No data found!",
                         // widget: Assets.icons.person.svg(height: 24, width: 24,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: () {},
                         icon: Icons.email_outlined,
@@ -133,7 +141,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       const Gap(24),
                       CustomProfileTile(
                         text: isHaveDate
-                            ? DateFormat("dd MMMM yyyy - EEEE").format(dateOfBirth)
+                            ? DateFormat("dd MMMM yyyy - EEEE")
+                                .format(dateOfBirth)
                             : "No data found!",
                         // widget: Assets.icons.birthday.svg(height: 24, width: 24,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: () {},
@@ -142,7 +151,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       ),
                       const Gap(24),
                       CustomProfileTile(
-                        text:  gender.isNotEmpty? gender: "No data found!",
+                        text: gender.isNotEmpty ? gender : "No data found!",
                         // widget: Assets.icons.gender.svg(height: 28, width: 32,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: () {},
                         icon: Icons.male,
@@ -158,7 +167,9 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       ),*/
                       const Gap(24),
                       CustomProfileTile(
-                        text: address != null && address.isNotEmpty ? address : "No data found!",
+                        text: address != null && address.isNotEmpty
+                            ? address
+                            : "No data found!",
                         // widget: Assets.icons.a.svg(height: 24, width: 24,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: () {},
                         icon: Iconsax.location_copy,
@@ -169,7 +180,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: CustomButton(
                           text: "edit_profile".tr,
-                          onTap: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
+                          onTap: () => AppRouter.route
+                              .pushNamed(RoutePath.editProfileScreen),
                         ),
                       ),
                     ],

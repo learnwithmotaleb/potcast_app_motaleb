@@ -9,10 +9,11 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/playlist/controller/playlist_controller.dart';
-import 'package:podcast/presentation/screens/user/search/model/search_podcast_model.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+
+import '../../search/model/search_podcast_model.dart';
 
 class PlaylistAddScreen extends StatefulWidget {
   const PlaylistAddScreen({super.key});
@@ -28,23 +29,24 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("add_playlists".tr),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 20.0, bottom: 20),
         child: FloatingActionButton(
-          onPressed: () {
-            if (controller.selectedPlayListId.isNotEmpty) {
-              openSaveDialog(context);
-            } else {
-              toastMessage(message: "Please select at last one podcast");
-            }
-          },
-          backgroundColor: AppColors.blackColor,
-          child: const Center(child: Icon(Iconsax.add, size: 80))
-        ),
+            onPressed: () {
+              if (controller.selectedPlayListId.isNotEmpty) {
+                openSaveDialog(context);
+              } else {
+                toastMessage(message: "Please select at last one podcast");
+              }
+            },
+            backgroundColor: AppColors.blackColor,
+            child: const Center(child: Icon(Iconsax.add, size: 80))),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -63,7 +65,8 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                     CupertinoSearchTextField(
                       itemColor: CupertinoColors.systemGrey,
                       placeholder: "what_would_you_like_to_listen".tr,
-                      style: const TextStyle(fontSize: 16, color: CupertinoColors.white),
+                      style: const TextStyle(
+                          fontSize: 16, color: CupertinoColors.white),
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: CupertinoColors.systemGrey5,
@@ -92,12 +95,16 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                   return Obx(() {
                     return MusicCard(
                       data: data,
-                      bgColor: controller.playList[index] == true ? AppColors.redColor : null,
+                      bgColor: controller.playList[index] == true
+                          ? AppColors.redColor
+                          : null,
                       onTap: () {
                         final currentStatus = controller.playList[index];
                         controller.playList[index] = !currentStatus;
 
-                        if (!currentStatus && item.id != null && item.id!.isNotEmpty) {
+                        if (!currentStatus &&
+                            item.id != null &&
+                            item.id!.isNotEmpty) {
                           // Add to selectedPlayListId
                           controller.selectedPlayListId.add(item.id!);
                         } else {
@@ -108,7 +115,8 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                         // Refresh the observable list
                         controller.playList.refresh();
 
-                        print("Selected IDs: ${controller.selectedPlayListId.length} ${controller.selectedPlayListId.toJson()}");
+                        print(
+                            "Selected IDs: ${controller.selectedPlayListId.length} ${controller.selectedPlayListId.toJson()}");
                       },
                     );
                   });
@@ -126,12 +134,11 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: MaterialLocalizations
-          .of(context)
-          .modalBarrierDismissLabel,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 500),
-      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
         return Center(
           child: Dialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -140,19 +147,21 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
             ),
             elevation: 16,
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(30)),
+              decoration: BoxDecoration(
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(30)),
               child: Form(
                 key: formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Gap(24),
-                    CustomText(text: "new_playlist".tr, fontSize: 20, color: AppColors.blackColor),
+                    CustomText(
+                        text: "new_playlist".tr,
+                        fontSize: 20,
+                        color: AppColors.blackColor),
                     const Gap(12),
                     TextFormField(
                       style: const TextStyle(color: AppColors.blackColor),
@@ -173,38 +182,47 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                       decoration: InputDecoration(
                         hintText: "give_your_playlist_a_title".tr,
                         filled: false,
-                        enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 2.0)),
-                        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 2.0)),
+                        enabledBorder: const UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 2.0)),
+                        focusedBorder: const UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0)),
                       ),
                     ),
                     const Gap(24),
                     Obx(() {
-                      return controller.editLoading.value?const Center(child: CircularProgressIndicator()):
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => AppRouter.route.pop(),
-                            style: const ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(AppColors.blackColor),
-                              foregroundColor: WidgetStatePropertyAll(AppColors.whiteColor),
-                            ),
-                            child: Text("cancel".tr),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                controller.playlistAdd();
-                              }
-                            },
-                            style: const ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(AppColors.blackColor),
-                              foregroundColor: WidgetStatePropertyAll(AppColors.whiteColor),
-                            ),
-                            child: Text("create".tr),
-                          ),
-                        ],
-                      );
+                      return controller.editLoading.value
+                          ? const Center(child: CircularProgressIndicator())
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () => AppRouter.route.pop(),
+                                  style: const ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(
+                                        AppColors.blackColor),
+                                    foregroundColor: WidgetStatePropertyAll(
+                                        AppColors.whiteColor),
+                                  ),
+                                  child: Text("cancel".tr),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      controller.playlistAdd();
+                                    }
+                                  },
+                                  style: const ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(
+                                        AppColors.blackColor),
+                                    foregroundColor: WidgetStatePropertyAll(
+                                        AppColors.whiteColor),
+                                  ),
+                                  child: Text("create".tr),
+                                ),
+                              ],
+                            );
                     }),
                     const Gap(12),
                   ],

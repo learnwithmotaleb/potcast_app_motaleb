@@ -21,7 +21,7 @@ class _AddIconMainScreenState extends State<AddIconMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      switch(controller.selectedScreenType.value){
+      switch (controller.selectedScreenType.value) {
         case SelectedAddPostScreenType.audio:
           return const PodcastAudioScreen();
         case SelectedAddPostScreenType.video:

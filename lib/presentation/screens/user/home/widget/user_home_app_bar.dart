@@ -26,69 +26,90 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Container(
           height: 50,
           width: 50,
-          decoration: const BoxDecoration(
-              shape: BoxShape.circle
-          ),
-          child: Obx(()=>controller.loading.value == Status.completed?ClipRRect(
-            borderRadius: BorderRadius.circular(25),
-            child: CustomNetworkImage(imageUrl: controller.profile.value.data?.profileImage??"")
-          ):Shimmer.fromColors(
-            baseColor: isDarkMode?AppColors.whiteColor.withOpacity(0.2):AppColors.blackColor.withOpacity(0.2),
-            highlightColor: isDarkMode?AppColors.whiteColor.withOpacity(0.5):AppColors.blackColor.withOpacity(0.5),
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.hintTextColor,
-              ),
-            ),
-          )),
+          decoration: const BoxDecoration(shape: BoxShape.circle),
+          child: Obx(() => controller.loading.value == Status.completed
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: CustomNetworkImage(
+                      imageUrl:
+                          controller.profile.value.data?.profileImage ?? ""))
+              : Shimmer.fromColors(
+                  baseColor: isDarkMode
+                      ? AppColors.whiteColor.withOpacity(0.2)
+                      : AppColors.blackColor.withOpacity(0.2),
+                  highlightColor: isDarkMode
+                      ? AppColors.whiteColor.withOpacity(0.5)
+                      : AppColors.blackColor.withOpacity(0.5),
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.hintTextColor,
+                    ),
+                  ),
+                )),
         ),
       ),
       centerTitle: false,
-      title: Obx(()=>controller.loading.value == Status.completed?Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(controller.profile.value.data?.name ?? "", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
-          Text(controller.profile.value.data?.email ?? "", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
-        ],
-      ):Shimmer.fromColors(
-        baseColor: isDarkMode?AppColors.whiteColor.withOpacity(0.2):AppColors.blackColor.withOpacity(0.2),
-        highlightColor: isDarkMode?AppColors.whiteColor.withOpacity(0.5):AppColors.blackColor.withOpacity(0.5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 10,
-              width: width/3,
-              color: AppColors.hintTextColor,
-            ),
-            const Gap(5),
-            Container(
-              height: 10,
-              width: width/2,
-              color: AppColors.hintTextColor,
-            ),
-          ],
-        ),
-      )),
+      title: Obx(() => controller.loading.value == Status.completed
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  controller.profile.value.data?.name ?? "",
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  controller.profile.value.data?.email ?? "",
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+              ],
+            )
+          : Shimmer.fromColors(
+              baseColor: isDarkMode
+                  ? AppColors.whiteColor.withOpacity(0.2)
+                  : AppColors.blackColor.withOpacity(0.2),
+              highlightColor: isDarkMode
+                  ? AppColors.whiteColor.withOpacity(0.5)
+                  : AppColors.blackColor.withOpacity(0.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 10,
+                    width: width / 3,
+                    color: AppColors.hintTextColor,
+                  ),
+                  const Gap(5),
+                  Container(
+                    height: 10,
+                    width: width / 2,
+                    color: AppColors.hintTextColor,
+                  ),
+                ],
+              ),
+            )),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 12.0),
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDarkMode ? const Color(0xFF1C1B1B) : const Color(
-                  0xFFE6F2FF),
+              color: isDarkMode
+                  ? const Color(0xFF1C1B1B)
+                  : const Color(0xFFE6F2FF),
             ),
             child: IconButton(
               onPressed: () {
                 AppRouter.route.pushNamed(RoutePath.notificationScreen);
               },
-              icon: const Icon(Iconsax.notification, color: AppColors.whiteColor),
+              icon:
+                  const Icon(Iconsax.notification, color: AppColors.whiteColor),
             ),
           ),
         ),

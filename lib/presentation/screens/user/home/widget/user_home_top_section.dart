@@ -45,7 +45,8 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: GestureDetector(
-                onTap: ()=>AppRouter.route.pushNamed(RoutePath.notificationScreen),
+                onTap: () =>
+                    AppRouter.route.pushNamed(RoutePath.notificationScreen),
                 child: Assets.icons.notification.svg(height: 30.h, width: 30.w),
               ),
             ),
@@ -55,22 +56,22 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: GestureDetector(
-            onTap: () => AppRouter.route.pushNamed(RoutePath.searchScreen, extra: "all"),
+            onTap: () => AppRouter.route.pushNamed(RoutePath.searchScreen),
             child: Container(
               width: width,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                   color: const Color(0xFF2A2B31),
                   borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: AppColors.whiteColor)
-              ),
+                  border: Border.all(color: AppColors.whiteColor)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Assets.icons.search.svg(height: 22, width: 22),
                   const Gap(8),
-                  CustomText(text: "what_would_you_like_to_listen".tr, fontSize: 16),
+                  CustomText(
+                      text: "what_would_you_like_to_listen".tr, fontSize: 16),
                 ],
               ),
             ),

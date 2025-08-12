@@ -33,13 +33,13 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
               final url = navigationAction.request.url.toString();
               bool isSuccess = url.contains('/success');
               bool isHttps = url.contains('https');
-              if(isSuccess){
+              if (isSuccess) {
                 toastMessage(message: "Payment Successful");
                 AppRouter.route.pop();
               }
-              if(isHttps){
+              if (isHttps) {
                 return NavigationActionPolicy.ALLOW;
-              }else{
+              } else {
                 return NavigationActionPolicy.CANCEL;
               }
             },
@@ -56,4 +56,3 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
     );
   }
 }
-

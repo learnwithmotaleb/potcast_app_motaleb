@@ -5,9 +5,13 @@ class GoogleSearchLocationModel {
     this.predictions,
   });
 
-  factory GoogleSearchLocationModel.fromJson(Map<String, dynamic> json) => GoogleSearchLocationModel(
-    predictions: json["predictions"] == null ? [] : List<Prediction>.from(json["predictions"]!.map((x) => Prediction.fromJson(x))),
-  );
+  factory GoogleSearchLocationModel.fromJson(Map<String, dynamic> json) =>
+      GoogleSearchLocationModel(
+        predictions: json["predictions"] == null
+            ? []
+            : List<Prediction>.from(
+                json["predictions"]!.map((x) => Prediction.fromJson(x))),
+      );
 }
 
 class Prediction {
@@ -22,10 +26,12 @@ class Prediction {
   });
 
   factory Prediction.fromJson(Map<String, dynamic> json) => Prediction(
-    description: json["description"],
-    placeId: json["place_id"],
-    structuredFormatting: json["structured_formatting"] == null ? null : StructuredFormatting.fromJson(json["structured_formatting"]),
-  );
+        description: json["description"],
+        placeId: json["place_id"],
+        structuredFormatting: json["structured_formatting"] == null
+            ? null
+            : StructuredFormatting.fromJson(json["structured_formatting"]),
+      );
 }
 
 class StructuredFormatting {
@@ -35,7 +41,8 @@ class StructuredFormatting {
     this.mainText,
   });
 
-  factory StructuredFormatting.fromJson(Map<String, dynamic> json) => StructuredFormatting(
-    mainText: json["main_text"],
-  );
+  factory StructuredFormatting.fromJson(Map<String, dynamic> json) =>
+      StructuredFormatting(
+        mainText: json["main_text"],
+      );
 }

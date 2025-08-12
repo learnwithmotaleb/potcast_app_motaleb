@@ -9,20 +9,22 @@ import 'package:podcast/service/api_url.dart';
 import 'package:podcast/service/check_api.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
-class SettingsController extends GetxController{
+class SettingsController extends GetxController {
   ApiClient apiClient = ApiClient();
   DBHelper dbHelper = DBHelper();
 
   /// ============================= GET Terms Condition =====================================
-  final Rx<TermsConditionsModel> termsConditionsData = TermsConditionsModel().obs;
+  final Rx<TermsConditionsModel> termsConditionsData =
+      TermsConditionsModel().obs;
   var termsLoading = Status.completed.obs;
   termsLoadingMethod(Status status) => termsLoading.value = status;
   Future<void> getTermsCondition() async {
-    try{
+    try {
       termsLoadingMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.terms(),showResult: true);
+      var response = await apiClient.get(url: ApiUrl.terms(), showResult: true);
       if (response.statusCode == 200) {
-        termsConditionsData.value = TermsConditionsModel.fromJson(response.body);
+        termsConditionsData.value =
+            TermsConditionsModel.fromJson(response.body);
         termsLoadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -33,22 +35,25 @@ class SettingsController extends GetxController{
           termsLoadingMethod(Status.error);
         }
       }
-    }catch(e){
+    } catch (e) {
       termsLoadingMethod(Status.error);
     }
   }
 
   /// ============================= GET Privacy Policy =====================================
-  final Rx<TermsConditionsModel> privacyConditionsData = TermsConditionsModel().obs;
+  final Rx<TermsConditionsModel> privacyConditionsData =
+      TermsConditionsModel().obs;
   var privacyLoading = Status.completed.obs;
   privacyLoadingMethod(Status status) => privacyLoading.value = status;
 
   Future<void> getPrivacyPolicy() async {
-    try{
+    try {
       privacyLoadingMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.privacy(),showResult: true);
+      var response =
+          await apiClient.get(url: ApiUrl.privacy(), showResult: true);
       if (response.statusCode == 200) {
-        privacyConditionsData.value = TermsConditionsModel.fromJson(response.body);
+        privacyConditionsData.value =
+            TermsConditionsModel.fromJson(response.body);
         privacyLoadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -59,7 +64,7 @@ class SettingsController extends GetxController{
           privacyLoadingMethod(Status.error);
         }
       }
-    }catch(e){
+    } catch (e) {
       privacyLoadingMethod(Status.error);
     }
   }
@@ -70,9 +75,9 @@ class SettingsController extends GetxController{
   aboutLoadingMethod(Status status) => aboutLoading.value = status;
 
   Future<void> getAboutUs() async {
-    try{
+    try {
       aboutLoadingMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.about(),showResult: true);
+      var response = await apiClient.get(url: ApiUrl.about(), showResult: true);
       if (response.statusCode == 200) {
         aboutUsData.value = TermsConditionsModel.fromJson(response.body);
         aboutLoadingMethod(Status.completed);
@@ -85,7 +90,7 @@ class SettingsController extends GetxController{
           aboutLoadingMethod(Status.error);
         }
       }
-    }catch(e){
+    } catch (e) {
       aboutLoadingMethod(Status.error);
     }
   }
@@ -97,7 +102,7 @@ class SettingsController extends GetxController{
 
   Future<void> getSupportUs() async {
     supportsLoadingMethod(Status.loading);
-    var response = await apiClient.get(url: ApiUrl.faq(),showResult: true);
+    var response = await apiClient.get(url: ApiUrl.faq(), showResult: true);
     if (response.statusCode == 200) {
       supportsData.value = FaqModel.fromJson(response.body);
       supportsLoadingMethod(Status.completed);
@@ -114,21 +119,25 @@ class SettingsController extends GetxController{
 
   /// ============================= Patch Change Password =====================================
   var changePasswordLoading = false.obs;
-  changePasswordLoadingMethod(bool loading) => changePasswordLoading.value = loading;
+  changePasswordLoadingMethod(bool loading) =>
+      changePasswordLoading.value = loading;
 
   Future<void> changePassword({required Map<String, String> body}) async {
-    try{
+    try {
       changePasswordLoadingMethod(true);
-      var response = await apiClient.put(url: ApiUrl.changePassword(),body: body,showResult: true);
+      var response = await apiClient.put(
+          url: ApiUrl.changePassword(), body: body, showResult: true);
       if (response.statusCode == 200) {
         changePasswordLoadingMethod(false);
-        toastMessage(message: response.body?['message'].toString()??"something want wrong");
+        toastMessage(
+            message:
+                response.body?['message'].toString() ?? "something want wrong");
         AppRouter.route.pop();
       } else {
         checkApi(response: response);
         changePasswordLoadingMethod(false);
       }
-    }catch(e){
+    } catch (e) {
       changePasswordLoadingMethod(false);
     }
   }
@@ -138,11 +147,14 @@ class SettingsController extends GetxController{
   deleteLoadingMethod(bool loading) => deleteLoading.value = loading;
 
   Future<void> deleteAccount() async {
-    try{
+    try {
       deleteLoadingMethod(true);
-      var response = await apiClient.delete(url: ApiUrl.delete(),showResult: true);
+      var response =
+          await apiClient.delete(url: ApiUrl.delete(), showResult: true);
       if (response.statusCode == 200) {
-        toastMessage(message: response.body?['message'].toString()??"something want wrong");
+        toastMessage(
+            message:
+                response.body?['message'].toString() ?? "something want wrong");
         AppRouter.route.pop();
         await dbHelper.logOut();
         deleteLoadingMethod(false);
@@ -150,7 +162,7 @@ class SettingsController extends GetxController{
         checkApi(response: response);
         deleteLoadingMethod(false);
       }
-    }catch(e){
+    } catch (e) {
       deleteLoadingMethod(false);
     }
   }

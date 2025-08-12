@@ -18,7 +18,8 @@ Future<void> main() async {
 
   //Background Audio Player
   await JustAudioBackground.init(
-    androidNotificationChannelId: "com.ryanheise.audio_service.podcast.audio_player",
+    androidNotificationChannelId:
+        "com.ryanheise.audio_service.podcast.audio_player",
     androidNotificationChannelName: "Audio playback",
     androidNotificationOngoing: true,
   );
@@ -28,7 +29,8 @@ Future<void> main() async {
   initDependencies();
 
   //Localization
-  Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
+  Map<String, Map<String, String>>? languages =
+      await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
 }
@@ -47,14 +49,15 @@ class MyApp extends StatelessWidget {
           designSize: const Size(393, 852),
           minTextAdapt: true,
           useInheritedMediaQuery: true,
-          builder: (context, child){
+          builder: (context, child) {
             return GetMaterialApp.router(
               debugShowCheckedModeBanner: false,
 
               //Route Section
               routeInformationParser: AppRouter.route.routeInformationParser,
               routerDelegate: AppRouter.route.routerDelegate,
-              routeInformationProvider: AppRouter.route.routeInformationProvider,
+              routeInformationProvider:
+                  AppRouter.route.routeInformationProvider,
 
               //Theme Section
               themeMode: ThemeMode.dark,

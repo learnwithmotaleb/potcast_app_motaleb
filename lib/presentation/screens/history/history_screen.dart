@@ -34,7 +34,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         title: Text("history".tr),
       ),
       bottomNavigationBar: Obx(() {
-        return playController.isPlaying.value ? BottomNavPlayCard() : const SizedBox();
+        return playController.isPlaying.value
+            ? BottomNavPlayCard()
+            : const SizedBox();
       }),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -44,7 +46,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8),
                 child: Row(
                   children: [
                     Assets.icons.sort.svg(
@@ -84,8 +87,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     );
                     return MusicCard(
                       data: data,
-                      onTap: () {},
-                      // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                      onTap: () => AppRouter.route.pushNamed(
+                        RoutePath.audioPlayScreen,
+                        extra: AudioPlayerModel(
+                          id: item.podcast?.id ?? "",
+                          title: item.podcast?.title ?? "",
+                          categories: item.podcast?.category?.name ?? "",
+                          image: item.podcast?.coverImage ?? "",
+                          url: "",
+                          duration: formatDuration(item.podcast?.duration ?? 0),
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -95,5 +107,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
     );
+  }
+
+  String formatDuration(num seconds) {
+    if (seconds < 60) {
+      return '$seconds sec';
+    } else {
+      final minutes = (seconds / 60).floor();
+      return '$minutes min';
+    }
   }
 }

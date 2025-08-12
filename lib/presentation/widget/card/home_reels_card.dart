@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
-import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 
 class HomeReelsCard extends StatelessWidget {
   const HomeReelsCard({
@@ -30,9 +28,9 @@ class HomeReelsCard extends StatelessWidget {
         onLongPress: onLongPress,
         child: CustomNetworkImage(
           borderRadius: BorderRadius.circular(5.r),
-          imageUrl: data.image ?? "",
+          imageUrl: data.image,
           height: 250,
-          width: (width/3),
+          width: (width / 3),
         ),
       ),
     );

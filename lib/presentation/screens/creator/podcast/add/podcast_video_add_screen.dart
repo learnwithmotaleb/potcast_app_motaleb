@@ -38,7 +38,6 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
   final description = TextEditingController();
   final tag = TextEditingController();
 
-
   @override
   void dispose() {
     title.dispose();
@@ -57,7 +56,6 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,32 +71,37 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
             children: [
               Obx(() {
                 final globalState = globalController.loading.value;
-                if (globalState == Status.loading) return const LoadingWidget(color: AppColors.whiteColor);
-                if (globalState == Status.internetError || globalState == Status.error) {
-                  return NoInternetCard(onTap: () => globalController.getCategories());
+                if (globalState == Status.loading)
+                  return const LoadingWidget(color: AppColors.whiteColor);
+                if (globalState == Status.internetError ||
+                    globalState == Status.error) {
+                  return NoInternetCard(
+                      onTap: () => globalController.getCategories());
                 }
                 if (globalState == Status.noDataFound) {
-                  return const Center(child: CustomText(text: "No data found!"));
+                  return const Center(
+                      child: CustomText(text: "No data found!"));
                 }
 
                 return Obx(() => CategorySubcategoryPicker(
-                  selectedCategoryId: controller.selectedCategoryId.value,
-                  selectedSubcategoryId: controller.selectedSubcategoryId.value,
-                  globalController: globalController,
-                  onCategoryChanged: (id) {
-                    controller.selectedCategoryId.value = id ?? '';
-                    controller.selectedSubcategoryId.value = '';
-                  },
-                  onSubcategoryChanged: (id) {
-                    controller.selectedSubcategoryId.value = id ?? '';
-                  },
-                ));
+                      selectedCategoryId: controller.selectedCategoryId.value,
+                      selectedSubcategoryId:
+                          controller.selectedSubcategoryId.value,
+                      globalController: globalController,
+                      onCategoryChanged: (id) {
+                        controller.selectedCategoryId.value = id ?? '';
+                        controller.selectedSubcategoryId.value = '';
+                      },
+                      onSubcategoryChanged: (id) {
+                        controller.selectedSubcategoryId.value = id ?? '';
+                      },
+                    ));
               }),
               CustomAlignText(text: "cover_page_upload".tr),
               const Gap(8),
               Obx(() {
                 return PickCoverImageWidget(
-                  onTap: ()=> controller.pickImage(),
+                  onTap: () => controller.pickImage(),
                   selectedImage: controller.selectedImage.value,
                 );
               }),
@@ -143,7 +146,8 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(child: Obx(() {
-                        return Text(controller.selectedAddress.value?.address ?? "Select Your Location");
+                        return Text(controller.selectedAddress.value?.address ??
+                            "Select Your Location");
                       })),
                       const Icon(Iconsax.location),
                     ],
@@ -196,7 +200,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
     );
   }
 
-  void uploadAudio() async{
+  void uploadAudio() async {
     final validate = _formKey.currentState!.validate();
     final hasCategory = controller.selectedCategoryId.isNotEmpty;
     final hasSubCategory = controller.selectedSubcategoryId.isNotEmpty;
@@ -241,7 +245,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
       return;
     }
 
-    try{
+    try {
       if (validate && hasCategory && hasSubCategory) {
         final Map<String, dynamic> body = {
           "category": controller.selectedCategoryId.value,
@@ -280,7 +284,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
       } else {
         toastMessage(message: "Please Provide all information");
       }
-    }catch(_){
+    } catch (_) {
       toastMessage(message: "Please complete all required fields");
     }
   }

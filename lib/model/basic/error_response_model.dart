@@ -9,9 +9,10 @@ class ErrorResponseModel {
     this.message,
   });
 
-  factory ErrorResponseModel.fromJson(Map<String, dynamic> json) => ErrorResponseModel(
-    status: json["status"],
-    statusCode: json["statusCode"],
-    message: json["message"],
-  );
+  factory ErrorResponseModel.fromJson(Map<String, dynamic> json) =>
+      ErrorResponseModel(
+        status: json["status"],
+        statusCode: json["statusCode"],
+        message: json["message"],
+      );
 }

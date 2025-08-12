@@ -9,11 +9,12 @@ class PlayListSongsModel {
     this.data,
   });
 
-  factory PlayListSongsModel.fromJson(Map<String, dynamic> json) => PlayListSongsModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory PlayListSongsModel.fromJson(Map<String, dynamic> json) =>
+      PlayListSongsModel(
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 }
 
 class Data {
@@ -24,8 +25,11 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    podcasts: json["podcasts"] == null ? [] : List<PlayListPodcast>.from(json["podcasts"]!.map((x) => PlayListPodcast.fromJson(x))),
-  );
+        podcasts: json["podcasts"] == null
+            ? []
+            : List<PlayListPodcast>.from(
+                json["podcasts"]!.map((x) => PlayListPodcast.fromJson(x))),
+      );
 }
 
 class PlayListPodcast {
@@ -45,14 +49,18 @@ class PlayListPodcast {
     this.audioDuration,
   });
 
-  factory PlayListPodcast.fromJson(Map<String, dynamic> json) => PlayListPodcast(
-    id: json["_id"],
-    creator: json["creator"] == null ? null : Creator.fromJson(json["creator"]),
-    category: json["category"] == null ? null : Category.fromJson(json["category"]),
-    title: json["title"],
-    cover: json["cover"],
-    audioDuration: json["audioDuration"],
-  );
+  factory PlayListPodcast.fromJson(Map<String, dynamic> json) =>
+      PlayListPodcast(
+        id: json["_id"],
+        creator:
+            json["creator"] == null ? null : Creator.fromJson(json["creator"]),
+        category: json["category"] == null
+            ? null
+            : Category.fromJson(json["category"]),
+        title: json["title"],
+        cover: json["cover"],
+        audioDuration: json["audioDuration"],
+      );
 }
 
 class Category {
@@ -63,8 +71,8 @@ class Category {
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-    title: json["title"],
-  );
+        title: json["title"],
+      );
 }
 
 class Creator {
@@ -75,8 +83,8 @@ class Creator {
   });
 
   factory Creator.fromJson(Map<String, dynamic> json) => Creator(
-    user: json["user"] == null ? null : User.fromJson(json["user"]),
-  );
+        user: json["user"] == null ? null : User.fromJson(json["user"]),
+      );
 }
 
 class User {
@@ -87,6 +95,6 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    name: json["name"],
-  );
+        name: json["name"],
+      );
 }

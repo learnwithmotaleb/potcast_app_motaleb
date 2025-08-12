@@ -6,35 +6,34 @@ import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DBHelper {
-
   /// ====================== Get Token ====================
   Future<String> getToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(AppConstants.token)??"";
+    return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
   Future<String> getRefreshToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(AppConstants.refreshToken)??"";
+    return sharedPreferences.getString(AppConstants.refreshToken) ?? "";
   }
 
   /// ====================== Get User ID ==================
 
   Future<String> getUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(AppConstants.id)??"";
+    return sharedPreferences.getString(AppConstants.id) ?? "";
   }
 
   Future<String> getProfileId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(AppConstants.profileId)??"";
+    return sharedPreferences.getString(AppConstants.profileId) ?? "";
   }
 
   /// ====================== Get User Role ==================
 
   Future<String> getUserRole() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(AppConstants.role)??"";
+    return sharedPreferences.getString(AppConstants.role) ?? "";
   }
 
   /// ====================== Get User Role ==================
@@ -65,11 +64,11 @@ class DBHelper {
 
   Future logOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear().then((value){
+    await prefs.clear().then((value) {
       toastMessage(message: "Logout Successful!");
       Get.deleteAll();
       AppRouter.route.goNamed(RoutePath.loginScreen);
-    }).onError((error,stack){
+    }).onError((error, stack) {
       AppRouter.route.goNamed(RoutePath.loginScreen);
     });
   }

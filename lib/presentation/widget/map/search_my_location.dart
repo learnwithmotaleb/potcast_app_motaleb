@@ -13,7 +13,8 @@ import 'package:podcast/utils/app_const/app_const.dart';
 
 import '../../../model/basic/selected_location_model.dart';
 
-Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bool isShotAddress = false}) async {
+Future<SelectedLocationResult?> showMapDialog(
+    {required BuildContext context, bool isShotAddress = false}) async {
   final controller = Get.put(SearchMyLocationController());
 
   final result = await showModalBottomSheet<SelectedLocationResult>(
@@ -33,10 +34,12 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
             children: [
               const Gap(24),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
                 child: CupertinoSearchTextField(
                   controller: controller.searchText,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
                   onSubmitted: (String value) {
                     controller.searchLocationByGoogle(context: context);
                   },
@@ -55,11 +58,16 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
                   case Status.loading:
                     return const LoadingWidget(color: AppColors.whiteColor);
                   case Status.internetError:
-                    return NoInternetCard(onTap: () => controller.searchLocationByGoogle(context: context));
+                    return NoInternetCard(
+                        onTap: () => controller.searchLocationByGoogle(
+                            context: context));
                   case Status.noDataFound:
-                    return const Center(child: CustomText(text: "No data found!"));
+                    return const Center(
+                        child: CustomText(text: "No data found!"));
                   case Status.error:
-                    return NoInternetCard(onTap: () => controller.searchLocationByGoogle(context: context));
+                    return NoInternetCard(
+                        onTap: () => controller.searchLocationByGoogle(
+                            context: context));
                   case Status.completed:
                     return ListView.builder(
                       shrinkWrap: true,
@@ -67,25 +75,28 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
                       itemCount: controller.addressList.length,
                       itemBuilder: (BuildContext context, int index) {
                         final address = controller.addressList[index];
-                        final shotAddress = address.structuredFormatting?.mainText ?? "";
+                        final shotAddress =
+                            address.structuredFormatting?.mainText ?? "";
                         final value = address.description ?? shotAddress;
 
                         return GestureDetector(
                           onTap: () async {
-                            try{
-                              final LatLng? latLng = await controller.placeIdToLatLng(placeId: address.placeId ?? "");
+                            try {
+                              final LatLng? latLng =
+                                  await controller.placeIdToLatLng(
+                                      placeId: address.placeId ?? "");
 
-                              print(latLng?.latitude  ?? "lat");
-                              print(latLng?.longitude?? "lng");
+                              print(latLng?.latitude ?? "lat");
+                              print(latLng?.longitude ?? "lng");
 
-                              if(isShotAddress){
+                              if (isShotAddress) {
                                 final finalValue = SelectedLocationResult(
                                   address: shotAddress,
                                   latitude: latLng?.latitude ?? 0,
                                   longitude: latLng?.longitude ?? 0,
                                 );
                                 AppRouter.route.pop(finalValue);
-                              }else{
+                              } else {
                                 final finalValue = SelectedLocationResult(
                                   address: value,
                                   latitude: latLng?.latitude ?? 0,
@@ -93,9 +104,7 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
                                 );
                                 AppRouter.route.pop(finalValue);
                               }
-                            }catch(_){
-
-                            }
+                            } catch (_) {}
                           },
                           child: Container(
                             color: Colors.green.withValues(alpha: 0.1),
@@ -104,22 +113,30 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.location_on, color: AppColors.whiteColor),
+                                    const Icon(Icons.location_on,
+                                        color: AppColors.whiteColor),
                                     const Gap(5),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            address.structuredFormatting?.mainText ?? "",
+                                            address.structuredFormatting
+                                                    ?.mainText ??
+                                                "",
                                             maxLines: 1,
-                                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w800),
                                           ),
                                           const Gap(5),
                                           Text(
                                             address.description ?? "",
                                             maxLines: 1,
-                                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w100),
+                                            style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w100),
                                           ),
                                         ],
                                       ),
@@ -145,4 +162,3 @@ Future<SelectedLocationResult?> showMapDialog({required BuildContext context, bo
   Get.delete<SearchMyLocationController>();
   return result;
 }
-

@@ -27,11 +27,13 @@ class _ResetScreenState extends State<ResetScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: ()=>AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(
+            onPressed: () => AppRouter.route.pop(),
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("set_password".tr),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Form(
           key: _formKey,
           child: Column(
@@ -41,7 +43,13 @@ class _ResetScreenState extends State<ResetScreen> {
               Assets.images.splashLogo.image(
                 color: AppColors.blackColor,
               ),
-              CustomText(text: "please_select_a_password_that_uses_one_capital_letter_one_number_and_unique_symbol".tr,fontSize: 16,family: "Light",maxLines: 2),
+              CustomText(
+                  text:
+                      "please_select_a_password_that_uses_one_capital_letter_one_number_and_unique_symbol"
+                          .tr,
+                  fontSize: 16,
+                  family: "Light",
+                  maxLines: 2),
               const Gap(24),
               CustomAlignText(text: "new_password".tr),
               const Gap(8),
@@ -79,7 +87,8 @@ class _ResetScreenState extends State<ResetScreen> {
                 },
               ),
               const Gap(24),
-              Obx(() => CustomButton(
+              Obx(
+                () => CustomButton(
                   text: "reset_password".tr,
                   isLoading: _controller.resetLoading.value,
                   onTap: () {
@@ -87,8 +96,8 @@ class _ResetScreenState extends State<ResetScreen> {
                       _controller.resetPassword(
                         body: {
                           "email": widget.email,
-                          "password" : _newPassword.text.trim(),
-                          "confirmPassword" : _confirmPassword.text.trim()
+                          "password": _newPassword.text.trim(),
+                          "confirmPassword": _confirmPassword.text.trim()
                         },
                       );
                     }

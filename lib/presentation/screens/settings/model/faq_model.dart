@@ -8,9 +8,11 @@ class FaqModel {
   });
 
   factory FaqModel.fromJson(Map<String, dynamic> json) => FaqModel(
-    message: json["message"],
-    data: json["data"] == null ? [] : List<FaqData>.from(json["data"]!.map((x) => FaqData.fromJson(x))),
-  );
+        message: json["message"],
+        data: json["data"] == null
+            ? []
+            : List<FaqData>.from(json["data"]!.map((x) => FaqData.fromJson(x))),
+      );
 }
 
 class FaqData {
@@ -27,9 +29,9 @@ class FaqData {
   });
 
   factory FaqData.fromJson(Map<String, dynamic> json) => FaqData(
-    id: json["_id"],
-    question: json["question"],
-    answer: json["answer"],
-    v: json["__v"],
-  );
+        id: json["_id"],
+        question: json["question"],
+        answer: json["answer"],
+        v: json["__v"],
+      );
 }

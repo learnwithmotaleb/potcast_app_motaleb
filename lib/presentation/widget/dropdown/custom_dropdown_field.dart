@@ -29,8 +29,9 @@ class CustomDropdownField extends StatelessWidget {
     final safeItems = items ?? [];
     final bool isValueValid = safeItems.contains(value);
     const message = "This field is Required";
-    String? Function(String?)? validation =
-        (isRequired ? (val) => (val == null || val.isEmpty) ? message : null : null);
+    String? Function(String?)? validation = (isRequired
+        ? (val) => (val == null || val.isEmpty) ? message : null
+        : null);
     final validationFunction = validator ?? validation;
 
     final isExtraTextNotEmpty = extraText.isNotEmpty;
@@ -45,16 +46,18 @@ class CustomDropdownField extends StatelessWidget {
         hintStyle: const TextStyle(color: AppColors.whiteColor),
         errorStyle: const TextStyle(color: AppColors.whiteColor),
       ),
-      hint: CustomText(text: hintText, color: AppColors.whiteColor, fontSize: 16),
+      hint:
+          CustomText(text: hintText, color: AppColors.whiteColor, fontSize: 16),
       items: safeItems
           .map(
             (item) => DropdownMenuItem<String>(
-          value: item,
-          child: CustomText(
-            text: item + (isExtraTextNotEmpty ? " $extraText" : ""),
-          ),
-        ),
-      ).toList(),
+              value: item,
+              child: CustomText(
+                text: item + (isExtraTextNotEmpty ? " $extraText" : ""),
+              ),
+            ),
+          )
+          .toList(),
       onChanged: onChanged,
       validator: validationFunction,
       style: const TextStyle(
@@ -62,7 +65,8 @@ class CustomDropdownField extends StatelessWidget {
         fontSize: 16,
         fontWeight: FontWeight.w600,
       ),
-      buttonStyleData: const ButtonStyleData(padding: EdgeInsets.only(right: 8)),
+      buttonStyleData:
+          const ButtonStyleData(padding: EdgeInsets.only(right: 8)),
       iconStyleData: const IconStyleData(
         icon: Icon(Icons.keyboard_arrow_down, color: AppColors.whiteColor),
         iconSize: 24,
@@ -73,7 +77,8 @@ class CustomDropdownField extends StatelessWidget {
           color: AppColors.blackColor,
         ),
       ),
-      menuItemStyleData: const MenuItemStyleData(padding: EdgeInsets.symmetric(horizontal: 16)),
+      menuItemStyleData: const MenuItemStyleData(
+          padding: EdgeInsets.symmetric(horizontal: 16)),
     );
   }
 }

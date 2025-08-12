@@ -9,17 +9,18 @@ class CategoriesSubcategoriesModel {
     this.data,
   });
 
-  factory CategoriesSubcategoriesModel.fromJson(Map<String, dynamic> json) => CategoriesSubcategoriesModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory CategoriesSubcategoriesModel.fromJson(Map<String, dynamic> json) =>
+      CategoriesSubcategoriesModel(
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "success": success,
-    "message": message,
-    "data": data?.toJson(),
-  };
+        "success": success,
+        "message": message,
+        "data": data?.toJson(),
+      };
 }
 
 class Data {
@@ -32,14 +33,19 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
-    result: json["result"] == null ? [] : List<CategoryItem>.from(json["result"]!.map((x) => CategoryItem.fromJson(x))),
-  );
+        meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
+        result: json["result"] == null
+            ? []
+            : List<CategoryItem>.from(
+                json["result"]!.map((x) => CategoryItem.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "meta": meta?.toJson(),
-    "result": result == null ? [] : List<dynamic>.from(result!.map((x) => x.toJson())),
-  };
+        "meta": meta?.toJson(),
+        "result": result == null
+            ? []
+            : List<dynamic>.from(result!.map((x) => x.toJson())),
+      };
 }
 
 class Meta {
@@ -56,18 +62,18 @@ class Meta {
   });
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
-    page: json["page"],
-    limit: json["limit"],
-    total: json["total"],
-    totalPage: json["totalPage"],
-  );
+        page: json["page"],
+        limit: json["limit"],
+        total: json["total"],
+        totalPage: json["totalPage"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "page": page,
-    "limit": limit,
-    "total": total,
-    "totalPage": totalPage,
-  };
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "totalPage": totalPage,
+      };
 }
 
 class CategoryItem {
@@ -94,28 +100,37 @@ class CategoryItem {
   });
 
   factory CategoryItem.fromJson(Map<String, dynamic> json) => CategoryItem(
-    id: json["_id"],
-    name: json["name"],
-    categoryImage: json["category_image"],
-    isDeleted: json["isDeleted"],
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-    v: json["__v"],
-    subcategories: json["subcategories"] == null ? [] : List<Subcategory>.from(json["subcategories"]!.map((x) => Subcategory.fromJson(x))),
-    totalSubcategory: json["totalSubcategory"],
-  );
+        id: json["_id"],
+        name: json["name"],
+        categoryImage: json["category_image"],
+        isDeleted: json["isDeleted"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+        v: json["__v"],
+        subcategories: json["subcategories"] == null
+            ? []
+            : List<Subcategory>.from(
+                json["subcategories"]!.map((x) => Subcategory.fromJson(x))),
+        totalSubcategory: json["totalSubcategory"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "category_image": categoryImage,
-    "isDeleted": isDeleted,
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
-    "__v": v,
-    "subcategories": subcategories == null ? [] : List<dynamic>.from(subcategories!.map((x) => x.toJson())),
-    "totalSubcategory": totalSubcategory,
-  };
+        "_id": id,
+        "name": name,
+        "category_image": categoryImage,
+        "isDeleted": isDeleted,
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
+        "__v": v,
+        "subcategories": subcategories == null
+            ? []
+            : List<dynamic>.from(subcategories!.map((x) => x.toJson())),
+        "totalSubcategory": totalSubcategory,
+      };
 }
 
 class Subcategory {
@@ -140,24 +155,28 @@ class Subcategory {
   });
 
   factory Subcategory.fromJson(Map<String, dynamic> json) => Subcategory(
-    id: json["_id"],
-    category: json["category"],
-    name: json["name"],
-    image: json["image"],
-    isDeleted: json["isDeleted"],
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-    v: json["__v"],
-  );
+        id: json["_id"],
+        category: json["category"],
+        name: json["name"],
+        image: json["image"],
+        isDeleted: json["isDeleted"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+        v: json["__v"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "category": category,
-    "name": name,
-    "image": image,
-    "isDeleted": isDeleted,
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
-    "__v": v,
-  };
+        "_id": id,
+        "category": category,
+        "name": name,
+        "image": image,
+        "isDeleted": isDeleted,
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
+        "__v": v,
+      };
 }

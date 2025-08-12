@@ -15,6 +15,7 @@ import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
+import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'widget/user_home_top_section.dart';
 import 'widget/user_top_artists_section.dart';
@@ -109,13 +110,20 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               children: [
                                 CustomText(
                                   text: "latest".tr,
-                                  fontSize: 18,
+                                  fontSize: 22,
                                   fontWeight: FontWeight.w800,
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    AppRouter.route
-                                        .pushNamed(RoutePath.seeAllScreen, extra: "latest");
+                                    AppRouter.route.pushNamed(
+                                      RoutePath.podcastListScreen,
+                                      extra: {
+                                        'title': 'New Podcast',
+                                        'reels': false,
+                                        'popular': false,
+                                        'searchTerm': '',
+                                      },
+                                    );
                                   },
                                   child: Text(
                                     "see_all".tr,
@@ -137,20 +145,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             return HomeMusicCard(
                               data: AudioPlayerModel(
-                                id: newItem?[index].id ?? "",
-                                title: newItem?[index].title ?? "",
-                                categories: newItem?[index].category?.name??"",
-                                image: newItem?[index].coverImage ?? "",
-                                duration: formatDuration(newItem?[index].duration ?? 0),
-                                url: newItem?[index].audioUrl ?? ""
-                              ),
+                                  id: newItem?[index].id ?? "",
+                                  title: newItem?[index].title ?? "",
+                                  categories: newItem?[index].category?.name ?? "",
+                                  image: newItem?[index].coverImage ?? "",
+                                  duration: formatDuration(newItem?[index].duration ?? 0),
+                                  url: newItem?[index].podcastUrl ?? ""),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
                                   extra: AudioPlayerModel(
                                     id: newItem?[index].id ?? "",
                                     title: newItem?[index].title ?? "",
                                     categories: newItem?[index].category?.name ?? "",
                                     image: newItem?[index].coverImage ?? "",
-                                    url: newItem?[index].audioUrl ?? "",
+                                    url: newItem?[index].podcastUrl ?? "",
                                     duration: formatDuration(newItem?[index].duration ?? 0),
                                   )),
                             );
@@ -165,10 +172,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomText(
-                                text: "popular".tr, fontSize: 18, fontWeight: FontWeight.w800),
+                              text: "popular".tr,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
                             TextButton(
                               onPressed: () {
-                                AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular");
+                                AppRouter.route.pushNamed(
+                                  RoutePath.podcastListScreen,
+                                  extra: {
+                                    'title': 'Popular',
+                                    'popular': true,
+                                  },
+                                );
                               },
                               child: Text("see_all".tr),
                             ),
@@ -188,9 +204,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               data: AudioPlayerModel(
                                 id: popularItem?[index].id ?? "",
                                 title: popularItem?[index].title ?? "",
-                                categories: popularItem?[index].category?.name??"",
+                                categories: popularItem?[index].category?.name ?? "",
                                 image: popularItem?[index].coverImage ?? "",
-                                url: popularItem?[index].audioUrl ?? "",
+                                url: popularItem?[index].podcastUrl ?? "",
                                 duration: formatDuration(popularItem?[index].duration ?? 0),
                               ),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
@@ -199,7 +215,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     title: popularItem?[index].title ?? "",
                                     categories: popularItem?[index].category?.name ?? "",
                                     image: popularItem?[index].coverImage ?? "",
-                                    url: popularItem?[index].audioUrl ?? "",
+                                    url: popularItem?[index].podcastUrl ?? "",
                                     duration: formatDuration(popularItem?[index].duration ?? 0),
                                     popular: true,
                                   )),
@@ -216,12 +232,18 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           children: [
                             CustomText(
                               text: "reels".tr,
-                              fontSize: 18,
+                              fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
                             TextButton(
                               onPressed: () {
-                                AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "short");
+                                AppRouter.route.pushNamed(
+                                  RoutePath.podcastListScreen,
+                                  extra: {
+                                    'title': 'Reels',
+                                    'reels': true,
+                                  },
+                                );
                               },
                               child: Text("see_all".tr),
                             ),
@@ -241,10 +263,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               data: AudioPlayerModel(
                                 id: reelsItem?[index].id ?? "",
                                 title: reelsItem?[index].title ?? "",
-                                categories: reelsItem?[index].category?.name??"",
+                                categories: reelsItem?[index].category?.name ?? "",
                                 image: reelsItem?[index].coverImage ?? "",
                                 duration: formatDuration(reelsItem?[index].duration ?? 0),
-                                url: reelsItem?[index].audioUrl ?? "",
+                                url: reelsItem?[index].podcastUrl ?? "",
                               ),
                               onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
                                   extra: AudioPlayerModel(
@@ -252,7 +274,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     title: reelsItem?[index].title ?? "",
                                     categories: reelsItem?[index].category?.name ?? "",
                                     image: reelsItem?[index].coverImage ?? "",
-                                    url: reelsItem?[index].audioUrl ?? "",
+                                    url: reelsItem?[index].podcastUrl ?? "",
                                     duration: formatDuration(reelsItem?[index].duration ?? 0),
                                     reels: true,
                                   )),
@@ -269,12 +291,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           children: [
                             CustomText(
                               text: "Album".tr,
-                              fontSize: 18,
+                              fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
                             TextButton(
                               onPressed: () {
-                                AppRouter.route.pushNamed(RoutePath.seeAllScreen, extra: "popular");
+                                AppRouter.route.pushNamed(RoutePath.albumSeeAllScreen);
                               },
                               child: Text(
                                 "see_all".tr,

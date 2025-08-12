@@ -64,14 +64,15 @@ class LanguageController extends GetxController implements GetxService {
   static Future<Map<String, Map<String, String>>> getLanguages() async {
     Map<String, Map<String, String>> languages = {};
     for (LanguageModel languageModel in AppConstants.languages) {
-      String jsonStringValues =
-          await rootBundle.loadString('assets/languages/${languageModel.languageCode}.json');
+      String jsonStringValues = await rootBundle
+          .loadString('assets/languages/${languageModel.languageCode}.json');
       Map<String, dynamic> mappedJson = jsonDecode(jsonStringValues);
       Map<String, String> json = {};
       mappedJson.forEach((key, value) {
         json[key] = value.toString();
       });
-      languages['${languageModel.languageCode}_${languageModel.countryCode}'] = json;
+      languages['${languageModel.languageCode}_${languageModel.countryCode}'] =
+          json;
     }
     return languages;
   }

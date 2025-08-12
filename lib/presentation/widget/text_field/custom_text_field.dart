@@ -93,7 +93,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       maxLength: widget.maxLength,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
-      cursorColor: isDarkMode?AppColors.whiteColor:AppColors.blackColor,
+      cursorColor: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
       style: widget.inputTextStyle,
       onChanged: widget.onChanged,
       maxLines: widget.maxLines,
@@ -105,20 +105,26 @@ class _CustomTextFieldState extends State<CustomTextField> {
           isDense: widget.isDense,
           errorMaxLines: 2,
           hintText: widget.hintText,
-          hintStyle: const TextStyle(fontWeight: FontWeight.w400,fontSize: 16,color: AppColors.hintTextColor),
+          hintStyle: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: AppColors.hintTextColor),
           prefixIcon: widget.prefixIcon,
           prefix: widget.prefix,
           suffix: widget.suffix,
           suffixIcon: widget.isPassword
               ? GestureDetector(
-            onTap: toggle,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-              child: obscureText
-                  ? const Icon(Icons.visibility_off_outlined,color: AppColors.hintTextColor)
-                  : const Icon(Icons.visibility_outlined,color: AppColors.hintTextColor),
-            ),
-          )
+                  onTap: toggle,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16, right: 16, top: 16, bottom: 16),
+                    child: obscureText
+                        ? const Icon(Icons.visibility_off_outlined,
+                            color: AppColors.hintTextColor)
+                        : const Icon(Icons.visibility_outlined,
+                            color: AppColors.hintTextColor),
+                  ),
+                )
               : widget.suffixIcon,
           suffixIconColor: widget.suffixIconColor,
           border: widget.border,

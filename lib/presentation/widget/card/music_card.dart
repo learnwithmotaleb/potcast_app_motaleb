@@ -25,15 +25,18 @@ class MusicCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final displayTitle = data.title?.trim().isNotEmpty == true ? data.title! : "Unknown";
+    final displayTitle = data.title.trim().isNotEmpty == true ? data.title : "Unknown";
     final categoryCheck = data.categories?.trim().isNotEmpty == true;
     final artistCheck = data.artist?.trim().isNotEmpty == true;
-    final displayCategory = categoryCheck ? data.categories!
-        : artistCheck ? data.artist! : "Uncategorized";
-    final durationCheck = data.duration?.trim().isNotEmpty == true;
-    final displayDuration = durationCheck ? data.duration! : "0:00";
-    final imageCheck = data.image?.trim().isNotEmpty == true;
-    final displayImage = imageCheck ? data.image! : AppConstants.defaultCoverImage;
+    final displayCategory = categoryCheck
+        ? data.categories!
+        : artistCheck
+            ? data.artist!
+            : "Uncategorized";
+    final durationCheck = data.duration.trim().isNotEmpty == true;
+    final displayDuration = durationCheck ? data.duration : "0:00";
+    final imageCheck = data.image.trim().isNotEmpty == true;
+    final displayImage = imageCheck ? data.image : AppConstants.defaultCoverImage;
 
     return GestureDetector(
       onTap: onTap,
@@ -110,8 +113,11 @@ class MusicCard extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.access_time_rounded,
-                              size: 14, color: AppColors.searchBoxColor),
+                          const Icon(
+                            Icons.access_time_rounded,
+                            size: 14,
+                            color: AppColors.searchBoxColor,
+                          ),
                           const Gap(5),
                           CustomText(
                             text: _formatDuration(displayDuration),

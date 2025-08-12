@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomText extends StatelessWidget {
-  const CustomText({
-    super.key,
-    this.maxLines,
-    this.textAlign = TextAlign.center,
-    this.left = 0,
-    this.right = 0,
-    this.top = 0,
-    this.bottom = 0,
-    this.fontSize,
-    this.fontWeight = FontWeight.w400,
-    this.color,
-    required this.text,
-    this.overflow = TextOverflow.ellipsis,
-    this.decoration,
-    this.family = "SemiBold"
-  });
+  const CustomText(
+      {super.key,
+      this.maxLines,
+      this.textAlign = TextAlign.center,
+      this.left = 0,
+      this.right = 0,
+      this.top = 0,
+      this.bottom = 0,
+      this.fontSize,
+      this.fontWeight = FontWeight.w400,
+      this.color,
+      required this.text,
+      this.overflow = TextOverflow.ellipsis,
+      this.decoration,
+      this.family = "SemiBold"});
 
   final double left;
   final double right;
@@ -37,7 +36,8 @@ class CustomText extends StatelessWidget {
   Widget build(BuildContext context) {
     final fontSizeValue = fontSize ?? 14;
     return Padding(
-      padding: EdgeInsets.only(left: left, right: right, top: top, bottom: bottom),
+      padding:
+          EdgeInsets.only(left: left, right: right, top: top, bottom: bottom),
       child: Text(
         textAlign: textAlign,
         text.tr,

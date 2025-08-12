@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 
 class CustomRowText extends StatelessWidget {
-  const CustomRowText({super.key,
+  const CustomRowText({
+    super.key,
     required this.text,
     required this.text1,
     this.fontWeight = FontWeight.w800,
@@ -31,8 +32,18 @@ class CustomRowText extends StatelessWidget {
         mainAxisAlignment: alignment,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(text: text,fontWeight: fontWeight,fontSize: fontSize,maxLines: maxLine),
-          Flexible(child: CustomText(text: text1,fontWeight: fontWeight1,fontSize: fontSize1,maxLines: maxLine1,textAlign: TextAlign.end)),
+          CustomText(
+              text: text,
+              fontWeight: fontWeight,
+              fontSize: fontSize,
+              maxLines: maxLine),
+          Flexible(
+              child: CustomText(
+                  text: text1,
+                  fontWeight: fontWeight1,
+                  fontSize: fontSize1,
+                  maxLines: maxLine1,
+                  textAlign: TextAlign.end)),
         ],
       ),
     );

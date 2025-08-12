@@ -6,10 +6,13 @@ class ApiUrl {
   ApiUrl._();
 
   static const String base = "http://10.10.20.9:5088";
-  static String generatePreSignedURL()=> "$base/generate-presigned-url";
-  static String googleSearchApi({required String search}) => 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
-  static String googleLetLongToAddressApi({required LatLng location}) => 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
-  static String placeIdToLatLng({required String placeId}) => 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=${AppConstants.googleMapAPI}';
+  static String generatePreSignedURL() => "$base/generate-presigned-url";
+  static String googleSearchApi({required String search}) =>
+      'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
+  static String googleLetLongToAddressApi({required LatLng location}) =>
+      'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${AppConstants.googleMapAPI}';
+  static String placeIdToLatLng({required String placeId}) =>
+      'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=${AppConstants.googleMapAPI}';
 
   ///Auth
   static String register() => '$base/user/register-user';
@@ -34,32 +37,61 @@ class ApiUrl {
     String? cursor,
     bool? reels,
     bool? popular,
+    String? firstPodcastId,
+    required int pageKey,
   }) {
     final Map<String, String> queryParams = {};
 
     if (cursor != null) queryParams['cursor'] = cursor;
-    if (reels != null) queryParams['reels'] = reels.toString();
-    if (popular != null) queryParams['popular'] = popular.toString();
+    if (reels != null && reels) queryParams['reels'] = reels.toString();
+    if (popular != null && popular) queryParams['popular'] = popular.toString();
+    if (pageKey == 1 && firstPodcastId != null) {
+      queryParams["firstPodcastId"] = firstPodcastId.toString();
+    }
 
     final queryString = Uri(queryParameters: queryParams).query;
     return '$base/podcast/get-podcast-feed${queryString.isNotEmpty ? '?$queryString' : ''}';
   }
 
+  static String search({
+    String searchTerm = "",
+    required String pageKey,
+    bool? reels,
+    bool? popular,
+    String? category,
+    String? subCategory,
+    String limit = "10",
+  }) {
+    final Map<String, String> queryParams = {};
+    queryParams['page'] = pageKey;
+    queryParams['limit'] = limit;
+
+    if (reels != null && reels) queryParams['reels'] = reels.toString();
+    if (popular != null && popular) queryParams['popular'] = popular.toString();
+    if (category != null && category.isNotEmpty) queryParams['category'] = category;
+    if (subCategory != null && subCategory.isNotEmpty) queryParams['subCategory'] = subCategory;
+    if (searchTerm.isNotEmpty) queryParams["searchTerm"] = searchTerm;
+
+    final queryString = Uri(queryParameters: queryParams).query;
+    return '$base/podcast/all${queryString.isNotEmpty ? '?$queryString' : ''}';
+  }
+
+  static String seeAllAlbum({required int page}) => '$base/album/all-albums?page=$page&limit=20';
   static String like({required String id}) => '$base/like/$id';
-  static String favoriteAdd() => '$base/favorite/toggle';
+  static String favoriteAdd({required String id}) => '$base/bookmark/add-delete-bookmark/$id';
+  static String videPodcast({required String id}) => '$base/podcast/view/$id';
   static String comments({required String id, required int page}) => '$base/comment/$id?page=$page&limit=10';
   static String commentsAdd({required String id}) => '$base/comment/$id';
   static String details({required String id}) => '$base/podcast/$id';
-  static String subCategory({required String id, required String search}) => '$base/search/subcategories/$id?query=$search';
-  static String favorite({required int page}) => '$base/favorite?limit=10&page=$page';
+  static String subCategory({required String id}) => '$base/podcast/subcategory-with-podcasts/$id';
+  static String favorite({required int page}) => '$base/bookmark/my-bookmarks?page=$page&limit=20';
   static String history({required int page}) => '$base/watch-history/get-all?page=$page&limit=10';
-  static String search({required int page, required String search}) => '$base/search/podcasts?query=$search&page=$page&limit=10';
   static String playListCreate() => '$base/playlist/create';
   static String playList({required int page}) => '$base/playlist/?page=$page&limit=10';
   static String playListDelete({required String id}) => '$base/playlist/delete/$id';
   static String playListSongs({required String id, required int page}) => '$base/playlist/$id/podcasts?page=$page&limit=10';
   static String seeAll({required String type, required int page}) => '$base/podcast/$type?page=$page&limit=10';
-  static String seeAllTopCreator({required int page}) => '$base/creator/top-creators?page=$page&limit=20';
+  static String seeAllTopCreator({required int page}) => '$base/creator/get-top-creators?page=$page&limit=20';
   static String subCategoryPodcast({required String id, required int page}) => '$base/sub-category/$id/podcasts?page=$page&limit=10';
   static String addLocation() => '$base/user/update-location';
   static String notification({required int page}) => '$base/notification?limit=20&page=$page';
