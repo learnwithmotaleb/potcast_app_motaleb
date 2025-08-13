@@ -10,18 +10,18 @@ class CustomButton extends StatelessWidget {
     required this.text,
     this.onTap,
     this.isLoading = false,
-    this.isBgWhite = true,
   });
 
   final String text;
   final VoidCallback? onTap;
   final bool isLoading;
-  final bool isBgWhite;
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final width = MediaQuery.of(context).size.width;
+    const color = AppColors.whiteColor;
+    final Border border = Border.all(color: color);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -30,19 +30,24 @@ class CustomButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: isBgWhite ? AppColors.whiteColor : null,
-          border: isBgWhite
-              ? (isDarkMode ? null : Border.all(color: AppColors.blackColor))
-              : Border.all(color: AppColors.primaryColor),
+          color: color,
+          border: border,
         ),
-        child: isLoading
-            ? const LoadingWidget()
-            : CustomText(
-                text: text,
-                color:
-                    isBgWhite ? AppColors.blackColor : AppColors.primaryColor,
-                fontSize: 16),
+        child: buildWidget(color, isLoading),
       ),
+    );
+  }
+
+  Widget buildWidget(Color color, bool isLoading){
+    if(isLoading){
+      return const LoadingWidget(
+        color: AppColors.blackColor,
+      );
+    }
+    return CustomText(
+      text: text,
+      color: AppColors.blackColor,
+      fontSize: 16,
     );
   }
 }

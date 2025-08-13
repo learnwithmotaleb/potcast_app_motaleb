@@ -109,7 +109,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomText(
-                                  text: "latest".tr,
+                                  text: "Just In".tr,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -118,7 +118,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     AppRouter.route.pushNamed(
                                       RoutePath.podcastListScreen,
                                       extra: {
-                                        'title': 'New Podcast',
+                                        'title': 'Just In',
                                         'reels': false,
                                         'popular': false,
                                         'searchTerm': '',
@@ -171,8 +171,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CustomText(
-                              text: "popular".tr,
+                            const CustomText(
+                              text: "Faith Hits",
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
@@ -181,7 +181,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                 AppRouter.route.pushNamed(
                                   RoutePath.podcastListScreen,
                                   extra: {
-                                    'title': 'Popular',
+                                    'title': 'Faith Hits',
                                     'popular': true,
                                   },
                                 );
@@ -230,8 +230,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CustomText(
-                              text: "reels".tr,
+                            const CustomText(
+                              text: "Praise Clips",
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
@@ -240,7 +240,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                 AppRouter.route.pushNamed(
                                   RoutePath.podcastListScreen,
                                   extra: {
-                                    'title': 'Reels',
+                                    'title': 'Praise Clips',
                                     'reels': true,
                                   },
                                 );
@@ -289,8 +289,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CustomText(
-                              text: "Album".tr,
+                            const CustomText(
+                              text: "Albums",
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
@@ -323,7 +323,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                 duration: formatDuration(0),
                                 url: "",
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                AppRouter.route.pushNamed(
+                                  RoutePath.albumPodcastScreen,
+                                  extra: {
+                                    "title": albumItem?[index].name,
+                                    "id": albumItem?[index].id,
+                                  },
+                                );
+                              },
                             );
                           },
                         ),

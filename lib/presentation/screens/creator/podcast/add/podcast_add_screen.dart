@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -254,6 +255,15 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
 
     try {
       if (validate && hasCategory && hasSubCategory) {
+
+        String textValue = tag.text.trim();
+        List<String> items = textValue
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+
+
         final Map<String, dynamic> body = {
           "category": controller.selectedCategoryId.value,
           "subCategory": controller.selectedSubcategoryId.value,
@@ -261,6 +271,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
           "title": title.text,
           "description": description.text,
           "address": city,
+          "tags": jsonEncode(items),
           "duration": duration?.inSeconds,
           "location": {
             "type": "Point",

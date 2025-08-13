@@ -3,7 +3,7 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/settings/model/faq_model.dart';
-import 'package:podcast/presentation/screens/settings/model/terms_condition_model.dart';
+import 'package:podcast/presentation/screens/settings/model/terms_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/service/check_api.dart';
@@ -14,17 +14,17 @@ class SettingsController extends GetxController {
   DBHelper dbHelper = DBHelper();
 
   /// ============================= GET Terms Condition =====================================
-  final Rx<TermsConditionsModel> termsConditionsData =
-      TermsConditionsModel().obs;
+  final Rx<TermsModel> termModel = TermsModel().obs;
   var termsLoading = Status.completed.obs;
+
   termsLoadingMethod(Status status) => termsLoading.value = status;
+
   Future<void> getTermsCondition() async {
     try {
       termsLoadingMethod(Status.loading);
       var response = await apiClient.get(url: ApiUrl.terms(), showResult: true);
       if (response.statusCode == 200) {
-        termsConditionsData.value =
-            TermsConditionsModel.fromJson(response.body);
+        termModel.value = TermsModel.fromJson(response.body);
         termsLoadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -41,19 +41,17 @@ class SettingsController extends GetxController {
   }
 
   /// ============================= GET Privacy Policy =====================================
-  final Rx<TermsConditionsModel> privacyConditionsData =
-      TermsConditionsModel().obs;
+  final Rx<TermsModel> privacyData = TermsModel().obs;
   var privacyLoading = Status.completed.obs;
+
   privacyLoadingMethod(Status status) => privacyLoading.value = status;
 
   Future<void> getPrivacyPolicy() async {
     try {
       privacyLoadingMethod(Status.loading);
-      var response =
-          await apiClient.get(url: ApiUrl.privacy(), showResult: true);
+      var response = await apiClient.get(url: ApiUrl.privacy(), showResult: true);
       if (response.statusCode == 200) {
-        privacyConditionsData.value =
-            TermsConditionsModel.fromJson(response.body);
+        privacyData.value = TermsModel.fromJson(response.body);
         privacyLoadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -70,8 +68,9 @@ class SettingsController extends GetxController {
   }
 
   /// ============================= GET About Us =====================================
-  final Rx<TermsConditionsModel> aboutUsData = TermsConditionsModel().obs;
+  final Rx<TermsModel> aboutUsData = TermsModel().obs;
   var aboutLoading = Status.completed.obs;
+
   aboutLoadingMethod(Status status) => aboutLoading.value = status;
 
   Future<void> getAboutUs() async {
@@ -79,7 +78,7 @@ class SettingsController extends GetxController {
       aboutLoadingMethod(Status.loading);
       var response = await apiClient.get(url: ApiUrl.about(), showResult: true);
       if (response.statusCode == 200) {
-        aboutUsData.value = TermsConditionsModel.fromJson(response.body);
+        aboutUsData.value = TermsModel.fromJson(response.body);
         aboutLoadingMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -98,6 +97,7 @@ class SettingsController extends GetxController {
   /// ============================= GET Support Us =====================================
   final Rx<FaqModel> supportsData = FaqModel().obs;
   var supportsLoading = Status.completed.obs;
+
   supportsLoadingMethod(Status status) => supportsLoading.value = status;
 
   Future<void> getSupportUs() async {
@@ -119,22 +119,19 @@ class SettingsController extends GetxController {
 
   /// ============================= Patch Change Password =====================================
   var changePasswordLoading = false.obs;
-  changePasswordLoadingMethod(bool loading) =>
-      changePasswordLoading.value = loading;
+
+  changePasswordLoadingMethod(bool loading) => changePasswordLoading.value = loading;
 
   Future<void> changePassword({required Map<String, String> body}) async {
     try {
       changePasswordLoadingMethod(true);
-      var response = await apiClient.put(
-          url: ApiUrl.changePassword(), body: body, showResult: true);
+      var response =
+          await apiClient.post(url: ApiUrl.changePassword(), body: body, showResult: true);
       if (response.statusCode == 200) {
         changePasswordLoadingMethod(false);
-        toastMessage(
-            message:
-                response.body?['message'].toString() ?? "something want wrong");
+        toastMessage(message: response.body?['message'].toString() ?? "something want wrong");
         AppRouter.route.pop();
       } else {
-        checkApi(response: response);
         changePasswordLoadingMethod(false);
       }
     } catch (e) {
@@ -143,18 +140,15 @@ class SettingsController extends GetxController {
   }
 
   /// ============================= DELETE Account =====================================
-  var deleteLoading = false.obs;
+  RxBool deleteLoading = false.obs;
   deleteLoadingMethod(bool loading) => deleteLoading.value = loading;
 
   Future<void> deleteAccount() async {
     try {
       deleteLoadingMethod(true);
-      var response =
-          await apiClient.delete(url: ApiUrl.delete(), showResult: true);
+      var response = await apiClient.delete(url: ApiUrl.delete(), showResult: true);
       if (response.statusCode == 200) {
-        toastMessage(
-            message:
-                response.body?['message'].toString() ?? "something want wrong");
+        toastMessage(message: response.body?['message'].toString() ?? "something want wrong");
         AppRouter.route.pop();
         await dbHelper.logOut();
         deleteLoadingMethod(false);
@@ -165,5 +159,16 @@ class SettingsController extends GetxController {
     } catch (e) {
       deleteLoadingMethod(false);
     }
+  }
+
+  @override
+  void onReady() {
+    Future.wait([
+      getPrivacyPolicy(),
+      getAboutUs(),
+      getTermsCondition(),
+      getSupportUs(),
+    ]);
+    super.onReady();
   }
 }

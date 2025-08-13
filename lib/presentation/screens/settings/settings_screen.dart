@@ -5,12 +5,29 @@ import 'package:get/get.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
+import '../../widget/align/custom_align_text.dart';
+import '../../widget/text_field/custom_text_field.dart';
 import 'controller/settings_controller.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final TextEditingController password = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    password.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +35,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-            onPressed: () => AppRouter.route.pop(),
-            icon: const Icon(Icons.arrow_back_ios)),
+            onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("settings".tr),
       ),
       body: SingleChildScrollView(
@@ -27,19 +43,17 @@ class SettingsScreen extends StatelessWidget {
         child: Column(
           children: [
             SettingsCard(
-              onTap: () =>
-                  AppRouter.route.pushNamed(RoutePath.changePasswordScreen),
+              onTap: () => AppRouter.route.pushNamed(RoutePath.changePasswordScreen),
               text: "change_password",
             ),
             const Gap(12),
             SettingsCard(
               onTap: () => AppRouter.route.pushNamed(RoutePath.supportScreen),
-              text: "support",
+              text: "Faq",
             ),
             const Gap(12),
             SettingsCard(
-              onTap: () =>
-                  AppRouter.route.pushNamed(RoutePath.termsOfCondition),
+              onTap: () => AppRouter.route.pushNamed(RoutePath.termsOfCondition),
               text: "terms_of_condition",
             ),
             const Gap(12),
@@ -54,7 +68,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             const Gap(12),
             SettingsCard(
-              onTap: () => showDeleteAccountDialog(context),
+              onTap: () => showDeleteAccountDialog(context, password),
               isRed: true,
               text: "delete_account",
             ),
@@ -65,17 +79,16 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void showDeleteAccountDialog(BuildContext context) {
+  void showDeleteAccountDialog(BuildContext context, TextEditingController password) {
     final double width = MediaQuery.of(context).size.width;
     final controller = Get.find<SettingsController>();
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withValues(alpha: 0.5),
       transitionDuration: const Duration(milliseconds: 500),
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return Center(
           child: Dialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 8),
@@ -87,68 +100,97 @@ class SettingsScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.whiteColor,
+                color: AppColors.blackColor,
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CustomText(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomText(
                       text: "do_you_want_to_delete_your".tr,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.blackColor),
-                  const Gap(24),
-                  Obx(() {
-                    return controller.deleteLoading.value
-                        ? const Center(child: CircularProgressIndicator())
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  controller.deleteAccount();
-                                },
-                                child: Container(
-                                  width: (width / 2) - 50,
-                                  height: 38.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: AppColors.blackColor),
-                                      color: AppColors.whiteColor,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: CustomText(
-                                    text: "yes".tr,
-                                    color: AppColors.blackColor,
-                                  ),
+                      color: AppColors.whiteColor,
+                    ),
+                    const Gap(12),
+                    CustomAlignText(text: "password".tr),
+                    const Gap(8),
+                    CustomTextField(
+                      hintText: "Enter Your Password",
+                      isPassword: true,
+                      keyboardType: TextInputType.text,
+                      controller: password,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password is required';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    const Gap(24),
+                    Obx(() {
+                      if (controller.deleteLoading.value) {
+                        return const LoadingWidget();
+                      }
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if(_formKey.currentState!.validate()){
+                                controller.deleteAccount();
+                              }
+                            },
+                            child: Container(
+                              width: (width / 2) - 50,
+                              height: 38.h,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColors.blackColor,
                                 ),
+                                color: AppColors.whiteColor,
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              const Gap(12),
-                              GestureDetector(
-                                onTap: () => AppRouter.route.pop(),
-                                child: Container(
-                                  width: (width / 2) - 50,
-                                  height: 38.h,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: AppColors.blackColor),
-                                      color: AppColors.blackColor,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: CustomText(
-                                    text: "no".tr,
-                                    color: AppColors.whiteColor,
-                                  ),
+                              child: CustomText(
+                                text: "yes".tr,
+                                color: AppColors.blackColor,
+                              ),
+                            ),
+                          ),
+                          const Gap(12),
+                          GestureDetector(
+                            onTap: () => AppRouter.route.pop(),
+                            child: Container(
+                              width: (width / 2) - 50,
+                              height: 38.h,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColors.whiteColor,
                                 ),
+                                color: AppColors.blackColor,
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            ],
-                          );
-                  }),
-                  const Gap(12),
-                ],
+                              child: CustomText(
+                                text: "no".tr,
+                                color: AppColors.whiteColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                    const Gap(12),
+                  ],
+                ),
               ),
             ),
           ),
@@ -168,8 +210,7 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class SettingsCard extends StatelessWidget {
-  const SettingsCard(
-      {super.key, required this.onTap, required this.text, this.isRed = false});
+  const SettingsCard({super.key, required this.onTap, required this.text, this.isRed = false});
 
   final VoidCallback onTap;
   final String text;

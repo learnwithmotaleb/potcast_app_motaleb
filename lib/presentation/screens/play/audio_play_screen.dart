@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/presentation/screens/play/widget/audio_video_player_view.dart';
+import 'model/comment_model.dart';
 import 'model/play_feed_model.dart';
 import 'widget/audio_play_bottom.dart';
 import 'widget/audio_play_control.dart';
@@ -39,6 +40,7 @@ class UserPlayScreen extends StatefulWidget {
 
 class _UserPlayScreenState extends State<UserPlayScreen> {
   final feedController = Get.find<PodcastFeedController>();
+  final commentsPagingController = PagingController<int, CommentItem>(firstPageKey: 1);
 
   @override
   void initState() {
@@ -49,6 +51,13 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
   late final void Function(dynamic) _pageRequestListener;
 
   void _initializeFeed() {
+    commentsPagingController.addPageRequestListener((pageKey) {
+      feedController.getComments(
+        id: widget.id,
+        page: pageKey,
+        commentsPagingController: commentsPagingController,
+      );
+    });
     _pageRequestListener = (pagingPageKey) {
       final cursor = pagingPageKey.cursor.isEmpty ? null : pagingPageKey.cursor;
 
@@ -66,11 +75,9 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
       );
     };
 
-    feedController.pagingController
-        .removePageRequestListener(_pageRequestListener);
+    feedController.pagingController.removePageRequestListener(_pageRequestListener);
 
-    feedController.pagingController
-        .addPageRequestListener(_pageRequestListener);
+    feedController.pagingController.addPageRequestListener(_pageRequestListener);
 
     print("1111 ${widget.id}");
     print("1111 current ${feedController.currentMediaId.value}");
@@ -82,8 +89,8 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
 
   @override
   void dispose() {
-    feedController.pagingController
-        .removePageRequestListener(_pageRequestListener);
+    feedController.pagingController.removePageRequestListener(_pageRequestListener);
+    commentsPagingController.dispose();
     super.dispose();
   }
 
@@ -116,6 +123,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
           pageController: feedController.pageController,
           physics: const NeverScrollableScrollPhysics(),
           onPageChanged: (index) {
+            print("-------------------------------onPageChanged $index");
             final items = feedController.pagingController.itemList;
             if (items != null && index < items.length) {
               final item = items[index];
@@ -126,7 +134,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
             }
           },
           builderDelegate: PagedChildBuilderDelegate<PlayPodcastItem>(
-            itemBuilder: (context, PlayPodcastItem itemValue, index) {
+            itemBuilder: (BuildContext context, PlayPodcastItem itemValue, index) {
               return Column(
                 children: [
                   Expanded(
@@ -143,7 +151,10 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                         AudioPlayControl(
                           controller: feedController,
                         ),
-                        AudioPlayBottom(controller: feedController),
+                        AudioPlayBottom(
+                          controller: feedController,
+                          commentsPagingController: commentsPagingController,
+                        ),
                       ],
                     ),
                   ),

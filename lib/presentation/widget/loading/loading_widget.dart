@@ -9,7 +9,7 @@ class LoadingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SpinKitCircle(
-        color: color ?? Colors.black,
+        color: color ?? Colors.white,
         size: 40.0,
       ),
     );

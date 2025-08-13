@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
@@ -270,12 +271,20 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
 
     try {
       if (validate && hasCategory && hasSubCategory) {
+        String textValue = tag.text.trim();
+        List<String> items = textValue
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+
         final Map<String, dynamic> body = {
           "category": controller.selectedCategoryId.value,
           "subCategory": controller.selectedSubcategoryId.value,
           "name": title.text,
           "title": title.text,
           "description": description.text,
+          "tags": jsonEncode(items),
           "address": city,
           "duration": duration?.inSeconds,
           "location": {

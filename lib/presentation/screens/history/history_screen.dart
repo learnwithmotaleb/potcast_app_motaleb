@@ -12,6 +12,7 @@ import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+import '../../widget/loading/loading_widget.dart';
 import 'model/history_model.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -100,6 +101,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     );
                   },
+                  firstPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
+                  newPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
                 ),
               ),
             )

@@ -54,7 +54,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
                 child:
-                    Html(data: _controller.aboutUsData.value.data?.text ?? ""),
+                    Html(data: _controller.aboutUsData.value.data?.description ?? ""),
               );
           }
         },

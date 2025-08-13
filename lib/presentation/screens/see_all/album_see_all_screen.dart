@@ -41,7 +41,7 @@ class _AlbumSeeAllScreenState extends State<AlbumSeeAllScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Album"),
+        title: const Text("Albums"),
       ),
       body: PagedGridView<int, SeeAllAlbumItem>(
         pagingController: pagingController,
@@ -57,7 +57,15 @@ class _AlbumSeeAllScreenState extends State<AlbumSeeAllScreen> {
             );
             return CreatorCard(
               data: data,
-              onTap: (){},
+              onTap: () {
+                AppRouter.route.pushNamed(
+                  RoutePath.albumPodcastScreen,
+                  extra: {
+                    "title": item.name,
+                    "id": item.id,
+                  },
+                );
+              },
             );
           },
         ),

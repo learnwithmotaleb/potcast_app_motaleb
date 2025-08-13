@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -71,8 +72,9 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
             children: [
               Obx(() {
                 final globalState = globalController.loading.value;
-                if (globalState == Status.loading)
+                if (globalState == Status.loading) {
                   return const LoadingWidget(color: AppColors.whiteColor);
+                }
                 if (globalState == Status.internetError ||
                     globalState == Status.error) {
                   return NoInternetCard(
@@ -247,6 +249,15 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
 
     try {
       if (validate && hasCategory && hasSubCategory) {
+
+        String textValue = tag.text.trim();
+        List<String> items = textValue
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+
+
         final Map<String, dynamic> body = {
           "category": controller.selectedCategoryId.value,
           "subCategory": controller.selectedSubcategoryId.value,
@@ -254,6 +265,7 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
           "title": title.text,
           "description": description.text,
           "address": city,
+          "tags": items,
           "duration": duration?.inSeconds,
           "location": {
             "type": "Point",

@@ -63,31 +63,11 @@ class MusicCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  CustomNetworkImage(
-                    borderRadius: BorderRadius.circular(6),
-                    imageUrl: displayImage,
-                    width: 90,
-                    height: 90,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withValues(alpha: 0.3),
-                    ),
-                    child: Assets.icons.play.svg(
-                      height: 20,
-                      width: 20,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                ],
+              CustomNetworkImage(
+                borderRadius: BorderRadius.circular(6),
+                imageUrl: displayImage,
+                width: 90,
+                height: 90,
               ),
               const Gap(14),
               Expanded(

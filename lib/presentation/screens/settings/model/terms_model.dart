@@ -1,93 +1,87 @@
-class FaqModel {
+class TermsModel {
   final bool? success;
   final String? message;
-  final List<FaqItem>? data;
+  final Data? data;
 
-  FaqModel({
+  TermsModel({
     this.success,
     this.message,
     this.data,
   });
 
-  FaqModel copyWith({
+  TermsModel copyWith({
     bool? success,
     String? message,
-    List<FaqItem>? data,
+    Data? data,
   }) =>
-      FaqModel(
+      TermsModel(
         success: success ?? this.success,
         message: message ?? this.message,
         data: data ?? this.data,
       );
 
-  factory FaqModel.fromJson(Map<String, dynamic> json) => FaqModel(
+  factory TermsModel.fromJson(Map<String, dynamic> json) => TermsModel(
     success: json["success"],
     message: json["message"],
-    data: json["data"] == null ? [] : List<FaqItem>.from(json["data"]!.map((x) => FaqItem.fromJson(x))),
+    data: json["data"] == null ? null : Data.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "data": data?.toJson(),
   };
 }
 
-class FaqItem {
+class Data {
   final String? id;
-  final String? question;
-  final String? answer;
+  final String? description;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final num? v;
-  final String? datumId;
+  final String? dataId;
 
-  FaqItem({
+  Data({
     this.id,
-    this.question,
-    this.answer,
+    this.description,
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.datumId,
+    this.dataId,
   });
 
-  FaqItem copyWith({
+  Data copyWith({
     String? id,
-    String? question,
-    String? answer,
+    String? description,
     DateTime? createdAt,
     DateTime? updatedAt,
     num? v,
-    String? datumId,
+    String? dataId,
   }) =>
-      FaqItem(
+      Data(
         id: id ?? this.id,
-        question: question ?? this.question,
-        answer: answer ?? this.answer,
+        description: description ?? this.description,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
         v: v ?? this.v,
-        datumId: datumId ?? this.datumId,
+        dataId: dataId ?? this.dataId,
       );
 
-  factory FaqItem.fromJson(Map<String, dynamic> json) => FaqItem(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["_id"],
-    question: json["question"],
-    answer: json["answer"],
+    description: json["description"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
-    datumId: json["id"],
+    dataId: json["id"],
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
-    "question": question,
-    "answer": answer,
+    "description": description,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
-    "id": datumId,
+    "id": dataId,
   };
 }

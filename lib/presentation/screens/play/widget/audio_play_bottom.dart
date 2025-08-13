@@ -2,18 +2,28 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../model/comment_model.dart';
+
 class AudioPlayBottom extends StatelessWidget {
-  const AudioPlayBottom({super.key, required this.controller});
+  const AudioPlayBottom({
+    super.key,
+    required this.controller,
+    required this.commentsPagingController,
+  });
 
   final PodcastFeedController controller;
+  final PagingController<int, CommentItem> commentsPagingController;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +32,10 @@ class AudioPlayBottom extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            showModel(context: context);
+            showModel(
+              context: context,
+              commentsPagingController: commentsPagingController,
+            );
           },
           child: Container(
             height: 40,
@@ -89,7 +102,10 @@ class AudioPlayBottom extends StatelessWidget {
     }
   }
 
-  Future<void> showModel({required BuildContext context}) async {
+  Future<void> showModel({
+    required BuildContext context,
+    required PagingController<int, CommentItem> commentsPagingController,
+  }) async {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -112,7 +128,7 @@ class AudioPlayBottom extends StatelessWidget {
                     height: 3,
                     width: 45,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor.withOpacity(0.4),
+                      color: AppColors.whiteColor.withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -122,54 +138,54 @@ class AudioPlayBottom extends StatelessWidget {
                     fontSize: 18,
                   ),
                   Divider(
-                    color: AppColors.whiteColor.withOpacity(0.1),
+                    color: AppColors.whiteColor.withValues(alpha: 0.1),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: 10,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          leading: const CircleAvatar(
-                            backgroundImage: CachedNetworkImageProvider(
-                              "https://plus.unsplash.com/premium_photo-1681335986095-5a9585e77246",
+                    child: PagedListView<int, CommentItem>(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      pagingController: commentsPagingController,
+                      builderDelegate: PagedChildBuilderDelegate<CommentItem>(
+                        itemBuilder: (context, item, index) {
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: CachedNetworkImageProvider(
+                                item.commentorProfileImage ?? AppConstants.defaultCoverImage,
+                              ),
                             ),
-                          ),
-                          title: RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "Jon Brenton ",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                            title: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: item.commentorName ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                                TextSpan(
-                                  text: " 6h",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.white70,
+                                  TextSpan(
+                                    text: GetTimeAgo.parse(item.updatedAt ?? DateTime.now()),
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white70,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          subtitle: CustomText(
-                            text:
-                                "Production is where you make your app available to billions of users on Google Play.",
-                            maxLines: 2,
-                            color: AppColors.whiteColor.withOpacity(0.7),
-                            textAlign: TextAlign.start,
-                          ),
-                        );
-                      },
+                            subtitle: CustomText(
+                              text: item.text ?? "",
+                              maxLines: 2,
+                              color: AppColors.whiteColor.withValues(alpha: 0.7),
+                              textAlign: TextAlign.start,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 18.0, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
                     child: TextFormField(
                       maxLines: 5,
                       minLines: 1,

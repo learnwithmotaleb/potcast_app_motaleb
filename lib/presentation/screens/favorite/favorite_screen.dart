@@ -8,6 +8,7 @@ import 'package:podcast/presentation/screens/favorite/controller/favorite_contro
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
+import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'model/favorite_model.dart';
 
 class FavoriteScreen extends StatefulWidget {
@@ -66,6 +67,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 ),
               );
             },
+            firstPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
+            newPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
           ),
         ),
       ),

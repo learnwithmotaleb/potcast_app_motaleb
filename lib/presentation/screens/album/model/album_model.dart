@@ -114,7 +114,7 @@ class AlbumPodcastItem {
   final String? podcastUrl;
   final String? title;
   final String? address;
-  final List<dynamic>? tags;
+  final List<String?>? tags;
   final num? totalView;
   final num? duration;
   final DateTime? createdAt;
@@ -145,7 +145,7 @@ class AlbumPodcastItem {
     String? podcastUrl,
     String? title,
     String? address,
-    List<dynamic>? tags,
+    List<String?>? tags,
     num? totalView,
     num? duration,
     DateTime? createdAt,
@@ -176,7 +176,7 @@ class AlbumPodcastItem {
     podcastUrl: json["podcast_url"],
     title: json["title"],
     address: json["address"],
-    tags: json["tags"] == null ? [] : List<dynamic>.from(json["tags"]!.map((x) => x)),
+    tags: json["tags"] == null ? [] : List<String?>.from(json["tags"]!.map((x) => x.toString())),
     totalView: json["totalView"],
     duration: json["duration"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
@@ -192,7 +192,7 @@ class AlbumPodcastItem {
     "podcast_url": podcastUrl,
     "title": title,
     "address": address,
-    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
+    "tags": tags == null ? [] : List<String?>.from(tags!.map((x) => x)),
     "totalView": totalView,
     "duration": duration,
     "createdAt": createdAt?.toIso8601String(),

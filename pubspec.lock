@@ -544,14 +544,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_faq:
+  flutter_easy_faq:
     dependency: "direct main"
     description:
-      name: flutter_faq
-      sha256: e2c671e7eff08ba8978e5f1d19862299bdced86bd0d46be1b20921aba3397380
+      name: flutter_easy_faq
+      sha256: "3c42458e7537797f0f1c886a7c68e296f3050902cebc2dbe2566c4d7d62b2f56"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+1"
+    version: "1.0.1"
   flutter_gen_core:
     dependency: transitive
     description:
@@ -799,6 +799,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.0.2"
+  get_time_ago:
+    dependency: "direct main"
+    description:
+      name: get_time_ago
+      sha256: cd111914562ca2b938afbc73f715fab1f37795cc053924d08f6de59878781388
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.2"
   glob:
     dependency: transitive
     description:

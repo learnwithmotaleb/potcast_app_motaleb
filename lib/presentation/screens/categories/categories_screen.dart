@@ -119,9 +119,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         duration: "1.0",
                                         url: "",
                                       ),
-                                      onTap: () {
-                                        //AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: popularItem?[index].id??"");
-                                      },
+                                      onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
+                                          extra: AudioPlayerModel(
+                                            id: item?.id ?? "",
+                                            title: item?.title ?? "",
+                                            categories: item?.category?.name ?? "",
+                                            image: item?.coverImage ?? "",
+                                            url: item?.podcastUrl ?? "",
+                                            duration: formatDuration(item?.duration ?? 0),
+                                            reels: true,
+                                          )),
                                     );
                                   },
                                 ),
@@ -137,5 +144,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         },
       ),
     );
+  }
+
+  String formatDuration(num seconds) {
+    if (seconds < 60) {
+      return '$seconds sec';
+    } else {
+      final minutes = (seconds / 60).floor();
+      return '$minutes min';
+    }
   }
 }

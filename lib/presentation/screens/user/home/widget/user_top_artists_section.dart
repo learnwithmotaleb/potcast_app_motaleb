@@ -34,7 +34,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomText(text: "top_artists".tr, fontSize: 18, fontWeight: FontWeight.w800),
+              const CustomText(text: "Top Favorites", fontSize: 22, fontWeight: FontWeight.w800),
               TextButton(
                 onPressed: () => AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),
                 child: Text(

@@ -77,11 +77,12 @@ class ApiUrl {
   }
 
   static String seeAllAlbum({required int page}) => '$base/album/all-albums?page=$page&limit=20';
+  static String singleAlbum({required String id}) => '$base/album/get-single/$id';
   static String like({required String id}) => '$base/like/$id';
   static String favoriteAdd({required String id}) => '$base/bookmark/add-delete-bookmark/$id';
   static String videPodcast({required String id}) => '$base/podcast/view/$id';
-  static String comments({required String id, required int page}) => '$base/comment/$id?page=$page&limit=10';
-  static String commentsAdd({required String id}) => '$base/comment/$id';
+  static String comments({required String id, required int page}) => '$base/comment/get-podcast-comments/6899dc7053f653c2d8524d34?page=$page&limit=30';
+  static String commentsAdd() => '$base/comment/create';
   static String details({required String id}) => '$base/podcast/$id';
   static String subCategory({required String id}) => '$base/podcast/subcategory-with-podcasts/$id';
   static String favorite({required int page}) => '$base/bookmark/my-bookmarks?page=$page&limit=20';
@@ -110,8 +111,8 @@ class ApiUrl {
   static String podcastDelete({required String id}) => '$base/podcast/delete/$id';
 
   ///Settings
-  static String terms() => '$base/tac';
-  static String privacy() => '$base/privacy';
+  static String terms() => '$base/manage/get-terms-conditions';
+  static String privacy() => '$base/manage/get-privacy-policy';
   static String about() => '$base/about';
-  static String faq() => '$base/faq';
+  static String faq() => '$base/manage/get-faq';
 }

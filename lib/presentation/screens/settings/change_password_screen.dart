@@ -5,7 +5,6 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
-
 import 'controller/settings_controller.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -21,6 +20,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _newPassword = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+
+  @override
+  void dispose() {
+    _currentPassword.dispose();
+    _newPassword.dispose();
+    _confirmPassword.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +96,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   return null;
                 },
               ),
-              Gap(24),
+              const Gap(24),
               Obx(
                 () => CustomButton(
                   text: "reset_password".tr,
@@ -97,16 +105,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     if (_formKey.currentState!.validate()) {
                       _controller.changePassword(
                         body: {
-                          "password": _currentPassword.text.trim(),
+                          "oldPassword": _currentPassword.text.trim(),
                           "newPassword": _newPassword.text.trim(),
-                          "confirmPassword": _confirmPassword.text.trim()
+                          "confirmNewPassword": _confirmPassword.text.trim()
                         },
                       );
                     }
                   },
                 ),
               ),
-              Gap(12),
+              const Gap(12),
             ],
           ),
         ),

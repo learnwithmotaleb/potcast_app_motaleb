@@ -9,7 +9,6 @@ import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
 import 'package:podcast/presentation/screens/auth/verification/verification_screen.dart';
-import 'package:podcast/presentation/screens/comments/comments_screen.dart';
 import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
@@ -32,6 +31,7 @@ import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
 
+import '../../presentation/screens/album/screen/album_podcast_screen.dart';
 import '../../presentation/screens/categories/categories_screen.dart';
 import '../../presentation/screens/search/search_screen.dart';
 import '../../presentation/screens/see_all/album_see_all_screen.dart';
@@ -167,20 +167,29 @@ class AppRouter {
           ),
         ),
         GoRoute(
-          name: RoutePath.commentsScreen,
-          path: RoutePath.commentsScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: CommentsScreen(id: state.extra as String),
-            state: state,
-          ),
-        ),
-        GoRoute(
           name: RoutePath.seeAllTopCreator,
           path: RoutePath.seeAllTopCreator.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const SeeAllTopCreator(),
             state: state,
           ),
+        ),
+        GoRoute(
+          name: RoutePath.albumPodcastScreen,
+          path: RoutePath.albumPodcastScreen.addBasePath,
+          pageBuilder: (context, state){
+            final extras = state.extra as Map<String, dynamic>? ?? {};
+            final title = extras['title'] as String? ?? '';
+            final id = extras['id'] as String? ?? '';
+
+            return _buildPageWithAnimation(
+              child: AlbumPodcastScreen(
+                title: title,
+                id: id,
+              ),
+              state: state,
+            );
+          },
         ),
 
         ///======================= User Route =======================

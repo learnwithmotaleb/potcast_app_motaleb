@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/profile/model/profile_model.dart';
@@ -10,7 +11,7 @@ import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class ProfileController extends GetxController {
-  ApiClient apiClient = ApiClient();
+  final ApiClient apiClient = serviceLocator<ApiClient>();
   final ImagePicker _picker = ImagePicker();
   Rx<ProfileModel> profile = ProfileModel().obs;
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
