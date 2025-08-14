@@ -6,11 +6,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/model/basic/selected_location_model.dart';
+import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
@@ -22,12 +24,10 @@ class PodcastAudioController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final Dio dio = serviceLocator<Dio>();
 
-  Rx<SelectedAddPostScreenType> selectedScreenType =
-      SelectedAddPostScreenType.none.obs;
+  Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
 
   /// ============================= Place Location Information =====================================
-  Rx<SelectedLocationResult?> selectedAddress =
-      Rx<SelectedLocationResult?>(null);
+  Rx<SelectedLocationResult?> selectedAddress = Rx<SelectedLocationResult?>(null);
   final RxString selectedCategoryId = ''.obs;
   final RxString selectedSubcategoryId = ''.obs;
 
@@ -77,9 +77,7 @@ class PodcastAudioController extends GetxController {
 
         if (audioDuration != null) {
           if (audioDuration.inMinutes >= 10) {
-            toastMessage(
-                message:
-                    "Your audio file is too long. can not upload reels section");
+            toastMessage(message: "Your audio file is too long. can not upload reels section");
           }
         }
       }
@@ -110,8 +108,7 @@ class PodcastAudioController extends GetxController {
     createLoadingMethod(true);
     List<Future<void>> uploadTasks = selectedFiles.map((fileModel) async {
       final fileBytes = await fileModel.file.readAsBytes();
-      final mimeType =
-          lookupMimeType(fileModel.file.path) ?? 'application/octet-stream';
+      final mimeType = lookupMimeType(fileModel.file.path) ?? 'application/octet-stream';
       final category = detectCategoryFromMime(mimeType);
 
       final preSignedUrl = await getPreSignedUrl(
@@ -163,6 +160,7 @@ class PodcastAudioController extends GetxController {
 
   /// ============================= Create Podcast =====================================
   final RxBool createLoading = false.obs;
+
   createLoadingMethod(bool status) => createLoading.value = status;
 
   void createPodcast({required Map<String, dynamic> body}) async {
@@ -179,13 +177,11 @@ class PodcastAudioController extends GetxController {
         videoFile.value = null;
         selectedImage.value = null;
         navController.changeIndex(0);
-        String errorMessage =
-            response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       } else {
         createLoadingMethod(false);
-        String errorMessage =
-            response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (_) {
@@ -193,8 +189,39 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-  Future<void> startRecording(PlayerController playerController,
-      RecorderController recorderController) async {
+  bool isLoadingMove = false;
+
+  Future<void> getMyPodcast({
+    required int pageKey,
+    required PagingController<int, MyPodcastItem> pagingController,
+  }) async {
+    if (isLoadingMove) return;
+    isLoadingMove = true;
+
+    try {
+      final response = await apiClient.get(url: ApiUrl.myPodcast(page: pageKey), showResult: true);
+
+      if (response.statusCode == 200) {
+        final userServiceAll = MyPodcastModel.fromJson(response.body);
+        final newItems = userServiceAll.data?.result ?? [];
+        if (newItems.isEmpty) {
+          pagingController.appendLastPage(newItems);
+        } else {
+          pagingController.appendPage(newItems, pageKey + 1);
+        }
+      } else {
+        pagingController.error = 'Error fetching data';
+      }
+    } catch (e) {
+      print(e.toString());
+      pagingController.error = 'An error occurred';
+    } finally {
+      isLoadingMove = false;
+    }
+  }
+
+  Future<void> startRecording(
+      PlayerController playerController, RecorderController recorderController) async {
     try {
       if (isPlaying.value || isPausePlaying.value) {
         await playerController.stopPlayer();
@@ -215,8 +242,7 @@ class PodcastAudioController extends GetxController {
       }
 
       final dir = await getTemporaryDirectory();
-      recordedFilePath.value =
-          "${dir.path}/record_${DateTime.now().millisecondsSinceEpoch}.m4a";
+      recordedFilePath.value = "${dir.path}/record_${DateTime.now().millisecondsSinceEpoch}.m4a";
 
       await recorderController.record(path: recordedFilePath.value);
       isRecording.value = true;
@@ -250,8 +276,7 @@ class PodcastAudioController extends GetxController {
       isRecording.value = false;
       isPaused.value = false;
 
-      if (recordedFilePath.value != null &&
-          recordedFilePath.value!.isNotEmpty) {
+      if (recordedFilePath.value != null && recordedFilePath.value!.isNotEmpty) {
         final file = File(recordedFilePath.value!);
         if (await file.exists()) {
           audioFile.value = file;
@@ -274,8 +299,7 @@ class PodcastAudioController extends GetxController {
 
       if (file.existsSync()) {
         debugPrint("Playing: $path");
-        await playerController.preparePlayer(
-            path: path!, shouldExtractWaveform: true);
+        await playerController.preparePlayer(path: path!, shouldExtractWaveform: true);
 
         await playerController.startPlayer();
         isPlaying.value = true;

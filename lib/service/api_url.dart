@@ -81,16 +81,16 @@ class ApiUrl {
   static String like({required String id}) => '$base/like/$id';
   static String favoriteAdd({required String id}) => '$base/bookmark/add-delete-bookmark/$id';
   static String videPodcast({required String id}) => '$base/podcast/view/$id';
-  static String comments({required String id, required int page}) => '$base/comment/get-podcast-comments/6899dc7053f653c2d8524d34?page=$page&limit=30';
+  static String comments({required String id, required int page}) => '$base/comment/get-podcast-comments/$id?page=$page&limit=30';
   static String commentsAdd() => '$base/comment/create';
   static String details({required String id}) => '$base/podcast/$id';
   static String subCategory({required String id}) => '$base/podcast/subcategory-with-podcasts/$id';
   static String favorite({required int page}) => '$base/bookmark/my-bookmarks?page=$page&limit=20';
   static String history({required int page}) => '$base/watch-history/get-all?page=$page&limit=10';
   static String playListCreate() => '$base/playlist/create';
-  static String playList({required int page}) => '$base/playlist/?page=$page&limit=10';
+  static String playList({required int page}) => '$base/playlist/my-playlists?page=$page&limit=20';
   static String playListDelete({required String id}) => '$base/playlist/delete/$id';
-  static String playListSongs({required String id, required int page}) => '$base/playlist/$id/podcasts?page=$page&limit=10';
+  static String playListSongs({required String id, required int page}) => '$base/playlist/get-single/$id';
   static String seeAll({required String type, required int page}) => '$base/podcast/$type?page=$page&limit=10';
   static String seeAllTopCreator({required int page}) => '$base/creator/get-top-creators?page=$page&limit=20';
   static String subCategoryPodcast({required String id, required int page}) => '$base/sub-category/$id/podcasts?page=$page&limit=10';
@@ -105,7 +105,7 @@ class ApiUrl {
 
   ///Creator
   static String podcast({required int page}) => '$base/podcast?page=$page&limit=10';
-  static String myPodcast({required int page}) => '$base/creator/all-podcasts?page=$page&limit=10';
+  static String myPodcast({required int page}) => '$base/podcast/my-podcasts?page=$page&limit=20';
   static String podcastCreate() => '$base/podcast/create';
   static String podcastEdit({required String id}) => '$base/podcast/update/$id';
   static String podcastDelete({required String id}) => '$base/podcast/delete/$id';

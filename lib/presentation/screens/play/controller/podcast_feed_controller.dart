@@ -222,7 +222,6 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  // Helper method to animate to a specific page
   void _animateToPage(int index) {
     if (isPageAnimating) {
       return;
@@ -230,13 +229,11 @@ class PodcastFeedController extends GetxController {
 
     isPageAnimating = true;
 
-    pageController
-        .animateToPage(
+    pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-    )
-        .then((_) {
+    ).then((_) {
       isPageAnimating = false;
     }).catchError((error) {
       isPageAnimating = false;
@@ -741,6 +738,8 @@ class PodcastFeedController extends GetxController {
     required PagingController<int, CommentItem> commentsPagingController,
   }) async {
     try {
+
+      print("---------------------ID-S only ID -${id ?? ""}");
       var response = await apiClient.get(
         url: ApiUrl.comments(id: id, page: page),
         showResult: true,
@@ -765,7 +764,7 @@ class PodcastFeedController extends GetxController {
 
   Future<void> addComments({
     required String id,
-    required String text,
+    required TextEditingController comments,
     required PagingController<int, CommentItem> commentsPagingController,
   }) async {
     try {
@@ -773,13 +772,14 @@ class PodcastFeedController extends GetxController {
         url: ApiUrl.commentsAdd(),
         body: {
           "podcast": id,
-          "text": text,
+          "text": comments.text,
         },
         showResult: true,
       );
 
       if (response.statusCode == 200) {
-
+        commentsPagingController.refresh();
+        comments.clear();
       } else {
         commentsPagingController.error = "";
       }

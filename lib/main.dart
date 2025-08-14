@@ -18,8 +18,7 @@ Future<void> main() async {
 
   //Background Audio Player
   await JustAudioBackground.init(
-    androidNotificationChannelId:
-        "com.ryanheise.audio_service.podcast.audio_player",
+    androidNotificationChannelId: "com.ryanheise.audio_service.podcast.audio_player",
     androidNotificationChannelName: "Audio playback",
     androidNotificationOngoing: true,
   );
@@ -56,8 +55,7 @@ class MyApp extends StatelessWidget {
               //Route Section
               routeInformationParser: AppRouter.route.routeInformationParser,
               routerDelegate: AppRouter.route.routerDelegate,
-              routeInformationProvider:
-                  AppRouter.route.routeInformationProvider,
+              routeInformationProvider: AppRouter.route.routeInformationProvider,
 
               //Theme Section
               themeMode: ThemeMode.dark,

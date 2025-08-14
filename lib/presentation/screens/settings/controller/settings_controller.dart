@@ -130,8 +130,9 @@ class SettingsController extends GetxController {
       if (response.statusCode == 200) {
         changePasswordLoadingMethod(false);
         toastMessage(message: response.body?['message'].toString() ?? "something want wrong");
-        AppRouter.route.pop();
+        await dbHelper.logOut();
       } else {
+        toastMessage(message: response.body?['message'].toString() ?? "something want wrong");
         changePasswordLoadingMethod(false);
       }
     } catch (e) {
@@ -143,10 +144,11 @@ class SettingsController extends GetxController {
   RxBool deleteLoading = false.obs;
   deleteLoadingMethod(bool loading) => deleteLoading.value = loading;
 
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount({required Map<String, dynamic> body}) async {
     try {
       deleteLoadingMethod(true);
-      var response = await apiClient.delete(url: ApiUrl.delete(), showResult: true);
+      print(body);
+      var response = await apiClient.delete(url: ApiUrl.delete(), body: body,showResult: true);
       if (response.statusCode == 200) {
         toastMessage(message: response.body?['message'].toString() ?? "something want wrong");
         AppRouter.route.pop();

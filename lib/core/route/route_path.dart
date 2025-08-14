@@ -17,6 +17,7 @@ class RoutePath {
   static const String editProfileScreen = 'editProfileScreen';
   static const String playlistScreen = 'playlistScreen';
   static const String playlistAddScreen = 'playlistAddScreen';
+  static const String playlistAddInfoScreen = 'playlistAddInfoScreen';
   static const String notificationScreen = 'notificationScreen';
   static const String seeAllTopCreator = 'seeAllTopCreator';
   static const String albumSeeAllScreen = 'albumSeeAllScreen';

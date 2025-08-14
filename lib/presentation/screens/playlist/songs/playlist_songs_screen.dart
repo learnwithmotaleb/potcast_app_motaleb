@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
-import 'package:podcast/presentation/screens/playlist/controller/playlist_songs_controller.dart';
 import 'package:podcast/presentation/screens/playlist/model/playlist_songs_model.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 
+import '../controller/playlist_controller.dart';
+
 class PlaylistSongsScreen extends StatefulWidget {
   const PlaylistSongsScreen({super.key, required this.id});
+
   final String id;
 
   @override
@@ -17,20 +18,24 @@ class PlaylistSongsScreen extends StatefulWidget {
 }
 
 class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
-  final controller = Get.put(PlayListSongsController());
+  final PagingController<int, PlayListPodcastItem> pagingController = PagingController(firstPageKey: 1);
+  final controller = Get.find<PlaylistController>();
 
   @override
   void initState() {
-    controller.pagingController.addPageRequestListener((pageKey) {
-      controller.getPlaylistPodcast(pageKey: pageKey, id: widget.id);
+    pagingController.addPageRequestListener((pageKey) {
+      controller.getPlaylistPodcast(
+        pageKey: pageKey,
+        id: widget.id,
+        pagingController: pagingController,
+      );
     });
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.pagingController.dispose();
-    Get.delete<PlayListSongsController>();
+    pagingController.dispose();
     super.dispose();
   }
 
@@ -46,20 +51,21 @@ class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          controller.pagingController.refresh();
+          pagingController.refresh();
         },
-        child: PagedListView<int, PlayListPodcast>(
-          pagingController: controller.pagingController,
-          builderDelegate: PagedChildBuilderDelegate<PlayListPodcast>(
+        child: PagedListView<int, PlayListPodcastItem>(
+          pagingController:pagingController,
+          builderDelegate: PagedChildBuilderDelegate<PlayListPodcastItem>(
             itemBuilder: (context, item, index) {
               final data = AudioPlayerModel(
-                  id: item.id ?? "",
-                  title: item.title ?? "",
-                  image: item.cover ?? "",
-                  categories: item.category?.title ?? "",
-                  duration: item.audioDuration.toString(),
-                  artist: item.creator?.user?.name ?? "",
-                  url: "");
+                id: item.id ?? "",
+                title: item.title ?? "",
+                image: item.coverImage ?? "",
+                categories: item.category?.name ?? "",
+                duration: formatDuration(item.duration ?? 0),
+                artist: item.creator?.name ?? "",
+                url: "",
+              );
 
               return MusicCard(
                 data: data,
@@ -71,5 +77,14 @@ class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
         ),
       ),
     );
+  }
+
+  String formatDuration(num seconds) {
+    if (seconds < 60) {
+      return '$seconds sec';
+    } else {
+      final minutes = (seconds / 60).floor();
+      return '$minutes min';
+    }
   }
 }

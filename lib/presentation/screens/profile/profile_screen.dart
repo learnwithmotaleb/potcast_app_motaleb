@@ -6,6 +6,7 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/function/logout_dailog.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
@@ -45,8 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               left: 0,
               right: 0,
               child: Obx(() {
-                final cover =
-                    _controller.profile.value.data?.profileCover ?? "";
+                final cover = _controller.profile.value.data?.profileCover ?? "";
                 return CustomNetworkImage(
                   imageUrl: cover.isNotEmpty
                       ? cover
@@ -85,16 +85,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Obx(() => Column(
                                   children: [
                                     CustomText(
-                                        text: _controller
-                                                .profile.value.data?.name ??
-                                            "",
+                                        text: _controller.profile.value.data?.name ?? "",
                                         fontSize: 24,
                                         fontWeight: FontWeight.w800),
                                     const Gap(5),
                                     CustomText(
-                                        text: _controller
-                                                .profile.value.data?.email ??
-                                            "",
+                                        text: _controller.profile.value.data?.email ?? "",
                                         fontSize: 16),
                                   ],
                                 )),
@@ -102,17 +98,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             CustomProfileTile(
                               text: "personal_information",
                               icon: Iconsax.user,
-                              onTap: () => AppRouter.route
-                                  .pushNamed(RoutePath.viewProfileScreen),
+                              onTap: () => AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
                             ),
                             const Gap(24),
                             if (!widget.isUser)
                               Column(
                                 children: [
                                   CustomProfileTile(
-                                    text: "my_podcast",
-                                    onTap: () => AppRouter.route
-                                        .pushNamed(RoutePath.myPodcastScreen),
+                                    text: "My Podcast",
+                                    onTap: () =>
+                                        AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
                                     icon: Iconsax.music,
                                   ),
                                   const Gap(24),
@@ -120,23 +115,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             CustomProfileTile(
                               text: "my_play_list",
-                              onTap: () => AppRouter.route
-                                  .pushNamed(RoutePath.playlistScreen),
+                              onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
                               icon: Iconsax.headphone,
                             ),
                             const Gap(24),
                             CustomProfileTile(
                               text: "settings",
                               icon: Iconsax.setting,
-                              onTap: () => AppRouter.route
-                                  .pushNamed(RoutePath.settingsScreen),
+                              onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
                             ),
                             const Gap(24),
                             CustomProfileTile(
                               text: "notification",
                               icon: Iconsax.notification,
-                              onTap: () => AppRouter.route
-                                  .pushNamed(RoutePath.notificationScreen),
+                              onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
                             ),
                             const Gap(24),
                             if (widget.isUser)
@@ -144,8 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   CustomProfileTile(
                                     text: "upgrade",
-                                    onTap: () => AppRouter.route
-                                        .pushNamed(RoutePath.upgradeScreen),
+                                    onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
                                     icon: Iconsax.diamonds,
                                     isIcon: true,
                                   ),
@@ -155,8 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             GestureDetector(
                               onTap: () => showLogoutDialog(context),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 40),
+                                padding: const EdgeInsets.symmetric(horizontal: 40),
                                 child: Container(
                                   height: 45,
                                   width: width,
@@ -189,8 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Obx(() {
-                          final profileImage =
-                              _controller.profile.value.data?.profileImage;
+                          final profileImage = _controller.profile.value.data?.profileImage;
                           if (profileImage != null) {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(50),
@@ -225,106 +214,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  void showLogoutDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withValues(alpha: 0.5),
-      transitionDuration: const Duration(milliseconds: 500),
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return Center(
-          child: Dialog(
-            insetPadding: const EdgeInsets.symmetric(horizontal: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            elevation: 16,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: "logout".tr,
-                    family: "Bola",
-                    fontWeight: FontWeight.w800,
-                    fontSize: 22,
-                    color: AppColors.blackColor,
-                  ),
-                  const Gap(12),
-                  CustomText(
-                    text: "are_you_sure_you_want_logout".tr,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.blackColor,
-                  ),
-                  const Gap(24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () => AppRouter.route.pop(),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 28, vertical: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: AppColors.blackColor),
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: CustomText(
-                            text: "no".tr,
-                            color: AppColors.blackColor,
-                          ),
-                        ),
-                      ),
-                      const Gap(12),
-                      GestureDetector(
-                        onTap: () async {
-                          DBHelper helper = serviceLocator();
-                          await helper.logOut();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 28, vertical: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: AppColors.blackColor),
-                              color: AppColors.blackColor,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: CustomText(
-                            text: "yes".tr,
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(12),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: ScaleTransition(
-            scale: animation,
-            child: child,
-          ),
-        );
-      },
     );
   }
 }

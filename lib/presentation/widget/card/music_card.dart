@@ -14,12 +14,14 @@ class MusicCard extends StatelessWidget {
     required this.onTap,
     this.bgColor,
     this.onLongPress,
+    this.isPlayList = false,
   });
 
   final AudioPlayerModel data;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
   final Color? bgColor;
+  final bool isPlayList;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,10 @@ class MusicCard extends StatelessWidget {
     final displayDuration = durationCheck ? data.duration : "0:00";
     final imageCheck = data.image.trim().isNotEmpty == true;
     final displayImage = imageCheck ? data.image : AppConstants.defaultCoverImage;
+    Border? border;
+    if (bgColor != null) {
+      border = Border.all(color: bgColor ?? const Color(0xFF1F1F26));
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -48,7 +54,8 @@ class MusicCard extends StatelessWidget {
           curve: Curves.easeOut,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: bgColor ?? (isDark ? const Color(0xFF1F1F26) : Colors.white),
+            color: const Color(0xFF1F1F26),
+            border: border,
             borderRadius: BorderRadius.circular(5),
             boxShadow: [
               BoxShadow(
@@ -89,23 +96,25 @@ class MusicCard extends StatelessWidget {
                         fontSize: 12,
                         color: AppColors.searchBoxColor,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                        maxLines: isPlayList? 3 :1,
+                        textAlign: TextAlign.justify,
                       ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.access_time_rounded,
-                            size: 14,
-                            color: AppColors.searchBoxColor,
-                          ),
-                          const Gap(5),
-                          CustomText(
-                            text: _formatDuration(displayDuration),
-                            fontSize: 12,
-                            color: AppColors.searchBoxColor,
-                          ),
-                        ],
-                      ),
+                      if (!isPlayList)
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.access_time_rounded,
+                              size: 14,
+                              color: AppColors.searchBoxColor,
+                            ),
+                            const Gap(5),
+                            CustomText(
+                              text: _formatDuration(displayDuration),
+                              fontSize: 12,
+                              color: AppColors.searchBoxColor,
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                 ),

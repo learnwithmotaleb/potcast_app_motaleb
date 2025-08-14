@@ -145,7 +145,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           GestureDetector(
                             onTap: () {
                               if(_formKey.currentState!.validate()){
-                                controller.deleteAccount();
+                                final body = {
+                                  "password": password.text,
+                                };
+
+                                controller.deleteAccount(body: body);
                               }
                             },
                             child: Container(

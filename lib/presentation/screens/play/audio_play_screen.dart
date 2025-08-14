@@ -40,7 +40,6 @@ class UserPlayScreen extends StatefulWidget {
 
 class _UserPlayScreenState extends State<UserPlayScreen> {
   final feedController = Get.find<PodcastFeedController>();
-  final commentsPagingController = PagingController<int, CommentItem>(firstPageKey: 1);
 
   @override
   void initState() {
@@ -51,13 +50,6 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
   late final void Function(dynamic) _pageRequestListener;
 
   void _initializeFeed() {
-    commentsPagingController.addPageRequestListener((pageKey) {
-      feedController.getComments(
-        id: widget.id,
-        page: pageKey,
-        commentsPagingController: commentsPagingController,
-      );
-    });
     _pageRequestListener = (pagingPageKey) {
       final cursor = pagingPageKey.cursor.isEmpty ? null : pagingPageKey.cursor;
 
@@ -90,7 +82,6 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
   @override
   void dispose() {
     feedController.pagingController.removePageRequestListener(_pageRequestListener);
-    commentsPagingController.dispose();
     super.dispose();
   }
 
@@ -153,7 +144,6 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                         ),
                         AudioPlayBottom(
                           controller: feedController,
-                          commentsPagingController: commentsPagingController,
                         ),
                       ],
                     ),

@@ -37,6 +37,15 @@ Future<Map<String, String>> bearerHeaderInfo() async {
   };
 }
 
+Future<Map<String, String>> bearerHeaderInfoForDelete() async {
+  DBHelper dbHelper = serviceLocator();
+  final token = await dbHelper.getToken();
+  return {
+    HttpHeaders.authorizationHeader: token,
+    HttpHeaders.contentTypeHeader: "application/json",
+  };
+}
+
 String noInternetConnection = "No internet connection.!";
 
 ConnectionChecker connectionChecker = serviceLocator();
@@ -549,12 +558,13 @@ class ApiClient {
 
   // Delete method
   Future<Response> delete(
-      {String? url,
+      {required String url,
       bool isBasic = false,
       int code = 200,
-      bool isLogout = false,
       int duration = 15,
-      bool showResult = false}) async {
+      required Map<String, dynamic> body,
+      bool showResult = false,
+      }) async {
     log.i(
         '|📍📍📍|-----------------[[ DELETE ]] method details start-----------------|📍📍📍|');
 
@@ -569,19 +579,17 @@ class ApiClient {
         '|📍📍📍|-----------------[[ DELETE ]] method details end ------------------|📍📍📍|');
 
     try {
-      var headers = isBasic ? basicHeaderInfo() : await bearerHeaderInfo();
+      var headers = await bearerHeaderInfoForDelete();
 
       log.i(headers);
+      log.i(body);
 
-      final response = await http
-          .delete(
-            Uri.parse(url!),
-            headers: headers,
-          )
-          .timeout(Duration(seconds: duration));
+      final response = await http.delete(Uri.parse(url),
+        headers: await bearerHeaderInfoForDelete(),
+        body: jsonEncode(body),
+      ).timeout(Duration(seconds: duration));
 
-      log.i(
-          '|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
+      log.i('|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
 
       if (showResult) {
         log.i(response.body.toString());
@@ -589,10 +597,9 @@ class ApiClient {
 
       log.i(response.statusCode);
 
-      log.i(
-          '|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
+      log.i('|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
 
-      if (response.statusCode == code) {
+      if (response.statusCode == code || response.statusCode == 200) {
         return Response(
           body: jsonDecode(response.body),
           statusCode: response.statusCode,
@@ -600,8 +607,7 @@ class ApiClient {
       } else {
         log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
-        log.e(
-            'unknown error hitted in status code  ${jsonDecode(response.body)}');
+        log.e('unknown error hitted in status code  ${jsonDecode(response.body)}');
 
         return Response(
           body: jsonDecode(response.body),
@@ -615,7 +621,8 @@ class ApiClient {
       return const Response(
           body: {},
           statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+      );
     } on TimeoutException {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
@@ -624,7 +631,8 @@ class ApiClient {
       return const Response(
           body: {},
           statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+      );
     } on http.ClientException catch (err, stackrace) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
@@ -637,7 +645,8 @@ class ApiClient {
       return const Response(
           body: {},
           statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+      );
     } catch (e) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
@@ -648,7 +657,8 @@ class ApiClient {
       return const Response(
           body: {},
           statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞');
+          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+      );
     }
   }
 

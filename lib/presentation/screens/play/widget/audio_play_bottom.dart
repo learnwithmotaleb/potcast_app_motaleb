@@ -9,6 +9,7 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,11 +20,9 @@ class AudioPlayBottom extends StatelessWidget {
   const AudioPlayBottom({
     super.key,
     required this.controller,
-    required this.commentsPagingController,
   });
 
   final PodcastFeedController controller;
-  final PagingController<int, CommentItem> commentsPagingController;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +31,11 @@ class AudioPlayBottom extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
+            print("---------------------IDS -${controller.currentItem.value.id ?? ""}");
             showModel(
               context: context,
-              commentsPagingController: commentsPagingController,
+              feedController: controller,
+              id: controller.currentItem.value.id ?? "",
             );
           },
           child: Container(
@@ -104,9 +105,21 @@ class AudioPlayBottom extends StatelessWidget {
 
   Future<void> showModel({
     required BuildContext context,
-    required PagingController<int, CommentItem> commentsPagingController,
+    required PodcastFeedController feedController,
+    required String id,
   }) async {
-    return showModalBottomSheet(
+    final commentsPagingController = PagingController<int, CommentItem>(firstPageKey: 1);
+    final TextEditingController comments = TextEditingController();
+
+    commentsPagingController.addPageRequestListener((pageKey) {
+      feedController.getComments(
+        id: id,
+        page: pageKey,
+        commentsPagingController: commentsPagingController,
+      );
+    });
+
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.black,
@@ -123,26 +136,23 @@ class AudioPlayBottom extends StatelessWidget {
             builder: (context, scrollController) {
               return Column(
                 children: [
-                  const Gap(12),
+                  const SizedBox(height: 12),
                   Container(
                     height: 3,
                     width: 45,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor.withValues(alpha: 0.4),
+                      color: Colors.white.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  const Gap(5),
-                  const CustomText(
-                    text: "Comments",
-                    fontSize: 18,
+                  const SizedBox(height: 5),
+                  const Text(
+                    "Comments",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
-                  Divider(
-                    color: AppColors.whiteColor.withValues(alpha: 0.1),
-                  ),
+                  Divider(color: Colors.white.withOpacity(0.1)),
                   Expanded(
                     child: PagedListView<int, CommentItem>(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       pagingController: commentsPagingController,
                       builderDelegate: PagedChildBuilderDelegate<CommentItem>(
                         itemBuilder: (context, item, index) {
@@ -152,32 +162,16 @@ class AudioPlayBottom extends StatelessWidget {
                                 item.commentorProfileImage ?? AppConstants.defaultCoverImage,
                               ),
                             ),
-                            title: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: item.commentorName ?? "",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: GetTimeAgo.parse(item.updatedAt ?? DateTime.now()),
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            title: Text(
+                              "${item.commentorName ?? ""} • ${GetTimeAgo.parse(item.updatedAt ?? DateTime.now())}",
+                              style: const TextStyle(fontSize: 12, color: Colors.white),
                             ),
-                            subtitle: CustomText(
-                              text: item.text ?? "",
+                            subtitle: Text(
+                              item.text ?? "",
                               maxLines: 2,
-                              color: AppColors.whiteColor.withValues(alpha: 0.7),
-                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.7),
+                              ),
                             ),
                           );
                         },
@@ -185,49 +179,24 @@ class AudioPlayBottom extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8),
-                    child: TextFormField(
-                      maxLines: 5,
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                    child: CustomTextField(
+                      controller: comments,
+                      hintText: "Write a comment...",
+                      maxLines: 3,
                       minLines: 1,
-                      maxLength: 100,
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          return null;
-                        } else {
-                          return "Please Add Comments";
-                        }
-                      },
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        hintText: "Write a comment...",
-                        hintStyle: const TextStyle(
-                          color: AppColors.whiteColor,
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Iconsax.send_1),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: const BorderSide(
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: const BorderSide(
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Iconsax.send_1, color: Colors.white),
+                        onPressed: () {
+                          feedController.addComments(
+                            id: id,
+                            comments: comments,
+                            commentsPagingController: commentsPagingController,
+                          );
+                        },
                       ),
                     ),
-                  )
+                  ),
                 ],
               );
             },
@@ -235,5 +204,7 @@ class AudioPlayBottom extends StatelessWidget {
         );
       },
     );
+    commentsPagingController.dispose();
+    comments.dispose();
   }
 }

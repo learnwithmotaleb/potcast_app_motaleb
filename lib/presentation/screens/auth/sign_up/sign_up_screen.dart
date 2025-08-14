@@ -76,8 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 controller: _controller,
               ),
               const Gap(24),
-              Obx(
-                () => CustomButton(
+              Obx(() => CustomButton(
                   text: "sign_up".tr,
                   isLoading: _controller.signUpLoading.value,
                   onTap: () {
@@ -90,6 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         "role": _controller.selectedRoll.value,
                         "address": _address.text.trim(),
                         "dateOfBirth": dob.value.toUtc().toIso8601String(),
+                        "gender": "Male"
                       };
 
                       _controller.signUp(

@@ -11,9 +11,11 @@ import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
 import 'package:podcast/presentation/screens/auth/verification/verification_screen.dart';
 import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
+import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/notification/notification_screen.dart';
 import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
+import 'package:podcast/presentation/screens/playlist/add/playlist_add_info_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
 import 'package:podcast/presentation/screens/playlist/songs/playlist_songs_screen.dart';
@@ -155,6 +157,14 @@ class AppRouter {
           path: RoutePath.playlistAddScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const PlaylistAddScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.playlistAddInfoScreen,
+          path: RoutePath.playlistAddInfoScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: PlaylistAddInfoScreen(podcastList: state.extra as List<String>),
             state: state,
           ),
         ),
@@ -351,14 +361,14 @@ class AppRouter {
             state: state,
           ),
         ),
-/*        GoRoute(
+        GoRoute(
           name: RoutePath.myPodcastScreen,
           path: RoutePath.myPodcastScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const MyPodcastScreen(),
             state: state,
           ),
-        ),*/
+        ),
 /*        GoRoute(
           name: RoutePath.podcastAddScreen,
           path: RoutePath.podcastAddScreen.addBasePath,
