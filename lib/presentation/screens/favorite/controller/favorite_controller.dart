@@ -7,9 +7,11 @@ import 'package:podcast/service/api_url.dart';
 class FavoriteController extends GetxController {
   ApiClient apiClient = ApiClient();
 
-  final PagingController<int, FavoriteItem> pagingController =
-      PagingController(firstPageKey: 1);
+  final pagingController = PagingController<int, FavoriteItem>(firstPageKey: 1);
   bool isLoadingMove = false;
+  RxList<FavoriteItem> lastTenItems = <FavoriteItem>[].obs;
+  RxBool getLstLoading = false.obs;
+
 
   Future<void> getPodcast(int pageKey) async {
     if (isLoadingMove) return;
@@ -30,11 +32,33 @@ class FavoriteController extends GetxController {
       } else {
         pagingController.error = 'Error fetching data';
       }
-    } catch (e) {
-      print(e.toString());
+    } catch (_) {
       pagingController.error = 'An error occurred';
     } finally {
       isLoadingMove = false;
+    }
+  }
+
+  Future<void> getLastTenFavorites() async {
+    if (getLstLoading.value) return;
+    getLstLoading.value = true;
+
+    try {
+      final response = await apiClient.get(
+        url: ApiUrl.favorite(page: 1),
+        showResult: false,
+      );
+
+      if (response.statusCode == 201) {
+        final favoriteModel = FavoriteModel.fromJson(response.body);
+        final items = favoriteModel.data?.result ?? [];
+
+        lastTenItems.assignAll(items.take(10).toList());
+      }
+    } catch (_) {
+
+    } finally {
+      getLstLoading.value = false;
     }
   }
 

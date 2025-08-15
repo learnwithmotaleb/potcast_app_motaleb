@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/core/dependency/path.dart';
+import 'package:intl/intl.dart';
+import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/function/logout_dailog.dart';
 import 'package:podcast/helper/image/network_image.dart';
-import 'package:podcast/helper/local_db/local_db.dart';
-import 'package:podcast/presentation/widget/card/custom_profile_tile.dart';
+import 'package:podcast/model/route/audio_player_model.dart';
+import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
+import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
+import 'package:podcast/presentation/widget/align/custom_align_text.dart';
+import 'package:podcast/presentation/widget/card/profile_podcast_card.dart';
+import 'package:podcast/presentation/widget/card/profile_podcast_shimmer.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:podcast/utils/app_const/app_const.dart';
 import 'controller/profile_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -26,189 +30,308 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _controller = Get.find<ProfileController>();
+  final historyController = Get.find<HistoryController>();
+  final favoriteController = Get.find<FavoriteController>();
+
+  List<ProfileStatusCard> get _items {
+    if (widget.isUser) {
+      return [
+        ProfileStatusCard(
+          text: "my_play_list",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
+          icon: Iconsax.headphone,
+        ),
+        ProfileStatusCard(
+          text: "upgrade",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
+          icon: Iconsax.diamonds,
+        ),
+        ProfileStatusCard(
+          text: "settings",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
+          icon: Icons.settings,
+        ),
+        ProfileStatusCard(
+          text: "notification",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
+          icon: Icons.notifications_none,
+        ),
+      ];
+    } else {
+      return [
+        ProfileStatusCard(
+          text: "My Podcast",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
+          icon: Iconsax.music,
+        ),
+        ProfileStatusCard(
+          text: "my_play_list",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
+          icon: Iconsax.headphone,
+        ),
+        ProfileStatusCard(
+          text: "settings",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
+          icon: Icons.settings,
+        ),
+        ProfileStatusCard(
+          text: "notification",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
+          icon: Icons.notifications_none,
+        ),
+      ];
+    }
+  }
+
+  @override
+  void initState() {
+    Future.wait([
+      historyController.getLastTenHistory(),
+      favoriteController.getLastTenFavorites(),
+    ]);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("profile".tr),
-        centerTitle: true,
-      ),
-      body: SizedBox(
-        height: height,
-        width: width,
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Obx(() {
-                final cover = _controller.profile.value.data?.profileCover ?? "";
-                return CustomNetworkImage(
-                  imageUrl: cover.isNotEmpty
-                      ? cover
-                      : "https://plus.unsplash.com/premium_photo-1681426414801-f36575c2de9e",
-                  height: 200,
-                  width: width,
-                );
-              }),
-            ),
-            Positioned(
-              top: 80,
-              left: 0,
-              right: 0,
-              child: SizedBox(
-                width: width,
-                height: height - 150,
-                child: Stack(
+    return SafeArea(
+      child: Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Positioned(
-                      top: 50,
-                      left: 10,
-                      right: 10,
-                      child: Container(
-                        width: width,
-                        height: height,
-                        decoration: const BoxDecoration(
-                          color: AppColors.blackColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            const Gap(100),
-                            Obx(() => Column(
-                                  children: [
-                                    CustomText(
-                                        text: _controller.profile.value.data?.name ?? "",
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w800),
-                                    const Gap(5),
-                                    CustomText(
-                                        text: _controller.profile.value.data?.email ?? "",
-                                        fontSize: 16),
-                                  ],
-                                )),
-                            Gap(12.h),
-                            CustomProfileTile(
-                              text: "personal_information",
-                              icon: Iconsax.user,
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.viewProfileScreen),
-                            ),
-                            const Gap(24),
-                            if (!widget.isUser)
-                              Column(
-                                children: [
-                                  CustomProfileTile(
-                                    text: "My Podcast",
-                                    onTap: () =>
-                                        AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
-                                    icon: Iconsax.music,
-                                  ),
-                                  const Gap(24),
-                                ],
-                              ),
-                            CustomProfileTile(
-                              text: "my_play_list",
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
-                              icon: Iconsax.headphone,
-                            ),
-                            const Gap(24),
-                            CustomProfileTile(
-                              text: "settings",
-                              icon: Iconsax.setting,
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
-                            ),
-                            const Gap(24),
-                            CustomProfileTile(
-                              text: "notification",
-                              icon: Iconsax.notification,
-                              onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
-                            ),
-                            const Gap(24),
-                            if (widget.isUser)
-                              Column(
-                                children: [
-                                  CustomProfileTile(
-                                    text: "upgrade",
-                                    onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
-                                    icon: Iconsax.diamonds,
-                                    isIcon: true,
-                                  ),
-                                  const Gap(24),
-                                ],
-                              ),
-                            GestureDetector(
-                              onTap: () => showLogoutDialog(context),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 40),
-                                child: Container(
-                                  height: 45,
-                                  width: width,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: AppColors.whiteColor,
-                                  ),
-                                  child: CustomText(
-                                    text: "logout".tr,
-                                    color: AppColors.blackColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Gap(12),
-                          ],
-                        ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Iconsax.edit_2,
+                        color: AppColors.blackColor,
                       ),
                     ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Obx(() {
-                          final profileImage = _controller.profile.value.data?.profileImage;
-                          if (profileImage != null) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: CustomNetworkImage(
-                                imageUrl: profileImage.isNotEmpty
-                                    ? profileImage
-                                    : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                                height: 100,
-                                width: 100,
-                              ),
-                            );
-                          }
-                          return Shimmer.fromColors(
-                            baseColor: Colors.grey.withValues(alpha: 0.6),
-                            highlightColor: Colors.grey.withValues(alpha: 0.3),
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withValues(alpha: 0.6),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          );
-                        }),
+                    Assets.images.splashLogo.image(height: 100),
+                    IconButton(
+                      onPressed: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
+                      icon: const Icon(
+                        Iconsax.edit_2,
+                        color: AppColors.redColor,
                       ),
                     ),
                   ],
                 ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.redColor,
+                    width: 3,
+                  ),
+                ),
+                child: Obx(() {
+                  final profileImage = _controller.profile.value.data?.profileImage ?? "";
+                  const image = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                  final finalImage = profileImage.isNotEmpty ? profileImage : image;
+
+                  return CustomNetworkImage(
+                    borderRadius: BorderRadius.circular(50),
+                    imageUrl: finalImage,
+                    height: 100,
+                    width: 100,
+                  );
+                }),
+              ),
+            ),
+            const SliverGap(12),
+            SliverToBoxAdapter(
+              child: Obx(() {
+                final data = _controller.profile.value.data;
+                return Column(
+                  children: [
+                    CustomText(
+                      text: data?.name ?? "",
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    CustomText(
+                      text: DateFormat("dd - MMMM - yyyy EEEE")
+                          .format(data?.dateOfBirth ?? DateTime.now()),
+                      fontSize: 16,
+                      color: AppColors.whiteColor.withValues(alpha: 0.5),
+                    ),
+                  ],
+                );
+              }),
+            ),
+            const SliverGap(24),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 8,
+                  mainAxisExtent: 52,
+                ),
+                delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                  return _items[index];
+                }, childCount: _items.length),
+              ),
+            ),
+            const SliverGap(12),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              sliver: SliverToBoxAdapter(
+                child: Obx(() {
+                  final items = historyController.lastTenItems;
+
+                  if (historyController.getLstLoading.value) {
+                    return const CustomAlignText(text: "Recently Played");
+                  }
+
+                  if (items.isEmpty) {
+                    return const SizedBox();
+                  }
+
+                  return const CustomAlignText(text: "Recently Played");
+                }),
+              ),
+            ),
+            const SliverGap(8),
+            SliverToBoxAdapter(
+              child: Obx(() {
+                final items = historyController.lastTenItems;
+
+                if (historyController.getLstLoading.value) {
+                  if (historyController.getLstLoading.value) {
+                    // Show shimmer placeholders
+                    return SizedBox(
+                      height: 100,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(left: 14),
+                        itemCount: 4,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return const ProfilePodcastCardShimmer();
+                        },
+                      ),
+                    );
+                  }
+                }
+
+                if (items.isEmpty) {
+                  return const SizedBox();
+                }
+
+                return SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(left: 14),
+                    itemCount: items.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return ProfilePodcastCard(
+                        data: AudioPlayerModel(
+                          id: item.podcast?.id ?? "",
+                          title: item.podcast?.title ?? "",
+                          categories: item.podcast?.category?.name ?? "",
+                          image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
+                          duration: "0.0",
+                          url: "",
+                        ),
+                        onTap: () {
+                          // handle tap - maybe navigate to podcast player
+                        },
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+            const SliverGap(12),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              sliver: SliverToBoxAdapter(
+                child: Obx(() {
+                  final items = historyController.lastTenItems;
+
+                  if (historyController.getLstLoading.value) {
+                    return const CustomAlignText(text: "My Favorites");
+                  }
+
+                  if (items.isEmpty) {
+                    return const SizedBox();
+                  }
+
+                  return const CustomAlignText(text: "My Favorites");
+                }),
+              ),
+            ),
+            const SliverGap(8),
+            SliverToBoxAdapter(
+              child: Obx(() {
+                if (favoriteController.getLstLoading.value) {
+                  return SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(left: 14),
+                      itemCount: 4,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => const ProfilePodcastCardShimmer(),
+                    ),
+                  );
+                }
+
+                final items = favoriteController.lastTenItems;
+                if (items.isEmpty) return const SizedBox();
+
+                return SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(left: 14),
+                    itemCount: items.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return ProfilePodcastCard(
+                        data: AudioPlayerModel(
+                          id: item.podcast?.id ?? "",
+                          title: item.podcast?.title ?? "",
+                          categories: item.podcast?.category?.name ?? "",
+                          image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
+                          duration: "0.0",
+                          url: "",
+                        ),
+                        onTap: () {
+                          // navigate to podcast player
+                        },
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+            const SliverGap(12),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: ProfileStatusCard(
+                      onTap: () => showLogoutDialog(context),
+                      text: "logout".tr,
+                      icon: Iconsax.logout_copy,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -219,25 +342,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
 class ProfileStatusCard extends StatelessWidget {
-  const ProfileStatusCard({super.key, required this.child});
+  const ProfileStatusCard({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.onTap,
+  });
 
-  final Widget child;
+  final IconData icon;
+  final String text;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      width: width,
-      height: 250,
-      decoration: BoxDecoration(
-        color: isDarkMode ? AppColors.whiteColor : const Color(0xFFB6B4B4),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.redColor.withValues(alpha: 0.1),
+          border: Border.all(color: AppColors.redColor.withValues(alpha: 0.7), width: 2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 8,
+          children: [
+            Icon(
+              icon,
+              color: AppColors.redColor,
+            ),
+            CustomText(
+              text: text,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ],
         ),
       ),
-      child: child,
     );
   }
 }

@@ -47,9 +47,9 @@ class HomeMusicCard extends StatelessWidget {
                     ),
                   ),
                   const Gap(8),
-                  if (data.title != null)
+                  if (data.title.isNotEmpty)
                     CustomText(
-                      text: data.title ?? "Unknown",
+                      text: data.title,
                       fontSize: 14,
                       textAlign: TextAlign.start,
                       fontWeight: FontWeight.w600,

@@ -10,11 +10,13 @@ class HistoryController extends GetxController {
 
   final PagingController<int, HistoryItem> pagingController =
       PagingController(firstPageKey: 1);
-  RxBool isLoadingMove = false.obs;
+  bool isLoadingMove = false;
+
+  RxList<HistoryItem> lastTenItems = <HistoryItem>[].obs;
 
   Future<void> getPodcast(int pageKey) async {
-    if (isLoadingMove.value) return;
-    isLoadingMove.value = true;
+    if (isLoadingMove) return;
+    isLoadingMove = true;
 
     try {
       final response = await apiClient.get(
@@ -35,7 +37,30 @@ class HistoryController extends GetxController {
       debugPrint(e.toString());
       pagingController.error = e.toString();
     } finally {
-      isLoadingMove.value = false;
+      isLoadingMove = false;
+    }
+  }
+
+  RxBool getLstLoading = false.obs;
+
+  Future<void> getLastTenHistory() async {
+    try {
+      getLstLoading.value = true;
+
+      final response = await apiClient.get(
+        url: ApiUrl.history(page: 1),
+        showResult: false,
+      );
+
+      if (response.statusCode == 200) {
+        final historyModel = HistoryModel.fromJson(response.body);
+        final items = historyModel.data?.result ?? [];
+        lastTenItems.assignAll(items.take(10).toList());
+      }
+      getLstLoading.value = false;
+    } catch (e) {
+      getLstLoading.value = false;
+      debugPrint("Error loading last 10 history: $e");
     }
   }
 

@@ -34,18 +34,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
     final data = controller.profile.value.data;
-    name =
-        TextEditingController(text: controller.profile.value.data?.name ?? "");
+    name = TextEditingController(text: controller.profile.value.data?.name ?? "");
     controller.updateGender(
-        value: ["Male", "Female", "Other"]
-                .contains(controller.profile.value.data?.gender)
+        value: ["Male", "Female", "Other"].contains(controller.profile.value.data?.gender)
             ? controller.profile.value.data?.gender ?? ""
             : "");
-    address = TextEditingController(
-        text: controller.profile.value.data?.address ?? "");
-    dob.value = data?.dateOfBirth != null
-        ? data?.dateOfBirth ?? DateTime(2000)
-        : DateTime(2000);
+    address = TextEditingController(text: controller.profile.value.data?.address ?? "");
+    dob.value = data?.dateOfBirth != null ? data?.dateOfBirth ?? DateTime(2000) : DateTime(2000);
   }
 
   @override
@@ -78,8 +73,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     children: [
                       const Gap(12),
                       Obx(() {
-                        final profileImage =
-                            controller.profile.value.data?.profileImage ?? "";
+                        final profileImage = controller.profile.value.data?.profileImage ?? "";
                         return Align(
                           alignment: Alignment.center,
                           child: GestureDetector(
@@ -89,26 +83,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               width: 100,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: profileImage.isNotEmpty
-                                    ? null
-                                    : AppColors.blackColor,
+                                color: profileImage.isNotEmpty ? null : AppColors.blackColor,
                                 border: Border.all(color: AppColors.whiteColor),
                               ),
                               child: controller.selectedImage.value != null
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(50),
                                       child: Image.file(
-                                          File(controller
-                                                  .selectedImage.value?.path ??
-                                              ""),
+                                          File(controller.selectedImage.value?.path ?? ""),
                                           fit: BoxFit.cover),
                                     )
                                   : profileImage.isNotEmpty
                                       ? ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          child: CustomNetworkImage(
-                                              imageUrl: profileImage),
+                                          borderRadius: BorderRadius.circular(50),
+                                          child: CustomNetworkImage(imageUrl: profileImage),
                                         )
                                       : const Icon(
                                           Iconsax.gallery,
@@ -118,14 +106,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         );
                       }),
-                      const Gap(12),
+                      /*const Gap(12),
                       CustomAlignText(text: "Cover".tr),
                       const Gap(8),
                       Obx(() {
-                        final isSelectedImage =
-                            controller.selectedCoverImage.value != null;
-                        final profileImage =
-                            controller.profile.value.data?.profileCover;
+                        final isSelectedImage = controller.selectedCoverImage.value != null;
+                        final profileImage = controller.profile.value.data?.profileCover;
                         return Align(
                           alignment: Alignment.center,
                           child: GestureDetector(
@@ -136,24 +122,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8.0),
                                   color: AppColors.blackColor,
-                                  border:
-                                      Border.all(color: AppColors.whiteColor)),
+                                  border: Border.all(color: AppColors.whiteColor)),
                               child: isSelectedImage
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(5),
                                       child: Image.file(
-                                          File(controller.selectedCoverImage
-                                                  .value?.path ??
-                                              ""),
+                                          File(controller.selectedCoverImage.value?.path ?? ""),
                                           fit: BoxFit.cover),
                                     )
-                                  : profileImage != null &&
-                                          profileImage.isNotEmpty
+                                  : profileImage != null && profileImage.isNotEmpty
                                       ? ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          child: CustomNetworkImage(
-                                              imageUrl: profileImage),
+                                          borderRadius: BorderRadius.circular(5),
+                                          child: CustomNetworkImage(imageUrl: profileImage),
                                         )
                                       : const Icon(
                                           Iconsax.gallery,
@@ -163,7 +143,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                           ),
                         );
-                      }),
+                      }),*/
                       Gap(12.h),
                       CustomAlignText(text: "full_name".tr),
                       const Gap(8),
@@ -206,15 +186,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             },
                             child: Container(
                               alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 14),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(color: AppColors.whiteColor),
                               ),
                               child: CustomText(
-                                text: DateFormat("dd MMMM yyyy - EEEE")
-                                    .format(date),
+                                text: DateFormat("dd MMMM yyyy - EEEE").format(date),
                               ),
                             ),
                           );
@@ -294,8 +272,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               final data = controller.profile.value.data;
 
                               final String nameValue = name.text.trim();
-                              final String genderValue =
-                                  controller.gender.value.trim();
+                              final String genderValue = controller.gender.value.trim();
                               final String addressValue = address.text.trim();
                               final DateTime dobValue = dob.value;
 
@@ -306,27 +283,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                               final Map<String, String?> rawBody = {};
 
-                              if (nameValue.isNotEmpty &&
-                                  nameValue != oldName) {
+                              if (nameValue.isNotEmpty && nameValue != oldName) {
                                 rawBody["name"] = nameValue;
                               }
-                              if (genderValue.isNotEmpty &&
-                                  genderValue != oldGender) {
+                              if (genderValue.isNotEmpty && genderValue != oldGender) {
                                 rawBody["gender"] = genderValue;
                               }
-                              if (addressValue.isNotEmpty &&
-                                  addressValue != oldAddress) {
+                              if (addressValue.isNotEmpty && addressValue != oldAddress) {
                                 rawBody["address"] = addressValue;
                               }
-                              if (oldDob == null ||
-                                  !isSameDate(dobValue, oldDob)) {
-                                rawBody["dateOfBirth"] =
-                                    dobValue.toUtc().toIso8601String();
+                              if (oldDob == null || !isSameDate(dobValue, oldDob)) {
+                                rawBody["dateOfBirth"] = dobValue.toUtc().toIso8601String();
                               }
 
                               final Map<String, String> body = Map.from(rawBody)
-                                ..removeWhere((key, String? value) =>
-                                    value == null || value.trim().isEmpty);
+                                ..removeWhere(
+                                    (key, String? value) => value == null || value.trim().isEmpty);
                               final Map<String, String> finalBody = {
                                 "data": jsonEncode(body),
                               };

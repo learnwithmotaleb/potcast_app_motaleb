@@ -124,6 +124,7 @@ class _PlaylistAddInfoScreenState extends State<PlaylistAddInfoScreen> {
                           final file = File(imagePath);
                           final body = {
                             "data": jsonEncode({
+                              "userType": "NormalUser",
                               "name": name.text,
                               "description": description.text,
                               "tags": items,
