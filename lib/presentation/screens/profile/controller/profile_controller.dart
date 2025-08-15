@@ -128,8 +128,8 @@ class ProfileController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onReady() {
     getProfile();
-    super.onInit();
+    super.onReady();
   }
 }

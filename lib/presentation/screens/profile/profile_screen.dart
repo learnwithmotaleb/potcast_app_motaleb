@@ -97,244 +97,253 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Iconsax.edit_2,
-                        color: AppColors.blackColor,
+        body: RefreshIndicator(
+          onRefresh: () async{
+            Future.wait([
+              historyController.getLastTenHistory(),
+              favoriteController.getLastTenFavorites(),
+              _controller.getProfile(),
+            ]);
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Iconsax.edit_2,
+                          color: AppColors.blackColor,
+                        ),
                       ),
-                    ),
-                    Assets.images.splashLogo.image(height: 100),
-                    IconButton(
-                      onPressed: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
-                      icon: const Icon(
-                        Iconsax.edit_2,
-                        color: AppColors.redColor,
+                      Assets.images.splashLogo.image(height: 100),
+                      IconButton(
+                        onPressed: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
+                        icon: const Icon(
+                          Iconsax.edit_2,
+                          color: AppColors.redColor,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.redColor,
-                    width: 3,
+                    ],
                   ),
                 ),
-                child: Obx(() {
-                  final profileImage = _controller.profile.value.data?.profileImage ?? "";
-                  const image = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-                  final finalImage = profileImage.isNotEmpty ? profileImage : image;
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.redColor,
+                      width: 3,
+                    ),
+                  ),
+                  child: Obx(() {
+                    final profileImage = _controller.profile.value.data?.profileImage ?? "";
+                    const image = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                    final finalImage = profileImage.isNotEmpty ? profileImage : image;
 
-                  return CustomNetworkImage(
-                    borderRadius: BorderRadius.circular(50),
-                    imageUrl: finalImage,
-                    height: 100,
-                    width: 100,
+                    return CustomNetworkImage(
+                      borderRadius: BorderRadius.circular(50),
+                      imageUrl: finalImage,
+                      height: 100,
+                      width: 100,
+                    );
+                  }),
+                ),
+              ),
+              const SliverGap(12),
+              SliverToBoxAdapter(
+                child: Obx(() {
+                  final data = _controller.profile.value.data;
+                  return Column(
+                    children: [
+                      CustomText(
+                        text: data?.name ?? "",
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      CustomText(
+                        text: DateFormat("dd - MMMM - yyyy EEEE")
+                            .format(data?.dateOfBirth ?? DateTime.now()),
+                        fontSize: 16,
+                        color: AppColors.whiteColor.withValues(alpha: 0.5),
+                      ),
+                    ],
                   );
                 }),
               ),
-            ),
-            const SliverGap(12),
-            SliverToBoxAdapter(
-              child: Obx(() {
-                final data = _controller.profile.value.data;
-                return Column(
-                  children: [
-                    CustomText(
-                      text: data?.name ?? "",
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    CustomText(
-                      text: DateFormat("dd - MMMM - yyyy EEEE")
-                          .format(data?.dateOfBirth ?? DateTime.now()),
-                      fontSize: 16,
-                      color: AppColors.whiteColor.withValues(alpha: 0.5),
-                    ),
-                  ],
-                );
-              }),
-            ),
-            const SliverGap(24),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 8,
-                  mainAxisExtent: 52,
+              const SliverGap(24),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 8,
+                    mainAxisExtent: 52,
+                  ),
+                  delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                    return _items[index];
+                  }, childCount: _items.length),
                 ),
-                delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                  return _items[index];
-                }, childCount: _items.length),
               ),
-            ),
-            const SliverGap(12),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              sliver: SliverToBoxAdapter(
+              const SliverGap(12),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                sliver: SliverToBoxAdapter(
+                  child: Obx(() {
+                    final items = historyController.lastTenItems;
+
+                    if (historyController.getLstLoading.value) {
+                      return const CustomAlignText(text: "Recently Played");
+                    }
+
+                    if (items.isEmpty) {
+                      return const SizedBox();
+                    }
+
+                    return const CustomAlignText(text: "Recently Played");
+                  }),
+                ),
+              ),
+              const SliverGap(8),
+              SliverToBoxAdapter(
                 child: Obx(() {
                   final items = historyController.lastTenItems;
 
                   if (historyController.getLstLoading.value) {
-                    return const CustomAlignText(text: "Recently Played");
+                    if (historyController.getLstLoading.value) {
+                      // Show shimmer placeholders
+                      return SizedBox(
+                        height: 100,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(left: 14),
+                          itemCount: 4,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return const ProfilePodcastCardShimmer();
+                          },
+                        ),
+                      );
+                    }
                   }
 
                   if (items.isEmpty) {
                     return const SizedBox();
                   }
 
-                  return const CustomAlignText(text: "Recently Played");
+                  return SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(left: 14),
+                      itemCount: items.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return ProfilePodcastCard(
+                          data: AudioPlayerModel(
+                            id: item.podcast?.id ?? "",
+                            title: item.podcast?.title ?? "",
+                            categories: item.podcast?.category?.name ?? "",
+                            image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
+                            duration: "0.0",
+                            url: "",
+                          ),
+                          onTap: () {
+                            // handle tap - maybe navigate to podcast player
+                          },
+                        );
+                      },
+                    ),
+                  );
                 }),
               ),
-            ),
-            const SliverGap(8),
-            SliverToBoxAdapter(
-              child: Obx(() {
-                final items = historyController.lastTenItems;
+              const SliverGap(12),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                sliver: SliverToBoxAdapter(
+                  child: Obx(() {
+                    final items = historyController.lastTenItems;
 
-                if (historyController.getLstLoading.value) {
-                  if (historyController.getLstLoading.value) {
-                    // Show shimmer placeholders
+                    if (historyController.getLstLoading.value) {
+                      return const CustomAlignText(text: "My Favorites");
+                    }
+
+                    if (items.isEmpty) {
+                      return const SizedBox();
+                    }
+
+                    return const CustomAlignText(text: "My Favorites");
+                  }),
+                ),
+              ),
+              const SliverGap(8),
+              SliverToBoxAdapter(
+                child: Obx(() {
+                  if (favoriteController.getLstLoading.value) {
                     return SizedBox(
                       height: 100,
                       child: ListView.builder(
                         padding: const EdgeInsets.only(left: 14),
                         itemCount: 4,
                         scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return const ProfilePodcastCardShimmer();
-                        },
+                        itemBuilder: (context, index) => const ProfilePodcastCardShimmer(),
                       ),
                     );
                   }
-                }
 
-                if (items.isEmpty) {
-                  return const SizedBox();
-                }
+                  final items = favoriteController.lastTenItems;
+                  if (items.isEmpty) return const SizedBox();
 
-                return SizedBox(
-                  height: 100,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(left: 14),
-                    itemCount: items.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return ProfilePodcastCard(
-                        data: AudioPlayerModel(
-                          id: item.podcast?.id ?? "",
-                          title: item.podcast?.title ?? "",
-                          categories: item.podcast?.category?.name ?? "",
-                          image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
-                          duration: "0.0",
-                          url: "",
-                        ),
-                        onTap: () {
-                          // handle tap - maybe navigate to podcast player
-                        },
-                      );
-                    },
-                  ),
-                );
-              }),
-            ),
-            const SliverGap(12),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              sliver: SliverToBoxAdapter(
-                child: Obx(() {
-                  final items = historyController.lastTenItems;
-
-                  if (historyController.getLstLoading.value) {
-                    return const CustomAlignText(text: "My Favorites");
-                  }
-
-                  if (items.isEmpty) {
-                    return const SizedBox();
-                  }
-
-                  return const CustomAlignText(text: "My Favorites");
-                }),
-              ),
-            ),
-            const SliverGap(8),
-            SliverToBoxAdapter(
-              child: Obx(() {
-                if (favoriteController.getLstLoading.value) {
                   return SizedBox(
                     height: 100,
                     child: ListView.builder(
                       padding: const EdgeInsets.only(left: 14),
-                      itemCount: 4,
+                      itemCount: items.length,
                       scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) => const ProfilePodcastCardShimmer(),
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return ProfilePodcastCard(
+                          data: AudioPlayerModel(
+                            id: item.podcast?.id ?? "",
+                            title: item.podcast?.title ?? "",
+                            categories: item.podcast?.category?.name ?? "",
+                            image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
+                            duration: "0.0",
+                            url: "",
+                          ),
+                          onTap: () {
+                            // navigate to podcast player
+                          },
+                        );
+                      },
                     ),
                   );
-                }
-
-                final items = favoriteController.lastTenItems;
-                if (items.isEmpty) return const SizedBox();
-
-                return SizedBox(
-                  height: 100,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(left: 14),
-                    itemCount: items.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return ProfilePodcastCard(
-                        data: AudioPlayerModel(
-                          id: item.podcast?.id ?? "",
-                          title: item.podcast?.title ?? "",
-                          categories: item.podcast?.category?.name ?? "",
-                          image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
-                          duration: "0.0",
-                          url: "",
-                        ),
-                        onTap: () {
-                          // navigate to podcast player
-                        },
-                      );
-                    },
-                  ),
-                );
-              }),
-            ),
-            const SliverGap(12),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 45,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: ProfileStatusCard(
-                      onTap: () => showLogoutDialog(context),
-                      text: "logout".tr,
-                      icon: Iconsax.logout_copy,
-                    ),
-                  ),
-                ],
+                }),
               ),
-            ),
-          ],
+              const SliverGap(12),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 45,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: ProfileStatusCard(
+                        onTap: () => showLogoutDialog(context),
+                        text: "logout".tr,
+                        icon: Iconsax.logout_copy,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
