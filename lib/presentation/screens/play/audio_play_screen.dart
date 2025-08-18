@@ -91,10 +91,29 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
       appBar: AppBar(
         centerTitle: false,
         title: Obx(() {
-          return Text(
-            feedController.currentItem.value.title ?? widget.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                feedController.currentItem.value.title ?? widget.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                feedController.currentItem.value.subCategory?.name ??( widget.categories ?? ""),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w100,
+                ),
+              ),
+            ],
           );
         }),
         actions: [

@@ -31,7 +31,6 @@ class AudioPlayBottom extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            print("---------------------IDS -${controller.currentItem.value.id ?? ""}");
             showModel(
               context: context,
               feedController: controller,
@@ -178,22 +177,24 @@ class AudioPlayBottom extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                    child: CustomTextField(
-                      controller: comments,
-                      hintText: "Write a comment...",
-                      maxLines: 3,
-                      minLines: 1,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Iconsax.send_1, color: Colors.white),
-                        onPressed: () {
-                          feedController.addComments(
-                            id: id,
-                            comments: comments,
-                            commentsPagingController: commentsPagingController,
-                          );
-                        },
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                      child: CustomTextField(
+                        controller: comments,
+                        hintText: "Write a comment...",
+                        maxLines: 3,
+                        minLines: 1,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Iconsax.send_1, color: Colors.white),
+                          onPressed: () {
+                            feedController.addComments(
+                              id: id,
+                              comments: comments,
+                              commentsPagingController: commentsPagingController,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -203,8 +204,9 @@ class AudioPlayBottom extends StatelessWidget {
           ),
         );
       },
-    );
-    commentsPagingController.dispose();
-    comments.dispose();
+    ).whenComplete(() {
+      comments.dispose();
+      commentsPagingController.dispose();
+    });
   }
 }

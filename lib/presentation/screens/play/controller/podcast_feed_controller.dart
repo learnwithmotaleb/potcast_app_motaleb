@@ -141,6 +141,7 @@ class PodcastFeedController extends GetxController {
 
       currentItem.value = item;
       isFavorite.value = item.isBookmark ?? false;
+      isLike.value = item.isLike ?? false;
       loadingMethod(Status.loading);
 
       // Update page if needed and not already animating
@@ -658,8 +659,9 @@ class PodcastFeedController extends GetxController {
       debugPrint('📥 Like API response: ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        final bool likeData = response.body?['data']?['like'] ?? false;
+        final bool likeData = response.body?['data']?['isLike'] ?? false;
         debugPrint('✅ Like operation successful: $current → $likeData');
+        isLike.value = likeData;
         return likeData;
       } else {
         debugPrint('❌ Like API failed with status: ${response.statusCode}');

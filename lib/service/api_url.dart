@@ -78,7 +78,7 @@ class ApiUrl {
 
   static String seeAllAlbum({required int page}) => '$base/album/all-albums?page=$page&limit=20';
   static String singleAlbum({required String id}) => '$base/album/get-single/$id';
-  static String like({required String id}) => '$base/like/$id';
+  static String like({required String id}) => '$base/podcast/like-unlike/$id';
   static String favoriteAdd({required String id}) => '$base/bookmark/add-delete-bookmark/$id';
   static String videPodcast({required String id}) => '$base/podcast/view/$id';
   static String comments({required String id, required int page}) => '$base/comment/get-podcast-comments/$id?page=$page&limit=30';

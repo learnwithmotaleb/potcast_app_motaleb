@@ -31,8 +31,8 @@ class AudioPlayControl extends StatelessWidget {
             onPressed: () {
               controller
                   .favoritePodcast(
-                      id: controller.currentItem.value.id ?? "",
-                      current: controller.isFavorite.value)
+                  id: controller.currentItem.value.id ?? "",
+                  current: controller.isFavorite.value)
                   .then((value) {
                 controller.isFavorite.value = value;
                 return value;
@@ -59,7 +59,8 @@ class AudioPlayControl extends StatelessWidget {
         ),
 
         // Play/Pause button
-        Obx(() => IconButton(
+        Obx(() =>
+            IconButton(
               onPressed: () {
                 debugPrint('⏯️ Play/Pause button tapped');
                 controller.togglePlayPause();
@@ -89,14 +90,22 @@ class AudioPlayControl extends StatelessWidget {
           icon: const Icon(Iconsax.next),
           iconSize: 32,
         ),
-        IconButton(
-          onPressed: () {
-            debugPrint('⏩ Skip forward button tapped');
-            // controller.skipForward();
-          },
-          icon: const Icon(Iconsax.like_1),
-          iconSize: 28,
-        ),
+        Obx(() {
+          return IconButton(
+            onPressed: () {
+              debugPrint('⏩ Skip forward button tapped');
+              controller.likePodcast(
+                id: controller.currentItem.value.id ?? "",
+                current: controller.isLike.value,
+              );
+            },
+            color: controller.isLike.value
+                ? AppColors.redColor
+                : AppColors.whiteColor,
+            icon: const Icon(Iconsax.like_1),
+            iconSize: 28,
+          );
+        }),
       ],
     );
   }

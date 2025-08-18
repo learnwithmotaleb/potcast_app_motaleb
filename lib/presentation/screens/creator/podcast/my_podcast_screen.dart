@@ -4,7 +4,7 @@ import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:podcast/presentation/widget/card/music_card.dart';
+import 'package:podcast/presentation/widget/card/creator_card.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'controller/podcast_audio_controller.dart';
 import 'model/my_podcast_model.dart';
@@ -50,8 +50,14 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
         onRefresh: () async {
           pagingController.refresh();
         },
-        child: PagedListView<int, MyPodcastItem>(
+        child: PagedGridView<int, MyPodcastItem>(
           pagingController: pagingController,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisExtent: 200,
+            mainAxisSpacing: 4.0,
+            crossAxisSpacing: 4.0,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           builderDelegate: PagedChildBuilderDelegate<MyPodcastItem>(
             itemBuilder: (context, item, index) {
@@ -64,7 +70,7 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
                 artist: item.creator?.name ?? "",
                 url: "",
               );
-              return MusicCard(
+              return CreatorCard(
                 data: data,
                 onTap: () => AppRouter.route.pushNamed(
                   RoutePath.audioPlayScreen,

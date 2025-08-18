@@ -85,6 +85,7 @@ class PlayPodcastItem {
   final num? duration;
   final DateTime? createdAt;
   final bool? isBookmark;
+  final bool? isLike;
 
   PlayPodcastItem({
     this.id,
@@ -98,6 +99,7 @@ class PlayPodcastItem {
     this.duration,
     this.createdAt,
     this.isBookmark,
+    this.isLike,
   });
 
   PlayPodcastItem copyWith({
@@ -112,6 +114,7 @@ class PlayPodcastItem {
     num? duration,
     DateTime? createdAt,
     bool? isBookmark,
+    bool? isLike,
   }) =>
       PlayPodcastItem(
         id: id ?? this.id,
@@ -125,6 +128,7 @@ class PlayPodcastItem {
         duration: duration ?? this.duration,
         createdAt: createdAt ?? this.createdAt,
         isBookmark: isBookmark ?? this.isBookmark,
+        isLike: isLike ?? this.isLike,
       );
 
   factory PlayPodcastItem.fromJson(Map<String, dynamic> json) =>
@@ -149,6 +153,7 @@ class PlayPodcastItem {
             ? null
             : DateTime.parse(json["createdAt"]),
         isBookmark: json["isBookmark"],
+        isLike: json["isLike"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -163,6 +168,7 @@ class PlayPodcastItem {
         "duration": duration,
         "createdAt": createdAt?.toIso8601String(),
         "isBookmark": isBookmark,
+        "isLike": isLike,
       };
 }
 

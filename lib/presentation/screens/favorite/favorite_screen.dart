@@ -9,6 +9,7 @@ import 'package:podcast/presentation/screens/play/controller/audio_play_controll
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
+import '../../widget/card/creator_card.dart';
 import 'model/favorite_model.dart';
 
 class FavoriteScreen extends StatefulWidget {
@@ -38,9 +39,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         onRefresh: () async {
           controller.pagingController.refresh();
         },
-        child: PagedListView<int, FavoriteItem>(
+        child: PagedGridView<int, FavoriteItem>(
           pagingController: controller.pagingController,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisExtent: 200,
+            mainAxisSpacing: 4.0,
+            crossAxisSpacing: 4.0,
+          ),
           builderDelegate: PagedChildBuilderDelegate<FavoriteItem>(
             itemBuilder: (context, item, index) {
               final data = AudioPlayerModel(
@@ -52,7 +59,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 artist: item.podcast?.creator?.name ?? "",
                 url: "",
               );
-              return MusicCard(
+              return CreatorCard(
                 data: data,
                 onTap: () => AppRouter.route.pushNamed(
                   RoutePath.audioPlayScreen,

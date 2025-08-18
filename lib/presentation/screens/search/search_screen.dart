@@ -9,6 +9,7 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/all_podcast_model.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/search/controller/search_screen_controller.dart';
+import 'package:podcast/presentation/widget/card/creator_card.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -100,10 +101,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               SliverPadding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                sliver: PagedSliverList<int, AllPodcastItem>(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                sliver: PagedSliverGrid<int, AllPodcastItem>(
                   pagingController: pagingController,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: 200,
+                    mainAxisSpacing: 4.0,
+                    crossAxisSpacing: 4.0,
+                  ),
                   builderDelegate: PagedChildBuilderDelegate<AllPodcastItem>(
                     itemBuilder: (context, item, index) {
                       final data = AudioPlayerModel(
@@ -115,7 +121,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         artist: item.creator?.name ?? "",
                         url: item.podcastUrl ?? "",
                       );
-                      return MusicCard(
+                      return CreatorCard(
                         data: data,
                         onTap: () => AppRouter.route.pushNamed(
                           RoutePath.audioPlayScreen,

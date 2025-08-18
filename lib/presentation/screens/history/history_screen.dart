@@ -9,6 +9,7 @@ import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
 import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
+import 'package:podcast/presentation/widget/card/creator_card.dart';
 import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -73,8 +74,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              sliver: PagedSliverList<int, HistoryItem>(
+              sliver: PagedSliverGrid<int, HistoryItem>(
                 pagingController: controller.pagingController,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisExtent: 200,
+                  mainAxisSpacing: 4.0,
+                  crossAxisSpacing: 4.0,
+                ),
                 builderDelegate: PagedChildBuilderDelegate<HistoryItem>(
                   itemBuilder: (context, item, index) {
                     final data = AudioPlayerModel(
@@ -86,7 +93,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       artist: item.podcast?.creator?.name ?? "",
                       url: item.podcast?.audioUrl ?? "",
                     );
-                    return MusicCard(
+                    return CreatorCard(
                       data: data,
                       onTap: () => AppRouter.route.pushNamed(
                         RoutePath.audioPlayScreen,
