@@ -35,10 +35,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     final data = controller.profile.value.data;
     name = TextEditingController(text: controller.profile.value.data?.name ?? "");
-    controller.updateGender(
-        value: ["Male", "Female", "Other"].contains(controller.profile.value.data?.gender)
-            ? controller.profile.value.data?.gender ?? ""
-            : "");
+    final gender = controller.profile.value.data?.gender;
+    final isGender = ["Male", "Female", "Other"].contains(gender);
+    controller.updateGender(value: isGender? gender ?? "" : "");
     address = TextEditingController(text: controller.profile.value.data?.address ?? "");
     dob.value = data?.dateOfBirth != null ? data?.dateOfBirth ?? DateTime(2000) : DateTime(2000);
   }

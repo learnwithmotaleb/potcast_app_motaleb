@@ -13,7 +13,7 @@ class RoutePath {
   static const String resetScreen = 'resetScreen';
 
   //Global
-  static const String viewProfileScreen = 'viewProfileScreen';
+  // static const String viewProfileScreen = 'viewProfileScreen';
   static const String editProfileScreen = 'editProfileScreen';
   static const String playlistScreen = 'playlistScreen';
   static const String playlistAddScreen = 'playlistAddScreen';
@@ -25,7 +25,7 @@ class RoutePath {
 
   //User
   static const String userNavScreen = 'userNavScreen';
-  static const String selectCountryScreen = 'selectCountryScreen';
+  // static const String selectCountryScreen = 'selectCountryScreen';
   static const String categoriesScreen = 'categoriesScreen';
   static const String searchScreen = 'searchScreen';
   static const String audioPlayScreen = 'userPlayScreen';

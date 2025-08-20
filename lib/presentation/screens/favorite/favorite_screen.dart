@@ -5,9 +5,6 @@ import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
-import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
-import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
-import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import '../../widget/card/creator_card.dart';
 import 'model/favorite_model.dart';
@@ -21,7 +18,6 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
   final controller = Get.find<FavoriteController>();
-  final playController = Get.put(AudioPlayController());
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +26,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         centerTitle: true,
         title: Text("favorite".tr),
       ),
-      bottomNavigationBar: Obx(() {
+      /*bottomNavigationBar: Obx(() {
         return playController.isPlaying.value
             ? BottomNavPlayCard()
             : const SizedBox();
-      }),
+      }),*/
       body: RefreshIndicator(
         onRefresh: () async {
           controller.pagingController.refresh();

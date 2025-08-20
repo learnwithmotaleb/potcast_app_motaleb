@@ -10,7 +10,6 @@ import 'package:podcast/model/all_podcast_model.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/search/controller/search_screen_controller.dart';
 import 'package:podcast/presentation/widget/card/creator_card.dart';
-import 'package:podcast/presentation/widget/card/music_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 

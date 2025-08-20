@@ -4,12 +4,11 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
-import '../presentation/screens/creator/podcast/model/categories_subcategories_model.dart';
+import '../model/categories_subcategories_model.dart';
 
 class GlobalController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
-  Rx<CategoriesSubcategoriesModel> categories =
-      CategoriesSubcategoriesModel().obs;
+  Rx<CategoriesSubcategoriesModel> categories = CategoriesSubcategoriesModel().obs;
 
   /// ============================= GET Categories =====================================
   var loading = Status.completed.obs;

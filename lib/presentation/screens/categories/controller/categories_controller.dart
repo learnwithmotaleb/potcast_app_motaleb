@@ -20,7 +20,8 @@ class CategoriesController extends GetxController {
     try {
       loadingMethod(Status.loading);
       final response = await apiClient.get(
-          url: ApiUrl.subCategory(id: id), showResult: true);
+          url: ApiUrl.subCategory(id: id), showResult: true,
+      );
       if (response.statusCode == 200) {
         categoryModel.value = SubCategoryModel.fromJson(response.body);
         final newItems = categoryModel.value.data ?? [];
@@ -38,33 +39,4 @@ class CategoriesController extends GetxController {
       isLoadingMove = false;
     }
   }
-
-/*  var searchLoading = Status.completed.obs;
-  searchLoadingMethod(Status status) => searchLoading.value = status;
-
-  Future<void> getSearch({required String id, required String search}) async {
-    if (isLoadingMove.value) return;
-    isLoadingMove.value = true;
-    subCategory.clear();
-    try {
-      searchLoadingMethod(Status.loading);
-      final response = await apiClient.get(url: ApiUrl.subCategory(id: id, search: search), showResult: true);
-      if (response.statusCode == 200) {
-        final data = SearchCategoryModel.fromJson(response.body);
-        final newItems = data.data?.subCategories ?? [];
-        if (newItems.isEmpty) {
-          searchLoadingMethod(Status.noDataFound);
-        } else {
-          subCategory.addAll(newItems);
-          searchLoadingMethod(Status.completed);
-        }
-      } else {
-        searchLoadingMethod(Status.error);
-      }
-    } catch (e) {
-      searchLoadingMethod(Status.error);
-    } finally {
-      isLoadingMove.value = false;
-    }
-  }*/
 }

@@ -75,20 +75,17 @@ class AudioPlayProgress extends StatelessWidget {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Obx(() {
-      // Check if we should show loading indicator
       final isLoading = controller.isLoading.value == Status.loading;
       final position = controller.currentPosition.value;
       final total = controller.totalDuration.value;
       final buffered = controller.bufferedPosition.value;
 
-      // Show buffer indicator when loading or when total duration is not available
       if (isLoading || total == Duration.zero) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const CenterOutBufferBar(),
             const SizedBox(height: 10),
-            // Show placeholder time during loading
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -110,7 +107,6 @@ class AudioPlayProgress extends StatelessWidget {
         );
       }
 
-      // Show normal progress when media is loaded and ready
       double totalMillis = total.inMilliseconds.toDouble();
       double bufferedMillis = buffered.inMilliseconds.toDouble();
       double progressMillis = position.inMilliseconds.toDouble();
@@ -120,7 +116,6 @@ class AudioPlayProgress extends StatelessWidget {
         children: [
           Stack(
             children: [
-              // Background track
               Container(
                 height: 5,
                 decoration: BoxDecoration(
@@ -128,7 +123,6 @@ class AudioPlayProgress extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2.5),
                 ),
               ),
-              // Buffered progress
               Positioned.fill(
                 child: FractionallySizedBox(
                   widthFactor:
@@ -143,7 +137,6 @@ class AudioPlayProgress extends StatelessWidget {
                   ),
                 ),
               ),
-              // Current progress
               Positioned.fill(
                 child: FractionallySizedBox(
                   widthFactor:
@@ -161,7 +154,6 @@ class AudioPlayProgress extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          // Row with Current and Total Time
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

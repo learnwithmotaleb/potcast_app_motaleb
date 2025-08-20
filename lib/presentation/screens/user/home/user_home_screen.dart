@@ -5,7 +5,6 @@ import 'dart:math' as math;
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
-import 'package:podcast/presentation/screens/play/controller/audio_play_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
@@ -15,7 +14,6 @@ import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
-import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'widget/user_home_top_section.dart';
 import 'widget/user_top_artists_section.dart';
@@ -30,7 +28,6 @@ class UserHomeScreen extends StatefulWidget {
 class _UserHomeScreenState extends State<UserHomeScreen> {
   final controller = Get.find<UserHomeController>();
   final profileController = Get.find<ProfileController>();
-  final playController = Get.find<AudioPlayController>();
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/notification/model/notification_model.dart';
 import 'package:podcast/presentation/widget/card/notification_card.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'controller/notification_controller.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -16,7 +15,21 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   final controller = Get.find<NotificationController>();
+  final pagingController = PagingController<int, NotificationData>(firstPageKey: 1);
 
+  @override
+  void initState() {
+    pagingController.addPageRequestListener((pageKey) {
+      controller.getNotification(pageKey: pageKey, pagingController: pagingController);
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pagingController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,10 +44,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          controller.pagingController.refresh();
+          pagingController.refresh();
         },
         child: PagedListView<int, NotificationData>(
-          pagingController: controller.pagingController,
+          pagingController: pagingController,
           builderDelegate: PagedChildBuilderDelegate<NotificationData>(
             itemBuilder: (context, item, index) {
               return NotificationCard(notification: item);

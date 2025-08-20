@@ -20,7 +20,6 @@ import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.da
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
 import 'package:podcast/presentation/screens/playlist/songs/playlist_songs_screen.dart';
 import 'package:podcast/presentation/screens/profile/edit/edit_profile_screen.dart';
-import 'package:podcast/presentation/screens/profile/view/view_profile_screen.dart';
 import 'package:podcast/presentation/screens/settings/about_us_screen.dart';
 import 'package:podcast/presentation/screens/settings/change_password_screen.dart';
 import 'package:podcast/presentation/screens/settings/privacy_policy.dart';
@@ -28,7 +27,6 @@ import 'package:podcast/presentation/screens/settings/settings_screen.dart';
 import 'package:podcast/presentation/screens/settings/support_screen.dart';
 import 'package:podcast/presentation/screens/settings/terms_of_condition.dart';
 import 'package:podcast/presentation/screens/splash/splash_screen.dart';
-import 'package:podcast/presentation/screens/user/country/select_country_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
@@ -128,14 +126,14 @@ class AppRouter {
         ),
 
         ///======================= Global Route =======================
-        GoRoute(
+        /*GoRoute(
           name: RoutePath.viewProfileScreen,
           path: RoutePath.viewProfileScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const ViewProfileScreen(),
             state: state,
           ),
-        ),
+        ),*/
         GoRoute(
           name: RoutePath.editProfileScreen,
           path: RoutePath.editProfileScreen.addBasePath,
@@ -211,14 +209,14 @@ class AppRouter {
             state: state,
           ),
         ),
-        GoRoute(
+        /*GoRoute(
           name: RoutePath.selectCountryScreen,
           path: RoutePath.selectCountryScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const SelectCountryScreen(),
             state: state,
           ),
-        ),
+        ),*/
         GoRoute(
           name: RoutePath.categoriesScreen,
           path: RoutePath.categoriesScreen.addBasePath,

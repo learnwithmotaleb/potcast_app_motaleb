@@ -1,23 +1,27 @@
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/presentation/screens/notification/model/notification_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
 class NotificationController extends GetxController {
-  ApiClient apiClient = ApiClient();
+  final ApiClient apiClient = serviceLocator<ApiClient>();
 
-  final PagingController<int, NotificationData> pagingController =
-      PagingController(firstPageKey: 1);
-  RxBool isLoadingMove = false.obs;
+  bool isLoadingMove = false;
 
-  Future<void> getNotification(int pageKey) async {
-    if (isLoadingMove.value) return;
-    isLoadingMove.value = true;
+  Future<void> getNotification({
+    required int pageKey,
+    required PagingController<int, NotificationData> pagingController,
+  }) async {
+    if (isLoadingMove) return;
+    isLoadingMove = true;
 
     try {
       final response = await apiClient.get(
-          url: ApiUrl.notification(page: pageKey), showResult: true);
+        url: ApiUrl.notification(page: pageKey),
+        showResult: true,
+      );
 
       if (response.statusCode == 200) {
         final userServiceAll = NotificationModel.fromJson(response.body);
@@ -33,21 +37,7 @@ class NotificationController extends GetxController {
     } catch (e) {
       pagingController.error = 'An error occurred';
     } finally {
-      isLoadingMove.value = false;
+      isLoadingMove = false;
     }
-  }
-
-  @override
-  void onInit() {
-    pagingController.addPageRequestListener((pageKey) {
-      getNotification(pageKey);
-    });
-    super.onInit();
-  }
-
-  @override
-  void onClose() {
-    pagingController.dispose();
-    super.onClose();
   }
 }

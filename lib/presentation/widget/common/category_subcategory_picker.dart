@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/controller/global_controller.dart';
-import 'package:podcast/presentation/screens/creator/podcast/model/categories_subcategories_model.dart';
+import 'package:podcast/model/categories_subcategories_model.dart';
 import 'package:podcast/presentation/widget/dropdown/custom_dropdown_field.dart';
 
 class CategorySubcategoryPicker extends StatelessWidget {

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
@@ -10,13 +11,12 @@ import 'package:podcast/service/check_api.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class SettingsController extends GetxController {
-  ApiClient apiClient = ApiClient();
-  DBHelper dbHelper = DBHelper();
+  final ApiClient apiClient = serviceLocator<ApiClient>();
+  final DBHelper dbHelper = serviceLocator<DBHelper>();
 
   /// ============================= GET Terms Condition =====================================
   final Rx<TermsModel> termModel = TermsModel().obs;
   var termsLoading = Status.completed.obs;
-
   termsLoadingMethod(Status status) => termsLoading.value = status;
 
   Future<void> getTermsCondition() async {
@@ -42,8 +42,7 @@ class SettingsController extends GetxController {
 
   /// ============================= GET Privacy Policy =====================================
   final Rx<TermsModel> privacyData = TermsModel().obs;
-  var privacyLoading = Status.completed.obs;
-
+  Rx<Status> privacyLoading = Status.completed.obs;
   privacyLoadingMethod(Status status) => privacyLoading.value = status;
 
   Future<void> getPrivacyPolicy() async {
@@ -69,8 +68,7 @@ class SettingsController extends GetxController {
 
   /// ============================= GET About Us =====================================
   final Rx<TermsModel> aboutUsData = TermsModel().obs;
-  var aboutLoading = Status.completed.obs;
-
+  Rx<Status> aboutLoading = Status.completed.obs;
   aboutLoadingMethod(Status status) => aboutLoading.value = status;
 
   Future<void> getAboutUs() async {
@@ -96,7 +94,7 @@ class SettingsController extends GetxController {
 
   /// ============================= GET Support Us =====================================
   final Rx<FaqModel> supportsData = FaqModel().obs;
-  var supportsLoading = Status.completed.obs;
+  Rx<Status> supportsLoading = Status.completed.obs;
 
   supportsLoadingMethod(Status status) => supportsLoading.value = status;
 
@@ -118,9 +116,8 @@ class SettingsController extends GetxController {
   }
 
   /// ============================= Patch Change Password =====================================
-  var changePasswordLoading = false.obs;
-
-  changePasswordLoadingMethod(bool loading) => changePasswordLoading.value = loading;
+  RxBool changePasswordLoading = false.obs;
+  void changePasswordLoadingMethod(bool loading) => changePasswordLoading.value = loading;
 
   Future<void> changePassword({required Map<String, String> body}) async {
     try {
@@ -142,12 +139,11 @@ class SettingsController extends GetxController {
 
   /// ============================= DELETE Account =====================================
   RxBool deleteLoading = false.obs;
-  deleteLoadingMethod(bool loading) => deleteLoading.value = loading;
+  void deleteLoadingMethod(bool loading) => deleteLoading.value = loading;
 
   Future<void> deleteAccount({required Map<String, dynamic> body}) async {
     try {
       deleteLoadingMethod(true);
-      print(body);
       var response = await apiClient.delete(url: ApiUrl.delete(), body: body,showResult: true);
       if (response.statusCode == 200) {
         toastMessage(message: response.body?['message'].toString() ?? "something want wrong");

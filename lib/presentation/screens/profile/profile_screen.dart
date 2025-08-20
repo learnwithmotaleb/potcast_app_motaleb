@@ -254,9 +254,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             duration: "0.0",
                             url: "",
                           ),
-                          onTap: () {
-                            // handle tap - maybe navigate to podcast player
-                          },
+                          onTap: () => AppRouter.route.pushNamed(
+                            RoutePath.audioPlayScreen,
+                            extra: AudioPlayerModel(
+                              id: item.podcast?.id ?? "",
+                              title: item.podcast?.title ?? "",
+                              categories: item.podcast?.category?.name ?? "",
+                              image: item.podcast?.coverImage ?? "",
+                              url: "",
+                              duration: formatDuration(item.podcast?.duration ?? 0),
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -317,9 +325,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             duration: "0.0",
                             url: "",
                           ),
-                          onTap: () {
-                            // navigate to podcast player
-                          },
+                          onTap: () => AppRouter.route.pushNamed(
+                            RoutePath.audioPlayScreen,
+                            extra: AudioPlayerModel(
+                              id: item.podcast?.id ?? "",
+                              title: item.podcast?.title ?? "",
+                              categories: item.podcast?.category?.name ?? "",
+                              image: item.podcast?.coverImage ?? "",
+                              url: "",
+                              duration: formatDuration(item.podcast?.duration ?? 0),
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -347,6 +363,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  String formatDuration(num seconds) {
+    if (seconds < 60) {
+      return '$seconds sec';
+    } else {
+      final minutes = (seconds / 60).floor();
+      return '$minutes min';
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+/*
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -105,7 +106,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                                 ),
                               ),
                             ),
-                            /*Gap(8.h),
+                            */
+/*Gap(8.h),
                             CustomText(
                               text: name.isNotEmpty? name : "No data found!",
                               fontSize: 20,
@@ -118,7 +120,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                               fontSize: 14,
                               fontWeight: FontWeight.w100,
                               color: isDarkMode ? AppColors.blackColor : AppColors.blackColor,
-                            ),*/
+                            ),*//*
+
                           ],
                         ),
                       ),
@@ -157,14 +160,16 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                         icon: Icons.male,
                         isIcon: true,
                       ),
-                      /*const Gap(24),
+                      */
+/*const Gap(24),
                       CustomProfileTile(
                         text: _controller.profile.value.data?.contact??""
                         // widget: Assets.icons.phone.svg(height: 22, width: 22,colorFilter: isDarkMode?null:const ColorFilter.mode(AppColors.blackColor, BlendMode.srcIn)),
                         onTap: (){},
                         icon: Iconsax.call_copy,
                         isIcon: true,
-                      ),*/
+                      ),*//*
+
                       const Gap(24),
                       CustomProfileTile(
                         text: address != null && address.isNotEmpty
@@ -194,3 +199,4 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
     );
   }
 }
+*/

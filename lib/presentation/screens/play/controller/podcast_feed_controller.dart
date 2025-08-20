@@ -16,8 +16,7 @@ import '../model/comment_model.dart';
 import '../model/paging_next_key.dart';
 
 class PodcastFeedController extends GetxController {
-  final PagingController<PagingNextKey, PlayPodcastItem> pagingController =
-      PagingController(firstPageKey: PagingNextKey(cursor: "", pageKey: 1));
+  final PagingController<PagingNextKey, PlayPodcastItem> pagingController = PagingController(firstPageKey: PagingNextKey(cursor: "", pageKey: 1));
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final Rx<VideoPlayerController?> videoPlayerController = Rx(null);
   final AudioPlayer audioPlayer = AudioPlayer();

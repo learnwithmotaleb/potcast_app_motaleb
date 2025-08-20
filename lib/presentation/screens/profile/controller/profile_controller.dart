@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:podcast/core/dependency/path.dart';
@@ -19,16 +18,14 @@ class ProfileController extends GetxController {
   RxString gender = "".obs;
 
   Future<void> pickImage() async {
-    XFile? image =
-        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
       selectedImage.value = image;
     }
   }
 
   Future<void> pickCoverImage() async {
-    XFile? image =
-        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
       selectedCoverImage.value = image;
     }
@@ -40,18 +37,16 @@ class ProfileController extends GetxController {
 
   /// ============================= GET Profile Info =====================================
   var loading = Status.completed.obs;
+
   loadingMethod(Status status) => loading.value = status;
+
   Future<void> getProfile() async {
     try {
       loadingMethod(Status.loading);
-      var response =
-          await apiClient.get(url: ApiUrl.profile(), showResult: true);
+      var response = await apiClient.get(url: ApiUrl.profile(), showResult: true);
       if (response.statusCode == 200) {
         profile.value = ProfileModel.fromJson(response.body);
         loadingMethod(Status.completed);
-        /*if(profile.value.data?.gender != null && profile.value.data?.gender != ""){
-          gender.value = profile.value.data?.gender??"male";
-        }*/
       } else {
         if (response.statusCode == 503) {
           loadingMethod(Status.internetError);
@@ -68,6 +63,7 @@ class ProfileController extends GetxController {
 
   /// ============================= EDIT Profile Info =====================================
   RxBool editLoading = false.obs;
+
   editLoadingMethod(bool status) => editLoading.value = status;
 
   void editProfile({required Map<String, String> body}) async {
@@ -75,18 +71,21 @@ class ProfileController extends GetxController {
       editLoadingMethod(true);
       final List<MultipartBody> multipartBody = [];
       if (selectedImage.value != null) {
-        multipartBody.add(MultipartBody(
-            "profile_image", File(selectedImage.value?.path ?? "")));
+        multipartBody.add(
+          MultipartBody("profile_image", File(selectedImage.value?.path ?? "")),
+        );
       }
       if (selectedCoverImage.value != null) {
-        multipartBody.add(MultipartBody(
-            "profile_cover", File(selectedCoverImage.value?.path ?? "")));
+        multipartBody.add(
+          MultipartBody("profile_cover", File(selectedCoverImage.value?.path ?? "")),
+        );
       }
       var response = await apiClient.multipartRequest(
-          url: ApiUrl.profileEdit(),
-          body: body,
-          reqType: "PATCH",
-          multipartBody: multipartBody);
+        url: ApiUrl.profileEdit(),
+        body: body,
+        reqType: "PATCH",
+        multipartBody: multipartBody,
+      );
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);
@@ -96,8 +95,7 @@ class ProfileController extends GetxController {
         getProfile();
       } else {
         editLoadingMethod(false);
-        String errorMessage =
-            response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (err) {
@@ -109,8 +107,7 @@ class ProfileController extends GetxController {
   void editProfileOnlyBody({required Map<String, String> body}) async {
     try {
       editLoadingMethod(true);
-      var response = await apiClient.patch(
-          url: ApiUrl.profileEdit(), body: body, showResult: true);
+      var response = await apiClient.patch(url: ApiUrl.profileEdit(), body: body, showResult: true);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);
@@ -118,8 +115,7 @@ class ProfileController extends GetxController {
         getProfile();
       } else {
         editLoadingMethod(false);
-        String errorMessage =
-            response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (err) {
