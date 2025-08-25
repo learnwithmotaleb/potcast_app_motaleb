@@ -268,6 +268,9 @@ class AppRouter {
                 url: model.url,
                 reels: model.reels,
                 popular: model.popular,
+                isAlbum: model.isAlbum,
+                isPlaylist: model.isPlaylist,
+                isCreator: model.isCreator,
               ),
               state: state,
             );

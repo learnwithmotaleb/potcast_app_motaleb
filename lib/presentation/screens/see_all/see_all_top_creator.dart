@@ -63,7 +63,9 @@ class _SeeAllTopCreatorState extends State<SeeAllTopCreator> {
                   title: item.name ?? "",
                   image: item.profileImage ?? "",
                   url: "",
+                  artist: "",
                   duration: "",
+                  isCreator: true,
                 ),
               ),
             );

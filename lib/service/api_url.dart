@@ -1,4 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:podcast/helper/toast_message/toast_message.dart';
 
 import '../utils/app_const/app_const.dart';
 
@@ -33,18 +34,39 @@ class ApiUrl {
 
   ///Global
   static String category() => '$base/category/all-categories';
+
   static String playFeed({
     String? cursor,
     bool? reels,
     bool? popular,
     String? firstPodcastId,
     required int pageKey,
+    bool isAlbum = false,
+    bool isPlaylist = false,
+    String? id, // album id when isAlbum = true
   }) {
+    if (isAlbum) {
+      if (id == null || id.isEmpty) {
+        throw ArgumentError("");
+        toastMessage(message: "Playlist ID must be provided when isPlaylist = true");
+        return "";
+      }
+      return "$base/album/get-single/$id";
+    }
+
+    if (isPlaylist) {
+      if (id == null || id.isEmpty) {
+        toastMessage(message: "Playlist ID must be provided when isPlaylist = true");
+        return "";
+      }
+      return "$base/playlist/get-single/$id";
+    }
+
     final Map<String, String> queryParams = {};
 
     if (cursor != null) queryParams['cursor'] = cursor;
-    if (reels != null && reels) queryParams['reels'] = reels.toString();
-    if (popular != null && popular) queryParams['popular'] = popular.toString();
+    if (reels == true) queryParams['reels'] = reels.toString();
+    if (popular == true) queryParams['popular'] = popular.toString();
     if (pageKey == 1 && firstPodcastId != null) {
       queryParams["firstPodcastId"] = firstPodcastId.toString();
     }
@@ -52,6 +74,7 @@ class ApiUrl {
     final queryString = Uri(queryParameters: queryParams).query;
     return '$base/podcast/get-podcast-feed${queryString.isNotEmpty ? '?$queryString' : ''}';
   }
+
 
   static String search({
     String searchTerm = "",

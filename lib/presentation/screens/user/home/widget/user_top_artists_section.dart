@@ -7,6 +7,7 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
@@ -101,7 +102,18 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection> {
                     child: Column(
                       children: [
                         GestureDetector(
-                          // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.topCreators?[index-1].podcast??""),
+                          onTap: () => AppRouter.route.pushNamed(
+                            RoutePath.audioPlayScreen,
+                            extra: AudioPlayerModel(
+                              id: item.creatorId ?? "",
+                              title: item.name ?? "",
+                              image: item.profileImage ?? "",
+                              url: "",
+                              artist: "",
+                              duration: "",
+                              isCreator: true,
+                            ),
+                          ),
                           child: Container(
                             height: 80.0,
                             width: 80.0,

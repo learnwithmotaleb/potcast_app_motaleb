@@ -21,6 +21,9 @@ class UserPlayScreen extends StatefulWidget {
     required this.url,
     required this.reels,
     required this.popular,
+    required this.isAlbum,
+    required this.isPlaylist,
+    required this.isCreator,
   });
 
   final String id;
@@ -32,6 +35,9 @@ class UserPlayScreen extends StatefulWidget {
   final String url;
   final bool reels;
   final bool popular;
+  final bool isAlbum;
+  final bool isPlaylist;
+  final bool isCreator;
 
   @override
   State<UserPlayScreen> createState() => _UserPlayScreenState();
@@ -63,6 +69,9 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
         // reels: widget.reels,
         // popular: widget.popular,
         firstPodcastId: widget.id,
+        id: widget.id,
+        isAlbum: widget.isAlbum,
+        isPlaylist: widget.isPlaylist,
       );
     };
 
@@ -94,6 +103,22 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              widget.isCreator?Text( widget.artist ?? (feedController.currentItem.value.creator?.name ?? ""),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w100,
+                ),
+              ):Text(
+                feedController.currentItem.value.subCategory?.name ??( widget.categories ?? ""),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w100,
+                ),
+              ),
               Text(
                 feedController.currentItem.value.title ?? widget.title,
                 maxLines: 1,
@@ -101,15 +126,6 @@ class _UserPlayScreenState extends State<UserPlayScreen> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                ),
-              ),
-              Text(
-                feedController.currentItem.value.subCategory?.name ??( widget.categories ?? ""),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w100,
                 ),
               ),
             ],

@@ -45,6 +45,9 @@ class PodcastFeedController extends GetxController {
     bool? reels,
     bool? popular,
     String? firstPodcastId,
+    bool isAlbum = false,
+    bool isPlaylist = false,
+    String? id, // album id when isAlbum = true
   }) async {
     debugPrint('📡 getPodcast() called with cursor: $cursor, reels: $reels, popular: $popular');
 
@@ -63,6 +66,8 @@ class PodcastFeedController extends GetxController {
         popular: popular,
         pageKey: pageKey,
         firstPodcastId: firstPodcastId,
+        isAlbum: isAlbum,
+        id: id,
       )}');
 
       final response = await apiClient.get(
@@ -72,8 +77,12 @@ class PodcastFeedController extends GetxController {
             popular: popular,
             pageKey: pageKey,
             firstPodcastId: firstPodcastId,
+            id: id,
+            isAlbum: isAlbum,
+            isPlaylist: isPlaylist,
           ),
-          showResult: true);
+          showResult: true,
+      );
 
       debugPrint(
           '📥 API Response received - Status Code: ${response.body["data"]["podcasts"].length}');
@@ -114,7 +123,6 @@ class PodcastFeedController extends GetxController {
       }
     } catch (e) {
       debugPrint('💥 getPodcast() Exception: ${e.toString()}');
-      debugPrint('📍 Stack trace: ${StackTrace.current}');
       pagingController.error = 'Network error: ${e.toString()}';
     } finally {
       isLoadingMove = false;

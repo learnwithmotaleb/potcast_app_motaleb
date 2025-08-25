@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/playlist/model/playlist_songs_model.dart';
@@ -69,8 +70,17 @@ class _PlaylistSongsScreenState extends State<PlaylistSongsScreen> {
 
               return MusicCard(
                 data: data,
-                onTap: () {},
-                // onTap: () => AppRouter.route.pushNamed(RoutePath.userPlayScreen, extra: item.id??""),
+                onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
+                    extra: AudioPlayerModel(
+                      id: widget.id,
+                      title: item.title ?? "",
+                      categories: item.category?.name ?? "",
+                      image: item.coverImage ?? "",
+                      url: item.podcastUrl ?? "",
+                      duration: formatDuration(item.duration ?? 0),
+                      isPlaylist: true,
+                    ),
+                ),
               );
             },
           ),

@@ -60,9 +60,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       return [
         ProfileStatusCard(
-          text: "My Podcast",
+          text: "My Contents",
           onTap: () => AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
-          icon: Iconsax.music,
+          icon: Iconsax.microphone,
         ),
         ProfileStatusCard(
           text: "my_play_list",
@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ProfileStatusCard(
           text: "notification",
           onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
-          icon: Icons.notifications_none,
+          icon: Icons.notifications,
         ),
       ];
     }
@@ -170,6 +170,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CustomText(
                         text: DateFormat("dd - MMMM - yyyy EEEE")
                             .format(data?.dateOfBirth ?? DateTime.now()),
+                        fontSize: 16,
+                        color: AppColors.whiteColor.withValues(alpha: 0.8),
+                      ),
+                      CustomText(
+                        text: data?.address ?? "",
                         fontSize: 16,
                         color: AppColors.whiteColor.withValues(alpha: 0.5),
                       ),

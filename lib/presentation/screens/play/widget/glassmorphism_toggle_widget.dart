@@ -58,7 +58,7 @@ class GlassMorphismToggle extends StatelessWidget {
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: Icon(
-                      isAudioMode ? Iconsax.video : Iconsax.music,
+                      isAudioMode ? Iconsax.video : Icons.volume_up,
                       key: ValueKey(isAudioMode),
                       size: 20,
                       color: isLoading
