@@ -40,14 +40,18 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
-    # Start of the permission_handler configuration
+
+    # Force Swift version 5.0 for RevenueCat
     target.build_configurations.each do |config|
+      config.build_settings['SWIFT_VERSION'] = '5.0'
+
+      # Your permission_handler settings
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
         'PERMISSION_CAMERA=1',
         'PERMISSION_MICROPHONE=1',
       ]
     end
-    # End of the permission_handler configuration
   end
 end
+

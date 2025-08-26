@@ -21,6 +21,8 @@
     <!--for bring app to foreground from background in Android 10 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+    <uses-permission android:name="com.android.vending.BILLING"/>
+
 
     <application
         android:label="Preach Radio"
@@ -49,6 +51,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
 
         <!-- ADD THIS "SERVICE" element -->
         <service android:name="com.ryanheise.audioservice.AudioService"

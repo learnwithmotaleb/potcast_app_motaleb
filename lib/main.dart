@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:podcast/core/theme/dark_theme.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'controller/language_controller.dart';
 import 'core/dependency/getx_injection.dart';
 import 'core/dependency/path.dart';
@@ -27,11 +28,28 @@ Future<void> main() async {
   initGetX();
   initDependencies();
 
+  await Purchases.setLogLevel(LogLevel.debug);
+  await Purchases.configure(PurchasesConfiguration(AppConstants.revenueCatApiKey));
+  await checkRevenueCatConnection();
+
   //Localization
   Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
 }
+
+Future<void> checkRevenueCatConnection() async {
+  try {
+    final customerInfo = await Purchases.getCustomerInfo();
+    debugPrint("RevenueCat Connection ✅");
+    debugPrint("User ID: ${customerInfo.originalAppUserId}");
+    debugPrint("Active Entitlements: ${customerInfo.entitlements.active.keys}");
+  } catch (e, st) {
+    debugPrint("RevenueCat Connection ❌ $e");
+    debugPrint(st.toString());
+  }
+}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, this.languages});
