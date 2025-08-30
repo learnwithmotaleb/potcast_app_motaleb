@@ -37,19 +37,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (widget.isUser) {
       return [
         ProfileStatusCard(
+          text: "Edit Profile",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
+          icon: Iconsax.edit_2_copy,
+        ),
+        ProfileStatusCard(
           text: "my_play_list",
           onTap: () => AppRouter.route.pushNamed(RoutePath.playlistScreen),
-          icon: Iconsax.headphone,
+          icon: Iconsax.headphone_copy,
         ),
         ProfileStatusCard(
           text: "upgrade",
-          onTap: () => AppRouter.route.pushNamed(RoutePath.upgradeScreen),
-          icon: Iconsax.diamonds,
+          onTap: () => AppRouter.route.pushNamed(RoutePath.subscriptionScreen),
+          icon: Iconsax.diamonds_copy,
         ),
         ProfileStatusCard(
           text: "settings",
           onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
-          icon: Icons.settings,
+          icon: Icons.settings_outlined,
         ),
         ProfileStatusCard(
           text: "notification",
@@ -60,9 +65,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       return [
         ProfileStatusCard(
+          text: "Edit Profile",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
+          icon: Iconsax.edit_2_copy,
+        ),
+        ProfileStatusCard(
           text: "My Contents",
           onTap: () => AppRouter.route.pushNamed(RoutePath.myPodcastScreen),
-          icon: Iconsax.microphone,
+          icon: Iconsax.microphone_copy,
+        ),
+        ProfileStatusCard(
+          text: "upgrade",
+          onTap: () => AppRouter.route.pushNamed(RoutePath.subscriptionScreen),
+          icon: Iconsax.diamonds_copy,
         ),
         ProfileStatusCard(
           text: "my_play_list",
@@ -72,12 +87,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ProfileStatusCard(
           text: "settings",
           onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
-          icon: Icons.settings,
+          icon: Icons.settings_outlined,
         ),
         ProfileStatusCard(
           text: "notification",
           onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
-          icon: Icons.notifications,
+          icon: Icons.notifications_none_outlined,
         ),
       ];
     }
@@ -111,23 +126,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 28.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
+                      /*IconButton(
                         onPressed: () {},
                         icon: const Icon(
                           Iconsax.edit_2,
                           color: AppColors.blackColor,
                         ),
-                      ),
+                      ),*/
                       Assets.images.splashLogo.image(height: 100),
-                      IconButton(
+                      /*IconButton(
                         onPressed: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
                         icon: const Icon(
                           Iconsax.edit_2,
                           color: AppColors.redColor,
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

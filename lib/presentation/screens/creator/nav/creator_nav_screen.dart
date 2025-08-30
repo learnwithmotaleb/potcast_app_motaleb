@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
@@ -73,14 +76,10 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
             }
           },
           items: [
-            const BottomNavigationBarItem(
-                icon: Icon(Iconsax.home, size: 32), label: ""),
-            const BottomNavigationBarItem(
-                icon: Icon(Iconsax.clock, size: 32), label: ""),
-            const BottomNavigationBarItem(
-                icon: Icon(Iconsax.add, size: 32), label: ""),
-            const BottomNavigationBarItem(
-                icon: Icon(Iconsax.lovely, size: 32), label: ""),
+            const BottomNavigationBarItem(icon: Icon(Iconsax.home, size: 32), label: ""),
+            const BottomNavigationBarItem(icon: Icon(Iconsax.clock, size: 32), label: ""),
+            const BottomNavigationBarItem(icon: Icon(Iconsax.add, size: 32), label: ""),
+            const BottomNavigationBarItem(icon: Icon(Iconsax.lovely, size: 32), label: ""),
             BottomNavigationBarItem(
               icon: SizedBox(
                 height: 32,
@@ -88,11 +87,8 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: Obx(() {
-                    final image =
-                        profileController.profile.value.data?.profileImage ??
-                            "";
-                    const defaultImage =
-                        "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                    final image = profileController.profile.value.data?.profileImage ?? "";
+                    const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
                     return CustomNetworkImage(
                       imageUrl: image.isNotEmpty ? image : defaultImage,
@@ -112,83 +108,122 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
   Future<void> buildShowModalBottomSheet(BuildContext context) {
     return showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Gap(24),
-            const CustomText(text: "Add Content Station", fontSize: 20),
-            const Divider(),
-            ListTile(
-              leading: Assets.images.video.image(
-                height: 30,
-                width: 30,
-                color: AppColors.whiteColor,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Gap(24),
+              const CustomText(text: "Add Content Station", fontSize: 20),
+              const Divider(),
+              ListTile(
+                leading: Assets.images.video.image(
+                  height: 30,
+                  width: 30,
+                  color: AppColors.whiteColor,
+                ),
+                title: const Text("Upload Video"),
+                onTap: () {
+                  controller.selectedScreenType.value = SelectedAddPostScreenType.video;
+                  AppRouter.route.pop();
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    navController.changeIndex(2);
+                  });
+                },
               ),
-              title: const Text("Upload Video"),
-              onTap: () {
-                controller.selectedScreenType.value =
-                    SelectedAddPostScreenType.video;
-                AppRouter.route.pop();
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  navController.changeIndex(2);
-                });
-              },
-            ),
-            ListTile(
-              leading: Assets.images.headphones.image(
-                height: 30,
-                width: 30,
-                color: AppColors.whiteColor,
+              ListTile(
+                leading: Assets.images.headphones.image(
+                  height: 30,
+                  width: 30,
+                  color: AppColors.whiteColor,
+                ),
+                title: const Text("Upload Audio"),
+                onTap: () {
+                  controller.selectedScreenType.value = SelectedAddPostScreenType.audio;
+                  AppRouter.route.pop();
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    navController.changeIndex(2);
+                  });
+                },
               ),
-              title: const Text("Upload Audio"),
-              onTap: () {
-                controller.selectedScreenType.value =
-                    SelectedAddPostScreenType.audio;
-                AppRouter.route.pop();
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  navController.changeIndex(2);
-                });
-              },
-            ),
-            ListTile(
-              leading: Assets.images.microphone.image(
-                height: 30,
-                width: 30,
-                color: AppColors.whiteColor,
+              ListTile(
+                leading: Assets.images.microphone.image(
+                  height: 30,
+                  width: 30,
+                  color: AppColors.whiteColor,
+                ),
+                title: const Text("Record Audio"),
+                onTap: () {
+                  controller.selectedScreenType.value = SelectedAddPostScreenType.record;
+                  AppRouter.route.pop();
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    navController.changeIndex(2);
+                  });
+                },
               ),
-              title: const Text("Record Audio"),
-              onTap: () {
-                controller.selectedScreenType.value =
-                    SelectedAddPostScreenType.record;
-                AppRouter.route.pop();
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  navController.changeIndex(2);
-                });
-              },
-            ),
-            ListTile(
-              leading: Assets.images.liveStream.image(
-                height: 30,
-                width: 30,
-                color: AppColors.whiteColor,
+              ListTile(
+                leading: Assets.images.liveStream.image(
+                  height: 30,
+                  width: 30,
+                  color: AppColors.whiteColor,
+                ),
+                title: const Text("Go Live"),
+                onTap: () async {
+                  final granted = await getPermissions();
+
+                  if (!context.mounted) return;
+
+                  if (granted) {
+                    controller.selectedScreenType.value = SelectedAddPostScreenType.live;
+                    AppRouter.route.pop();
+                    Future.delayed(const Duration(milliseconds: 300), () {
+                      navController.changeIndex(2);
+                    });
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text("Permissions Required"),
+                        content: const Text(
+                          "Camera, microphone, and Bluetooth permissions are needed to go live.",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => openAppSettings(),
+                            child: const Text("Open Settings"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                },
               ),
-              title: const Text("Go Live"),
-              /*onTap: () {
-                      controller.selectedScreenType.value = SelectedAddPostScreenType.live;
-                      AppRouter.route.pop();
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        setState(() {
-                          _selectedPage = 2;
-                        });
-                      });
-                    },*/
-            ),
-            const Gap(44),
-          ],
-        ),
-      ),
+              const Gap(44),
+            ],
+          ),
+        );
+      },
     );
   }
+
+  Future<bool> getPermissions() async {
+    try{
+      if (Platform.isIOS) {
+        final camera = await Permission.camera.request();
+        final mic = await Permission.microphone.request();
+
+        return camera.isGranted && mic.isGranted;
+      } else {
+        final camera = await Permission.camera.request();
+        final mic = await Permission.microphone.request();
+        final bt = await Permission.bluetoothConnect.request();
+
+        return camera.isGranted && mic.isGranted && bt.isGranted;
+      }
+    }catch(_){
+      return false;
+    }
+  }
+
 }

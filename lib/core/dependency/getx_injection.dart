@@ -11,6 +11,7 @@ import 'package:podcast/presentation/screens/play/controller/podcast_feed_contro
 import 'package:podcast/presentation/screens/playlist/controller/playlist_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/settings/controller/settings_controller.dart';
+import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/user/upgrade/controller/upgrade_controller.dart';
 
@@ -34,6 +35,7 @@ void initGetX() {
   Get.lazyPut(() => PodcastFeedController(), fenix: true);
   Get.lazyPut(() => SearchScreenController(), fenix: true);
   Get.lazyPut(() => SeeAllController(), fenix: true);
+  Get.lazyPut(() => SubscriptionController(), fenix: true);
 
   //User
   Get.lazyPut(() => UserHomeController(), fenix: true);

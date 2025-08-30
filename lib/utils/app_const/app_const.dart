@@ -42,6 +42,6 @@ enum SelectedAddPostScreenType {
   video,
   audio,
   record,
-  // live,
+  live,
   none
 }

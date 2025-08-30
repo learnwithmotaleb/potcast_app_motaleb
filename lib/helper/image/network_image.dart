@@ -33,7 +33,7 @@ class CustomNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final String finalUrl = imageUrl ?? "";
 
-    if (imageUrl == null || imageUrl!.isEmpty) {
+    if (imageUrl == null || (imageUrl?.isEmpty ?? true)) {
       return Container(
         height: height,
         width: width,

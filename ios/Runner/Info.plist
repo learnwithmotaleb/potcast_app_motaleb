@@ -33,7 +33,7 @@
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app needs access to play audio files.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to take photos for your profile.</string>
+    <string>This app requires camera access for live streaming and profile photos.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>We need access to your files to save and retrieve data.</string>
 	<key>NSFileSystemUsageDescription</key>
@@ -42,8 +42,10 @@
 	<string>Your location is used to get city name</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your location is used to get city name</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app requires Bluetooth access to connect to audio devices.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app uses the microphone for audio recording.</string>
+    <string>This app requires microphone access to record and stream audio.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need access to your photo library to save captured images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

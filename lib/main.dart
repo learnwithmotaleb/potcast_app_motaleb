@@ -30,26 +30,12 @@ Future<void> main() async {
 
   await Purchases.setLogLevel(LogLevel.debug);
   await Purchases.configure(PurchasesConfiguration(AppConstants.revenueCatApiKey));
-  await checkRevenueCatConnection();
 
   //Localization
   Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
 }
-
-Future<void> checkRevenueCatConnection() async {
-  try {
-    final customerInfo = await Purchases.getCustomerInfo();
-    debugPrint("RevenueCat Connection ✅");
-    debugPrint("User ID: ${customerInfo.originalAppUserId}");
-    debugPrint("Active Entitlements: ${customerInfo.entitlements.active.keys}");
-  } catch (e, st) {
-    debugPrint("RevenueCat Connection ❌ $e");
-    debugPrint(st.toString());
-  }
-}
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, this.languages});

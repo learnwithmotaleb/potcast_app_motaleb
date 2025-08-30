@@ -27,6 +27,8 @@ import 'package:podcast/presentation/screens/settings/settings_screen.dart';
 import 'package:podcast/presentation/screens/settings/support_screen.dart';
 import 'package:podcast/presentation/screens/settings/terms_of_condition.dart';
 import 'package:podcast/presentation/screens/splash/splash_screen.dart';
+import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
+import 'package:podcast/presentation/screens/subscription/subscription_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
 import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
@@ -307,6 +309,30 @@ class AppRouter {
           path: RoutePath.upgradeScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const UpgradeScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.streamingScreen,
+          path: RoutePath.streamingScreen.addBasePath,
+          pageBuilder: (context, state){
+            final extras = state.extra as Map<String, dynamic>?;
+            return _buildPageWithAnimation(
+              child: StreamingScreen(
+                userID: extras?['userID'],
+                userName: extras?['userName'],
+                authToken: extras?['authToken'],
+                roomCode: extras?['roomCode'],
+              ),
+              state: state,
+            );
+          },
+        ),
+        GoRoute(
+          name: RoutePath.subscriptionScreen,
+          path: RoutePath.subscriptionScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const SubscriptionScreen(),
             state: state,
           ),
         ),
