@@ -271,7 +271,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
           "title": title.text,
           "description": description.text,
           "address": city,
-          "tags": jsonEncode(items),
+          "tags": items,
           "duration": duration?.inSeconds,
           "location": {
             "type": "Point",

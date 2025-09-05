@@ -6,8 +6,8 @@ import '../utils/app_const/app_const.dart';
 class ApiUrl {
   ApiUrl._();
 
-  // static const String base = "http://10.10.20.9:5088";
-  static const String base = "http://54.208.223.75:5000"; // Live
+  static const String base = "http://10.10.20.9:5088";
+  // static const String base = "http://54.208.223.75:5000"; // Live
   static String generatePreSignedURL() => "$base/generate-presigned-url";
   static String googleSearchApi({required String search}) =>
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
@@ -35,6 +35,8 @@ class ApiUrl {
 
   ///Global
   static String category() => '$base/category/all-categories';
+
+  static String createLive() => '$base/live-stream/create-streaming-room';
 
   static String playFeed({
     String? cursor,

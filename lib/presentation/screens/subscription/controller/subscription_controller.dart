@@ -1,9 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:podcast/core/dependency/path.dart';
+import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class SubscriptionController extends GetxController {
+  final DBHelper dbHelper = serviceLocator<DBHelper>();
+
   final RxBool isLoading = false.obs;
   final RxBool isPurchasing = false.obs;
   final RxBool isRestoring = false.obs;
@@ -19,6 +23,18 @@ class SubscriptionController extends GetxController {
     try {
       final offerings = await Purchases.getOfferings();
       offers.value = offerings.current;
+
+
+      if (offers.value != null) {
+        final availablePackages = offers.value!.availablePackages;
+
+        for (final pkg in availablePackages) {
+          debugPrint("Package identifier: ${pkg.identifier}");
+          debugPrint("Product identifier: ${pkg.storeProduct.identifier}");
+          debugPrint("Price: ${pkg.storeProduct.priceString}");
+        }
+      }
+
     } catch (e) {
       debugPrint("Error fetching subscription: $e");
     } finally {

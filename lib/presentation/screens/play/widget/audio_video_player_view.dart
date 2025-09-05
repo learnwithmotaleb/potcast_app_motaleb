@@ -1,9 +1,9 @@
+import 'package:better_player_plus/better_player_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
-import 'package:video_player/video_player.dart';
 
 class AudioVideoPlayerView extends StatelessWidget {
   const AudioVideoPlayerView({
@@ -21,22 +21,20 @@ class AudioVideoPlayerView extends StatelessWidget {
         final status = feedController.isLoading.value;
         final imageUrl = feedController.currentItem.value.coverImage;
 
-        if (status == Status.loading) {
+        if (status == Status.loading ||
+            status == Status.error ||
+            feedController.isAudioMode.value) {
           return _buildImage(imageUrl);
         }
 
-        if (status == Status.error) {
-          return _buildImage(imageUrl);
+        final controller = feedController.betterPlayerController.value;
+        if (controller != null) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: BetterPlayer(controller: controller),
+          );
         }
 
-        if (feedController.isAudioMode.value) {
-          return _buildImage(imageUrl);
-        }
-
-        final video = feedController.videoPlayerController.value;
-        if (video != null && video.value.isInitialized) {
-          return VideoPlayer(video);
-        }
         return _buildImage(imageUrl);
       }),
     );

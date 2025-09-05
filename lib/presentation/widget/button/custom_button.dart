@@ -10,16 +10,20 @@ class CustomButton extends StatelessWidget {
     required this.text,
     this.onTap,
     this.isLoading = false,
+    this.bgColor,
+    this.textColor,
   });
 
   final String text;
   final VoidCallback? onTap;
   final bool isLoading;
+  final Color? bgColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    const color = AppColors.whiteColor;
+    final color = bgColor ?? AppColors.whiteColor;
     final Border border = Border.all(color: color);
 
     return GestureDetector(
@@ -33,21 +37,22 @@ class CustomButton extends StatelessWidget {
           color: color,
           border: border,
         ),
-        child: buildWidget(color, isLoading),
+        child: buildWidget(isLoading),
       ),
     );
   }
 
-  Widget buildWidget(Color color, bool isLoading){
+  Widget buildWidget(bool isLoading){
     if(isLoading){
-      return const LoadingWidget(
-        color: AppColors.blackColor,
+      return LoadingWidget(
+        color: textColor ?? AppColors.blackColor,
       );
     }
     return CustomText(
       text: text,
-      color: AppColors.blackColor,
+      color: textColor ?? AppColors.blackColor,
       fontSize: 16,
+      fontWeight: FontWeight.w600,
     );
   }
 }

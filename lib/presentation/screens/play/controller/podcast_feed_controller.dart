@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:better_player_plus/better_player_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,6 @@ import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
-import 'package:video_player/video_player.dart';
 
 import '../model/comment_model.dart';
 import '../model/paging_next_key.dart';
@@ -18,7 +18,7 @@ import '../model/paging_next_key.dart';
 class PodcastFeedController extends GetxController {
   final PagingController<PagingNextKey, PlayPodcastItem> pagingController = PagingController(firstPageKey: PagingNextKey(cursor: "", pageKey: 1));
   final ApiClient apiClient = serviceLocator<ApiClient>();
-  final Rx<VideoPlayerController?> videoPlayerController = Rx(null);
+  final Rx<BetterPlayerController?> betterPlayerController = Rx(null);
   final AudioPlayer audioPlayer = AudioPlayer();
   final PageController pageController = PageController();
 
@@ -163,10 +163,9 @@ class PodcastFeedController extends GetxController {
         }
       }
 
-      videoPlayerController.value?.removeListener(_updateVideoProgress);
-      videoPlayerController.value?.dispose();
+      betterPlayerController.value?.dispose();
+      betterPlayerController.value = null;
       audioPlayer.stop();
-      videoPlayerController.value = null;
 
       debugPrint('🔍 Getting content type for URL: ${item.podcastUrl}');
       final contentType = await getContentType(item.podcastUrl);
@@ -189,7 +188,7 @@ class PodcastFeedController extends GetxController {
               loadingMethod(Status.completed);
               isPlaying.value = true;
               isAudioMode.value = false;
-              videoPlayerController.value?.play();
+              betterPlayerController.value?.play();
               currentMediaId.value = item.id ?? "";
             } else {
               currentMediaId.value = '';
@@ -249,20 +248,17 @@ class PodcastFeedController extends GetxController {
   }
 
   void _updateVideoProgress() {
-    if ((videoPlayerController.value?.value.isInitialized ?? false) && !isAudioMode.value) {
-      final controller = videoPlayerController.value!;
-      final position = controller.value.position;
-      final duration = controller.value.duration;
-      final buffered = controller.value.buffered.lastOrNull?.end ?? Duration.zero;
+    betterPlayerController.value?.addEventsListener((event) {
+      if (event.betterPlayerEventType == BetterPlayerEventType.progress) {
+        currentPosition.value = event.parameters?["progress"] ?? Duration.zero;
+        totalDuration.value = event.parameters?["duration"] ?? Duration.zero;
+        bufferedPosition.value = event.parameters?["buffered"] ?? Duration.zero;
+      }
 
-      currentPosition.value = position;
-      totalDuration.value = duration;
-      bufferedPosition.value = buffered;
-
-      if (controller.value.position >= controller.value.duration && !controller.value.isPlaying) {
+      if (event.betterPlayerEventType == BetterPlayerEventType.finished) {
         playNextPodcast();
       }
-    }
+    });
   }
 
   Future<String?> getContentType(String? url) async {
@@ -328,24 +324,33 @@ class PodcastFeedController extends GetxController {
     debugPrint('   🌐 URL: $url');
 
     try {
-      debugPrint('⚙️ Creating VideoPlayerController...');
-      videoPlayerController.value = VideoPlayerController.networkUrl(Uri.parse(url));
+      final dataSource = BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+        url,
+      );
 
-      debugPrint('🔧 Initializing video player...');
-      await videoPlayerController.value?.initialize();
+      final controller = BetterPlayerController(
+        const BetterPlayerConfiguration(
+          autoPlay: false,
+          looping: false,
+          aspectRatio: 16 / 9,
+          fit: BoxFit.contain,
+          controlsConfiguration: BetterPlayerControlsConfiguration(
+            enableSubtitles: true,
+            enableQualities: true,
+            enablePlaybackSpeed: true,
+          ),
+        ),
+        betterPlayerDataSource: dataSource,
+      );
 
-      debugPrint('👂 Adding progress listener...');
-      videoPlayerController.value?.addListener(_updateVideoProgress);
+      betterPlayerController.value = controller;
 
-      debugPrint('✅ Video controller initialized successfully');
-      debugPrint('   📐 Video size: ${videoPlayerController.value?.value.size}');
-      debugPrint(
-          '   ⏱️ Video duration: ${_formatDuration(videoPlayerController.value?.value.duration ?? Duration.zero)}');
-
+      debugPrint('✅ BetterPlayer initialized successfully');
       return true;
-    } catch (e) {
+    } catch (e, st) {
       debugPrint('❌ _loadVideo() error: $e');
-      debugPrint('📍 Stack trace: ${StackTrace.current}');
+      debugPrint('📍 Stack trace: $st');
       return false;
     } finally {
       final endTime = DateTime.now();
@@ -424,14 +429,13 @@ class PodcastFeedController extends GetxController {
           debugPrint('   🎬 Video mode enabled');
 
           // Initialize video if needed and seek to current position
-          if (videoPlayerController.value != null &&
-              videoPlayerController.value!.value.isInitialized) {
-            await videoPlayerController.value?.seekTo(currentPosition.value);
+          if (betterPlayerController.value != null) {
+            // Seek video to same position
+            await betterPlayerController.value!.seekTo(currentPosition.value);
             debugPrint('   ⏯️ Video seeking to: ${_formatDuration(currentPosition.value)}');
 
-            // If audio was playing, start video playback
             if (wasAudioPlaying) {
-              videoPlayerController.value?.play();
+              betterPlayerController.value!.play();
               debugPrint('   ▶️ Video playback started');
               isPlaying.value = true;
             } else {
@@ -439,36 +443,31 @@ class PodcastFeedController extends GetxController {
               isPlaying.value = false;
             }
           } else {
-            debugPrint('❌ Video controller is not initialized');
+            debugPrint('❌ BetterPlayer controller is not initialized');
             isPlaying.value = false;
           }
         } else {
-          // Switching from Video to Audio mode
+          // 🎬→🔊 Switching from Video to Audio
           debugPrint('🎬→🔊 Switching from video to audio mode');
 
-          // Store current playing state and position
-          final wasVideoPlaying = videoPlayerController.value?.value.isPlaying ?? false;
-          currentPosition.value = videoPlayerController.value?.value.position ?? Duration.zero;
+          final wasVideoPlaying = betterPlayerController.value?.isPlaying() ?? false;
+          currentPosition.value = await betterPlayerController.value?.videoPlayerController?.position ?? Duration.zero;
           debugPrint('   ⏯️ Video was playing: $wasVideoPlaying');
           debugPrint('   ⏯️ Current video position: ${_formatDuration(currentPosition.value)}');
 
-          // Pause video if playing
           if (wasVideoPlaying) {
-            videoPlayerController.value?.pause();
+            await betterPlayerController.value?.pause();
             debugPrint('   🎬 Video paused');
           }
 
-          // Switch to audio mode
           isAudioMode.value = true;
           debugPrint('   🔊 Audio mode enabled');
 
-          // Seek audio to current position
           await audioPlayer.seek(currentPosition.value);
           debugPrint('   ⏯️ Audio seeking to: ${_formatDuration(currentPosition.value)}');
 
-          // If video was playing, start audio playback
           if (wasVideoPlaying) {
-            audioPlayer.play();
+            await audioPlayer.play();
             debugPrint('   ▶️ Audio playback started');
             isPlaying.value = true;
           } else {
@@ -499,27 +498,19 @@ class PodcastFeedController extends GetxController {
     if (isLoading.value == Status.loading) return;
     try {
       if (isAudioMode.value) {
-        debugPrint('🔊 Audio mode - toggling audio player');
-
         if (audioPlayer.playing) {
-          debugPrint('   ⏸️ Pausing audio');
           audioPlayer.pause();
           isPlaying.value = false;
         } else {
-          debugPrint('   ▶️ Playing audio');
           audioPlayer.play();
           isPlaying.value = true;
         }
       } else {
-        debugPrint('🎬 Video mode - toggling video player');
-
-        if (videoPlayerController.value?.value.isPlaying ?? false) {
-          debugPrint('   ⏸️ Pausing video');
-          videoPlayerController.value?.pause();
+        if (betterPlayerController.value?.isPlaying() ?? false) {
+          betterPlayerController.value?.pause();
           isPlaying.value = false;
         } else {
-          debugPrint('   ▶️ Playing video');
-          videoPlayerController.value?.play();
+          betterPlayerController.value?.play();
           isPlaying.value = true;
         }
       }
@@ -542,26 +533,32 @@ class PodcastFeedController extends GetxController {
     debugPrint('   ⏯️ Current position: ${_formatDuration(currentPosition.value)}');
 
     if (isAudioMode.value) {
+      // 🎵 Audio mode
       final newPosition = currentPosition.value - skipDuration;
       final finalPosition = newPosition < Duration.zero ? Duration.zero : newPosition;
       debugPrint(
-          '🔊 Audio skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)}');
+        '🔊 Audio skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)}',
+      );
       seekAudio(finalPosition);
     } else {
+      // 🎬 Video mode
       final newPosition = currentPosition.value - skipDuration;
       final finalPosition = newPosition < Duration.zero ? Duration.zero : newPosition;
 
-      if (videoPlayerController.value != null && videoPlayerController.value!.value.isInitialized) {
+      final controller = betterPlayerController.value;
+      if (controller != null) {
         debugPrint(
-            '🎬 Video skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)}');
-        videoPlayerController.value?.seekTo(finalPosition);
+          '🎬 Video skip: ${_formatDuration(currentPosition.value)} → ${_formatDuration(finalPosition)}',
+        );
+        controller.seekTo(finalPosition);
       } else {
-        debugPrint('❌ Video controller not initialized');
+        debugPrint('❌ BetterPlayer controller not initialized');
       }
     }
   }
 
-  void skipForward() {
+
+/*  void skipForward() {
     const skipDuration = Duration(seconds: 15);
     debugPrint('⏩ skipForward() called - skipping ${skipDuration.inSeconds}s');
     debugPrint('   📊 Current mode: ${isAudioMode.value ? "Audio" : "Video"}');
@@ -587,7 +584,7 @@ class PodcastFeedController extends GetxController {
         debugPrint('❌ Video controller not initialized');
       }
     }
-  }
+  }*/
 
   // Updated to use PageController
   void playNextPodcast() {
@@ -622,7 +619,6 @@ class PodcastFeedController extends GetxController {
     _animateToPage(nextIndex);
   }
 
-  // Updated to use PageController
   void playPreviousPodcast() {
     debugPrint('⏮️ playPreviousPodcast() called');
 
@@ -855,7 +851,7 @@ class PodcastFeedController extends GetxController {
 
     debugPrint('🧹 Cleaning up resources...');
     audioPlayer.dispose();
-    videoPlayerController.value?.dispose();
+    betterPlayerController.value?.dispose();
     pagingController.dispose();
     pageController.dispose(); // Don't forget to dispose PageController
 

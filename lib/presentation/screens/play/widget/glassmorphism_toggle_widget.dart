@@ -49,7 +49,8 @@ class GlassMorphismToggle extends StatelessWidget {
             onTap: isLoading
                 ? null
                 : () => feedController.toggleMode(
-                    url: feedController.currentItem.value.podcastUrl ?? ""),
+                    url: feedController.currentItem.value.podcastUrl ?? "",
+            ),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(

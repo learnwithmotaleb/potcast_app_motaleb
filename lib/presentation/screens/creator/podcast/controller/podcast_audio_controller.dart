@@ -24,7 +24,7 @@ class PodcastAudioController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final Dio dio = serviceLocator<Dio>();
 
-  Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
+  final Rx<SelectedAddPostScreenType> selectedScreenType = SelectedAddPostScreenType.none.obs;
 
   /// ============================= Place Location Information =====================================
   Rx<SelectedLocationResult?> selectedAddress = Rx<SelectedLocationResult?>(null);
@@ -161,7 +161,7 @@ class PodcastAudioController extends GetxController {
   /// ============================= Create Podcast =====================================
   final RxBool createLoading = false.obs;
 
-  createLoadingMethod(bool status) => createLoading.value = status;
+  void createLoadingMethod(bool status) => createLoading.value = status;
 
   void createPodcast({required Map<String, dynamic> body}) async {
     try {
@@ -343,4 +343,34 @@ class PodcastAudioController extends GetxController {
       debugPrint("Stop error: $e");
     }
   }
+
+/*  final RxBool createLiveLoading = false.obs;
+
+  void createLiveMethod(bool status) => createLiveLoading.value = status;
+
+  void createLive() async {
+    try {
+      createLiveMethod(true);
+      var response = await apiClient.post(
+        url: ApiUrl.createLive(),
+        body: {},
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        createLiveMethod(true);
+        audioFile.value = null;
+        videoFile.value = null;
+        selectedImage.value = null;
+        navController.changeIndex(0);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      } else {
+        createLiveMethod(true);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    } catch (_) {
+      createLiveMethod(true);
+    }
+  }*/
 }

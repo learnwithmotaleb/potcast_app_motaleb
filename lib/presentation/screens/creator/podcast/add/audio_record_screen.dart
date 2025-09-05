@@ -284,7 +284,7 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
           "name": title.text,
           "title": title.text,
           "description": description.text,
-          "tags": jsonEncode(items),
+          "tags": items,
           "address": city,
           "duration": duration?.inSeconds,
           "location": {

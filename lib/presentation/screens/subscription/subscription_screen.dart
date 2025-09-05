@@ -3,10 +3,7 @@ import 'package:get/get.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
-import 'package:purchases_flutter/models/customer_info_wrapper.dart';
-import 'package:purchases_flutter/models/purchases_error.dart';
-import 'package:purchases_flutter/models/store_transaction.dart';
-import 'package:purchases_ui_flutter/views/paywall_view.dart';
+import 'widgets/custom_paywall.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
@@ -21,6 +18,34 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      if (controller.isLoading.value) {
+        return const Scaffold(
+          body: LoadingWidget(),
+        );
+      }
+
+      final offering = controller.offers.value;
+
+      if (offering == null) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Subscription"),
+          ),
+          body: const Center(child: Text("No subscription offerings available")),
+        );
+      }
+
+      return CustomPaywallScreen(
+        offering: offering,
+        controller: controller,
+        dbHelper: controller.dbHelper,
+        onDismiss: () => AppRouter.route.pop(),
+      );
+    });
+  }
+}
+
+/*return Obx(() {
       if (controller.isLoading.value) {
         return const Scaffold(
           body: LoadingWidget(),
@@ -64,10 +89,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           },
         ),
       );
-    });
-  }
-}
-
+    });*/
 
 /*class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
