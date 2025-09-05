@@ -217,9 +217,10 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
       } else {
         final camera = await Permission.camera.request();
         final mic = await Permission.microphone.request();
-        final bt = await Permission.bluetoothConnect.request();
+        // final bt = await Permission.bluetoothConnect.request();
 
-        return camera.isGranted && mic.isGranted && bt.isGranted;
+        return camera.isGranted && mic.isGranted;
+        // return camera.isGranted && mic.isGranted && bt.isGranted;
       }
     }catch(_){
       return false;

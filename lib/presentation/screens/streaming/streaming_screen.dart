@@ -22,12 +22,15 @@ class StreamingScreen extends StatefulWidget {
 class _StreamingScreenState extends State<StreamingScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: HMSPrebuilt(
-        roomCode: widget.roomCode,
-        options: HMSPrebuiltOptions(
-          userName: widget.userName,
-          userId: widget.userID,
+    return Theme(
+      data: ThemeData.light(),
+      child: Scaffold(
+        body: HMSPrebuilt(
+          roomCode: widget.roomCode,
+          options: HMSPrebuiltOptions(
+            userName: widget.userName,
+            userId: widget.userID,
+          ),
         ),
       ),
     );

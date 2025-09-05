@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
@@ -53,7 +54,13 @@ class SubscriptionController extends GetxController {
       debugPrint("Active Entitlements: ${purchaseResult.customerInfo.entitlements.active.keys.join(", ")}");
 
       toastMessage(message: "Subscription purchased successfully!");
-    } on PurchasesErrorCode catch (e) {
+    } on PlatformException catch (e) {
+      if (e.code == '5') {
+        toastMessage(message: "Product not available for purchase. Check SKU or testing setup.");
+      } else {
+        toastMessage(message: "Purchase Failed");
+      }
+    }  on PurchasesErrorCode catch (e) {
       debugPrint("Purchase error: ${e.toString()}");
       toastMessage(message: "Purchase Failed");
     } catch (e) {
@@ -86,7 +93,7 @@ class SubscriptionController extends GetxController {
 
   String getDaysRemaining() {
     final entitlement = activeEntitlement;
-    if (entitlement?.expirationDate == null) return "Lifetime";
+    if (entitlement?.expirationDate == null) return "Unknown";
 
     final expirationDate = DateTime.parse(entitlement!.expirationDate!);
     final now = DateTime.now();
