@@ -12,7 +12,7 @@ class SubscriptionController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxBool isPurchasing = false.obs;
   final RxBool isRestoring = false.obs;
-  final Rx<Offering?> offers = Rx<Offering?>(null);
+  final Rx<Map<String, Offering>> allOfferings = Rx<Map<String, Offering>>({});
   final Rx<CustomerInfo?> customer = Rx<CustomerInfo?>(null);
 
   bool get hasActiveSubscription => customer.value?.entitlements.active.isNotEmpty ?? false;
@@ -23,18 +23,18 @@ class SubscriptionController extends GetxController {
     isLoading.value = true;
     try {
       final offerings = await Purchases.getOfferings();
-      offers.value = offerings.current;
+      allOfferings.value = offerings.all;
 
+      offerings.all.forEach((key, offering) {
+        debugPrint("Offering key: $key");
 
-      if (offers.value != null) {
-        final availablePackages = offers.value!.availablePackages;
-
-        for (final pkg in availablePackages) {
-          debugPrint("Package identifier: ${pkg.identifier}");
-          debugPrint("Product identifier: ${pkg.storeProduct.identifier}");
-          debugPrint("Price: ${pkg.storeProduct.priceString}");
+        final packages = offering.availablePackages;
+        for (final pkg in packages) {
+          debugPrint("  Package identifier: ${pkg.identifier}");
+          debugPrint("  Product identifier: ${pkg.storeProduct.identifier}");
+          debugPrint("  Price: ${pkg.storeProduct.priceString}");
         }
-      }
+      });
 
     } catch (e) {
       debugPrint("Error fetching subscription: $e");
@@ -112,11 +112,5 @@ class SubscriptionController extends GetxController {
     } catch (e) {
       return "Invalid date";
     }
-  }
-
-  @override
-  void onReady() {
-    fetchSubscription();
-    super.onReady();
   }
 }

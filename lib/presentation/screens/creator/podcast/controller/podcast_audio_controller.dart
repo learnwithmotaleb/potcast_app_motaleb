@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/model/basic/selected_location_model.dart';
+import 'package:podcast/presentation/screens/creator/podcast/model/live_streaming_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/model/my_podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
@@ -344,11 +345,15 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-/*  final RxBool createLiveLoading = false.obs;
-
+  final Rx<LiveStreamingModel> liveData = LiveStreamingModel().obs;
+  final RxBool createLiveLoading = false.obs;
   void createLiveMethod(bool status) => createLiveLoading.value = status;
+  final RxBool getLiveLoading = false.obs;
+  void getLiveMethod(bool status) => getLiveLoading.value = status;
+  final RxBool endLiveLoading = false.obs;
+  void endLiveMethod(bool status) => endLiveLoading.value = status;
 
-  void createLive() async {
+  Future<void> createLive() async {
     try {
       createLiveMethod(true);
       var response = await apiClient.post(
@@ -357,20 +362,63 @@ class PodcastAudioController extends GetxController {
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        createLiveMethod(true);
-        audioFile.value = null;
-        videoFile.value = null;
-        selectedImage.value = null;
-        navController.changeIndex(0);
+        final data = LiveStreamingModel.fromJson(response.body);
+        liveData.value = data;
+        createLiveMethod(false);
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       } else {
-        createLiveMethod(true);
+        createLiveMethod(false);
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (_) {
-      createLiveMethod(true);
+      createLiveMethod(false);
     }
-  }*/
+  }
+
+  Future<void> getLive() async {
+    try {
+      getLiveMethod(true);
+      var response = await apiClient.get(
+        url: ApiUrl.getLive(),
+        showResult: true,
+      );
+
+      if (response.statusCode == 200) {
+        final data = LiveStreamingModel.fromJson(response.body);
+        liveData.value = data;
+        getLiveMethod(false);
+      } else {
+        getLiveMethod(false);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    } catch (_) {
+      getLiveMethod(false);
+    }
+  }
+
+  Future<void> endLive({required String id}) async {
+    try {
+      endLiveMethod(true);
+      var response = await apiClient.post(
+        url: ApiUrl.endLive(id: id),
+        body: {}
+      );
+
+      if (response.statusCode == 200) {
+        endLiveMethod(false);
+        await getLive();
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      } else {
+        endLiveMethod(false);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    } catch (_) {
+      endLiveMethod(false);
+    }
+  }
 }

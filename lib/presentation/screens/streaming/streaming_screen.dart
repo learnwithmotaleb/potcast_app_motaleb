@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hms_room_kit_fixed/hms_room_kit_fixed.dart';
+import 'package:hms_room_kit/hms_room_kit.dart';
 
 class StreamingScreen extends StatefulWidget {
   const StreamingScreen({
@@ -22,15 +22,12 @@ class StreamingScreen extends StatefulWidget {
 class _StreamingScreenState extends State<StreamingScreen> {
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData.light(),
-      child: Scaffold(
-        body: HMSPrebuilt(
-          roomCode: widget.roomCode,
-          options: HMSPrebuiltOptions(
-            userName: widget.userName,
-            userId: widget.userID,
-          ),
+    return Scaffold(
+      body: HMSPrebuilt(
+        roomCode: widget.roomCode,
+        options: HMSPrebuiltOptions(
+          userName: widget.userName,
+          userId: widget.userID,
         ),
       ),
     );

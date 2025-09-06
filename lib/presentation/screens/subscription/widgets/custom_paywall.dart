@@ -15,13 +15,13 @@ import 'package:url_launcher/url_launcher.dart';
 class CustomPaywallScreen extends StatelessWidget {
   const CustomPaywallScreen({
     super.key,
-    required this.offering,
+    required this.allOffers,
     required this.onDismiss,
     required this.controller,
     required this.dbHelper,
   });
 
-  final Offering offering;
+  final Map<String, Offering> allOffers;
   final VoidCallback onDismiss;
   final SubscriptionController controller;
   final DBHelper dbHelper;
@@ -38,14 +38,11 @@ class CustomPaywallScreen extends StatelessWidget {
         }
 
         final role = snapshot.data ?? "";
-        final relevantPackage = offering.availablePackages.firstWhereOrNull((pkg) {
-          if (role == "user") {
-            return pkg.storeProduct.identifier.contains("user_subscription");
-          }
-          if (role == "creator") {
-            return pkg.storeProduct.identifier.contains("creator_subscription");
-          }
-          return false;
+        final key = role == "user" ? "default_user" : "default";
+        final offering = allOffers[key];
+
+        final Package? relevantPackage = offering?.availablePackages.firstWhereOrNull((pkg) {
+          return pkg.storeProduct.identifier.contains("${role}_subscription");
         });
 
         /*if (relevantPackage == null) {
@@ -103,7 +100,7 @@ class CustomPaywallScreen extends StatelessWidget {
         ];
 
         final features = isUser ? userFeature : creatorFeature;
-        if(true){
+        if(controller.hasActiveSubscription){
           return ActiveSubscriptionScreen(
             isUser: isUser,
             controller: controller,

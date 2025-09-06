@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.1+2
+version: 1.0.2+3
 
 environment:
   sdk: ^3.5.3
@@ -36,7 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.2.3
-  intl: ^0.20.2
+  intl: ^0.19.0
   get: ^4.6.6
   flutter_screenutil: ^5.9.3
   cached_network_image: ^3.3.1
@@ -80,7 +80,6 @@ dependencies:
   get_time_ago: ^2.3.2
 
   purchases_flutter: ^9.2.1
-  purchases_ui_flutter: ^9.2.1
 
   permission_handler: ^11.4.0
 
@@ -88,6 +87,7 @@ dependencies:
   audio_video_progress_bar: ^2.0.3
   just_audio: any
   just_audio_background: any
+  audio_session: ^0.2.2
 
   better_player_plus: ^1.0.8
 
@@ -95,7 +95,7 @@ dependencies:
   record: ^6.0.0
 
   hmssdk_flutter: ^1.10.6
-  hms_room_kit_fixed: ^1.1.7
+  hms_room_kit: ^1.1.6
 
   google_maps_flutter: ^2.12.1
   geocoding: ^3.0.0
@@ -120,6 +120,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+
+dependency_overrides:
+  intl: ^0.20.2
 
 flutter_gen:
   output: lib/core/custom_assets/ # Optional (default: lib/gen/)
