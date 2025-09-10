@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
+
+import '../controller/podcast_play_controller.dart';
 
 class GlassMorphismToggle extends StatelessWidget {
   final PodcastFeedController feedController;
@@ -15,7 +16,7 @@ class GlassMorphismToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final isLoading = feedController.isLoading.value == Status.loading;
+      final isLoading = feedController.loadingStatus.value == Status.loading;
       final isAudioMode = feedController.isAudioMode.value;
 
       return Container(
@@ -46,11 +47,7 @@ class GlassMorphismToggle extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: isLoading
-                ? null
-                : () => feedController.toggleMode(
-                    url: feedController.currentItem.value.podcastUrl ?? "",
-            ),
+            onTap: isLoading ? null : () => feedController.toggleMode(),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
@@ -67,7 +64,7 @@ class GlassMorphismToggle extends StatelessWidget {
                           : Colors.white.withValues(alpha: 0.9),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  /*const SizedBox(width: 6),
                   AnimatedDefaultTextStyle(
                     duration: const Duration(milliseconds: 300),
                     style: TextStyle(
@@ -78,7 +75,7 @@ class GlassMorphismToggle extends StatelessWidget {
                           : Colors.white.withValues(alpha: 0.9),
                     ),
                     child: Text(isAudioMode ? 'Video' : 'Audio'),
-                  ),
+                  ),*/
                 ],
               ),
             ),

@@ -20,6 +20,7 @@ import 'package:podcast/utils/app_const/app_const.dart';
 
 import '../../../../../helper/function/file_upload.dart';
 import '../../nav/controller/creator_nav_controller.dart';
+import '../model/live_records_model.dart';
 
 class PodcastAudioController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
@@ -419,6 +420,133 @@ class PodcastAudioController extends GetxController {
       }
     } catch (_) {
       endLiveMethod(false);
+    }
+  }
+
+  bool isLoadingRecords = false;
+
+  Future<void> getAllRecords({
+    required int pageKey,
+    required PagingController<int, LiveRecordItem> pagingController,
+  }) async {
+    if (isLoadingRecords) return;
+    isLoadingRecords = true;
+
+    try {
+      final response = await apiClient.get(
+        url: ApiUrl.liveRecordings(page: pageKey),
+        showResult: true,
+      );
+
+      if (response.statusCode == 200) {
+        final records = LiveRecordsModel.fromJson(response.body);
+        final newItems = records.data?.result ?? [];
+
+        if (newItems.isEmpty) {
+          pagingController.appendLastPage(newItems);
+        } else {
+          pagingController.appendPage(newItems, pageKey + 1);
+        }
+      } else {
+        pagingController.error = 'Error fetching data';
+      }
+    } catch (e) {
+      pagingController.error = 'An error occurred';
+    } finally {
+      isLoadingRecords = false;
+    }
+  }
+
+  final RxBool toggleLoading = false.obs;
+  void toggleLiveMethod(bool status) => toggleLoading.value = status;
+  final RxBool deleteRecordLoading = false.obs;
+  void deleteRecordMethod(bool status) => deleteRecordLoading.value = status;
+  final RxBool addInfoLoading = false.obs;
+  void addRecordMethod(bool status) => addInfoLoading.value = status;
+
+  Future<void> toggleRecord({required String id, required PagingController<int, LiveRecordItem> pagingController,}) async {
+    try {
+      toggleLiveMethod(true);
+      var response = await apiClient.patch(
+          url: ApiUrl.toggleRecord(id: id),
+          body: {}
+      );
+
+      if (response.statusCode == 200) {
+        toggleLiveMethod(false);
+
+        final data = response.body?['data']?["isPublic"];
+
+        if (data != null && data is bool) {
+
+          final items = pagingController.itemList ?? [];
+          final index = items.indexWhere((item) => item.id == id);
+
+          if (index != -1) {
+            items[index] = items[index].copyWith(
+              isPublic: data,
+            );
+            pagingController.itemList = List.from(items);
+          }
+        }
+
+      } else {
+        toggleLiveMethod(false);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    } catch (_) {
+      toggleLiveMethod(false);
+    }
+  }
+
+
+  Future<void> endRecord({required String id, required PagingController<int, LiveRecordItem> pagingController,}) async {
+    try {
+      deleteRecordMethod(true);
+      var response = await apiClient.patch(
+          url: ApiUrl.deleteRecord(id: id),
+          body: {}
+      );
+
+      if (response.statusCode == 200) {
+        deleteRecordMethod(false);
+        final items = pagingController.itemList ?? [];
+        items.removeWhere((item) => item.id == id);
+        pagingController.itemList = List.from(items);
+      } else {
+        deleteRecordMethod(false);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    } catch (_) {
+      deleteRecordMethod(false);
+    }
+  }
+
+
+  Future<void> addRecordInfo({required String id, required Map<String, String> body, required String file, required PagingController<int, LiveRecordItem> pagingController,}) async {
+    try {
+      addRecordMethod(true);
+      var response = await apiClient.multipartRequest(
+          url: ApiUrl.updateInfo(id: id),
+          reqType: "PATCH",
+          multipartBody: [
+            MultipartBody("liveCover", File(file)),
+          ],
+          body: body,
+      );
+
+      if (response.statusCode == 200) {
+        addRecordMethod(false);
+
+      } else {
+        addRecordMethod(false);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
+      }
+    } catch (_) {
+      addRecordMethod(false);
     }
   }
 }

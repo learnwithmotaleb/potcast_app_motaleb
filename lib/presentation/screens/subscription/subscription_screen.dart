@@ -17,8 +17,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
   @override
   void initState() {
-    controller.fetchSubscription();
     super.initState();
+    Future.wait([
+      controller.fetchSubscription(),
+      controller.fetchCustomerInfo(),
+    ]);
   }
 
   @override

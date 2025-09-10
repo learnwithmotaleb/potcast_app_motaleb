@@ -32,7 +32,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavPlayCard(),
+      bottomNavigationBar: const BottomNavPlayCard(),
       body: Obx(
         () {
           switch (controller.loading.value) {

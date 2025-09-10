@@ -100,68 +100,70 @@ class CustomPaywallScreen extends StatelessWidget {
         ];
 
         final features = isUser ? userFeature : creatorFeature;
-        if(controller.hasActiveSubscription){
-          return ActiveSubscriptionScreen(
-            isUser: isUser,
-            controller: controller,
-            onDismiss: onDismiss,
-            onManage: _launchManageSubscriptions,
-          );
-        }
-        return Scaffold(
-          backgroundColor: Colors.black,
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            actions: [
-              Container(
-                margin: const EdgeInsets.only(right: 16, top: 8),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(8),
+        return Obx((){
+          if(controller.hasActiveSubscription){
+            return ActiveSubscriptionScreen(
+              isUser: isUser,
+              controller: controller,
+              onDismiss: onDismiss,
+              onManage: _launchManageSubscriptions,
+            );
+          }
+          return Scaffold(
+            backgroundColor: Colors.black,
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              actions: [
+                Container(
+                  margin: const EdgeInsets.only(right: 16, top: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: onDismiss,
+                  ),
                 ),
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: onDismiss,
-                ),
-              ),
-            ],
-          ),
-          body: Stack(
-            children: [
-              _BackgroundLayer(),
-              SafeArea(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      spacing: 12,
-                      children: [
-                        _HeaderSection(isUser: isUser),
-                        _FeaturesList(features: features),
-                        _PricingCard(
-                          package: relevantPackage,
-                          isPurchasing: controller.isPurchasing,
-                          onPurchase: (pkg) async {
-                            await controller.purchasePackage(pkg);
-                          },
-                        ),
-                        _SecondaryActions(
-                          onRestore: controller.restorePurchases,
-                          onManage: _launchManageSubscriptions,
-                        ),
-                        _LegalFooter(),
-                        const Gap(20),
-                      ],
+              ],
+            ),
+            body: Stack(
+              children: [
+                _BackgroundLayer(),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        spacing: 12,
+                        children: [
+                          _HeaderSection(isUser: isUser),
+                          _FeaturesList(features: features),
+                          _PricingCard(
+                            package: relevantPackage,
+                            isPurchasing: controller.isPurchasing,
+                            onPurchase: (pkg) async {
+                              await controller.purchasePackage(pkg);
+                            },
+                          ),
+                          _SecondaryActions(
+                            onRestore: controller.restorePurchases,
+                            onManage: _launchManageSubscriptions,
+                          ),
+                          _LegalFooter(),
+                          const Gap(20),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        });
       },
     );
   }

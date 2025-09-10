@@ -7,7 +7,7 @@ import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
 import 'package:podcast/presentation/screens/notification/controller/notification_controller.dart';
-import 'package:podcast/presentation/screens/play/controller/podcast_feed_controller.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_play_controller.dart';
 import 'package:podcast/presentation/screens/playlist/controller/playlist_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/settings/controller/settings_controller.dart';

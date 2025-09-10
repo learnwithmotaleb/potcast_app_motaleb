@@ -17,7 +17,11 @@ class SubscriptionController extends GetxController {
 
   bool get hasActiveSubscription => customer.value?.entitlements.active.isNotEmpty ?? false;
 
-  EntitlementInfo? get activeEntitlement => customer.value?.entitlements.active.values.firstOrNull;
+  EntitlementInfo? get activeEntitlement {
+    final entitlements = customer.value?.entitlements.active.values;
+    if (entitlements == null || entitlements.isEmpty) return null;
+    return entitlements.first;
+  }
 
   Future<void> fetchSubscription() async {
     isLoading.value = true;
@@ -42,6 +46,19 @@ class SubscriptionController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> fetchCustomerInfo() async {
+    try {
+      final info = await Purchases.getCustomerInfo();
+      customer.value = info;
+
+      debugPrint("Customer Info fetched on init");
+      debugPrint("Active entitlements: ${info.entitlements.active.keys.join(", ")}");
+    } catch (e) {
+      debugPrint("Error fetching customer info: $e");
+    }
+  }
+
 
   Future<void> purchasePackage(Package package) async {
     isPurchasing.value = true;

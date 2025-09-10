@@ -141,11 +141,12 @@ class PlaylistController extends GetxController {
       if (response.statusCode == 200) {
         final userServiceAll = PlayListSongsModel.fromJson(response.body);
         final newItems = userServiceAll.data?.podcasts ?? [];
-        if (newItems.isEmpty) {
-          pagingController.appendLastPage(newItems);
+        pagingController.appendLastPage(newItems);
+        /*if (newItems.isEmpty) {
+
         } else {
           pagingController.appendPage(newItems, pageKey + 1);
-        }
+        }*/
       } else {
         pagingController.error = 'Error fetching data';
       }

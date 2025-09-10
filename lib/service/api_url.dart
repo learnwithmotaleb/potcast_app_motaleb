@@ -41,18 +41,17 @@ class ApiUrl {
   static String endLive({required String id}) => '$base/live-stream/end-live/$id';
 
   static String playFeed({
-    String? cursor,
     bool? reels,
     bool? popular,
     String? firstPodcastId,
-    required int pageKey,
+    int page = 1,
+    int limit = 40,
     bool isAlbum = false,
     bool isPlaylist = false,
-    String? id, // album id when isAlbum = true
+    String? id,
   }) {
     if (isAlbum) {
       if (id == null || id.isEmpty) {
-        throw ArgumentError("");
         toastMessage(message: "Playlist ID must be provided when isPlaylist = true");
         return "";
       }
@@ -67,13 +66,15 @@ class ApiUrl {
       return "$base/playlist/get-single/$id";
     }
 
-    final Map<String, String> queryParams = {};
+    final Map<String, String> queryParams = {
+      'page': page.toString(),
+      'limit': limit.toString(),
+    };
 
-    if (cursor != null) queryParams['cursor'] = cursor;
     if (reels == true) queryParams['reels'] = reels.toString();
     if (popular == true) queryParams['popular'] = popular.toString();
-    if (pageKey == 1 && firstPodcastId != null) {
-      queryParams["firstPodcastId"] = firstPodcastId.toString();
+    if (firstPodcastId != null && firstPodcastId.isNotEmpty) {
+      queryParams['firstPodcastId'] = firstPodcastId;
     }
 
     final queryString = Uri(queryParameters: queryParams).query;
@@ -134,6 +135,12 @@ class ApiUrl {
   ///Creator
   static String podcast({required int page}) => '$base/podcast?page=$page&limit=10';
   static String myPodcast({required int page}) => '$base/podcast/my-podcasts?page=$page&limit=20';
+
+  static String liveRecordings({required int page}) => '$base/live-session/get-my-previous-live?page=$page&limit=20';
+  static String toggleRecord({required String id}) => '$base/live-session/toggle-private-public/$id';
+  static String deleteRecord({required String id}) => '$base/live-session/delete/$id';
+  static String updateInfo({required String id}) => '$base/live-session/update/$id';
+
   static String podcastCreate() => '$base/podcast/create';
   static String podcastEdit({required String id}) => '$base/podcast/update/$id';
   static String podcastDelete({required String id}) => '$base/podcast/delete/$id';

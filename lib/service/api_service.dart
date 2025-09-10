@@ -441,8 +441,7 @@ class ApiClient {
       final request = http.MultipartRequest(
         reqType,
         Uri.parse(url),
-      )
-        ..fields.addAll(body ?? {})
+      )..fields.addAll(body ?? {})
         ..headers.addAll(
           isBasic ? basicHeaderInfo() : await bearerHeaderInfo(),
         );

@@ -89,7 +89,7 @@ dependencies:
   just_audio_background: any
   audio_session: ^0.2.2
 
-  better_player_plus: ^1.0.8
+  video_player: ^2.10.0
 
   audio_waveforms: ^1.3.0
   record: ^6.0.0
