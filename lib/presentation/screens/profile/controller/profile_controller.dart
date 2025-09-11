@@ -12,22 +12,30 @@ import 'package:podcast/utils/app_const/app_const.dart';
 class ProfileController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final ImagePicker _picker = ImagePicker();
-  Rx<ProfileModel> profile = ProfileModel().obs;
-  Rx<XFile?> selectedImage = Rx<XFile?>(null);
-  Rx<XFile?> selectedCoverImage = Rx<XFile?>(null);
-  RxString gender = "".obs;
+  final Rx<ProfileModel> profile = ProfileModel().obs;
+  final Rx<XFile?> selectedImage = Rx<XFile?>(null);
+  final Rx<XFile?> selectedCoverImage = Rx<XFile?>(null);
+  final RxString gender = "".obs;
 
   Future<void> pickImage() async {
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
-    if (image != null) {
-      selectedImage.value = image;
-    }
+   try{
+     XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+     if (image != null) {
+       selectedImage.value = image;
+     }
+   }catch(_){
+
+   }
   }
 
   Future<void> pickCoverImage() async {
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
-    if (image != null) {
-      selectedCoverImage.value = image;
+    try{
+      XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+      if (image != null) {
+        selectedCoverImage.value = image;
+      }
+    }catch(_){
+
     }
   }
 
@@ -36,9 +44,8 @@ class ProfileController extends GetxController {
   }
 
   /// ============================= GET Profile Info =====================================
-  var loading = Status.completed.obs;
-
-  loadingMethod(Status status) => loading.value = status;
+  final Rx<Status> loading = Status.completed.obs;
+  void loadingMethod(Status status) => loading.value = status;
 
   Future<void> getProfile() async {
     try {
@@ -62,9 +69,8 @@ class ProfileController extends GetxController {
   }
 
   /// ============================= EDIT Profile Info =====================================
-  RxBool editLoading = false.obs;
-
-  editLoadingMethod(bool status) => editLoading.value = status;
+  final RxBool editLoading = false.obs;
+  void editLoadingMethod(bool status) => editLoading.value = status;
 
   void editProfile({required Map<String, String> body}) async {
     try {

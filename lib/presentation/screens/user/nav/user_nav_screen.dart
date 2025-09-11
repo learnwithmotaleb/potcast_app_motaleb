@@ -25,6 +25,7 @@ class _UserNavScreenState extends State<UserNavScreen> {
     const FavoriteScreen(),
     const ProfileScreen(isUser: true),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,31 +44,34 @@ class _UserNavScreenState extends State<UserNavScreen> {
           },
           items: [
             const BottomNavigationBarItem(
-                icon: Icon(Iconsax.home, size: 32), label: ""),
+              icon: Icon(Iconsax.home, size: 32),
+              label: "",
+            ),
             const BottomNavigationBarItem(
-                icon: Icon(Iconsax.clock, size: 32), label: ""),
+              icon: Icon(Iconsax.clock, size: 32),
+              label: "",
+            ),
             const BottomNavigationBarItem(
-                icon: Icon(Iconsax.lovely, size: 32), label: ""),
+              icon: Icon(Iconsax.lovely, size: 32),
+              label: "",
+            ),
             BottomNavigationBarItem(
-                icon: SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Obx(() {
-                      final image =
-                          _controller.profile.value.data?.profileImage ?? "";
-                      const defaultImage =
-                          "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+              icon: SizedBox(
+                height: 32,
+                width: 32,
+                child: Obx(() {
+                  final image = _controller.profile.value.data?.profileImage ?? "";
+                  const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-                      return CustomNetworkImage(
-                        imageUrl: image.isNotEmpty ? image : defaultImage,
-                        errorIcon: Iconsax.user,
-                      );
-                    }),
-                  ),
-                ),
-                label: ""),
+                  return CustomNetworkImage(
+                    borderRadius: BorderRadius.circular(16),
+                    imageUrl: image.isNotEmpty ? image : defaultImage,
+                    errorIcon: Iconsax.user,
+                  );
+                }),
+              ),
+              label: "",
+            ),
           ],
         ),
       ),

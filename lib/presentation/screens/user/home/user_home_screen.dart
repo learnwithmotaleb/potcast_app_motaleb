@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'dart:math' as math;
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/extension/base_extension.dart';
+import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/model/banner_model.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
@@ -15,6 +18,7 @@ import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'widget/user_home_top_section.dart';
 import 'widget/user_top_artists_section.dart';
 
@@ -29,8 +33,198 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   final controller = Get.find<UserHomeController>();
   final profileController = Get.find<ProfileController>();
 
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ever(controller.loadingBanner, (status) async {
+
+        if (!controller.shouldShowBanners.value) return;
+
+        if (status == Status.completed &&
+            controller.bannerModel.value.data != null &&
+            controller.bannerModel.value.data!.isNotEmpty) {
+
+          final shouldShow = await controller.dbHelper.shouldShowBanner(secondsGap: 10);
+          final random = math.Random().nextBool();
+
+          if (shouldShow && random) {
+            _showFullScreenBanner(controller.bannerModel.value.data ?? []);
+            await controller.dbHelper.markBannerShown();
+          }
+        }
+      });
+    });
+  }
+
+
+  bool _isDialogOpen = false;
+
+  void _showFullScreenBanner(List<BannerItem> banners) {
+    if (_isDialogOpen) return;
+    _isDialogOpen = true;
+
+    final random = math.Random();
+    final banner = banners[random.nextInt(banners.length)];
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black,
+      builder: (_) => Dialog.fullscreen(
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              // Full-screen banner image
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () {
+                    if (banner.redirectUrl != null && banner.redirectUrl!.isNotEmpty) {
+                      openBrowser(url: banner.redirectUrl ?? "");
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: CustomNetworkImage(
+                    imageUrl: banner.bannerUrl,
+                    width: double.infinity,
+                    height: double.infinity,
+                    backgroundColor: Colors.grey.shade900,
+                    errorIcon: Icons.image_not_supported_outlined,
+                  ),
+                ),
+              ),
+
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 120,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.6),
+                        Colors.black.withOpacity(0.3),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Close button
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 16,
+                right: 20,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    height: 44,
+                    width: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+
+              Positioned(
+                bottom: MediaQuery.of(context).padding.bottom + 30,
+                left: 0,
+                right: 0,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.touch_app_outlined,
+                        color: Colors.white.withOpacity(0.9),
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Tap to visit',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ).then((_) => _isDialogOpen = false);
+  }
+
+  Future<void> openBrowser({required String url}) async {
+    final Uri recordUri = Uri.parse(url);
+
+    try {
+      if (await canLaunchUrl(recordUri)) {
+        await launchUrl(recordUri, mode: LaunchMode.externalApplication);
+      } else {
+        if (await canLaunchUrl(recordUri)) {
+          await launchUrl(recordUri, mode: LaunchMode.platformDefault);
+        }
+      }
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    Future.microtask(() async {
+      if (!controller.shouldShowBanners.value) return;
+
+      if (controller.bannerModel.value.data != null &&
+          controller.bannerModel.value.data!.isNotEmpty) {
+        final shouldShow = await controller.dbHelper.shouldShowBanner(secondsGap: 30);
+
+        if (shouldShow) {
+          _showFullScreenBanner(controller.bannerModel.value.data ?? []);
+          await controller.dbHelper.markBannerShown();
+        }
+      }
+    });
+
     return Scaffold(
       bottomNavigationBar: const BottomNavPlayCard(),
       body: Obx(

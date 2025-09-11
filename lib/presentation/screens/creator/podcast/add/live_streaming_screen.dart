@@ -3,10 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
+import 'package:podcast/core/route/routes.dart';
+import 'package:podcast/helper/dialog/custom_dialog.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
@@ -292,15 +295,19 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
               child: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(Icons.meeting_room, color: Colors.grey.shade600, size: 20),
                       const SizedBox(width: 8),
-                      Text(
-                        'Room ID: ${liveData?.roomId ?? 'N/A'}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                          fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Text(
+                          'Room ID: ${liveData?.roomId ?? 'N/A'}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ],
@@ -539,10 +546,6 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
     required VoidCallback onToggle,
     required VoidCallback onInfo,
   }) {
-    final canToggle = (item.name?.isNotEmpty ?? false) &&
-        (item.description?.isNotEmpty ?? false) &&
-        (item.coverImage?.isNotEmpty ?? false);
-
     return Container(
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -653,59 +656,89 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
             const SizedBox(height: 20),
 
             Row(
+              spacing: 4,
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: canToggle ? onToggle : null,
+                    onPressed: () {
+                      final canToggle = (item.name?.isNotEmpty ?? false) &&
+                          (item.description?.isNotEmpty ?? false) &&
+                          (item.coverImage?.isNotEmpty ?? false);
+
+                      if (canToggle) {
+                        onToggle();
+                      } else {
+                        showCustomAnimatedDialog(
+                          context: context,
+                          title: "Warning",
+                          subtitle: "Please add name, description, and cover image first.",
+                          actionButton: [
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orange,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text("Back"),
+                              ),
+                            ),
+                            const Gap(30),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  onInfo();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text("Add Info"),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    },
                     icon: Icon(
                       item.isPublic == true ? Icons.public : Icons.lock,
                       size: 20,
                     ),
                     label: Text(item.isPublic == true ? 'Public' : 'Private'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: item.isPublic == true ? Colors.green : Colors.grey.shade600,
+                      backgroundColor: item.isPublic == true ? Colors.green : Colors.black,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 2,
+                      disabledBackgroundColor: Colors.grey.shade400,
+                      disabledForegroundColor: Colors.white,
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: onDelete,
-                    icon: const Icon(Icons.delete_outline, size: 20),
-                    label: const Text('Delete'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.shade600,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 2,
+                ElevatedButton(
+                  onPressed: onDelete,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red.shade600,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
+                    elevation: 2,
                   ),
+                  child: const Icon(Icons.delete_outline, size: 20),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: onInfo,
-                    icon: const Icon(Icons.info_outline, size: 20),
-                    label: const Text('Info'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade600,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 2,
+                ElevatedButton(
+                  onPressed: onInfo,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade600,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
+                    elevation: 2,
                   ),
+                  child: const Icon(Icons.info_outline, size: 20),
                 ),
               ],
             ),
@@ -775,8 +808,12 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
               PagedChildBuilderDelegate<LiveRecordItem>(itemBuilder: (context, item, index) {
                 return _buildRecordingCard(
                   item: item,
-                  onDelete: () {},
-                  onToggle: () {},
+                  onDelete: () {
+                    controller.endRecord(id: item.id ?? "", pagingController: pagingController);
+                  },
+                  onToggle: () {
+                    controller.toggleRecord(id: item.id ?? "", pagingController: pagingController);
+                  },
                   onInfo: () => showLiveInfoBottomSheet(context, item),
                 );
               }),
@@ -934,28 +971,35 @@ class _LiveInfoSheetInfoState extends State<LiveInfoSheetInfo> {
                   return const LoadingWidget();
                 }
                 return ElevatedButton.icon(
-                  onPressed: () {
-                    if (nameController.text.isNotEmpty &&
-                        descriptionController.text.isNotEmpty &&
-                        selectedImage.value.isNotEmpty &&
-                        widget.item.id != null) {
-                      final payload = {
-                        "data": jsonEncode({
-                          "name": nameController.text,
-                          "description": descriptionController.text,
-                        }),
-                      };
+                  onPressed: () async {
+                    try{
+                      if (nameController.text.isNotEmpty &&
+                          descriptionController.text.isNotEmpty &&
+                          selectedImage.value.isNotEmpty &&
+                          widget.item.id != null) {
+                        final payload = {
+                          "data": jsonEncode({
+                            "name": nameController.text,
+                            "description": descriptionController.text,
+                          }),
+                        };
 
-                      widget.controller.addRecordInfo(
-                        id: widget.item.id ?? "",
-                        body: payload,
-                        file: selectedImage.value,
-                        pagingController: widget.pagingController,
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("All fields and image are required")),
-                      );
+                        await widget.controller.addRecordInfo(
+                          id: widget.item.id ?? "",
+                          body: payload,
+                          file: selectedImage.value,
+                          pagingController: widget.pagingController,
+                        );
+                        if(context.mounted &&Navigator.canPop(context)){
+                          AppRouter.route.pop();
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("All fields and image are required")),
+                        );
+                      }
+                    }catch(_){
+
                     }
                   },
                   icon: const Icon(Icons.save),

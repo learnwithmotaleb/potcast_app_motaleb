@@ -33,7 +33,8 @@ class PickAudioWidget extends StatelessWidget {
               ? Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -110,7 +111,7 @@ class PickAudioWidget extends StatelessWidget {
                             CustomText(
                               text: "max_10_MB_files_are_allowed".tr,
                               fontWeight: FontWeight.w100,
-                            )
+                            ),
                           ],
                         )
                       : SizedBox(
@@ -128,8 +129,7 @@ class PickAudioWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: CustomText(
-                                    text: controller.audioFile.value?.path !=
-                                            null
+                                    text: controller.audioFile.value?.path != null
                                         ? path.basename(
                                             controller.audioFile.value!.path,
                                           )
@@ -146,11 +146,13 @@ class PickAudioWidget extends StatelessWidget {
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                          color: AppColors.whiteColor),
+                                        color: AppColors.whiteColor,
+                                      ),
                                       shape: BoxShape.circle),
                                   padding: const EdgeInsets.all(2),
-                                  child: Assets.images.delete
-                                      .image(color: AppColors.whiteColor),
+                                  child: Assets.images.delete.image(
+                                    color: AppColors.whiteColor,
+                                  ),
                                 ),
                               ),
                             ],

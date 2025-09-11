@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
@@ -28,6 +29,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController name = TextEditingController();
   TextEditingController address = TextEditingController();
+  TextEditingController donationUrl = TextEditingController();
   final ValueNotifier<DateTime> dob = ValueNotifier(DateTime(2000));
 
   @override
@@ -39,6 +41,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final isGender = ["Male", "Female", "Other"].contains(gender);
     controller.updateGender(value: isGender? gender ?? "" : "");
     address = TextEditingController(text: controller.profile.value.data?.address ?? "");
+    donationUrl = TextEditingController(text: controller.profile.value.data?.donationLink ?? "");
     dob.value = data?.dateOfBirth != null ? data?.dateOfBirth ?? DateTime(2000) : DateTime(2000);
   }
 
@@ -47,13 +50,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     name.dispose();
     address.dispose();
     dob.dispose();
+    donationUrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Profile"),
@@ -105,44 +107,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         );
                       }),
-                      /*const Gap(12),
-                      CustomAlignText(text: "Cover".tr),
-                      const Gap(8),
-                      Obx(() {
-                        final isSelectedImage = controller.selectedCoverImage.value != null;
-                        final profileImage = controller.profile.value.data?.profileCover;
-                        return Align(
-                          alignment: Alignment.center,
-                          child: GestureDetector(
-                            onTap: controller.pickCoverImage,
-                            child: Container(
-                              height: 100,
-                              width: width,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  color: AppColors.blackColor,
-                                  border: Border.all(color: AppColors.whiteColor)),
-                              child: isSelectedImage
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: Image.file(
-                                          File(controller.selectedCoverImage.value?.path ?? ""),
-                                          fit: BoxFit.cover),
-                                    )
-                                  : profileImage != null && profileImage.isNotEmpty
-                                      ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(5),
-                                          child: CustomNetworkImage(imageUrl: profileImage),
-                                        )
-                                      : const Icon(
-                                          Iconsax.gallery,
-                                          color: AppColors.whiteColor,
-                                          size: 30,
-                                        ),
-                            ),
-                          ),
-                        );
-                      }),*/
                       Gap(12.h),
                       CustomAlignText(text: "full_name".tr),
                       const Gap(8),
@@ -211,20 +175,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           return null;
                         },
                       ),
-                      /*const Gap(12),
-                      CustomAlignText(text: "phone_number".tr),
-                      const Gap(8),
-                      CustomTextField(
-                        hintText: "enter_your_phone_number".tr,
-                        keyboardType: TextInputType.number,
-                        controller: phone,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'enter_your_phone_number'.tr;
+                      FutureBuilder(
+                        future: DBHelper().getUserRole(),
+                        builder: (context, item){
+                          if(item.hasData && item.data != null && item.data!.isNotEmpty && item.data == "creator"){
+                            return Column(
+                              children: [
+                                const Gap(12),
+                                const CustomAlignText(text: "Donation URL"),
+                                const Gap(8),
+                                CustomTextField(
+                                  hintText: "Enter Donation URL",
+                                  keyboardType: TextInputType.url,
+                                  controller: donationUrl,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter Donation URL';
+                                    }
+                                    const urlPattern = r'^(http|https):\/\/[^\s]+$';
+                                    if (!RegExp(urlPattern).hasMatch(value)) {
+                                      return 'Please Enter Donation URL';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ],
+                            );
                           }
-                          return null;
+                          return const SizedBox();
                         },
-                      ),*/
+                      ),
                       const Gap(12),
                       CustomAlignText(text: "gender".tr),
                       Obx(() {
@@ -273,11 +253,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               final String nameValue = name.text.trim();
                               final String genderValue = controller.gender.value.trim();
                               final String addressValue = address.text.trim();
+                              final String urlValue = donationUrl.text.trim();
                               final DateTime dobValue = dob.value;
 
                               final String? oldName = data?.name?.trim();
                               final String? oldGender = data?.gender?.trim();
                               final String? oldAddress = data?.address?.trim();
+                              final String? oldDonationUrl = data?.donationLink?.trim();
                               final DateTime? oldDob = data?.dateOfBirth;
 
                               final Map<String, String?> rawBody = {};
@@ -290,6 +272,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               }
                               if (addressValue.isNotEmpty && addressValue != oldAddress) {
                                 rawBody["address"] = addressValue;
+                              }
+                              if (urlValue.isNotEmpty && urlValue != oldDonationUrl) {
+                                rawBody["donationLink"] = urlValue;
+                              }
+                              if (oldDob == null || !isSameDate(dobValue, oldDob)) {
+                                rawBody["dateOfBirth"] = dobValue.toUtc().toIso8601String();
                               }
                               if (oldDob == null || !isSameDate(dobValue, oldDob)) {
                                 rawBody["dateOfBirth"] = dobValue.toUtc().toIso8601String();

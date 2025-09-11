@@ -348,10 +348,13 @@ class PodcastAudioController extends GetxController {
 
   final Rx<LiveStreamingModel> liveData = LiveStreamingModel().obs;
   final RxBool createLiveLoading = false.obs;
+
   void createLiveMethod(bool status) => createLiveLoading.value = status;
   final RxBool getLiveLoading = false.obs;
+
   void getLiveMethod(bool status) => getLiveLoading.value = status;
   final RxBool endLiveLoading = false.obs;
+
   void endLiveMethod(bool status) => endLiveLoading.value = status;
 
   Future<void> createLive() async {
@@ -403,10 +406,7 @@ class PodcastAudioController extends GetxController {
   Future<void> endLive({required String id}) async {
     try {
       endLiveMethod(true);
-      var response = await apiClient.post(
-        url: ApiUrl.endLive(id: id),
-        body: {}
-      );
+      var response = await apiClient.post(url: ApiUrl.endLive(id: id), body: {});
 
       if (response.statusCode == 200) {
         endLiveMethod(false);
@@ -459,18 +459,21 @@ class PodcastAudioController extends GetxController {
 
   final RxBool toggleLoading = false.obs;
   void toggleLiveMethod(bool status) => toggleLoading.value = status;
+
   final RxBool deleteRecordLoading = false.obs;
   void deleteRecordMethod(bool status) => deleteRecordLoading.value = status;
+
   final RxBool addInfoLoading = false.obs;
   void addRecordMethod(bool status) => addInfoLoading.value = status;
 
-  Future<void> toggleRecord({required String id, required PagingController<int, LiveRecordItem> pagingController,}) async {
+  Future<void> toggleRecord({
+    required String id,
+    required PagingController<int, LiveRecordItem> pagingController,
+  }) async {
     try {
+      if(toggleLoading.value)return;
       toggleLiveMethod(true);
-      var response = await apiClient.patch(
-          url: ApiUrl.toggleRecord(id: id),
-          body: {}
-      );
+      var response = await apiClient.patch(url: ApiUrl.toggleRecord(id: id), body: {}, showResult: true);
 
       if (response.statusCode == 200) {
         toggleLiveMethod(false);
@@ -478,7 +481,6 @@ class PodcastAudioController extends GetxController {
         final data = response.body?['data']?["isPublic"];
 
         if (data != null && data is bool) {
-
           final items = pagingController.itemList ?? [];
           final index = items.indexWhere((item) => item.id == id);
 
@@ -489,7 +491,6 @@ class PodcastAudioController extends GetxController {
             pagingController.itemList = List.from(items);
           }
         }
-
       } else {
         toggleLiveMethod(false);
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
@@ -500,14 +501,14 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-
-  Future<void> endRecord({required String id, required PagingController<int, LiveRecordItem> pagingController,}) async {
+  Future<void> endRecord({
+    required String id,
+    required PagingController<int, LiveRecordItem> pagingController,
+  }) async {
     try {
+      if(deleteRecordLoading.value) return;
       deleteRecordMethod(true);
-      var response = await apiClient.patch(
-          url: ApiUrl.deleteRecord(id: id),
-          body: {}
-      );
+      var response = await apiClient.post(url: ApiUrl.deleteRecord(id: id), body: {}, showResult: true);
 
       if (response.statusCode == 200) {
         deleteRecordMethod(false);
@@ -524,22 +525,27 @@ class PodcastAudioController extends GetxController {
     }
   }
 
-
-  Future<void> addRecordInfo({required String id, required Map<String, String> body, required String file, required PagingController<int, LiveRecordItem> pagingController,}) async {
+  Future<void> addRecordInfo({
+    required String id,
+    required Map<String, String> body,
+    required String file,
+    required PagingController<int, LiveRecordItem> pagingController,
+  }) async {
     try {
+      if(addInfoLoading.value) return;
       addRecordMethod(true);
       var response = await apiClient.multipartRequest(
-          url: ApiUrl.updateInfo(id: id),
-          reqType: "PATCH",
-          multipartBody: [
-            MultipartBody("liveCover", File(file)),
-          ],
-          body: body,
+        url: ApiUrl.updateInfo(id: id),
+        reqType: "PATCH",
+        multipartBody: [
+          MultipartBody("liveCover", File(file)),
+        ],
+        body: body,
       );
 
       if (response.statusCode == 200) {
         addRecordMethod(false);
-
+        pagingController.refresh();
       } else {
         addRecordMethod(false);
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';

@@ -36,6 +36,8 @@ class ApiUrl {
   ///Global
   static String category() => '$base/category/all-categories';
 
+  static String banner() => '$base/banner/get-all';
+
   static String createLive() => '$base/live-stream/create-streaming-room';
   static String getLive() => '$base/live-stream/get-my-live-room';
   static String endLive({required String id}) => '$base/live-stream/end-live/$id';

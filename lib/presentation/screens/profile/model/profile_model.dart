@@ -33,6 +33,7 @@ class Data {
   final String? profileImage;
   final String? profileCover;
   final String? address;
+  final String? donationLink;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int? v;
@@ -48,6 +49,7 @@ class Data {
     this.profileImage,
     this.profileCover,
     this.address,
+    this.donationLink,
     this.createdAt,
     this.updatedAt,
     this.v,
@@ -68,6 +70,7 @@ class Data {
         profileImage: json["profile_image"],
         profileCover: json["profile_cover"],
         address: json["address"],
+    donationLink: json["donationLink"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -88,6 +91,7 @@ class Data {
         "profile_image": profileImage,
         "profile_cover": profileCover,
         "address": address,
+        "donationLink": donationLink,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
         "__v": v,

@@ -32,8 +32,7 @@ class PickVideoWidget extends StatelessWidget {
           () => controller.createLoading.value
               ? Card(
                   elevation: 4,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -128,10 +127,8 @@ class PickVideoWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: CustomText(
-                                    text: controller.videoFile.value?.path !=
-                                            null
-                                        ? path.basename(
-                                            controller.videoFile.value!.path)
+                                    text: controller.videoFile.value?.path != null
+                                        ? path.basename(controller.videoFile.value!.path)
                                         : "",
                                   ),
                                 ),
@@ -145,11 +142,13 @@ class PickVideoWidget extends StatelessWidget {
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                          color: AppColors.whiteColor),
+                                        color: AppColors.whiteColor,
+                                      ),
                                       shape: BoxShape.circle),
                                   padding: const EdgeInsets.all(2),
-                                  child: Assets.images.delete
-                                      .image(color: AppColors.whiteColor),
+                                  child: Assets.images.delete.image(
+                                    color: AppColors.whiteColor,
+                                  ),
                                 ),
                               ),
                             ],

@@ -14,7 +14,7 @@ import 'package:video_player/video_player.dart';
 
 import '../model/comment_model.dart';
 
-enum MediaType { audio, video }
+enum MediaType { audio, video}
 
 class PodcastFeedController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
@@ -228,11 +228,7 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  Future<T?> _executeWithRetry<T>(
-      Future<T> Function() operation,
-      String operationName,
-      [int maxAttempts = maxRetryAttempts]
-      ) async {
+  Future<T?> _executeWithRetry<T>(Future<T> Function() operation, String operationName, [int maxAttempts = maxRetryAttempts]) async {
     for (int attempt = 0; attempt < maxAttempts; attempt++) {
       try {
         return await operation();

@@ -9,7 +9,6 @@ import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
 import 'package:podcast/presentation/screens/auth/verification/verification_screen.dart';
-import 'package:podcast/presentation/screens/creator/donate/donate_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
@@ -31,7 +30,6 @@ import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
 import 'package:podcast/presentation/screens/subscription/subscription_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
-import 'package:podcast/presentation/screens/user/upgrade/upgrade_screen.dart';
 
 import '../../presentation/screens/album/screen/album_podcast_screen.dart';
 import '../../presentation/screens/categories/categories_screen.dart';
@@ -303,15 +301,6 @@ class AppRouter {
             );
           },
         ),
-
-        GoRoute(
-          name: RoutePath.upgradeScreen,
-          path: RoutePath.upgradeScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const UpgradeScreen(),
-            state: state,
-          ),
-        ),
         GoRoute(
           name: RoutePath.streamingScreen,
           path: RoutePath.streamingScreen.addBasePath,
@@ -377,14 +366,6 @@ class AppRouter {
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: CreatorNavScreen(
                 index: (state.extra is int) ? state.extra as int : 0),
-            state: state,
-          ),
-        ),
-        GoRoute(
-          name: RoutePath.donateScreen,
-          path: RoutePath.donateScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: const DonateScreen(),
             state: state,
           ),
         ),

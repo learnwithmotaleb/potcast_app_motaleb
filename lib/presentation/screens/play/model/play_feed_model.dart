@@ -75,7 +75,7 @@ class Data {
 
 class PlayPodcastItem {
   final String? id;
-  final Category? creator;
+  final Creator? creator;
   final Category? category;
   final Category? subCategory;
   final String? coverImage;
@@ -104,7 +104,7 @@ class PlayPodcastItem {
 
   PlayPodcastItem copyWith({
     String? id,
-    Category? creator,
+    Creator? creator,
     Category? category,
     Category? subCategory,
     String? coverImage,
@@ -134,8 +134,7 @@ class PlayPodcastItem {
   factory PlayPodcastItem.fromJson(Map<String, dynamic> json) =>
       PlayPodcastItem(
         id: json["_id"],
-        creator:
-            json["creator"] == null ? null : Category.fromJson(json["creator"]),
+        creator: json["creator"] == null ? null : Creator.fromJson(json["creator"]),
         category: json["category"] == null
             ? null
             : Category.fromJson(json["category"]),
@@ -198,6 +197,41 @@ class Category {
   Map<String, dynamic> toJson() => {
         "_id": id,
         "name": name,
+      };
+}
+
+class Creator {
+  final String? id;
+  final String? name;
+  final String? donationLink;
+
+  Creator({
+    this.id,
+    this.name,
+    this.donationLink,
+  });
+
+  Creator copyWith({
+    String? id,
+    String? name,
+    String? donationLink,
+  }) =>
+      Creator(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        donationLink: donationLink ?? this.donationLink,
+      );
+
+  factory Creator.fromJson(Map<String, dynamic> json) => Creator(
+        id: json["_id"],
+        name: json["name"],
+    donationLink: json["donationLink"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
+        "donationLink": donationLink,
       };
 }
 

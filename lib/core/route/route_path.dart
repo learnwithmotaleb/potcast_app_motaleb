@@ -33,14 +33,12 @@ class RoutePath {
   static const String audioPlayScreen = 'userPlayScreen';
   static const String playlistSongsScreen = 'playlistSongsScreen';
   static const String podcastListScreen = 'podcastListScreen';
-  static const String upgradeScreen = 'upgradeScreen';
   static const String paymentWebViewScreen = 'paymentWebViewScreen';
   static const String categoryAllPodcast = 'categoryAllPodcast';
   static const String adminPodcastScreen = 'adminPodcastScreen';
 
   //Creator
   static const String creatorNavScreen = 'creatorNavScreen';
-  static const String donateScreen = 'donateScreen';
   static const String myPodcastScreen = 'myPodcastScreen';
   // static const String podcastAddScreen = 'podcastAddScreen';
   static const String podcastEditScreen = 'podcastEditScreen';

@@ -40,7 +40,7 @@ class AudioPlayBottom extends StatelessWidget {
             ),
             _buildActionButton(
               onTap: () {
-                final donationUrl = currentItem?.creator?.name ?? "";
+                final donationUrl = currentItem?.creator?.donationLink ?? "";
                 if (donationUrl.isNotEmpty) {
                   _openBrowser(donationUrl);
                 } else {

@@ -32,14 +32,14 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   borderRadius: BorderRadius.circular(25),
                   child: CustomNetworkImage(
                       imageUrl:
-                          controller.profile.value.data?.profileImage ?? ""))
+                          controller.profile.value.data?.profileImage ?? "",),)
               : Shimmer.fromColors(
                   baseColor: isDarkMode
-                      ? AppColors.whiteColor.withOpacity(0.2)
-                      : AppColors.blackColor.withOpacity(0.2),
+                      ? AppColors.whiteColor.withValues(alpha: 0.2)
+                      : AppColors.blackColor.withValues(alpha: 0.2),
                   highlightColor: isDarkMode
-                      ? AppColors.whiteColor.withOpacity(0.5)
-                      : AppColors.blackColor.withOpacity(0.5),
+                      ? AppColors.whiteColor.withValues(alpha: 0.5)
+                      : AppColors.blackColor.withValues(alpha: 0.5),
                   child: Container(
                     height: 50,
                     width: 50,
