@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
+import 'package:podcast/presentation/screens/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
@@ -31,7 +31,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 25.h, width: 25.w),
+            // SizedBox(height: 25.h, width: 25.w),
             Expanded(
               child: Align(
                 alignment: Alignment.center,
@@ -42,14 +42,14 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                 ),
               ),
             ),
-            Padding(
+            /*Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: GestureDetector(
                 onTap: () =>
                     AppRouter.route.pushNamed(RoutePath.notificationScreen),
                 child: Assets.icons.notification.svg(height: 30.h, width: 30.w),
               ),
-            ),
+            ),*/
           ],
         ),
         const Gap(24),

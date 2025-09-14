@@ -22,6 +22,7 @@ class StreamingScreen extends StatefulWidget {
 class _StreamingScreenState extends State<StreamingScreen> {
   @override
   Widget build(BuildContext context) {
+    print(widget.roomCode);
     return Scaffold(
       body: HMSPrebuilt(
         roomCode: widget.roomCode,

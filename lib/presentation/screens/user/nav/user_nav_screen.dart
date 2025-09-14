@@ -7,7 +7,8 @@ import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/profile/profile_screen.dart';
-import 'package:podcast/presentation/screens/user/home/user_home_screen.dart';
+
+import '../../home/user_home_screen.dart';
 
 class UserNavScreen extends StatefulWidget {
   const UserNavScreen({super.key});

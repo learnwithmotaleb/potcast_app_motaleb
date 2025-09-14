@@ -7,7 +7,7 @@ import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
-import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
+import 'package:podcast/presentation/screens/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 

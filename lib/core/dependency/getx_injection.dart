@@ -5,13 +5,13 @@ import 'package:podcast/presentation/screens/auth/controller/auth_controller.dar
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
+import 'package:podcast/presentation/screens/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/notification/controller/notification_controller.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_play_controller.dart';
 import 'package:podcast/presentation/screens/playlist/controller/playlist_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/settings/controller/settings_controller.dart';
 import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
-import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
 
 import '../../presentation/screens/categories/controller/categories_controller.dart';
 import '../../presentation/screens/creator/nav/controller/creator_nav_controller.dart';
@@ -25,7 +25,7 @@ void initGetX() {
   Get.lazyPut(() => CategoriesController(), fenix: true);
   Get.lazyPut(() => AuthController(), fenix: true);
   Get.lazyPut(() => ProfileController(), fenix: true);
-  Get.lazyPut(() => NotificationController(), fenix: true);
+  // Get.lazyPut(() => NotificationController(), fenix: true);
   Get.lazyPut(() => SettingsController(), fenix: true);
   Get.lazyPut(() => FavoriteController(), fenix: true);
   Get.lazyPut(() => HistoryController(), fenix: true);

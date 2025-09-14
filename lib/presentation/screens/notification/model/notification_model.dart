@@ -1,3 +1,4 @@
+/*
 class NotificationModel {
   final bool? success;
   final String? message;
@@ -63,3 +64,4 @@ class NotificationData {
         id: json["_id"],
       );
 }
+*/

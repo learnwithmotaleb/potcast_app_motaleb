@@ -4,11 +4,12 @@ import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/model/banner_model.dart';
 import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
-import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+
+import '../model/home_model.dart';
 
 class UserHomeController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();

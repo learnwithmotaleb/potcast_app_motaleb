@@ -9,9 +9,6 @@ import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/banner_model.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
-import 'package:podcast/presentation/screens/user/home/controller/user_home_controller.dart';
-import 'package:podcast/presentation/screens/user/home/model/home_model.dart';
-import 'package:podcast/presentation/screens/user/home/widget/user_home_categories_section.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
@@ -19,6 +16,9 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'controller/user_home_controller.dart';
+import 'model/home_model.dart';
+import 'widget/user_home_categories_section.dart';
 import 'widget/user_home_top_section.dart';
 import 'widget/user_top_artists_section.dart';
 
@@ -78,7 +78,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           backgroundColor: Colors.black,
           body: Stack(
             children: [
-              // Full-screen banner image
               Positioned.fill(
                 child: GestureDetector(
                   onTap: () {
@@ -108,8 +107,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.6),
-                        Colors.black.withOpacity(0.3),
+                        Colors.black.withValues(alpha: 0.6),
+                        Colors.black.withValues(alpha: 0.3),
                         Colors.transparent,
                       ],
                     ),
@@ -127,15 +126,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     height: 44,
                     width: 44,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black.withValues(alpha: 0.7),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.white.withValues(alpha: 0.3),
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withValues(alpha: 0.3),
                           blurRadius: 10,
                           offset: const Offset(0, 2),
                         ),
@@ -158,10 +157,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 40),
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.black.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(25),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -171,14 +170,14 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     children: [
                       Icon(
                         Icons.touch_app_outlined,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         size: 18,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Tap to visit',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),

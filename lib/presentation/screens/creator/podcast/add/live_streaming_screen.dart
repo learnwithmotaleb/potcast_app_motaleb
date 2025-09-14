@@ -360,7 +360,7 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                /*const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
@@ -382,7 +382,7 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
                       elevation: 2,
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ],

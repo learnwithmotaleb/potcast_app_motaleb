@@ -13,11 +13,11 @@ import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/profile/profile_screen.dart';
-import 'package:podcast/presentation/screens/user/home/user_home_screen.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
+import '../../home/user_home_screen.dart';
 import '../podcast/controller/podcast_audio_controller.dart';
 import 'controller/creator_nav_controller.dart';
 

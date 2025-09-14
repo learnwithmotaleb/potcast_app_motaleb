@@ -9,6 +9,7 @@ import 'package:podcast/presentation/screens/favorite/controller/favorite_contro
 import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
+import 'package:podcast/service/rewarded_ad_service.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:video_player/video_player.dart';
 
@@ -45,6 +46,7 @@ class PodcastFeedController extends GetxController {
 
   // Error handling & retry
   final RxInt retryCount = 0.obs;
+  int _playCount = 0;
   final RxString lastError = ''.obs;
   static const int maxRetryAttempts = 3;
   static const Duration retryDelay = Duration(seconds: 2);
@@ -205,6 +207,11 @@ class PodcastFeedController extends GetxController {
         retryCount.value = 0;
         _trackView(item.id ?? "");
 
+
+        _playCount++;
+        if (_playCount % 3 == 0) {
+          RewardedAdService().showAd();
+        }
         debugPrint('▶️ Playing: ${item.title} (${isAudioMode.value ? 'Audio' : 'Video'} mode)');
       } else {
         throw Exception('Failed to initialize media player');

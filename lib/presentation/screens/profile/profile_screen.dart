@@ -56,11 +56,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
           icon: Icons.settings_outlined,
         ),
-        ProfileStatusCard(
+        /*ProfileStatusCard(
           text: "notification",
           onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
           icon: Icons.notifications_none,
-        ),
+        ),*/
       ];
     } else {
       return [
@@ -89,11 +89,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
           icon: Icons.settings_outlined,
         ),
-        ProfileStatusCard(
+        /*ProfileStatusCard(
           text: "notification",
           onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
           icon: Icons.notifications_none_outlined,
-        ),
+        ),*/
       ];
     }
   }

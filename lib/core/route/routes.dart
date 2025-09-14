@@ -29,7 +29,6 @@ import 'package:podcast/presentation/screens/splash/splash_screen.dart';
 import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
 import 'package:podcast/presentation/screens/subscription/subscription_screen.dart';
 import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
-import 'package:podcast/presentation/screens/user/payment/payment_webview_screen.dart';
 
 import '../../presentation/screens/album/screen/album_podcast_screen.dart';
 import '../../presentation/screens/categories/categories_screen.dart';
@@ -166,14 +165,14 @@ class AppRouter {
             state: state,
           ),
         ),
-        GoRoute(
+        /*GoRoute(
           name: RoutePath.notificationScreen,
           path: RoutePath.notificationScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const NotificationScreen(),
             state: state,
           ),
-        ),
+        ),*/
         GoRoute(
           name: RoutePath.seeAllTopCreator,
           path: RoutePath.seeAllTopCreator.addBasePath,
@@ -330,14 +329,6 @@ class AppRouter {
           path: RoutePath.playlistSongsScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: PlaylistSongsScreen(id: state.extra as String),
-            state: state,
-          ),
-        ),
-        GoRoute(
-          name: RoutePath.paymentWebViewScreen,
-          path: RoutePath.paymentWebViewScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: PaymentWebViewScreen(paymentUrl: state.extra as String),
             state: state,
           ),
         ),

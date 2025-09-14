@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/presentation/screens/play/widget/audio_video_player_view.dart';
+import 'package:podcast/service/rewarded_ad_service.dart';
 import 'controller/podcast_play_controller.dart';
 import 'widget/audio_play_bottom.dart';
 import 'widget/audio_play_control.dart';
@@ -51,8 +52,11 @@ class _UserPlayScreenState extends State<UserPlayScreen> with WidgetsBindingObse
     WidgetsBinding.instance.addObserver(this);
     feedController = Get.find<PodcastFeedController>();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       _loadPodcasts();
+
+      await RewardedAdService().loadAd();
+      await RewardedAdService().showAd();
     });
   }
 
