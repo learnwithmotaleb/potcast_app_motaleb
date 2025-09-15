@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 import '../controller/podcast_play_controller.dart';
@@ -95,9 +96,9 @@ class AudioPlayProgress extends StatelessWidget {
     double progressPercent = totalMillis > 0 ? (position.inMilliseconds / totalMillis).clamp(0.0, 1.0) : 0.0;
 
     return GestureDetector(
-      onTapDown: (details) => _handleSeek(details, total),
+      // onTapDown: (details) => _handleSeek(details, total),
       child: SizedBox(
-        height: 20, // Increased height for better touch target
+        height: 20,
         child: Center(
           child: Container(
             height: 5,
@@ -227,10 +228,10 @@ class AudioPlayProgress extends StatelessWidget {
     );
   }
 
-  void _handleSeek(TapDownDetails details, Duration total) {
+  void _handleSeek(TapDownDetails details, Duration total, BuildContext context) {
     if (total == Duration.zero || !controller.hasCurrentItem) return;
 
-    final RenderBox renderBox = Get.context!.findRenderObject() as RenderBox;
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final localPosition = renderBox.globalToLocal(details.globalPosition);
     final percentage = (localPosition.dx / renderBox.size.width).clamp(0.0, 1.0);
     final seekPosition = Duration(

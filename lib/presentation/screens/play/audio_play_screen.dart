@@ -54,9 +54,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> with WidgetsBindingObse
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _loadPodcasts();
-
       await RewardedAdService().loadAd();
-      await RewardedAdService().showAd();
     });
   }
 

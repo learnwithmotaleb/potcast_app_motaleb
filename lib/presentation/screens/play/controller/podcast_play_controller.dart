@@ -134,6 +134,79 @@ class PodcastFeedController extends GetxController {
     await _playPodcastWithRetry(index, 0);
   }
 
+  Future<void> pauseForAd() async {
+    if (!hasCurrentItem) return;
+
+    try {
+      debugPrint("🎯 Pausing playback for ad");
+
+      if (isAudioMode.value) {
+        if (_audioPlayer.playing) {
+          await _audioPlayer.pause();
+          debugPrint("⏸️ Audio paused for ad");
+        }
+      } else {
+        final controller = videoPlayerController;
+        if (controller != null && controller.value.isPlaying) {
+          await controller.pause();
+          debugPrint("⏸️ Video paused for ad");
+        }
+      }
+    } catch (e, stackTrace) {
+      _handleException('pauseForAd', e, stackTrace);
+    }
+  }
+
+  /// Resume playback after ads
+  Future<void> resumeAfterAd() async {
+    if (!hasCurrentItem || loadingStatus.value != Status.completed) {
+      debugPrint("⚠️ Cannot resume - no current item or not loaded");
+      return;
+    }
+
+    try {
+      debugPrint("🎯 Resuming playback after ad");
+
+      if (isAudioMode.value) {
+        // Ensure audio player is in a valid state
+        if (_audioPlayer.processingState != ProcessingState.idle) {
+          await _audioPlayer.play();
+          isPlaying.value = true;
+          debugPrint("▶️ Audio resumed after ad");
+        } else {
+          // Audio player lost state, reinitialize
+          debugPrint("🔄 Audio player lost state, reinitializing...");
+          await _reinitializeCurrentMedia();
+        }
+      } else {
+        final controller = videoPlayerController;
+        if (controller != null && controller.value.isInitialized) {
+          await controller.play();
+          isPlaying.value = true;
+          debugPrint("▶️ Video resumed after ad");
+        } else {
+          // Video player lost state, reinitialize
+          debugPrint("🔄 Video player lost state, reinitializing...");
+          await _reinitializeCurrentMedia();
+        }
+      }
+    } catch (e, stackTrace) {
+      _handleException('resumeAfterAd', e, stackTrace);
+      // If resume fails, try to reinitialize
+      await _reinitializeCurrentMedia();
+    }
+  }
+
+  /// Reinitialize current media if state is lost
+  Future<void> _reinitializeCurrentMedia() async {
+    final currentIdx = currentIndex.value;
+    if (currentIdx >= 0 && currentIdx < items.length) {
+      debugPrint("🔧 Reinitializing media at index $currentIdx");
+      await playPodcast(index: currentIdx);
+    }
+  }
+
+
   Future<void> _playPodcastWithRetry(int index, int attempt) async {
     if (attempt >= maxRetryAttempts) {
       debugPrint('❌ Max retry attempts reached for podcast at index $index');
@@ -200,17 +273,26 @@ class PodcastFeedController extends GetxController {
           break;
       }
 
-
       if (success) {
         _setLoadingStatus(Status.completed);
         isPlaying.value = true;
         retryCount.value = 0;
         _trackView(item.id ?? "");
 
-
         _playCount++;
         if (_playCount % 3 == 0) {
-          RewardedAdService().showAd();
+          // Use the enhanced ad service with audio management
+          await RewardedAdService().showAd(
+            onPauseAudio: () async {
+              await pauseForAd();
+            },
+            onResumeAudio: () async {
+              await resumeAfterAd();
+            },
+            onEarnedReward: () {
+              debugPrint("🎉 User earned reward from podcast playback");
+            },
+          );
         }
         debugPrint('▶️ Playing: ${item.title} (${isAudioMode.value ? 'Audio' : 'Video'} mode)');
       } else {
