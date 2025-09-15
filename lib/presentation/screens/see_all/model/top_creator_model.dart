@@ -9,17 +9,6 @@ class TopCreatorModel {
     this.data,
   });
 
-  TopCreatorModel copyWith({
-    bool? success,
-    String? message,
-    Data? data,
-  }) =>
-      TopCreatorModel(
-        success: success ?? this.success,
-        message: message ?? this.message,
-        data: data ?? this.data,
-      );
-
   factory TopCreatorModel.fromJson(Map<String, dynamic> json) => TopCreatorModel(
     success: json["success"],
     message: json["message"],
@@ -34,108 +23,159 @@ class TopCreatorModel {
 }
 
 class Data {
+  final Meta? meta;
   final List<TopCreatorItem>? result;
 
   Data({
+    this.meta,
     this.result,
   });
 
-  Data copyWith({
-    List<TopCreatorItem>? result,
-  }) =>
-      Data(
-        result: result ?? this.result,
-      );
-
   factory Data.fromJson(Map<String, dynamic> json) => Data(
+    meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
     result: json["result"] == null ? [] : List<TopCreatorItem>.from(json["result"]!.map((x) => TopCreatorItem.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
+    "meta": meta?.toJson(),
     "result": result == null ? [] : List<dynamic>.from(result!.map((x) => x.toJson())),
   };
 }
 
-class TopCreatorItem {
-  final num? totalViews;
-  final String? creatorId;
-  final String? name;
-  final String? email;
-  final String? profileImage;
-  final String? profileCover;
-  final Location? location;
+class Meta {
+  final num? page;
+  final num? limit;
+  final num? total;
+  final num? totalPage;
 
-  TopCreatorItem({
-    this.totalViews,
-    this.creatorId,
-    this.name,
-    this.email,
-    this.profileImage,
-    this.profileCover,
-    this.location,
+  Meta({
+    this.page,
+    this.limit,
+    this.total,
+    this.totalPage,
   });
 
-  TopCreatorItem copyWith({
-    num? totalViews,
-    String? creatorId,
-    String? name,
-    String? email,
-    String? profileImage,
-    String? profileCover,
-    Location? location,
-  }) =>
-      TopCreatorItem(
-        totalViews: totalViews ?? this.totalViews,
-        creatorId: creatorId ?? this.creatorId,
-        name: name ?? this.name,
-        email: email ?? this.email,
-        profileImage: profileImage ?? this.profileImage,
-        profileCover: profileCover ?? this.profileCover,
-        location: location ?? this.location,
-      );
-
-  factory TopCreatorItem.fromJson(Map<String, dynamic> json) => TopCreatorItem(
-    totalViews: json["totalViews"],
-    creatorId: json["creatorId"],
-    name: json["name"],
-    email: json["email"],
-    profileImage: json["profile_image"],
-    profileCover: json["profile_cover"],
-    location: json["location"] == null ? null : Location.fromJson(json["location"]),
+  factory Meta.fromJson(Map<String, dynamic> json) => Meta(
+    page: json["page"],
+    limit: json["limit"],
+    total: json["total"],
+    totalPage: json["totalPage"],
   );
 
   Map<String, dynamic> toJson() => {
-    "totalViews": totalViews,
-    "creatorId": creatorId,
+    "page": page,
+    "limit": limit,
+    "total": total,
+    "totalPage": totalPage,
+  };
+}
+
+class TopCreatorItem {
+  final String? name;
+  final String? email;
+  final String? profileImage;
+  final Location? location;
+  final String? profileCover;
+  final String? donationLink;
+  final bool? isLive;
+  final num? totalViews;
+  final LatestPodcast? latestPodcast;
+  final String? creatorId;
+  final LiveSession? liveSession;
+
+  TopCreatorItem({
+    this.name,
+    this.email,
+    this.profileImage,
+    this.location,
+    this.profileCover,
+    this.donationLink,
+    this.isLive,
+    this.totalViews,
+    this.latestPodcast,
+    this.creatorId,
+    this.liveSession,
+  });
+
+  factory TopCreatorItem.fromJson(Map<String, dynamic> json) => TopCreatorItem(
+    name: json["name"],
+    email: json["email"],
+    profileImage: json["profile_image"],
+    location: json["location"] == null ? null : Location.fromJson(json["location"]),
+    profileCover: json["profile_cover"],
+    donationLink: json["donationLink"],
+    isLive: json["isLive"],
+    totalViews: json["totalViews"],
+    latestPodcast: json["latestPodcast"] == null ? null : LatestPodcast.fromJson(json["latestPodcast"]),
+    creatorId: json["creatorId"],
+    liveSession: json["liveSession"] == null ? null : LiveSession.fromJson(json["liveSession"]),
+  );
+
+  Map<String, dynamic> toJson() => {
     "name": name,
     "email": email,
     "profile_image": profileImage,
-    "profile_cover": profileCover,
     "location": location?.toJson(),
+    "profile_cover": profileCover,
+    "donationLink": donationLink,
+    "isLive": isLive,
+    "totalViews": totalViews,
+    "latestPodcast": latestPodcast?.toJson(),
+    "creatorId": creatorId,
+    "liveSession": liveSession?.toJson(),
+  };
+}
+
+class LatestPodcast {
+  final String? title;
+  final String? description;
+  final String? podcastUrl;
+  final String? coverImage;
+
+  LatestPodcast({
+    this.title,
+    this.description,
+    this.podcastUrl,
+    this.coverImage,
+  });
+
+  factory LatestPodcast.fromJson(Map<String, dynamic> json) => LatestPodcast(
+    title: json["title"],
+    description: json["description"],
+    podcastUrl: json["podcast_url"],
+    coverImage: json["coverImage"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "title": title,
+    "description": description,
+    "podcast_url": podcastUrl,
+    "coverImage": coverImage,
+  };
+}
+
+class LiveSession {
+  LiveSession();
+
+  factory LiveSession.fromJson(Map<String, dynamic> json) => LiveSession(
+  );
+
+  Map<String, dynamic> toJson() => {
   };
 }
 
 class Location {
   final String? type;
-  final List<num?>? coordinates;
+  final List<dynamic>? coordinates;
 
   Location({
     this.type,
     this.coordinates,
   });
 
-  Location copyWith({
-    String? type,
-    List<num?>? coordinates,
-  }) =>
-      Location(
-        type: type ?? this.type,
-        coordinates: coordinates ?? this.coordinates,
-      );
-
   factory Location.fromJson(Map<String, dynamic> json) => Location(
     type: json["type"],
-    coordinates: json["coordinates"] == null ? [] : List<num?>.from(json["coordinates"]!.map((x) => x)),
+    coordinates: json["coordinates"] == null ? [] : List<dynamic>.from(json["coordinates"]!.map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {

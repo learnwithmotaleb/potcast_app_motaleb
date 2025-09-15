@@ -12,8 +12,8 @@ import 'package:podcast/presentation/screens/auth/verification/verification_scre
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
-import 'package:podcast/presentation/screens/notification/notification_screen.dart';
 import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
+import 'package:podcast/presentation/screens/play/record_play_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_info_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
@@ -35,6 +35,7 @@ import '../../presentation/screens/categories/categories_screen.dart';
 import '../../presentation/screens/search/search_screen.dart';
 import '../../presentation/screens/see_all/album_see_all_screen.dart';
 import '../../presentation/screens/see_all/podcast_list_screen.dart';
+import '../../presentation/screens/see_all/see_all_record.dart';
 import '../../presentation/screens/see_all/see_all_top_creator.dart';
 
 class AppRouter {
@@ -254,10 +255,9 @@ class AppRouter {
               url: "url",
             );
 
-            final model =
-                checking ? state.extra as AudioPlayerModel : audioModel;
+            final model = checking ? state.extra as AudioPlayerModel : audioModel;
 
-            print(model.toJson());
+            debugPrint(model.toJson().toString());
             return _buildPageWithAnimation(
               child: UserPlayScreen(
                 id: model.id,
@@ -268,9 +268,33 @@ class AppRouter {
                 reels: model.reels,
                 popular: model.popular,
                 isAlbum: model.isAlbum,
+                artist: model.artist,
                 isPlaylist: model.isPlaylist,
                 isCreator: model.isCreator,
               ),
+              state: state,
+            );
+          },
+        ),
+        GoRoute(
+          name: RoutePath.recordPlayScreen,
+          path: RoutePath.recordPlayScreen.addBasePath,
+          pageBuilder: (context, state) {
+            final checking = state.extra != null;
+            return _buildPageWithAnimation(
+              child: RecordPlayScreen(
+                url: checking? state.extra as String: "",
+              ),
+              state: state,
+            );
+          },
+        ),
+        GoRoute(
+          name: RoutePath.seeAllRecord,
+          path: RoutePath.seeAllRecord.addBasePath,
+          pageBuilder: (context, state) {
+            return _buildPageWithAnimation(
+              child: const SeeAllRecord(),
               state: state,
             );
           },

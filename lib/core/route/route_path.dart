@@ -24,6 +24,8 @@ class RoutePath {
   static const String albumPodcastScreen = 'albumPodcastScreen';
   static const String subscriptionScreen = 'subscriptionScreen';
   static const String streamingScreen = 'streamingScreen';
+  static const String recordPlayScreen = 'recordPlayScreen';
+  static const String seeAllRecord = 'seeAllRecord';
 
   //User
   static const String userNavScreen = 'userNavScreen';

@@ -26,8 +26,17 @@ class SpotifyStyleAppBar extends StatelessWidget implements PreferredSizeWidget 
       leading: IconButton(
         icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 30,),
         onPressed: (){
-          if(Navigator.of(context).canPop()){
-            AppRouter.route.pop();
+          if (!feedController.isAudioMode.value) {
+            feedController.toggleMode().then((value){
+              if(!context.mounted) return;
+              if (Navigator.of(context).canPop()) {
+                AppRouter.route.pop();
+              }
+            });
+          }else{
+            if (Navigator.of(context).canPop()) {
+              AppRouter.route.pop();
+            }
           }
         },
       ),
@@ -69,8 +78,8 @@ class SpotifyStyleAppBar extends StatelessWidget implements PreferredSizeWidget 
   }
 
   String _getSubtitleText() {
-    final creatorName = feedController.currentItem.value?.creator?.name;
-    final categoryName = feedController.currentItem.value?.creator?.name;
+    final creatorName = feedController.currentItem.value?.creatorName;
+    final categoryName = feedController.currentItem.value?.categoryName;
     final artist = fallbackArtist;
 
     if (isCreator) {
@@ -82,15 +91,16 @@ class SpotifyStyleAppBar extends StatelessWidget implements PreferredSizeWidget 
         return "Unknown";
       }
     } else {
-      if (categoryName != null && categoryName.trim().isNotEmpty) {
-        return categoryName;
-      } else if (artist != null && artist.trim().isNotEmpty) {
+      if (artist != null && artist.trim().isNotEmpty) {
         return artist;
+      } else if (categoryName != null && categoryName.trim().isNotEmpty) {
+        return categoryName;
       } else {
         return "Unknown";
       }
     }
   }
+
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
-import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
+import 'package:podcast/presentation/screens/play/model/play_entity.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import '../controller/podcast_play_controller.dart';
 
@@ -65,7 +65,7 @@ class AudioPlayControl extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoriteButton(PlayPodcastItem? currentItem) {
+  Widget _buildFavoriteButton(PlayEntity? currentItem) {
     return Obx(() {
       final isLoading = controller.favoriteLoading.value;
       final isFavorited = controller.isFavorite.value;
@@ -97,7 +97,7 @@ class AudioPlayControl extends StatelessWidget {
     });
   }
 
-  Widget _buildLikeButton(PlayPodcastItem? currentItem) {
+  Widget _buildLikeButton(PlayEntity? currentItem) {
     return Obx(() {
       final isLoading = controller.likeLoading.value;
       final isLiked = controller.isLike.value;

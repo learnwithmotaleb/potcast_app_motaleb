@@ -10,12 +10,13 @@ import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../model/home_model.dart';
+import '../model/streaming_record_model.dart';
 
 class UserHomeController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final DBHelper dbHelper = serviceLocator<DBHelper>();
 
-  /// ============================= GET Profile Info =====================================
+  /// ============================= GET Home Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
   final Rx<HomeModel> model = HomeModel().obs;
@@ -34,6 +35,35 @@ class UserHomeController extends GetxController {
       } else {
         loadingMethod(Status.error);
       }
+    }
+  }
+
+  /// ============================= GET Record List =====================================
+  var loadingRecord = Status.completed.obs;
+  loadingRecordMethod(Status status) => loading.value = status;
+  final RxList<StreamingRecordItem> recordList = RxList([]);
+
+  Future<void> getRecords() async {
+    try{
+      loadingRecordMethod(Status.loading);
+      var response = await apiClient.get(url: ApiUrl.streamingRecord(), showResult: true);
+      if (response.statusCode == 200) {
+        final items = StreamingRecordModel.fromJson(response.body);
+        final newItems = items.data?.result ?? [];
+
+        recordList.assignAll(newItems);
+        loadingRecordMethod(Status.completed);
+      } else {
+        if (response.statusCode == 503) {
+          loadingRecordMethod(Status.internetError);
+        } else if (response.statusCode == 404) {
+          loadingRecordMethod(Status.noDataFound);
+        } else {
+          loadingRecordMethod(Status.error);
+        }
+      }
+    }catch(_){
+      loadingRecordMethod(Status.error);
     }
   }
 
@@ -106,6 +136,7 @@ class UserHomeController extends GetxController {
     Future.wait([
       getHome(),
       getBanners(),
+      getRecords(),
     ]);
     super.onReady();
   }

@@ -7,7 +7,7 @@ class ApiUrl {
   ApiUrl._();
 
   // static const String base = "http://10.10.20.9:5088";
-  static const String base = "https://rnj64vmh-5088.inc1.devtunnels.ms"; // Live
+  static const String base = "https://api.preachradio.com"; // Live
   static String generatePreSignedURL() => "$base/generate-presigned-url";
   static String googleSearchApi({required String search}) =>
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
@@ -131,6 +131,7 @@ class ApiUrl {
 
   ///User
   static String home() => '$base/podcast/get-home-data';
+  static String streamingRecord({int page = 1, int limit = 10 }) => '$base/live-session/get-previous-live?page=$page&limit=$limit&isPublic=true';
   static String plan() => '$base/plan';
   static String payment({required String id}) => '$base/subscription/create/$id';
 
@@ -150,6 +151,6 @@ class ApiUrl {
   ///Settings
   static String terms() => '$base/manage/get-terms-conditions';
   static String privacy() => '$base/manage/get-privacy-policy';
-  static String about() => '$base/about';
+  static String about() => '$base/manage/get-about-us';
   static String faq() => '$base/manage/get-faq';
 }

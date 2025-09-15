@@ -106,11 +106,11 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
         RoutePath.audioPlayScreen,
         extra: AudioPlayerModel(
           id: creator.creatorId ?? "",
-          title: creator.name ?? "",
+          title: creator.latestPodcast?.title ?? "",
           image: creator.profileImage ?? "",
-          url: "",
-          artist: "",
-          duration: "",
+          url: creator.latestPodcast?.podcastUrl ?? "",
+          artist: creator.name ?? "",
+          duration: creator.donationLink ?? "",
           isCreator: true,
         ),
       );

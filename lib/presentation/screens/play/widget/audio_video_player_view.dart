@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:podcast/helper/image/network_image.dart';
-import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
+import 'package:podcast/presentation/screens/play/model/play_entity.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:video_player/video_player.dart';
 
@@ -39,13 +39,13 @@ class AudioVideoPlayerView extends StatelessWidget {
 
   Widget _buildContent({
     required Status loadingStatus,
-    required PlayPodcastItem? currentItem,
+    required PlayEntity? currentItem,
     required bool isAudioMode,
     required VideoPlayerController? videoController,
     required BuildContext context,
   }) {
     final mediaType = currentItem?.podcastUrl != null
-        ? feedController.getMediaType(currentItem!.podcastUrl!)
+        ? feedController.getMediaType(currentItem!.podcastUrl)
         : MediaType.audio;
 
     if (loadingStatus == Status.loading) {
@@ -109,7 +109,7 @@ class AudioVideoPlayerView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.7),
+              color: Colors.black.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Text(

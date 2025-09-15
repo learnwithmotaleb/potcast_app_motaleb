@@ -5,6 +5,7 @@ import 'package:podcast/model/all_podcast_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 
+import '../../home/model/streaming_record_model.dart';
 import '../model/see_all_album_model.dart';
 import '../model/top_creator_model.dart';
 
@@ -107,6 +108,39 @@ class SeeAllController extends GetxController {
       pagingController.error = 'An error occurred';
     } finally {
       isLoadingAlbum = false;
+    }
+  }
+
+  bool isLoadingRecord = false;
+
+  Future<void> getAllRecord({
+    required int pageKey,
+    required PagingController<int, StreamingRecordItem> pagingController,
+  }) async {
+    if (isLoadingRecord) return;
+    isLoadingRecord = true;
+
+    try {
+      final response = await apiClient.get(
+        url: ApiUrl.streamingRecord(page: pageKey, limit: 20),
+        showResult: true,
+      );
+
+      if (response.statusCode == 200) {
+        final userServiceAll = StreamingRecordModel.fromJson(response.body);
+        final newItems = userServiceAll.data?.result ?? [];
+        if (newItems.isEmpty) {
+          pagingController.appendLastPage(newItems);
+        } else {
+          pagingController.appendPage(newItems, pageKey + 1);
+        }
+      } else {
+        pagingController.error = 'Error fetching data';
+      }
+    } catch (e) {
+      pagingController.error = 'An error occurred';
+    } finally {
+      isLoadingRecord = false;
     }
   }
 }

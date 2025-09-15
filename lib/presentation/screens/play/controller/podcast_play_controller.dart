@@ -6,6 +6,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
+import 'package:podcast/presentation/screens/play/model/play_entity.dart';
 import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
@@ -21,8 +22,9 @@ class PodcastFeedController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
 
   // Core data
-  final RxList<PlayPodcastItem> items = RxList([]);
-  final Rx<PlayPodcastItem?> currentItem = Rx<PlayPodcastItem?>(null);
+  final RxList<PlayEntity> items = RxList([]);
+  final Rx<PlayEntity?> currentItem = Rx<PlayEntity?>(null);
+
   final RxInt currentIndex = 0.obs;
 
   // Media players
@@ -66,62 +68,74 @@ class PodcastFeedController extends GetxController {
   bool get hasCurrentItem => currentItem.value != null;
   bool get canPlayNext => currentIndex.value < items.length - 1;
 
+  void stopAudioIfPlaying() {
+    if (audioPlayer.playing) {
+      audioPlayer.pause();
+    }
+  }
+
   Future<void> getPodcast({bool? reels, bool? popular, String? firstPodcastId, bool isAlbum = false, bool isPlaylist = false, String? id}) async {
-    try {
-      isLoading.value = Status.loading;
-      _clearError();
+    isLoading.value = Status.loading;
+    _clearError();
 
-      final response = await _executeWithRetry(() async {
-        return await apiClient.get(
-          url: ApiUrl.playFeed(
-            reels: reels,
-            popular: popular,
-            firstPodcastId: firstPodcastId,
-            id: id,
-            isAlbum: isAlbum,
-            isPlaylist: isPlaylist,
-          ),
-          showResult: true,
-        );
-      }, 'getPodcast');
+    final response = await _executeWithRetry(() async {
+      return await apiClient.get(
+        url: ApiUrl.playFeed(
+          reels: reels,
+          popular: popular,
+          firstPodcastId: firstPodcastId,
+          id: id,
+          isAlbum: isAlbum,
+          isPlaylist: isPlaylist,
+        ),
+        showResult: true,
+      );
+    }, 'getPodcast');
 
-      if (response == null) {
+    if (response == null) {
+      isLoading.value = Status.noDataFound;
+      return;
+    }
+
+    if (response.statusCode == 200) {
+      final feed = PlayFeedModel.fromJson(response.body);
+      final newItems = feed.data?.podcasts ?? [];
+
+      if (newItems.isEmpty) {
         isLoading.value = Status.noDataFound;
         return;
       }
 
-      if (response.statusCode == 200) {
-        final feed = PlayFeedModel.fromJson(response.body);
-        final newItems = feed.data?.podcasts ?? [];
+      print("object playPodcast 11");
 
-        if (newItems.isEmpty) {
-          isLoading.value = Status.noDataFound;
-          return;
-        }
+      items.assignAll(
+        newItems.map(PlayEntity.fromPodcast).whereType<PlayEntity>().toList(),
+      );
 
-        final shouldSkipPlay = _shouldSkipPlayback(newItems.first);
 
-        items.assignAll(newItems);
-        currentIndex.value = 0;
+      print("object playPodcast 1");
 
-        isLoading.value = Status.completed;
+      final shouldSkipPlay = _shouldSkipPlayback(items.first);
+      isLoading.value = Status.completed;
+      currentIndex.value = 0;
 
-        if (!shouldSkipPlay) {
-          await playPodcast(index: 0);
-        }
+      print("object playPodcast 2");
+
+      if (!shouldSkipPlay) {
+        print("object playPodcast 3");
+        await playPodcast(index: 0);
       }
-    } catch (_) {
-      isLoading.value = Status.error;
     }
   }
 
-  bool _shouldSkipPlayback(PlayPodcastItem newItem) {
+
+  bool _shouldSkipPlayback(PlayEntity newItem) {
     if (currentItem.value == null) return false;
 
     final currentId = currentItem.value?.id;
     final newId = newItem.id;
 
-    if (currentId == null || newId == null) return false;
+    if (currentId == null) return false;
 
     return currentId == newId && loadingStatus.value == Status.completed;
   }
@@ -130,6 +144,8 @@ class PodcastFeedController extends GetxController {
     if (index < 0 || index >= items.length) {
       return;
     }
+
+    print("object playPodcast");
 
     await _playPodcastWithRetry(index, 0);
   }
@@ -683,12 +699,12 @@ class PodcastFeedController extends GetxController {
     return MediaType.audio;
   }
 
-  MediaItem _createMediaItem(PlayPodcastItem item) {
+  MediaItem _createMediaItem(PlayEntity item) {
     return MediaItem(
       id: item.id ?? "",
-      album: item.category?.name ?? "",
+      album: item.categoryName ?? "",
       title: item.title ?? "",
-      artist: item.creator?.name ?? "",
+      artist: item.creatorName ?? "",
       artUri: Uri.tryParse(item.coverImage ?? ""),
     );
   }
