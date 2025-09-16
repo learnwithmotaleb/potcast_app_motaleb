@@ -12,6 +12,7 @@ import 'package:podcast/presentation/widget/map/search_my_location.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/service/api_service.dart';
+import 'package:podcast/service/media_duration.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
@@ -239,10 +240,23 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
       return;
     }
 
-    final File mediaFile = audioFile ?? videoFile!;
-    final duration = await getAudioDuration(mediaFile);
+    Duration? duration;
 
-    if (duration?.inSeconds == null) {
+    try {
+      final info = await MediaDuration.getMediaDuration(videoFile!.path);
+      print(info);
+      if (info['success'] == true) {
+        final int? durationMillis = info['durationMillis'];
+        if (durationMillis != null) {
+          duration = Duration(milliseconds: durationMillis);
+        }
+        print('ms: $durationMillis, text: ${info['durationString']}');
+      } else {
+        toastMessage(message: "Please try again, duration get issue");
+        return;
+      }
+    } catch (e) {
+      print(e.toString());
       toastMessage(message: "Please try again, duration get issue");
       return;
     }

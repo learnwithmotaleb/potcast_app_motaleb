@@ -14,6 +14,7 @@ import 'package:podcast/presentation/widget/map/search_my_location.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/service/api_service.dart';
+import 'package:podcast/service/media_duration.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
@@ -260,14 +261,26 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
     }
 
     final File mediaFile = audioFile ?? videoFile!;
-    debugPrint("Logger 1");
-    final duration = await getAudioDuration(mediaFile);
-    debugPrint("Logger 2");
 
-    if (duration?.inSeconds == null) {
+    Duration? duration;
+
+    try {
+      final info = await MediaDuration.getMediaDuration(mediaFile.path);
+      if (info['success'] == true) {
+        final int? durationMillis = info['durationMillis'];
+        if (durationMillis != null) {
+          duration = Duration(milliseconds: durationMillis);
+        }
+        print('ms: $durationMillis, text: ${info['durationString']}');
+      } else {
+        toastMessage(message: "Please try again, duration get issue");
+        return;
+      }
+    } catch (_) {
       toastMessage(message: "Please try again, duration get issue");
       return;
     }
+
 
     try {
       if (validate && hasCategory && hasSubCategory) {

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/controller/global_controller.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
+import 'package:podcast/model/basic/selected_location_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
@@ -14,6 +15,7 @@ import 'package:podcast/presentation/widget/map/search_my_location.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/service/api_service.dart';
+import 'package:podcast/service/media_duration.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
@@ -51,6 +53,7 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
       controller.selectedCategoryId.value = "";
       controller.selectedSubcategoryId.value = "";
       controller.createLoading.value = false;
+      controller.selectedAddress.value = null;
     });
 
     super.dispose();
@@ -244,13 +247,28 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
 
     final File mediaFile = audioFile ?? videoFile!;
     debugPrint("Logger 1");
-    final duration = await getAudioDuration(mediaFile);
-    debugPrint("Logger 2");
 
-    if (duration?.inSeconds == null) {
+    Duration? duration;
+
+    try {
+      final info = await MediaDuration.getMediaDuration(mediaFile.path);
+      print('ms: $info');
+
+      if (info['success'] == true) {
+        final int? durationMillis = info['durationMillis'];
+        if (durationMillis != null) {
+          duration = Duration(milliseconds: durationMillis);
+        }
+        print('ms: $durationMillis, text: ${info['durationString']}');
+      } else {
+        toastMessage(message: "Please try again, duration get issue");
+        return;
+      }
+    } catch (e) {
       toastMessage(message: "Please try again, duration get issue");
       return;
     }
+
 
     try {
       if (validate && hasCategory && hasSubCategory) {

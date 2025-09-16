@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easy_faq/flutter_easy_faq.dart';
 import 'package:get/get.dart';
-import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
@@ -29,8 +28,6 @@ class _SupportScreenState extends State<SupportScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(
-            onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("support".tr),
       ),
       body: Obx(() {

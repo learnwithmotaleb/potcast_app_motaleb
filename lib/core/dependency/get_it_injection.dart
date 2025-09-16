@@ -6,8 +6,8 @@ Future<void> initDependencies() async {
   serviceLocator.registerLazySingleton<Dio>(
     () => Dio(
       BaseOptions(
-        connectTimeout: const Duration(seconds: 200),
-        receiveTimeout: const Duration(seconds: 200),
+        connectTimeout: const Duration(seconds: 300),
+        receiveTimeout: const Duration(seconds: 300),
       ),
     ),
   );

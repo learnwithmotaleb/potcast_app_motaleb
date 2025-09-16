@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/presentation/screens/play/widget/audio_video_player_view.dart';
+import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
 import 'package:podcast/service/rewarded_ad_service.dart';
 import 'controller/podcast_play_controller.dart';
 import 'widget/audio_play_bottom.dart';
@@ -45,6 +46,7 @@ class UserPlayScreen extends StatefulWidget {
 
 class _UserPlayScreenState extends State<UserPlayScreen> with WidgetsBindingObserver {
   late final PodcastFeedController feedController;
+  late final SubscriptionController subscriptionController;
 
   @override
   void initState() {
@@ -54,7 +56,11 @@ class _UserPlayScreenState extends State<UserPlayScreen> with WidgetsBindingObse
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _loadPodcasts();
-      await RewardedAdService().loadAd();
+      if (!subscriptionController.hasActiveSubscription) {
+        await RewardedAdService().loadAd();
+      } else {
+        debugPrint("✨ Premium user detected — skipping ad preload");
+      }
     });
   }
 

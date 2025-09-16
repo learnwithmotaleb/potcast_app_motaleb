@@ -265,6 +265,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               final List<HomeNewestPodcast>? reelsItem = reelsNotEmpty ? data.reels : [];
               final List<HomeAlbumItem>? albumItem = albumNotEmpty ? data.albums : [];
 
+              print(categories?.length);
               return RefreshIndicator(
                 onRefresh: () async {
                   profileController.getProfile();
@@ -291,7 +292,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           crossAxisSpacing: 8,
                           mainAxisExtent: 85,
                         ),
-                        itemCount: math.max(0, (categories?.length ?? 0) - 1),
+                        itemCount: categories?.length ?? 0,
                       ),
                     ),
                     SliverToBoxAdapter(

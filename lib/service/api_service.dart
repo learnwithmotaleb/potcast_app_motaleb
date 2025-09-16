@@ -27,7 +27,7 @@ Map<String, String> basicHeaderInfo() {
 }
 
 Future<Map<String, String>> bearerHeaderInfo() async {
-  DBHelper dbHelper = serviceLocator();
+  DBHelper dbHelper = serviceLocator<DBHelper>();
   final token = await dbHelper.getToken();
   print(token);
   return {
@@ -90,6 +90,27 @@ class ApiClient {
       }
 
       var body = jsonDecode(response.body);
+
+      if(body["message"] == "This user does not exist"){
+        try{
+          DBHelper dbHelper = serviceLocator<DBHelper>();
+          await dbHelper.logOut();
+
+          return Response(
+            body: body ?? response.body,
+            bodyString: response.body.toString(),
+            statusCode: response.statusCode,
+            statusText: response.reasonPhrase,
+          );
+        }catch(_){
+          return Response(
+            body: body ?? response.body,
+            bodyString: response.body.toString(),
+            statusCode: response.statusCode,
+            statusText: response.reasonPhrase,
+          );
+        }
+      }
 
       return Response(
         body: body ?? response.body,
@@ -188,7 +209,7 @@ class ApiClient {
       body = jsonDecode(response.body);
 
       return Response(
-        body: body ?? response.body,
+        body: body,
         bodyString: response.body.toString(),
         request: Request(
             headers: response.request!.headers,

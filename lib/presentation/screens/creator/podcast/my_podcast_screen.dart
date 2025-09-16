@@ -18,7 +18,7 @@ class MyPodcastScreen extends StatefulWidget {
 
 class _MyPodcastScreenState extends State<MyPodcastScreen> {
   final _controller = Get.find<PodcastAudioController>();
-  final PagingController<int, MyPodcastItem> pagingController = PagingController(firstPageKey: 1);
+  final pagingController = PagingController<int, MyPodcastItem>(firstPageKey: 1);
 
   @override
   void initState() {
@@ -64,7 +64,7 @@ class _MyPodcastScreenState extends State<MyPodcastScreen> {
               final data = AudioPlayerModel(
                 id: item.id ?? "",
                 title: item.title ?? "",
-                image: item.creator?.profileImage ?? "",
+                image: item.coverImage ?? "",
                 categories: item.category?.name ?? "",
                 duration: formatDuration(item.duration ?? 0),
                 artist: item.creator?.name ?? "",

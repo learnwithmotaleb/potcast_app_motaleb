@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../presentation/screens/subscription/controller/subscription_controller.dart';
 
 class RewardedAdService {
   static final RewardedAdService _instance = RewardedAdService._internal();
@@ -56,6 +59,14 @@ class RewardedAdService {
     Function()? onPauseAudio,
     Function()? onResumeAudio,
   }) async {
+
+    final subscriptionController = Get.find<SubscriptionController>();
+
+    if (subscriptionController.hasActiveSubscription) {
+      debugPrint("✨ Premium user detected — skipping ads.");
+      return;
+    }
+
     if (_rewardedAd == null) {
       debugPrint("⚠️ No rewarded ad available, continuing playback...");
       await loadAd(); // preload for next time

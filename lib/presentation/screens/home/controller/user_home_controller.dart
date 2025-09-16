@@ -22,19 +22,23 @@ class UserHomeController extends GetxController {
   final Rx<HomeModel> model = HomeModel().obs;
 
   Future<void> getHome() async {
-    loadingMethod(Status.loading);
-    var response = await apiClient.get(url: ApiUrl.home(), showResult: true);
-    if (response.statusCode == 200) {
-      model.value = HomeModel.fromJson(response.body);
-      loadingMethod(Status.completed);
-    } else {
-      if (response.statusCode == 503) {
-        loadingMethod(Status.internetError);
-      } else if (response.statusCode == 404) {
-        loadingMethod(Status.noDataFound);
+    try{
+      loadingMethod(Status.loading);
+      var response = await apiClient.get(url: ApiUrl.home(), showResult: true);
+      if (response.statusCode == 200) {
+        model.value = HomeModel.fromJson(response.body);
+        loadingMethod(Status.completed);
       } else {
-        loadingMethod(Status.error);
+        if (response.statusCode == 503) {
+          loadingMethod(Status.internetError);
+        } else if (response.statusCode == 404) {
+          loadingMethod(Status.noDataFound);
+        } else {
+          loadingMethod(Status.error);
+        }
       }
+    }catch(_){
+      loadingMethod(Status.error);
     }
   }
 

@@ -23,7 +23,7 @@ class PlaylistAddScreen extends StatefulWidget {
 
 class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
   final controller = Get.find<SearchScreenController>();
-  final PagingController<int, AllPodcastItem> pagingController = PagingController(firstPageKey: 1);
+  final pagingController = PagingController<int, AllPodcastItem>(firstPageKey: 1);
   final ValueNotifier<List<String>> selectedItem = ValueNotifier([]);
 
   @override
@@ -58,6 +58,7 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
       top: false,
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text("Add Playlist".tr),
         ),
         floatingActionButton: FloatingActionButton(

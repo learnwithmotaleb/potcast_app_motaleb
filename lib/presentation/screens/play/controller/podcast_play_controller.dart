@@ -8,6 +8,7 @@ import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/play/model/play_entity.dart';
 import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
+import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/service/rewarded_ad_service.dart';
@@ -296,15 +297,11 @@ class PodcastFeedController extends GetxController {
         _trackView(item.id ?? "");
 
         _playCount++;
-        if (_playCount % 3 == 0) {
-          // Use the enhanced ad service with audio management
+        final subscriptionController = Get.find<SubscriptionController>();
+        if (!subscriptionController.hasActiveSubscription && _playCount % 3 == 0) {
           await RewardedAdService().showAd(
-            onPauseAudio: () async {
-              await pauseForAd();
-            },
-            onResumeAudio: () async {
-              await resumeAfterAd();
-            },
+            onPauseAudio: () async => await pauseForAd(),
+            onResumeAudio: () async => await resumeAfterAd(),
             onEarnedReward: () {
               debugPrint("🎉 User earned reward from podcast playback");
             },

@@ -73,8 +73,8 @@ class ApiUrl {
       'limit': limit.toString(),
     };
 
-    if (reels == true) queryParams['reels'] = reels.toString();
-    if (popular == true) queryParams['popular'] = popular.toString();
+    // if (reels == true) queryParams['reels'] = reels.toString();
+    // if (popular == true) queryParams['popular'] = popular.toString();
     if (firstPodcastId != null && firstPodcastId.isNotEmpty) {
       queryParams['firstPodcastId'] = firstPodcastId;
     }

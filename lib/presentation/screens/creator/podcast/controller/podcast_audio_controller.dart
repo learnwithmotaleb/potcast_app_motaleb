@@ -215,7 +215,6 @@ class PodcastAudioController extends GetxController {
         pagingController.error = 'Error fetching data';
       }
     } catch (e) {
-      print(e.toString());
       pagingController.error = 'An error occurred';
     } finally {
       isLoadingMove = false;
@@ -440,7 +439,10 @@ class PodcastAudioController extends GetxController {
 
       if (response.statusCode == 200) {
         final records = LiveRecordsModel.fromJson(response.body);
-        final newItems = records.data?.result ?? [];
+        final newItems = (records.data?.result ?? []).where((item) {
+          final url = item.recordingPresignedUrl?.trim() ?? "";
+          return url.isNotEmpty && Uri.tryParse(url)?.hasAbsolutePath == true;
+        }).toList();
 
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);

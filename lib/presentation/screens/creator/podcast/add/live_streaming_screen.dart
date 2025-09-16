@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
+import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/dialog/custom_dialog.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
@@ -603,7 +604,14 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
 
             /// Record Link
             GestureDetector(
-              onTap: () => openBrowser(url: item.recordingPresignedUrl ?? ""),
+              onTap: (){
+                if(item.recordingPresignedUrl != null){
+                  AppRouter.route.pushNamed(RoutePath.recordPlayScreen,
+                    extra: item.recordingPresignedUrl ?? "",
+                  );
+                }
+              },
+              // onTap: () => openBrowser(url: item.recordingPresignedUrl ?? ""),
               child: Row(
                 children: [
                   Icon(Icons.link, color: Colors.grey.shade600, size: 20),
