@@ -183,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                       CustomText(
-                        text: DateFormat("dd - MMMM - yyyy EEEE")
+                        text: DateFormat("MM - dd - yyyy")
                             .format(data?.dateOfBirth ?? DateTime.now()),
                         fontSize: 16,
                         color: AppColors.whiteColor.withValues(alpha: 0.8),

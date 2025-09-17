@@ -4,7 +4,6 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/dialog/custom_dialog.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -23,7 +22,8 @@ class RecordAudioWidget extends StatefulWidget {
   State<RecordAudioWidget> createState() => _RecordAudioWidgetState();
 }
 
-class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProviderStateMixin {
+class _RecordAudioWidgetState extends State<RecordAudioWidget>
+    with TickerProviderStateMixin {
   final controller = Get.find<PodcastAudioController>();
   late AnimationController _pulseController;
   late AnimationController _fadeController;
@@ -35,6 +35,7 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
   Timer? _recordingTimer;
   final ValueNotifier<Duration> _recordingDuration = ValueNotifier(Duration.zero);
   DateTime? _recordingStartTime;
+  Duration _pausedDuration = Duration.zero;
 
   @override
   void initState() {
@@ -73,7 +74,6 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
     _pulseController.dispose();
     _fadeController.dispose();
     _scaleController.dispose();
-
     _recordingTimer?.cancel();
     _recordingDuration.dispose();
     super.dispose();
@@ -98,41 +98,56 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
   }
 
   void _startTimer() {
-    _recordingStartTime = DateTime.now();
-    _recordingDuration.value = Duration.zero;
-    _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_recordingStartTime != null) {
-        final elapsed = DateTime.now().difference(_recordingStartTime!);
-        _recordingDuration.value = elapsed;
-      }
-    });
+    if (_recordingStartTime == null) {
+      // First time recording
+      _recordingStartTime = DateTime.now();
+      _pausedDuration = Duration.zero;
+      _recordingDuration.value = Duration.zero;
+    }
+
+    _recordingTimer?.cancel(); // ensure only one timer is active
+    _recordingTimer =
+        Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+          if (_recordingStartTime != null) {
+            final elapsed = DateTime.now().difference(_recordingStartTime!);
+            _recordingDuration.value = elapsed;
+          }
+        });
   }
 
   void _pauseTimer() {
     _recordingTimer?.cancel();
+    if (_recordingStartTime != null) {
+      _pausedDuration = DateTime.now().difference(_recordingStartTime!);
+      _recordingDuration.value = _pausedDuration;
+    }
   }
 
   void _resumeTimer() {
     if (_recordingStartTime != null) {
-      final currentDuration = _recordingDuration.value;
-      _recordingStartTime = DateTime.now().subtract(currentDuration);
+      _recordingStartTime = DateTime.now().subtract(_pausedDuration);
 
-      _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        final elapsed = DateTime.now().difference(_recordingStartTime!);
-        _recordingDuration.value = elapsed;
-      });
+      _recordingTimer?.cancel();
+      _recordingTimer =
+          Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+            final elapsed = DateTime.now().difference(_recordingStartTime!);
+            _recordingDuration.value = elapsed;
+          });
     }
   }
 
   void _stopTimer() {
     _recordingTimer?.cancel();
     _recordingStartTime = null;
+    _pausedDuration = Duration.zero;
+    _recordingDuration.value = Duration.zero;
   }
 
   void _resetTimer() {
     _recordingTimer?.cancel();
     _recordingDuration.value = Duration.zero;
     _recordingStartTime = null;
+    _pausedDuration = Duration.zero;
   }
 
   String _formatDuration(Duration duration) {
@@ -208,13 +223,22 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
       IconData statusIcon = Icons.mic_none;
 
       if (controller.isRecording.value) {
-        status = controller.isPaused.value ? "Recording Paused" : "Recording...";
-        statusColor = controller.isPaused.value ? Colors.orange : Colors.red;
-        statusIcon = controller.isPaused.value ? Icons.pause_circle : Icons.fiber_manual_record;
+        status = controller.isPaused.value
+            ? "Recording Paused"
+            : "Recording...";
+        statusColor =
+        controller.isPaused.value ? Colors.orange : Colors.red;
+        statusIcon = controller.isPaused.value
+            ? Icons.pause_circle
+            : Icons.fiber_manual_record;
       } else if (controller.recordedFilePath.value?.isNotEmpty ?? false) {
-        status = controller.isPlaying.value ? "Playing" : "Recording Complete";
-        statusColor = controller.isPlaying.value ? Colors.green : Colors.blue;
-        statusIcon = controller.isPlaying.value ? Icons.play_circle : Icons.check_circle;
+        status =
+        controller.isPlaying.value ? "Playing" : "Recording Complete";
+        statusColor =
+        controller.isPlaying.value ? Colors.green : Colors.blue;
+        statusIcon = controller.isPlaying.value
+            ? Icons.play_circle
+            : Icons.check_circle;
       }
 
       return Row(
@@ -237,7 +261,7 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const CustomText(
-                  text: "Podcast Recording",
+                  text: "Recording",
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -260,7 +284,8 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
 
   Widget _buildRecordingTimer() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding:
+      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.red.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
@@ -272,7 +297,8 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
           AnimatedBuilder(
             animation: _pulseController,
             builder: (context, child) {
-              if (controller.isRecording.value && !controller.isPaused.value) {
+              if (controller.isRecording.value &&
+                  !controller.isPaused.value) {
                 _pulseController.repeat(reverse: true);
               } else {
                 _pulseController.stop();
@@ -461,7 +487,8 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
             showCustomAnimatedDialog(
               context: context,
               title: "Reset Recording",
-              subtitle: "Do you really want to reset the recording? This action cannot be undone and your current ${_formatDuration(_recordingDuration.value)} recording will be lost.",
+              subtitle:
+              "Do you really want to reset the recording? This action cannot be undone and your current ${_formatDuration(_recordingDuration.value)} recording will be lost.",
               actionButton: [
                 Expanded(
                   child: TextButton(
@@ -469,7 +496,8 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.grey.withOpacity(0.2),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -494,7 +522,8 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -511,7 +540,9 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
         ),
         if (controller.isPlaying.value)
           _buildControlButton(
-            icon: controller.isPausePlaying.value ? Icons.play_arrow : Icons.pause,
+            icon: controller.isPausePlaying.value
+                ? Icons.play_arrow
+                : Icons.pause,
             color: Colors.green,
             onTap: controller.isPausePlaying.value
                 ? () => controller.resumeAudio(widget.playerController)
@@ -598,7 +629,7 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -628,39 +659,22 @@ class _RecordAudioWidgetState extends State<RecordAudioWidget> with TickerProvid
                 ),
               ),
               Obx(() => CustomText(
-                    text: "${(controller.uploadProgress.value * 100).toStringAsFixed(0)}%",
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  )),
+                text:
+                "${(controller.uploadProgress.value * 100).toStringAsFixed(0)}%",
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.blue,
+              )),
             ],
           ),
-          const Gap(16),
-          Obx(() => LinearProgressIndicator(
-                value: controller.uploadProgress.value,
-                minHeight: 8,
-                borderRadius: BorderRadius.circular(8),
-                backgroundColor: Colors.grey.withOpacity(0.2),
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-              )),
-          const Gap(12),
-          Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomText(
-                    text: "${controller.uploadedMB.value.toStringAsFixed(2)} MB",
-                    fontSize: 12,
-                    color: Colors.blue,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  CustomText(
-                    text: "${controller.totalMB.value.toStringAsFixed(2)} MB",
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ],
-              )),
+          const Gap(20),
+          LinearProgressIndicator(
+            value: controller.uploadProgress.value,
+            backgroundColor: Colors.grey.withOpacity(0.2),
+            color: Colors.blue,
+            minHeight: 6,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ],
       ),
     );
