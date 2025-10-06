@@ -60,7 +60,7 @@ class _SeeAllRecordState extends State<SeeAllRecord> {
               onTap: () {
                 if(item.recordingPresignedUrl != null){
                   AppRouter.route.pushNamed(RoutePath.recordPlayScreen,
-                    extra: item.recordingPresignedUrl ?? "",
+                    extra: {"url": item.recordingPresignedUrl ?? ""},
                   );
                 }
               },

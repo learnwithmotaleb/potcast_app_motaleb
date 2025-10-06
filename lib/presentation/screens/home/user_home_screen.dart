@@ -601,7 +601,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     onTap: () {
                                       if(item.recordingPresignedUrl != null){
                                         AppRouter.route.pushNamed(RoutePath.recordPlayScreen,
-                                          extra: item.recordingPresignedUrl ?? "",
+                                          extra: {"url": item.recordingPresignedUrl ?? ""},
                                         );
                                       }
                                     },

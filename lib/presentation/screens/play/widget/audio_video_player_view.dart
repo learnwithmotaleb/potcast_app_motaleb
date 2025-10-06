@@ -20,8 +20,8 @@ class AudioVideoPlayerView extends StatelessWidget {
     return Obx(() {
       final loadingStatus = feedController.loadingStatus.value;
       final currentItem = feedController.currentItem.value;
-      final isAudioMode = feedController.isAudioMode.value;
-      final videoController = feedController.videoPlayerController;
+      // final isAudioMode = feedController.isAudioMode.value;
+      // final videoController = feedController.videoPlayerController;
 
       return SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -29,8 +29,8 @@ class AudioVideoPlayerView extends StatelessWidget {
         child: _buildContent(
           loadingStatus: loadingStatus,
           currentItem: currentItem,
-          isAudioMode: isAudioMode,
-          videoController: videoController,
+          // isAudioMode: isAudioMode,
+          // videoController: videoController,
           context: context,
         ),
       );
@@ -40,13 +40,13 @@ class AudioVideoPlayerView extends StatelessWidget {
   Widget _buildContent({
     required Status loadingStatus,
     required PlayEntity? currentItem,
-    required bool isAudioMode,
-    required VideoPlayerController? videoController,
+    // required bool isAudioMode,
+    // required VideoPlayerController? videoController,
     required BuildContext context,
   }) {
-    final mediaType = currentItem?.podcastUrl != null
-        ? feedController.getMediaType(currentItem!.podcastUrl)
-        : MediaType.audio;
+    // final mediaType = currentItem?.podcastUrl != null
+    //     ? feedController.getMediaType(currentItem!.podcastUrl)
+    //     : MediaType.audio;
 
     if (loadingStatus == Status.loading) {
       return _buildLoadingState(currentItem?.coverImage);
@@ -66,9 +66,9 @@ class AudioVideoPlayerView extends StatelessWidget {
       return _buildNoDataState(currentItem?.coverImage);
     }
 
-    if (mediaType == MediaType.video && !isAudioMode && videoController != null) {
-      return _buildVideoPlayer(videoController);
-    }
+    // if (mediaType == MediaType.video && !isAudioMode && videoController != null) {
+    //   return _buildVideoPlayer(videoController);
+    // }
 
     return _buildImage(currentItem?.coverImage);
   }

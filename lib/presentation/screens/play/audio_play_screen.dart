@@ -44,7 +44,8 @@ class UserPlayScreen extends StatefulWidget {
   State<UserPlayScreen> createState() => _UserPlayScreenState();
 }
 
-class _UserPlayScreenState extends State<UserPlayScreen> with WidgetsBindingObserver {
+class _UserPlayScreenState extends State<UserPlayScreen>
+    with WidgetsBindingObserver {
   late final PodcastFeedController feedController;
   late final SubscriptionController subscriptionController;
 
@@ -53,6 +54,7 @@ class _UserPlayScreenState extends State<UserPlayScreen> with WidgetsBindingObse
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     feedController = Get.find<PodcastFeedController>();
+    subscriptionController = Get.find<SubscriptionController>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _loadPodcasts();
@@ -82,7 +84,8 @@ class _UserPlayScreenState extends State<UserPlayScreen> with WidgetsBindingObse
         _syncUIState();
         break;
       case AppLifecycleState.detached:
-        debugPrint('🔄 App detached');
+        debugPrint('🔄 App detached - Stopping audio playback');
+        feedController.stopAudioOnAppClose();
         break;
       case AppLifecycleState.inactive:
         debugPrint('🔄 App inactive');

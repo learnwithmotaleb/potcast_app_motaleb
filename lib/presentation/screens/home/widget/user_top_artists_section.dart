@@ -74,8 +74,10 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   Future<void> _handleCreatorTap(TopCreator creator) async {
     if (creator.isLiveRunning) {
       final participantCode = creator.streamRoom?.roomCodes?.firstWhere(
-            (roomCode) =>
-        roomCode.role == "participants" && roomCode.code != null && roomCode.code!.isNotEmpty,
+        (roomCode) =>
+            roomCode.role == "participants" &&
+            roomCode.code != null &&
+            roomCode.code!.isNotEmpty,
         orElse: () => RoomCode(),
       );
 
@@ -87,13 +89,14 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  StreamingScreen(
-                    authToken: "",
-                    roomCode: participantCode!.code!,
-                    userName: _profileController.profile.value.data?.name ?? "Viewer",
-                    userID: _profileController.profile.value.data?.id ?? "46464645645645",
-                  ),
+              builder: (context) => StreamingScreen(
+                authToken: "",
+                roomCode: participantCode!.code!,
+                userName:
+                    _profileController.profile.value.data?.name ?? "Viewer",
+                userID: _profileController.profile.value.data?.id ??
+                    "46464645645645",
+              ),
             ),
           );
         } else {
@@ -121,77 +124,75 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   void _showPermissionDialog() {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            backgroundColor: Colors.black87,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            title: const Row(
-              children: [
-                Icon(Icons.warning, color: Colors.orange),
-                Gap(8),
-                Text("Permissions Required", style: TextStyle(color: Colors.white)),
-              ],
-            ),
-            content: const Text(
-              "Camera and microphone permissions are required to join the live stream.",
-              style: TextStyle(color: Colors.white70),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  openAppSettings();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-                child: const Text("Settings", style: TextStyle(color: Colors.white)),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning, color: Colors.orange),
+            Gap(8),
+            Text("Permissions Required", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: const Text(
+          "Camera and microphone permissions are required to join the live stream.",
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              openAppSettings();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            child:
+                const Text("Settings", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
 
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            backgroundColor: Colors.black87,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            title: const Row(
-              children: [
-                Icon(Icons.error, color: Colors.red),
-                Gap(8),
-                Text("Error", style: TextStyle(color: Colors.white)),
-              ],
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: const Row(
+          children: [
+            Icon(Icons.error, color: Colors.red),
+            Gap(8),
+            Text("Error", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: Text(message, style: const TextStyle(color: Colors.white70)),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
-            content: Text(message, style: const TextStyle(color: Colors.white70)),
-            actions: [
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-                child: const Text("OK", style: TextStyle(color: Colors.white)),
-              ),
-            ],
+            child: const Text("OK", style: TextStyle(color: Colors.white)),
           ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double width = MediaQuery.of(context).size.width;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -208,7 +209,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
                 fontWeight: FontWeight.w800,
               ),
               TextButton(
-                onPressed: () => AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),
+                onPressed: () =>
+                    AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),
                 child: Text(
                   "see_all".tr,
                 ),
@@ -224,7 +226,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               physics: const BouncingScrollPhysics(),
-              itemCount: (controller.model.value.data?.topCreators?.length ?? 0) + 1,
+              itemCount:
+                  (controller.model.value.data?.topCreators?.length ?? 0) + 1,
               itemBuilder: (BuildContext context, int index) {
                 final creators = controller.model.value.data?.topCreators;
 
@@ -258,18 +261,18 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
       width: 90.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.red.withValues(alpha: 0.3),
-            Colors.pink.withValues(alpha: 0.1),
-          ],
-        ),
-        border: Border.all(
-          color: Colors.red.withValues(alpha: 0.5),
-          width: 1,
-        ),
+        // gradient: LinearGradient(
+        //   begin: Alignment.topCenter,
+        //   end: Alignment.bottomCenter,
+        //   colors: [
+        //     Colors.red.withValues(alpha: 0.3),
+        //     Colors.pink.withValues(alpha: 0.1),
+        //   ],
+        // ),
+        // border: Border.all(
+        //   color: Colors.red.withValues(alpha: 0.5),
+        //   width: 1,
+        // ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -320,28 +323,44 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
         width: 90.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: isLive
-                ? [Colors.red.withValues(alpha: 0.2), Colors.orange.withValues(alpha: 0.1)]
-                : [
-              Colors.grey[800]!.withValues(alpha: 0.3),
-              Colors.grey[900]!.withValues(alpha: 0.1)
-            ],
-          ),
-          border: Border.all(
-            color: isLive ? Colors.red.withValues(alpha: 0.6) : Colors.grey.withValues(alpha: 0.3),
-            width: isLive ? 2 : 1,
-          ),
+          // gradient: LinearGradient(
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          //   colors: isLive
+          //       ? [Colors.red.withValues(alpha: 0.2), Colors.orange.withValues(alpha: 0.1)]
+          //       : [
+          //     Colors.grey[800]!.withValues(alpha: 0.3),
+          //     Colors.grey[900]!.withValues(alpha: 0.1)
+          //   ],
+          // ),
+          gradient: isLive
+              ? LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.red.withValues(alpha: 0.2),
+                    Colors.orange.withValues(alpha: 0.1)
+                  ],
+                )
+              : null,
+          // border: Border.all(
+          //   color: isLive ? Colors.red.withValues(alpha: 0.6) : Colors.grey.withValues(alpha: 0.3),
+          //   width: isLive ? 2 : 1,
+          // ),
+          border: isLive
+              ? Border.all(
+                  color: Colors.red.withValues(alpha: 0.6),
+                  width: 2,
+                )
+              : null,
           boxShadow: isLive
               ? [
-            BoxShadow(
-              color: Colors.red.withValues(alpha: 0.3),
-              blurRadius: 10,
-              spreadRadius: 2,
-            ),
-          ]
+                  BoxShadow(
+                    color: Colors.red.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ]
               : null,
         ),
         child: Column(
@@ -377,7 +396,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: (isLive ? Colors.red : Colors.grey).withValues(alpha: 0.3),
+                        color: (isLive ? Colors.red : Colors.grey)
+                            .withValues(alpha: 0.3),
                         blurRadius: 8,
                         spreadRadius: 2,
                       ),
@@ -409,7 +429,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
                           bottom: 0,
                           right: 0,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: Colors.red,
                               borderRadius: BorderRadius.circular(8),
@@ -459,9 +480,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   }
 
   String _formatName(String? name) {
-    if (name == null || name
-        .trim()
-        .isEmpty) return "Unknown";
+    if (name == null || name.trim().isEmpty) return "Unknown";
 
     final parts = name.trim().split(RegExp(r'\s+'));
     final first = parts[0];

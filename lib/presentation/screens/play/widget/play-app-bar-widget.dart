@@ -26,18 +26,21 @@ class SpotifyStyleAppBar extends StatelessWidget implements PreferredSizeWidget 
       leading: IconButton(
         icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 30,),
         onPressed: (){
-          if (!feedController.isAudioMode.value) {
-            feedController.toggleMode().then((value){
-              if(!context.mounted) return;
-              if (Navigator.of(context).canPop()) {
-                AppRouter.route.pop();
-              }
-            });
-          }else{
-            if (Navigator.of(context).canPop()) {
+          // if (!feedController.isAudioMode.value) {
+          //   feedController.toggleMode().then((value){
+          //     if(!context.mounted) return;
+          //     if (Navigator.of(context).canPop()) {
+          //       AppRouter.route.pop();
+          //     }
+          //   });
+          // }else{
+          //   if (Navigator.of(context).canPop()) {
+          //     AppRouter.route.pop();
+          //   }
+          // }
+          if (Navigator.of(context).canPop()) {
               AppRouter.route.pop();
             }
-          }
         },
       ),
       title: Obx(() {

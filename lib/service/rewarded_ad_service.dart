@@ -13,9 +13,6 @@ class RewardedAdService {
   RewardedAd? _rewardedAd;
   bool _isLoading = false;
 
-  // Audio state management
-  bool _wasPlayingBeforeAd = false;
-  Function()? _onAdDismissed;
 
   String get _adUnitId {
     return Platform.isAndroid
@@ -53,11 +50,9 @@ class RewardedAdService {
     }
   }
 
-  /// Show rewarded ad with audio management
+  /// Show rewarded ad
   Future<void> showAd({
     Function()? onEarnedReward,
-    Function()? onPauseAudio,
-    Function()? onResumeAudio,
   }) async {
 
     final subscriptionController = Get.find<SubscriptionController>();
@@ -74,15 +69,6 @@ class RewardedAdService {
     }
 
     try {
-      // Store the resume callback
-      _onAdDismissed = onResumeAudio;
-
-      // Pause audio before showing ad
-      if (onPauseAudio != null) {
-        debugPrint("⏸️ Pausing audio before ad");
-        onPauseAudio();
-        _wasPlayingBeforeAd = true;
-      }
 
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdShowedFullScreenContent: (ad) {
@@ -93,9 +79,6 @@ class RewardedAdService {
           ad.dispose();
           _rewardedAd = null;
 
-          // Resume audio after ad is dismissed
-          _resumeAudioAfterAd();
-
           // Preload next ad
           loadAd();
         },
@@ -104,9 +87,7 @@ class RewardedAdService {
           ad.dispose();
           _rewardedAd = null;
 
-          // Resume audio if ad failed to show
-          _resumeAudioAfterAd();
-
+          // Preload next ad
           loadAd();
         },
       );
@@ -122,25 +103,7 @@ class RewardedAdService {
       debugPrint("📍 Stack trace: $st");
       _rewardedAd = null;
 
-      // Resume audio if there was an exception
-      _resumeAudioAfterAd();
-
       await loadAd(); // try to preload next ad
-    }
-  }
-
-  void _resumeAudioAfterAd() {
-    if (_wasPlayingBeforeAd && _onAdDismissed != null) {
-      debugPrint("▶️ Resuming audio after ad");
-      // Add a small delay to ensure ad resources are fully released
-      Future.delayed(const Duration(milliseconds: 500), () {
-        _onAdDismissed?.call();
-        _wasPlayingBeforeAd = false;
-        _onAdDismissed = null;
-      });
-    } else {
-      _wasPlayingBeforeAd = false;
-      _onAdDismissed = null;
     }
   }
 
@@ -148,7 +111,5 @@ class RewardedAdService {
   void dispose() {
     _rewardedAd?.dispose();
     _rewardedAd = null;
-    _wasPlayingBeforeAd = false;
-    _onAdDismissed = null;
   }
 }

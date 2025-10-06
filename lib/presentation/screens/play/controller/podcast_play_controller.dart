@@ -13,11 +13,11 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/service/rewarded_ad_service.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
-import 'package:video_player/video_player.dart';
+// import 'package:video_player/video_player.dart'; // REMOVED: Video toggle feature
 
 import '../model/comment_model.dart';
 
-enum MediaType { audio, video}
+enum MediaType { audio, video }
 
 class PodcastFeedController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
@@ -30,7 +30,8 @@ class PodcastFeedController extends GetxController {
 
   // Media players
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final Rx<VideoPlayerController?> _videoPlayerController = Rx(null);
+  // final Rx<VideoPlayerController?> _videoPlayerController = Rx(null); // REMOVED: Video toggle feature
+  ConcatenatingAudioSource? _playlist;
 
   // Playback state
   final Rx<Duration> currentPosition = Duration.zero.obs;
@@ -47,6 +48,14 @@ class PodcastFeedController extends GetxController {
   final RxBool favoriteLoading = false.obs;
   final Rx<Status> isLoading = Status.loading.obs;
 
+  // Store last used parameters for refresh
+  bool? _lastReels;
+  bool? _lastPopular;
+  String? _lastFirstPodcastId;
+  bool _lastIsAlbum = false;
+  bool _lastIsPlaylist = false;
+  String? _lastId;
+
   // Error handling & retry
   final RxInt retryCount = 0.obs;
   int _playCount = 0;
@@ -55,15 +64,15 @@ class PodcastFeedController extends GetxController {
   static const Duration retryDelay = Duration(seconds: 2);
 
   // Internal state
-  bool _isSwitchingMode = false;
+  // bool _isSwitchingMode = false; // REMOVED: Video toggle feature
   StreamSubscription? _audioPositionSubscription;
   StreamSubscription? _audioDurationSubscription;
   StreamSubscription? _audioBufferedSubscription;
   StreamSubscription? _audioStateSubscription;
-  Timer? _videoPositionTimer;
+  // Timer? _videoPositionTimer; // REMOVED: Video toggle feature
 
   // Getters for safe access
-  VideoPlayerController? get videoPlayerController => _videoPlayerController.value;
+  // VideoPlayerController? get videoPlayerController => _videoPlayerController.value; // REMOVED: Video toggle feature
   AudioPlayer get audioPlayer => _audioPlayer;
   bool get hasItems => items.isNotEmpty;
   bool get hasCurrentItem => currentItem.value != null;
@@ -75,7 +84,21 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  Future<void> getPodcast({bool? reels, bool? popular, String? firstPodcastId, bool isAlbum = false, bool isPlaylist = false, String? id}) async {
+  Future<void> getPodcast(
+      {bool? reels,
+      bool? popular,
+      String? firstPodcastId,
+      bool isAlbum = false,
+      bool isPlaylist = false,
+      String? id}) async {
+    // Store parameters for future refresh calls
+    _lastReels = reels;
+    _lastPopular = popular;
+    _lastFirstPodcastId = firstPodcastId;
+    _lastIsAlbum = isAlbum;
+    _lastIsPlaylist = isPlaylist;
+    _lastId = id;
+
     isLoading.value = Status.loading;
     _clearError();
 
@@ -113,7 +136,6 @@ class PodcastFeedController extends GetxController {
         newItems.map(PlayEntity.fromPodcast).whereType<PlayEntity>().toList(),
       );
 
-
       print("object playPodcast 1");
 
       final shouldSkipPlay = _shouldSkipPlayback(items.first);
@@ -129,6 +151,74 @@ class PodcastFeedController extends GetxController {
     }
   }
 
+  Future<void> refreshPodcast(
+      {bool? reels,
+      bool? popular,
+      String? firstPodcastId,
+      bool isAlbum = false,
+      bool isPlaylist = false,
+      String? id}) async {
+    // Don't show loading state - refresh silently
+    _clearError();
+
+    final response = await _executeWithRetry(() async {
+      return await apiClient.get(
+        url: ApiUrl.playFeed(
+          reels: reels,
+          popular: popular,
+          firstPodcastId: firstPodcastId,
+          id: id,
+          isAlbum: isAlbum,
+          isPlaylist: isPlaylist,
+        ),
+        showResult: false, // Don't show API result messages
+      );
+    }, 'refreshPodcast');
+
+    if (response == null) {
+      // Silently fail - don't update loading state
+      return;
+    }
+
+    if (response.statusCode == 200) {
+      final feed = PlayFeedModel.fromJson(response.body);
+      final newItems = feed.data?.podcasts ?? [];
+
+      if (newItems.isEmpty) {
+        // Silently fail - don't update loading state
+        return;
+      }
+
+      print("object refreshPodcast - updating items");
+
+      // Convert new items to PlayEntity
+      final newPlayEntities =
+          newItems.map(PlayEntity.fromPodcast).whereType<PlayEntity>().toList();
+
+      // Filter out duplicates based on ID to avoid adding same items
+      // final existingIds = items.map((item) => item.id).toSet();
+      // final uniqueNewItems = newPlayEntities.where((item) => !existingIds.contains(item.id)).toList();
+
+      if (newPlayEntities.isNotEmpty) {
+        // Add new unique items to the existing list
+        items.addAll(newPlayEntities);
+        print(
+            "object refreshPodcast - added ${newPlayEntities.length} new items, total: ${items.length}");
+      } else {
+        print("object refreshPodcast - no new unique items to add");
+      }
+      // if (uniqueNewItems.isNotEmpty) {
+      //   // Add new unique items to the existing list
+      //   items.addAll(uniqueNewItems);
+      //   print("object refreshPodcast - added ${uniqueNewItems.length} new items, total: ${items.length}");
+      // } else {
+      //   print("object refreshPodcast - no new unique items to add");
+      // }
+
+      // Don't auto-play on refresh - just update the data
+      // Keep current playing state as is
+    }
+  }
 
   bool _shouldSkipPlayback(PlayEntity newItem) {
     if (currentItem.value == null) return false;
@@ -148,6 +238,9 @@ class PodcastFeedController extends GetxController {
 
     print("object playPodcast");
 
+    // Check if we need to refresh before playing
+    await _checkAndRefreshIfNeeded();
+
     await _playPodcastWithRetry(index, 0);
   }
 
@@ -157,18 +250,25 @@ class PodcastFeedController extends GetxController {
     try {
       debugPrint("🎯 Pausing playback for ad");
 
-      if (isAudioMode.value) {
-        if (_audioPlayer.playing) {
-          await _audioPlayer.pause();
-          debugPrint("⏸️ Audio paused for ad");
-        }
-      } else {
-        final controller = videoPlayerController;
-        if (controller != null && controller.value.isPlaying) {
-          await controller.pause();
-          debugPrint("⏸️ Video paused for ad");
-        }
+      // Always use audio player since video toggle is removed
+      if (_audioPlayer.playing) {
+        _audioPlayer.pause();
+        debugPrint("⏸️ Audio paused for ad");
       }
+
+      // REMOVED: Video pause for ads
+      // if (isAudioMode.value) {
+      //   if (_audioPlayer.playing) {
+      //    _audioPlayer.pause();
+      //     debugPrint("⏸️ Audio paused for ad");
+      //   }
+      // } else {
+      //   final controller = videoPlayerController;
+      //   if (controller != null && controller.value.isPlaying) {
+      //    controller.pause();
+      //     debugPrint("⏸️ Video paused for ad");
+      //   }
+      // }
     } catch (e, stackTrace) {
       _handleException('pauseForAd', e, stackTrace);
     }
@@ -184,29 +284,41 @@ class PodcastFeedController extends GetxController {
     try {
       debugPrint("🎯 Resuming playback after ad");
 
-      if (isAudioMode.value) {
-        // Ensure audio player is in a valid state
-        if (_audioPlayer.processingState != ProcessingState.idle) {
-          await _audioPlayer.play();
-          isPlaying.value = true;
-          debugPrint("▶️ Audio resumed after ad");
-        } else {
-          // Audio player lost state, reinitialize
-          debugPrint("🔄 Audio player lost state, reinitializing...");
-          await _reinitializeCurrentMedia();
-        }
+      // Always use audio player since video toggle is removed
+      if (_audioPlayer.processingState != ProcessingState.idle) {
+        _audioPlayer.play();
+        isPlaying.value = true;
+        debugPrint("▶️ Audio resumed after ad");
       } else {
-        final controller = videoPlayerController;
-        if (controller != null && controller.value.isInitialized) {
-          await controller.play();
-          isPlaying.value = true;
-          debugPrint("▶️ Video resumed after ad");
-        } else {
-          // Video player lost state, reinitialize
-          debugPrint("🔄 Video player lost state, reinitializing...");
-          await _reinitializeCurrentMedia();
-        }
+        // Audio player lost state, reinitialize
+        debugPrint("🔄 Audio player lost state, reinitializing...");
+        await _reinitializeCurrentMedia();
       }
+
+      // REMOVED: Video resume after ads
+      // if (isAudioMode.value) {
+      //   // Ensure audio player is in a valid state
+      //   if (_audioPlayer.processingState != ProcessingState.idle) {
+      //    _audioPlayer.play();
+      //     isPlaying.value = true;
+      //     debugPrint("▶️ Audio resumed after ad");
+      //   } else {
+      //     // Audio player lost state, reinitialize
+      //     debugPrint("🔄 Audio player lost state, reinitializing...");
+      //     await _reinitializeCurrentMedia();
+      //   }
+      // } else {
+      //   final controller = videoPlayerController;
+      //   if (controller != null && controller.value.isInitialized) {
+      //    controller.play();
+      //     isPlaying.value = true;
+      //     debugPrint("▶️ Video resumed after ad");
+      //   } else {
+      //     // Video player lost state, reinitialize
+      //     debugPrint("🔄 Video player lost state, reinitializing...");
+      //     await _reinitializeCurrentMedia();
+      //   }
+      // }
     } catch (e, stackTrace) {
       _handleException('resumeAfterAd', e, stackTrace);
       // If resume fails, try to reinitialize
@@ -222,7 +334,6 @@ class PodcastFeedController extends GetxController {
       await playPodcast(index: currentIdx);
     }
   }
-
 
   Future<void> _playPodcastWithRetry(int index, int attempt) async {
     if (attempt >= maxRetryAttempts) {
@@ -246,7 +357,25 @@ class PodcastFeedController extends GetxController {
 
       await _disposePlayers();
 
-      final mediaUrl = item.podcastUrl ?? "";
+      // Build playlist if not already built or if items changed
+      if (_playlist == null || _playlist!.children.length != items.length) {
+        try {
+          await _buildPlaylist();
+        } catch (e) {
+          debugPrint('❌ Playlist build error caught: $e');
+          _setLoadingStatus(Status.error);
+          return;
+        }
+
+        // Double-check playlist was created
+        if (_playlist == null) {
+          debugPrint('❌ Playlist is null after build');
+          _setLoadingStatus(Status.error);
+          return;
+        }
+      }
+
+      final mediaUrl = item.podcastUrl;
       if (mediaUrl.isEmpty) {
         _setLoadingStatus(Status.noDataFound);
         return;
@@ -256,30 +385,53 @@ class PodcastFeedController extends GetxController {
       final mediaItem = _createMediaItem(item);
 
       bool success = false;
+      debugPrint('🎵 Media type detected: $mediaType (playing as audio only)');
+
+      // Always initialize as audio only (video toggle feature removed)
+      success = await _initializeAudioPlayer(mediaUrl, mediaItem, true);
+      debugPrint('🎵 Audio initialization result: $success');
+      isAudioMode.value = true;
+
+      // REMOVED: Video initialization - now audio only
+      /*
       switch (mediaType) {
         case MediaType.audio:
           success = await _initializeAudioPlayer(mediaUrl, mediaItem, true);
+          debugPrint('🎵 Audio initialization result: $success');
           isAudioMode.value = true;
           break;
 
         case MediaType.video:
           try {
+            debugPrint('🎬 Starting parallel audio/video initialization...');
+            // Initialize audio (to play) and video (no auto-play) in parallel
             final results = await Future.wait<bool>([
-              _initializeAudioPlayer(mediaUrl, mediaItem, false),
+              _initializeAudioPlayer(mediaUrl, mediaItem, true),
               _initializeVideoPlayer(mediaUrl),
-            ], eagerError: false);
+            ], eagerError: false).timeout(
+              const Duration(seconds: 10),
+              onTimeout: () {
+                debugPrint('⏱️ Initialization timeout! Falling back to audio only');
+                return [true, false]; // Audio succeeded, video timed out
+              },
+            );
 
+            debugPrint('🎬 Parallel initialization completed');
             final audioSuccess = results[0];
             final videoSuccess = results[1];
+            debugPrint('🎵 Audio init result: $audioSuccess, Video init result: $videoSuccess');
 
             success = audioSuccess || videoSuccess;
+            debugPrint('🎯 Combined success: $success');
 
-            if (videoSuccess) {
-              isAudioMode.value = false;
-              await _audioPlayer.pause();
-            } else if (audioSuccess) {
+            if (audioSuccess) {
+              // Start in audio mode first, even if video is available
               isAudioMode.value = true;
-              debugPrint('🎧 Video failed, falling back to audio mode');
+              debugPrint('🎧 Starting video content in audio-first mode');
+            } else if (videoSuccess) {
+              // Audio failed; fall back to video mode
+              isAudioMode.value = false;
+              debugPrint('🎬 Audio failed, starting in video mode');
             } else {
               debugPrint('❌ Neither audio nor video initialized successfully');
             }
@@ -289,33 +441,40 @@ class PodcastFeedController extends GetxController {
           }
           break;
       }
+      */
 
+      debugPrint('🔍 Checking success flag: $success');
       if (success) {
+        debugPrint(
+            '✅ Media initialized successfully, setting status to completed');
         _setLoadingStatus(Status.completed);
         isPlaying.value = true;
         retryCount.value = 0;
-        _trackView(item.id ?? "");
+        _trackView(item.id);
 
         _playCount++;
-        final subscriptionController = Get.find<SubscriptionController>();
-        if (!subscriptionController.hasActiveSubscription && _playCount % 3 == 0) {
-          await RewardedAdService().showAd(
-            onPauseAudio: () async => await pauseForAd(),
-            onResumeAudio: () async => await resumeAfterAd(),
-            onEarnedReward: () {
-              debugPrint("🎉 User earned reward from podcast playback");
-            },
-          );
+        if (_playCount % 3 == 0) {
+          final subscriptionController = Get.find<SubscriptionController>();
+          if (!subscriptionController.hasActiveSubscription) {
+            await RewardedAdService().showAd(
+              onEarnedReward: () {
+                debugPrint("🎉 User earned reward from podcast playback");
+              },
+            );
+          }
         }
-        debugPrint('▶️ Playing: ${item.title} (${isAudioMode.value ? 'Audio' : 'Video'} mode)');
+        debugPrint(
+            '▶️ Playing: ${item.title} (${isAudioMode.value ? 'Audio' : 'Video'} mode)');
       } else {
+        debugPrint('❌ Success is false, throwing exception');
         throw Exception('Failed to initialize media player');
       }
     } catch (e, stackTrace) {
       _handleException('playPodcast', e, stackTrace);
 
       if (attempt < maxRetryAttempts - 1) {
-        debugPrint('🔄 Retrying podcast playback (${attempt + 1}/$maxRetryAttempts)...');
+        debugPrint(
+            '🔄 Retrying podcast playback (${attempt + 1}/$maxRetryAttempts)...');
         await Future.delayed(retryDelay);
         await _playPodcastWithRetry(index, attempt + 1);
       } else {
@@ -330,15 +489,19 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  Future<T?> _executeWithRetry<T>(Future<T> Function() operation, String operationName, [int maxAttempts = maxRetryAttempts]) async {
+  Future<T?> _executeWithRetry<T>(
+      Future<T> Function() operation, String operationName,
+      [int maxAttempts = maxRetryAttempts]) async {
     for (int attempt = 0; attempt < maxAttempts; attempt++) {
       try {
         return await operation();
       } catch (e, stackTrace) {
-        _handleException('$operationName (attempt ${attempt + 1})', e, stackTrace);
+        _handleException(
+            '$operationName (attempt ${attempt + 1})', e, stackTrace);
 
         if (attempt < maxAttempts - 1) {
-          debugPrint('🔄 Retrying $operationName (${attempt + 1}/$maxAttempts)...');
+          debugPrint(
+              '🔄 Retrying $operationName (${attempt + 1}/$maxAttempts)...');
           await Future.delayed(retryDelay);
         } else {
           _setError('Failed after $maxAttempts attempts: $e');
@@ -354,11 +517,15 @@ class PodcastFeedController extends GetxController {
     }
 
     try {
-      if (isAudioMode.value) {
-        await _toggleAudioPlayback();
-      } else {
-        await _toggleVideoPlayback();
-      }
+      // Always use audio playback since video toggle is removed
+      await _toggleAudioPlayback();
+
+      // REMOVED: Video playback toggle
+      // if (isAudioMode.value) {
+      //   await _toggleAudioPlayback();
+      // } else {
+      //   await _toggleVideoPlayback();
+      // }
     } catch (e, stackTrace) {
       _handleException('togglePlayPause', e, stackTrace);
       isPlaying.value = false;
@@ -371,6 +538,8 @@ class PodcastFeedController extends GetxController {
     }
   }
 
+  // REMOVED: Video toggle feature
+  /*
   Future<void> toggleMode() async {
     debugPrint("🔄 toggleMode() called");
 
@@ -412,7 +581,10 @@ class PodcastFeedController extends GetxController {
       debugPrint("✅ toggleMode() finished");
     }
   }
+  */
 
+  // REMOVED: Video toggle feature
+  /*
   Future<void> _switchToVideoMode() async {
     debugPrint("🎬 _switchToVideoMode() called");
 
@@ -429,6 +601,35 @@ class PodcastFeedController extends GetxController {
     isAudioMode.value = false;
     debugPrint("📺 AudioMode=false → VideoMode=true");
 
+    // Check if video controller exists and is for the current item
+    if (videoPlayerController == null) {
+      debugPrint('⚠️ Video controller not initialized, initializing now...');
+      
+      final currentUrl = currentItem.value?.podcastUrl ?? "";
+      if (currentUrl.isNotEmpty) {
+        final success = await _initializeVideoPlayer(currentUrl);
+        
+        if (!success) {
+          debugPrint('❌ Failed to initialize video controller');
+          isPlaying.value = false;
+          // Fall back to audio mode
+          isAudioMode.value = true;
+          if (wasPlaying) {
+            _audioPlayer.play();
+          }
+          return;
+        }
+      } else {
+        debugPrint('❌ No URL available for video');
+        isPlaying.value = false;
+        isAudioMode.value = true;
+        if (wasPlaying) {
+          _audioPlayer.play();
+        }
+        return;
+      }
+    }
+
     if (videoPlayerController != null) {
       debugPrint("🎥 Video controller available, seeking to $position...");
       await videoPlayerController!.seekTo(position);
@@ -440,9 +641,6 @@ class PodcastFeedController extends GetxController {
       } else {
         isPlaying.value = false;
       }
-    } else {
-      debugPrint('❌ Video controller not initialized');
-      isPlaying.value = false;
     }
 
     debugPrint("✅ _switchToVideoMode() finished");
@@ -484,6 +682,7 @@ class PodcastFeedController extends GetxController {
       _handleException('_switchToAudioMode', e, stackTrace);
     }
   }
+  */
 
   Duration _clampDuration(Duration position, Duration max) {
     if (position < Duration.zero) return Duration.zero;
@@ -497,11 +696,13 @@ class PodcastFeedController extends GetxController {
     try {
       final clampedPosition = _clampDuration(position, totalDuration.value);
 
-      if (isAudioMode.value) {
-        await _audioPlayer.seek(clampedPosition);
-      } else {
-        await videoPlayerController?.seekTo(clampedPosition);
-      }
+      // Always use audio player since video toggle is removed
+      await _audioPlayer.seek(clampedPosition);
+      // if (isAudioMode.value) {
+      //   await _audioPlayer.seek(clampedPosition);
+      // } else {
+      //   await videoPlayerController?.seekTo(clampedPosition); // REMOVED: Video toggle feature
+      // }
 
       currentPosition.value = clampedPosition;
       debugPrint('⏯️ Seeked to: ${_formatDuration(clampedPosition)}');
@@ -510,27 +711,98 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  Future<void> skipBackward({Duration duration = const Duration(seconds: 15)}) async {
+  Future<void> skipBackward(
+      {Duration duration = const Duration(seconds: 15)}) async {
     final newPosition = currentPosition.value - duration;
-    final finalPosition = newPosition < Duration.zero ? Duration.zero : newPosition;
+    final finalPosition =
+        newPosition < Duration.zero ? Duration.zero : newPosition;
     await seek(finalPosition);
   }
 
-  Future<void> skipForward({Duration duration = const Duration(seconds: 15)}) async {
+  Future<void> skipForward(
+      {Duration duration = const Duration(seconds: 15)}) async {
     final newPosition = currentPosition.value + duration;
-    final finalPosition = newPosition > totalDuration.value ? totalDuration.value : newPosition;
+    final finalPosition =
+        newPosition > totalDuration.value ? totalDuration.value : newPosition;
     await seek(finalPosition);
+  }
+
+  // Check if we need to refresh podcast list when running low on content
+  Future<void> _checkAndRefreshIfNeeded() async {
+    final remainingItems = items.length - currentIndex.value - 1;
+
+    // If empty or less than 3 items remaining, refresh the podcast list
+    if (items.isEmpty || remainingItems < 3) {
+      debugPrint(
+          '🔄 Low on content (remaining: $remainingItems, total: ${items.length}, currentIndex: ${currentIndex.value}), refreshing podcast list...');
+
+      // Call refreshPodcast with the same parameters used in the last getPodcast call
+      await refreshPodcast(
+        reels: _lastReels,
+        popular: _lastPopular,
+        firstPodcastId: _lastFirstPodcastId,
+        isAlbum: _lastIsAlbum,
+        isPlaylist: _lastIsPlaylist,
+        id: _lastId,
+      );
+
+      debugPrint('✅ Podcast list refreshed successfully');
+    }
   }
 
   Future<void> playNext() async {
+    // Check if we need to refresh podcast list first (even if no next available)
+    await _checkAndRefreshIfNeeded();
+
     if (!canPlayNext) {
       debugPrint('❌ No next podcast available');
       return;
     }
+
+    // If using playlist, just seek to next index
+    if (_playlist != null && isAudioMode.value) {
+      final nextIndex = currentIndex.value + 1;
+      if (nextIndex < _playlist!.children.length) {
+        await _audioPlayer.seekToNext();
+        currentIndex.value = nextIndex;
+        currentItem.value = items[nextIndex];
+        isFavorite.value = items[nextIndex].isBookmark ?? false;
+        isLike.value = items[nextIndex].isLike ?? false;
+        _trackView(items[nextIndex].id);
+        debugPrint('⏭️ Playlist: Moved to next track (index: $nextIndex)');
+        return;
+      }
+    }
+
     await playPodcast(index: currentIndex.value + 1);
   }
 
-  Future<bool> likePodcast({required String id, required bool currentState}) async {
+  Future<void> playPrevious() async {
+    if (currentIndex.value <= 0) {
+      debugPrint('❌ No previous podcast available');
+      return;
+    }
+
+    // If using playlist, just seek to previous index
+    if (_playlist != null && isAudioMode.value) {
+      final prevIndex = currentIndex.value - 1;
+      if (prevIndex >= 0) {
+        await _audioPlayer.seekToPrevious();
+        currentIndex.value = prevIndex;
+        currentItem.value = items[prevIndex];
+        isFavorite.value = items[prevIndex].isBookmark ?? false;
+        isLike.value = items[prevIndex].isLike ?? false;
+        _trackView(items[prevIndex].id);
+        debugPrint('⏮️ Playlist: Moved to previous track (index: $prevIndex)');
+        return;
+      }
+    }
+
+    await playPodcast(index: currentIndex.value - 1);
+  }
+
+  Future<bool> likePodcast(
+      {required String id, required bool currentState}) async {
     if (likeLoading.value) return currentState;
 
     try {
@@ -560,7 +832,8 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  Future<bool> favoritePodcast({required String id, required bool currentState}) async {
+  Future<bool> favoritePodcast(
+      {required String id, required bool currentState}) async {
     if (favoriteLoading.value) return currentState;
 
     try {
@@ -573,14 +846,14 @@ class PodcastFeedController extends GetxController {
         );
       }, 'favoritePodcast');
 
-      if (response != null && (response.statusCode == 200 || response.statusCode == 201)) {
+      if (response != null &&
+          (response.statusCode == 200 || response.statusCode == 201)) {
         final newState = !currentState;
         isFavorite.value = newState;
         try {
           final favoriteController = Get.find<FavoriteController>();
           favoriteController.pagingController.refresh();
-        } catch (_) {
-        }
+        } catch (_) {}
 
         return newState;
       } else {
@@ -665,6 +938,7 @@ class PodcastFeedController extends GetxController {
   }
 
   void _setLoadingStatus(Status status) {
+    debugPrint('📊 Loading status changed: ${loadingStatus.value} → $status');
     loadingStatus.value = status;
   }
 
@@ -684,7 +958,15 @@ class PodcastFeedController extends GetxController {
 
   MediaType _getMediaType(String url) {
     final lowerUrl = url.toLowerCase();
-    const videoExts = ['.mp4', '.mov', '.mkv', '.avi', '.webm', '.m4v', '.m3u8'];
+    const videoExts = [
+      '.mp4',
+      '.mov',
+      '.mkv',
+      '.avi',
+      '.webm',
+      '.m4v',
+      '.m3u8'
+    ];
     const audioExts = ['.mp3', '.aac', '.m4a', '.wav', '.ogg', '.flac'];
 
     for (final ext in videoExts) {
@@ -707,61 +989,132 @@ class PodcastFeedController extends GetxController {
   }
 
   Future<void> _disposePlayers() async {
-    try {
-      await _audioPlayer.stop();
-    } catch (_) {}
+    // REMOVED: Video player disposal - now audio only
+    // Only dispose video player, keep audio player and playlist intact
+    // try {
+    //   _videoPositionTimer?.cancel();
+    //   await _videoPlayerController.value?.dispose();
+    // } catch (_) {}
 
-    try {
-      _videoPositionTimer?.cancel();
-      await _videoPlayerController.value?.dispose();
-    } catch (_) {}
+    // _videoPlayerController.value = null;
+    // Don't clear playlist - it should persist across track changes
 
-    _videoPlayerController.value = null;
+    debugPrint('🔄 _disposePlayers called (video features removed)');
   }
 
-  Future<bool> _initializeAudioPlayer(String url, MediaItem mediaItem, bool play) async {
+  Future<void> _buildPlaylist() async {
     try {
-      await _audioPlayer.setAudioSource(
-        AudioSource.uri(Uri.parse(url), tag: mediaItem),
-        preload: true,
-      );
-      if(play){
-        _audioPlayer.play();
+      debugPrint('🔨 Building playlist with ${items.length} items...');
+      final audioSources = <AudioSource>[];
+
+      for (final item in items) {
+        final mediaItem = _createMediaItem(item);
+        final url = item.podcastUrl;
+        if (url.isNotEmpty) {
+          audioSources.add(
+            AudioSource.uri(
+              Uri.parse(url),
+              tag: mediaItem,
+            ),
+          );
+        }
       }
-      return true;
+
+      if (audioSources.isEmpty) {
+        debugPrint('⚠️ No audio sources to build playlist');
+        _playlist = null;
+        return;
+      }
+
+      _playlist = ConcatenatingAudioSource(children: audioSources);
+
+      // Set audio source without auto-playing
+      await _audioPlayer.setAudioSource(_playlist!,
+          initialIndex: 0, preload: true);
+      debugPrint(
+          '✅ Playlist built successfully with ${audioSources.length} tracks');
     } catch (e, stackTrace) {
+      debugPrint('💥 _buildPlaylist failed: $e');
+      _handleException('_buildPlaylist', e, stackTrace);
+      _playlist = null;
+      rethrow; // Re-throw to let caller handle it
+    }
+  }
+
+  Future<bool> _initializeAudioPlayer(
+      String url, MediaItem mediaItem, bool play) async {
+    try {
+      debugPrint('🎵 _initializeAudioPlayer started (play=$play)');
+      // If playlist exists, seek to the correct index instead of setting source
+      if (_playlist != null &&
+          currentIndex.value < _playlist!.children.length) {
+        debugPrint(
+            '🎵 Using playlist - seeking to index ${currentIndex.value}');
+        await _audioPlayer.seek(Duration.zero, index: currentIndex.value);
+        debugPrint('🎵 Seek completed');
+        if (play) {
+          debugPrint('🎵 Starting playback...');
+          _audioPlayer.play();
+          debugPrint('🎵 Playback started');
+        }
+        debugPrint('✅ _initializeAudioPlayer returning true (playlist mode)');
+        return true;
+      } else {
+        // Fallback: single track mode (shouldn't happen with playlist)
+        debugPrint('⚠️ Playlist not available, using single track mode');
+        await _audioPlayer.setAudioSource(
+          AudioSource.uri(Uri.parse(url), tag: mediaItem),
+          preload: true,
+        );
+        if (play) {
+          _audioPlayer.play();
+        }
+        debugPrint(
+            '✅ _initializeAudioPlayer returning true (single track mode)');
+        return true;
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ _initializeAudioPlayer exception: $e');
       _handleException('_initializeAudioPlayer', e, stackTrace);
       return false;
     }
   }
 
+  // REMOVED: Video toggle feature
+  /*
   Future<bool> _initializeVideoPlayer(String url) async {
     try {
+      debugPrint('📺 _initializeVideoPlayer started');
       final controller = VideoPlayerController.networkUrl(Uri.parse(url));
 
+      debugPrint('📺 Initializing video controller...');
       await controller.initialize();
+      debugPrint('📺 Video controller initialized');
 
       _videoPlayerController.value = controller;
       _setupVideoPlayerListeners();
-
-      controller.play();
+      debugPrint('✅ _initializeVideoPlayer returning true');
       return true;
     } catch (e, stackTrace) {
+      debugPrint('❌ _initializeVideoPlayer exception: $e');
       _handleException('_initializeVideoPlayer', e, stackTrace);
       return false;
     }
   }
+  */
 
   Future<void> _toggleAudioPlayback() async {
     if (_audioPlayer.playing) {
-      await _audioPlayer.pause();
+      _audioPlayer.pause();
       isPlaying.value = false;
     } else {
-      await _audioPlayer.play();
+      _audioPlayer.play();
       isPlaying.value = true;
     }
   }
 
+  // REMOVED: Video toggle feature
+  /*
   Future<void> _toggleVideoPlayback() async {
     final controller = videoPlayerController;
     if (controller == null) {
@@ -771,10 +1124,10 @@ class PodcastFeedController extends GetxController {
 
     try {
       if (controller.value.isPlaying) {
-        await controller.pause();
+       controller.pause();
         isPlaying.value = false;
       } else {
-        await controller.play();
+        controller.play();
         isPlaying.value = true;
       }
     } catch (e) {
@@ -782,18 +1135,21 @@ class PodcastFeedController extends GetxController {
       await _fallbackToAudio();
     }
   }
+  */
 
+  // REMOVED: Video toggle feature - fallback no longer needed
+  /*
   Future<void> _fallbackToAudio() async {
     try {
       final item = currentItem.value;
       if (item?.podcastUrl == null) return;
 
       final mediaItem = _createMediaItem(item!);
-      final success = await _initializeAudioPlayer(item.podcastUrl!, mediaItem, false);
+      final success = await _initializeAudioPlayer(item.podcastUrl, mediaItem, false);
 
       if (success) {
         isAudioMode.value = true;
-        await _audioPlayer.play();
+        _audioPlayer.play();
         isPlaying.value = true;
         debugPrint('🎧 Successfully switched to audio fallback');
       }
@@ -802,6 +1158,7 @@ class PodcastFeedController extends GetxController {
       isPlaying.value = false;
     }
   }
+  */
 
   void _setupAudioPlayerListeners() {
     _audioPositionSubscription?.cancel();
@@ -810,9 +1167,11 @@ class PodcastFeedController extends GetxController {
     _audioStateSubscription?.cancel();
 
     _audioPositionSubscription = _audioPlayer.positionStream.listen((position) {
-      if (isAudioMode.value) {
-        currentPosition.value = position;
-      }
+      // Always update position since we're audio-only now
+      currentPosition.value = position;
+      // if (isAudioMode.value) {
+      //   currentPosition.value = position;
+      // }
     });
 
     _audioDurationSubscription = _audioPlayer.durationStream.listen((duration) {
@@ -822,10 +1181,13 @@ class PodcastFeedController extends GetxController {
       }
     });
 
-    _audioBufferedSubscription = _audioPlayer.bufferedPositionStream.listen((buffered) {
-      if (isAudioMode.value) {
-        bufferedPosition.value = buffered;
-      }
+    _audioBufferedSubscription =
+        _audioPlayer.bufferedPositionStream.listen((buffered) {
+      // Always update buffered position since we're audio-only now
+      bufferedPosition.value = buffered;
+      // if (isAudioMode.value) {
+      //   bufferedPosition.value = buffered;
+      // }
     });
 
     _audioStateSubscription = _audioPlayer.playerStateStream.listen((state) {
@@ -837,12 +1199,34 @@ class PodcastFeedController extends GetxController {
 
         if (processingState == ProcessingState.completed) {
           debugPrint("🎵 Audio playback completed, playing next...");
-          playNext();
+          // Playlist will auto-advance, just update UI
+          if (_playlist == null || currentIndex.value >= items.length - 1) {
+            playNext();
+          }
         }
+      }
+    });
+
+    // Listen to current index changes from playlist
+    _audioPlayer.currentIndexStream.listen((index) async {
+      if (index != null &&
+          index != currentIndex.value &&
+          index < items.length) {
+        debugPrint('🎵 Playlist auto-advanced to index: $index');
+        currentIndex.value = index;
+        currentItem.value = items[index];
+        isFavorite.value = items[index].isBookmark ?? false;
+        isLike.value = items[index].isLike ?? false;
+        _trackView(items[index].id);
+
+        // Check if we need to refresh when playlist auto-advances
+        await _checkAndRefreshIfNeeded();
       }
     });
   }
 
+  // REMOVED: Video toggle feature
+  /*
   void _setupVideoPlayerListeners() {
     final controller = videoPlayerController;
     if (controller == null) return;
@@ -883,13 +1267,14 @@ class PodcastFeedController extends GetxController {
       }
     });
   }
+  */
 
   Future<void> _trackView(String id) async {
     if (id.isEmpty) return;
 
     await _executeWithRetry(() async {
       final response = await apiClient.post(
-        url: ApiUrl.videPodcast(id: id),
+        url: ApiUrl.viewPodcast(id: id),
         body: {},
       );
 
@@ -930,14 +1315,13 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  Future<void> refreshPodcasts({
-    bool? reels,
-    bool? popular,
-    String? firstPodcastId,
-    bool isAlbum = false,
-    bool isPlaylist = false,
-    String? id
-  }) async {
+  Future<void> refreshPodcasts(
+      {bool? reels,
+      bool? popular,
+      String? firstPodcastId,
+      bool isAlbum = false,
+      bool isPlaylist = false,
+      String? id}) async {
     await getPodcast(
       reels: reels,
       popular: popular,
@@ -955,16 +1339,29 @@ class PodcastFeedController extends GetxController {
     _setupAudioPlayerListeners();
   }
 
+  /// Stop audio when app is closed/terminated
+  void stopAudioOnAppClose() {
+    try {
+      debugPrint('🛑 Stopping audio playback - App is closing');
+      _audioPlayer.stop();
+      // _videoPlayerController.value?.pause(); // REMOVED: Video toggle feature
+      isPlaying.value = false;
+    } catch (e) {
+      debugPrint('⚠️ Error stopping audio on app close: $e');
+    }
+  }
+
   @override
   void onClose() {
     _audioPositionSubscription?.cancel();
     _audioDurationSubscription?.cancel();
     _audioBufferedSubscription?.cancel();
     _audioStateSubscription?.cancel();
-    _videoPositionTimer?.cancel();
+    // _videoPositionTimer?.cancel(); // REMOVED: Video toggle feature
 
     _audioPlayer.dispose();
-    _videoPlayerController.value?.dispose();
+    // _videoPlayerController.value?.dispose(); // REMOVED: Video toggle feature
+    _playlist = null;
 
     super.onClose();
     debugPrint('🔄 PodcastFeedController disposed');

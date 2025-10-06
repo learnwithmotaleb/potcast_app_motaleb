@@ -14,6 +14,7 @@ import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.d
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
 import 'package:podcast/presentation/screens/play/record_play_screen.dart';
+import 'package:podcast/presentation/screens/play/record_play_screen_old.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_info_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
@@ -280,10 +281,14 @@ class AppRouter {
           name: RoutePath.recordPlayScreen,
           path: RoutePath.recordPlayScreen.addBasePath,
           pageBuilder: (context, state) {
-            final checking = state.extra != null;
+            final extras = state.extra as Map<String, dynamic>? ?? {};
+            final url = extras['url'] as String? ?? '';
+            final startPosition = extras['startPosition'] as Duration? ?? Duration.zero;
+            
             return _buildPageWithAnimation(
               child: RecordPlayScreen(
-                url: checking? state.extra as String: "",
+                url: url,
+                startPosition: startPosition,
               ),
               state: state,
             );
