@@ -119,38 +119,41 @@ class _UserPlayScreenState extends State<UserPlayScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SpotifyStyleAppBar(
-        feedController: feedController,
-        fallbackTitle: widget.title,
-        fallbackArtist: widget.artist,
-        fallbackCategories: widget.categories,
-        isCreator: widget.isCreator,
-      ),
-      body: Column(
-        children: [
-          const Gap(12),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: AudioVideoPlayerView(
-                feedController: feedController,
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        appBar: SpotifyStyleAppBar(
+          feedController: feedController,
+          fallbackTitle: widget.title,
+          fallbackArtist: widget.artist,
+          fallbackCategories: widget.categories,
+          isCreator: widget.isCreator,
+        ),
+        body: Column(
+          children: [
+            const Gap(12),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: AudioVideoPlayerView(
+                  feedController: feedController,
+                ),
               ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                AudioPlayProgress(controller: feedController),
-                AudioPlayControl(controller: feedController),
-                AudioPlayBottom(controller: feedController),
-              ],
+            Container(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  AudioPlayProgress(controller: feedController),
+                  AudioPlayControl(controller: feedController),
+                  AudioPlayBottom(controller: feedController),
+                ],
+              ),
             ),
-          ),
-          const Gap(24),
-        ],
+            const Gap(24),
+          ],
+        ),
       ),
     );
   }

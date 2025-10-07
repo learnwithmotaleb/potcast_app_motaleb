@@ -19,9 +19,14 @@ Future<void> main() async {
 
   //Background Audio Player
   await JustAudioBackground.init(
-    androidNotificationChannelId: "com.ryanheise.audio_service.podcast.audio_player",
+    androidNotificationChannelId:
+        "com.ryanheise.audio_service.podcast.audio_player",
     androidNotificationChannelName: "Audio playback",
-    androidNotificationOngoing: true,
+    androidNotificationOngoing: true, // Make notification non-dismissible
+    androidStopForegroundOnPause: true, // Allow dismissible when paused
+    androidNotificationClickStartsActivity: true,
+    androidNotificationIcon: 'drawable/ic_stat_music_note',
+    preloadArtwork: true,
   );
 
   DeviceUtils.lockDevicePortrait();
@@ -29,10 +34,12 @@ Future<void> main() async {
   initDependencies();
 
   await Purchases.setLogLevel(LogLevel.debug);
-  await Purchases.configure(PurchasesConfiguration(AppConstants.revenueCatApiKey));
+  await Purchases.configure(
+      PurchasesConfiguration(AppConstants.revenueCatApiKey));
 
   //Localization
-  Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
+  Map<String, Map<String, String>>? languages =
+      await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
 }
@@ -58,7 +65,8 @@ class MyApp extends StatelessWidget {
               //Route Section
               routeInformationParser: AppRouter.route.routeInformationParser,
               routerDelegate: AppRouter.route.routerDelegate,
-              routeInformationProvider: AppRouter.route.routeInformationProvider,
+              routeInformationProvider:
+                  AppRouter.route.routeInformationProvider,
 
               //Theme Section
               themeMode: ThemeMode.dark,

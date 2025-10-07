@@ -51,57 +51,60 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(() {
-        return _pages[navController.selectedPage.value];
-      }),
-      bottomNavigationBar: Obx(() {
-        final index = navController.selectedPage.value;
-
-        return BottomNavigationBar(
-          currentIndex: index,
-          elevation: 0,
-          selectedIconTheme: const IconThemeData(
-            color: Colors.white,
-          ),
-          unselectedIconTheme: const IconThemeData(
-            color: Color(0xFF5E5E60),
-          ),
-          type: BottomNavigationBarType.fixed,
-          onTap: (int newIndex) {
-            if (newIndex == 2) {
-              buildShowModalBottomSheet(context);
-            } else {
-              navController.changeIndex(newIndex);
-            }
-          },
-          items: [
-            const BottomNavigationBarItem(icon: Icon(Iconsax.home, size: 32), label: ""),
-            const BottomNavigationBarItem(icon: Icon(Iconsax.clock, size: 32), label: ""),
-            const BottomNavigationBarItem(icon: Icon(Iconsax.add, size: 32), label: ""),
-            const BottomNavigationBarItem(icon: Icon(Iconsax.lovely, size: 32), label: ""),
-            BottomNavigationBarItem(
-              icon: SizedBox(
-                height: 32,
-                width: 32,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Obx(() {
-                    final image = profileController.profile.value.data?.profileImage ?? "";
-                    const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-
-                    return CustomNetworkImage(
-                      imageUrl: image.isNotEmpty ? image : defaultImage,
-                      errorIcon: Iconsax.user,
-                    );
-                  }),
-                ),
-              ),
-              label: "",
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        body: Obx(() {
+          return _pages[navController.selectedPage.value];
+        }),
+        bottomNavigationBar: Obx(() {
+          final index = navController.selectedPage.value;
+      
+          return BottomNavigationBar(
+            currentIndex: index,
+            elevation: 0,
+            selectedIconTheme: const IconThemeData(
+              color: Colors.white,
             ),
-          ],
-        );
-      }),
+            unselectedIconTheme: const IconThemeData(
+              color: Color(0xFF5E5E60),
+            ),
+            type: BottomNavigationBarType.fixed,
+            onTap: (int newIndex) {
+              if (newIndex == 2) {
+                buildShowModalBottomSheet(context);
+              } else {
+                navController.changeIndex(newIndex);
+              }
+            },
+            items: [
+              const BottomNavigationBarItem(icon: Icon(Iconsax.home, size: 32), label: ""),
+              const BottomNavigationBarItem(icon: Icon(Iconsax.clock, size: 32), label: ""),
+              const BottomNavigationBarItem(icon: Icon(Iconsax.add, size: 32), label: ""),
+              const BottomNavigationBarItem(icon: Icon(Iconsax.lovely, size: 32), label: ""),
+              BottomNavigationBarItem(
+                icon: SizedBox(
+                  height: 32,
+                  width: 32,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Obx(() {
+                      final image = profileController.profile.value.data?.profileImage ?? "";
+                      const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+      
+                      return CustomNetworkImage(
+                        imageUrl: image.isNotEmpty ? image : defaultImage,
+                        errorIcon: Iconsax.user,
+                      );
+                    }),
+                  ),
+                ),
+                label: "",
+              ),
+            ],
+          );
+        }),
+      ),
     );
   }
 
@@ -162,7 +165,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                   });
                 },
               ),
-              ListTile(
+              /*ListTile(
                 leading: Assets.images.liveStream.image(
                   height: 30,
                   width: 30,
@@ -198,7 +201,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                     );
                   }
                 },
-              ),
+              ),*/
               const Gap(44),
             ],
           ),

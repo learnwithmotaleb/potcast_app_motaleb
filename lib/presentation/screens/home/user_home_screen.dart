@@ -160,7 +160,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     left: 0,
                     right: 0,
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         if (banner.redirectUrl != null && banner.redirectUrl!.isNotEmpty) {
                           openBrowser(url: banner.redirectUrl ?? "");
                         }
@@ -546,31 +546,36 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ),
                     const SliverGap(8),
                     SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const CustomText(
-                              text: "Streaming Record",
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                AppRouter.route.pushNamed(RoutePath.seeAllRecord);
-                              },
-                              child: Text(
-                                "see_all".tr,
+                      child: Obx(() {
+                        if (controller.recordList.isEmpty) {
+                          return const SizedBox();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const CustomText(
+                                text: "Streaming Record",
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
+                              TextButton(
+                                onPressed: () {
+                                  AppRouter.route.pushNamed(RoutePath.seeAllRecord);
+                                },
+                                child: Text(
+                                  "see_all".tr,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
                     SliverToBoxAdapter(
                       child: Obx(() {
-                        switch(controller.loadingRecord.value){
+                        switch (controller.loadingRecord.value) {
                           case Status.loading:
                             return const SizedBox();
                           case Status.error:
@@ -580,6 +585,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           case Status.internetError:
                             return const SizedBox();
                           case Status.completed:
+                            if (controller.recordList.isEmpty) {
+                              return const SizedBox();
+                            }
                             return SizedBox(
                               height: 220,
                               child: ListView.builder(
@@ -599,7 +607,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                       url: item.recordingPresignedUrl ?? "",
                                     ),
                                     onTap: () {
-                                      if(item.recordingPresignedUrl != null){
+                                      if (item.recordingPresignedUrl != null) {
                                         AppRouter.route.pushNamed(RoutePath.recordPlayScreen,
                                           extra: {"url": item.recordingPresignedUrl ?? ""},
                                         );

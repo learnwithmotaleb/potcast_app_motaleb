@@ -45,6 +45,17 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['SWIFT_VERSION'] = '5.0'
 
+      # Fix HMS SDK dSYM issues for TestFlight
+      config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      
+      # Ensure dSYM files are generated for HMS frameworks
+      if target.name.include?('HMS') || target.name.include?('WebRTC')
+        config.build_settings['STRIP_INSTALLED_PRODUCT'] = 'NO'
+        config.build_settings['SEPARATE_STRIP'] = 'NO'
+        config.build_settings['COPY_PHASE_STRIP'] = 'NO'
+      end
+
       # Your permission_handler settings
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',

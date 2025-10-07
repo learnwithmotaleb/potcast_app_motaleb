@@ -91,7 +91,6 @@ class PodcastFeedController extends GetxController {
       bool isAlbum = false,
       bool isPlaylist = false,
       String? id}) async {
-    // Store parameters for future refresh calls
     _lastReels = reels;
     _lastPopular = popular;
     _lastFirstPodcastId = firstPodcastId;
@@ -981,10 +980,14 @@ class PodcastFeedController extends GetxController {
   MediaItem _createMediaItem(PlayEntity item) {
     return MediaItem(
       id: item.id ?? "",
-      album: item.categoryName ?? "",
-      title: item.title ?? "",
-      artist: item.creatorName ?? "",
+      album: item.categoryName ?? "Podcast",
+      title: item.title ?? "Unknown Title",
+      artist: item.creatorName ?? "Unknown Artist",
       artUri: Uri.tryParse(item.coverImage ?? ""),
+      duration: null,
+      extras: {
+        'url': item.podcastUrl,
+      },
     );
   }
 

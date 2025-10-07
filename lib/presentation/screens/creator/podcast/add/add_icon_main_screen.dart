@@ -28,8 +28,8 @@ class _AddIconMainScreenState extends State<AddIconMainScreen> {
           return const PodcastVideoAddScreen();
         case SelectedAddPostScreenType.record:
           return const AudioRecordScreen();
-        case SelectedAddPostScreenType.live:
-          return const LiveStreamingScreen();
+        /*case SelectedAddPostScreenType.live:
+          return const LiveStreamingScreen();*/
         case SelectedAddPostScreenType.none:
           return Container();
       }

@@ -13,6 +13,7 @@ import 'package:podcast/presentation/screens/profile/controller/profile_controll
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/widget/map/search_my_location.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
@@ -164,7 +165,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const Gap(12),
                       CustomAlignText(text: "address".tr),
                       const Gap(8),
-                      CustomTextField(
+                      GestureDetector(
+                        onTap: () async {
+                          final location = await showMapDialog(context: context);
+
+                          if (location != null && location.address.isNotEmpty) {
+                            address.text = location.address;
+                          } else {
+                            debugPrint("User dismissed the dialog or nothing selected");
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.whiteColor),
+                            borderRadius: BorderRadius.circular(8),
+                            color: AppColors.blackColor,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(child: Text(
+                                address.text.isEmpty?
+                                "Select Your Location": address.text,
+                              )),
+                              const Icon(Iconsax.location),
+                            ],
+                          ),
+                        ),
+                      ),
+                      /*CustomTextField(
                         hintText: "enter_your_address".tr,
                         keyboardType: TextInputType.streetAddress,
                         controller: address,
@@ -174,7 +204,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           }
                           return null;
                         },
-                      ),
+                      ),*/
                       FutureBuilder(
                         future: DBHelper().getUserRole(),
                         builder: (context, item){
