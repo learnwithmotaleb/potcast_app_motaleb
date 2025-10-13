@@ -19,14 +19,14 @@ Future<void> main() async {
 
   //Background Audio Player
   await JustAudioBackground.init(
-    androidNotificationChannelId:
-        "com.ryanheise.audio_service.podcast.audio_player",
+    androidNotificationChannelId: "com.ryanheise.audio_service.podcast.audio_player",
     androidNotificationChannelName: "Audio playback",
-    androidNotificationOngoing: true, // Make notification non-dismissible
-    androidStopForegroundOnPause: true, // Allow dismissible when paused
+    androidNotificationOngoing: true,
+    androidStopForegroundOnPause: true,
     androidNotificationClickStartsActivity: true,
     androidNotificationIcon: 'drawable/ic_stat_music_note',
     preloadArtwork: true,
+    rewindInterval: const Duration(seconds: 15),
   );
 
   DeviceUtils.lockDevicePortrait();

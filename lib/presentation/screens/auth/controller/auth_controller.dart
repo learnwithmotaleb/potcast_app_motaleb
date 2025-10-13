@@ -73,8 +73,7 @@ class AuthController extends GetxController {
   RxBool signUpLoading = false.obs;
   signUpLoadingMethod(bool status) => signUpLoading.value = status;
 
-  Future<void> signUp(
-      {required Map<String, String> body, required String email}) async {
+  Future<void> signUp({required Map<String, String> body, required String email}) async {
     try {
       signUpLoadingMethod(true);
       var response = await apiClient.post(
@@ -233,8 +232,7 @@ class AuthController extends GetxController {
   /// ============================= Active Account =====================================
   RxBool otpLoading = false.obs;
   otpMethod(bool status) => otpLoading.value = status;
-  void otpVerify(
-      {required Map<String, dynamic> body, required String email}) async {
+  void otpVerify({required Map<String, dynamic> body, required String email}) async {
     try {
       otpMethod(true);
       var response = await apiClient.post(

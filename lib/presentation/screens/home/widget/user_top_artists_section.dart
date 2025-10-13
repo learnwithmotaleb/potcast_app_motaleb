@@ -257,59 +257,73 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   }
 
   Widget _buildHostCard() {
-    return Container(
-      width: 90.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        // gradient: LinearGradient(
-        //   begin: Alignment.topCenter,
-        //   end: Alignment.bottomCenter,
-        //   colors: [
-        //     Colors.red.withValues(alpha: 0.3),
-        //     Colors.pink.withValues(alpha: 0.1),
-        //   ],
-        // ),
-        // border: Border.all(
-        //   color: Colors.red.withValues(alpha: 0.5),
-        //   width: 1,
-        // ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 80,
-            width: 80,
-            padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [Colors.black, Colors.black12],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.red.withValues(alpha: 0.4),
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Container(
-              decoration: const BoxDecoration(
+    return GestureDetector(
+      onTap: (){
+        /*AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
+            extra: AudioPlayerModel(
+              id: "",
+              title: reelsItem?[index].title ?? "",
+              categories: reelsItem?[index].category?.name ?? "",
+              image: reelsItem?[index].coverImage ?? "",
+              url: reelsItem?[index].podcastUrl ?? "",
+              duration: formatDuration(reelsItem?[index].duration ?? 0),
+              reels: true,
+            ));*/
+      },
+      child: Container(
+        width: 90.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          // gradient: LinearGradient(
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          //   colors: [
+          //     Colors.red.withValues(alpha: 0.3),
+          //     Colors.pink.withValues(alpha: 0.1),
+          //   ],
+          // ),
+          // border: Border.all(
+          //   color: Colors.red.withValues(alpha: 0.5),
+          //   width: 1,
+          // ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 80,
+              width: 80,
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  colors: [Colors.black, Colors.black12],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.red.withValues(alpha: 0.4),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
-              padding: const EdgeInsets.all(8),
-              child: Assets.images.splashLogo.image(),
+              child: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(8),
+                child: Assets.images.splashLogo.image(),
+              ),
             ),
-          ),
-          const Gap(8),
-          const CustomText(
-            text: "Joe",
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ],
+            const Gap(8),
+            const CustomText(
+              text: "Joe",
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }

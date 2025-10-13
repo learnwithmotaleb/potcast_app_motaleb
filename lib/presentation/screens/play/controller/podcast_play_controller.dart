@@ -91,6 +91,17 @@ class PodcastFeedController extends GetxController {
       bool isAlbum = false,
       bool isPlaylist = false,
       String? id}) async {
+    // Always stop and reinitialize audio, even if same podcast
+    if (_audioPlayer.playing) {
+      debugPrint('🛑 Stopping current audio before loading podcast');
+      await _audioPlayer.stop();
+      isPlaying.value = false;
+    }
+
+    // Force clear playlist so it rebuilds with new items
+    _playlist = null;
+    debugPrint('🗑️ Cleared existing playlist for fresh reload');
+
     _lastReels = reels;
     _lastPopular = popular;
     _lastFirstPodcastId = firstPodcastId;
@@ -137,16 +148,12 @@ class PodcastFeedController extends GetxController {
 
       print("object playPodcast 1");
 
-      final shouldSkipPlay = _shouldSkipPlayback(items.first);
       isLoading.value = Status.completed;
       currentIndex.value = 0;
 
       print("object playPodcast 2");
-
-      if (!shouldSkipPlay) {
-        print("object playPodcast 3");
-        await playPodcast(index: 0);
-      }
+      print("object playPodcast 3");
+      await playPodcast(index: 0);
     }
   }
 
@@ -219,23 +226,20 @@ class PodcastFeedController extends GetxController {
     }
   }
 
-  bool _shouldSkipPlayback(PlayEntity newItem) {
-    if (currentItem.value == null) return false;
-
-    final currentId = currentItem.value?.id;
-    final newId = newItem.id;
-
-    if (currentId == null) return false;
-
-    return currentId == newId && loadingStatus.value == Status.completed;
-  }
-
   Future<void> playPodcast({required int index}) async {
     if (index < 0 || index >= items.length) {
       return;
     }
 
     print("object playPodcast");
+
+    // Always stop and reinitialize, even if same podcast
+    if (_audioPlayer.playing) {
+      debugPrint(
+          '🛑 Stopping current audio before playing podcast at index $index');
+      await _audioPlayer.pause();
+      isPlaying.value = false;
+    }
 
     // Check if we need to refresh before playing
     await _checkAndRefreshIfNeeded();
@@ -356,22 +360,20 @@ class PodcastFeedController extends GetxController {
 
       await _disposePlayers();
 
-      // Build playlist if not already built or if items changed
-      if (_playlist == null || _playlist!.children.length != items.length) {
-        try {
-          await _buildPlaylist();
-        } catch (e) {
-          debugPrint('❌ Playlist build error caught: $e');
-          _setLoadingStatus(Status.error);
-          return;
-        }
+      // Always rebuild playlist to ensure fresh state
+      try {
+        await _buildPlaylist();
+      } catch (e) {
+        debugPrint('❌ Playlist build error caught: $e');
+        _setLoadingStatus(Status.error);
+        return;
+      }
 
-        // Double-check playlist was created
-        if (_playlist == null) {
-          debugPrint('❌ Playlist is null after build');
-          _setLoadingStatus(Status.error);
-          return;
-        }
+      // Double-check playlist was created
+      if (_playlist == null) {
+        debugPrint('❌ Playlist is null after build');
+        _setLoadingStatus(Status.error);
+        return;
       }
 
       final mediaUrl = item.podcastUrl;
@@ -761,14 +763,17 @@ class PodcastFeedController extends GetxController {
     // If using playlist, just seek to next index
     if (_playlist != null && isAudioMode.value) {
       final nextIndex = currentIndex.value + 1;
-      if (nextIndex < _playlist!.children.length) {
-        await _audioPlayer.seekToNext();
+      if (nextIndex < _playlist!.children.length && nextIndex < items.length) {
+        // CRITICAL FIX: Update UI state BEFORE seeking to prevent mismatch
         currentIndex.value = nextIndex;
         currentItem.value = items[nextIndex];
         isFavorite.value = items[nextIndex].isBookmark ?? false;
         isLike.value = items[nextIndex].isLike ?? false;
+
+        await _audioPlayer.seekToNext();
         _trackView(items[nextIndex].id);
-        debugPrint('⏭️ Playlist: Moved to next track (index: $nextIndex)');
+        debugPrint(
+            '⏭️ Playlist: Moved to next track (index: $nextIndex) - ${items[nextIndex].title}');
         return;
       }
     }
@@ -785,14 +790,17 @@ class PodcastFeedController extends GetxController {
     // If using playlist, just seek to previous index
     if (_playlist != null && isAudioMode.value) {
       final prevIndex = currentIndex.value - 1;
-      if (prevIndex >= 0) {
-        await _audioPlayer.seekToPrevious();
+      if (prevIndex >= 0 && prevIndex < items.length) {
+        // CRITICAL FIX: Update UI state BEFORE seeking to prevent mismatch
         currentIndex.value = prevIndex;
         currentItem.value = items[prevIndex];
         isFavorite.value = items[prevIndex].isBookmark ?? false;
         isLike.value = items[prevIndex].isLike ?? false;
+
+        await _audioPlayer.seekToPrevious();
         _trackView(items[prevIndex].id);
-        debugPrint('⏮️ Playlist: Moved to previous track (index: $prevIndex)');
+        debugPrint(
+            '⏮️ Playlist: Moved to previous track (index: $prevIndex) - ${items[prevIndex].title}');
         return;
       }
     }
@@ -1002,6 +1010,16 @@ class PodcastFeedController extends GetxController {
     // _videoPlayerController.value = null;
     // Don't clear playlist - it should persist across track changes
 
+    // CRITICAL FIX: Stop audio player if playing to prevent multiple songs playing
+    try {
+      if (_audioPlayer.playing) {
+        debugPrint('🛑 Stopping audio player in _disposePlayers');
+        await _audioPlayer.pause();
+      }
+    } catch (e) {
+      debugPrint('⚠️ Error stopping audio in _disposePlayers: $e');
+    }
+
     debugPrint('🔄 _disposePlayers called (video features removed)');
   }
 
@@ -1053,6 +1071,14 @@ class PodcastFeedController extends GetxController {
           currentIndex.value < _playlist!.children.length) {
         debugPrint(
             '🎵 Using playlist - seeking to index ${currentIndex.value}');
+
+        // CRITICAL FIX: Ensure currentItem is synced BEFORE seeking
+        if (currentIndex.value < items.length) {
+          currentItem.value = items[currentIndex.value];
+          debugPrint(
+              '🎵 Synced currentItem to index ${currentIndex.value}: ${currentItem.value?.title}');
+        }
+
         await _audioPlayer.seek(Duration.zero, index: currentIndex.value);
         debugPrint('🎵 Seek completed');
         if (play) {
@@ -1212,15 +1238,26 @@ class PodcastFeedController extends GetxController {
 
     // Listen to current index changes from playlist
     _audioPlayer.currentIndexStream.listen((index) async {
-      if (index != null &&
-          index != currentIndex.value &&
-          index < items.length) {
-        debugPrint('🎵 Playlist auto-advanced to index: $index');
+      if (index != null && index < items.length) {
+        // CRITICAL FIX: Always sync UI with playlist index, even if it matches currentIndex
+        // This ensures UI stays in sync when manually seeking in playlist
+        final indexChanged = index != currentIndex.value;
+
+        if (indexChanged) {
+          debugPrint('🎵 Playlist auto-advanced to index: $index');
+        } else {
+          debugPrint('🎵 Playlist index confirmed: $index');
+        }
+
         currentIndex.value = index;
         currentItem.value = items[index];
         isFavorite.value = items[index].isBookmark ?? false;
         isLike.value = items[index].isLike ?? false;
-        _trackView(items[index].id);
+
+        // Only track view if index actually changed (to avoid duplicate tracking)
+        if (indexChanged) {
+          _trackView(items[index].id);
+        }
 
         // Check if we need to refresh when playlist auto-advances
         await _checkAndRefreshIfNeeded();

@@ -7,6 +7,8 @@ import 'package:podcast/presentation/screens/play/widget/buffer_animation_widget
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:video_player/video_player.dart';
 
+import 'controller/podcast_manually_play_controller.dart';
+
 class RecordPlayScreen extends StatefulWidget {
   const RecordPlayScreen({
     super.key,
@@ -69,7 +71,7 @@ class _RecordPlayScreenState extends State<RecordPlayScreen> {
     try {
       final currentPosition =
           _videoPlayerController?.value.position ?? Duration.zero;
-      final feedController = Get.find<PodcastFeedController>();
+      final feedController = Get.find<PodcastManuallyPlayController>();
 
       if (currentPosition > Duration.zero) {
         await feedController.seek(currentPosition);

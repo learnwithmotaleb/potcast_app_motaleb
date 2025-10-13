@@ -30,4 +30,10 @@ Future<void> initDependencies() async {
   serviceLocator.registerFactory<ApiClient>(
     () => ApiClient(),
   );
+  
+  /// ================= Audio Player (Singleton) ================
+  /// Single global audio player instance for the entire app
+  serviceLocator.registerLazySingleton<AudioPlayer>(
+    () => AudioPlayer(),
+  );
 }

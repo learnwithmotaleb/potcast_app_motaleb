@@ -12,9 +12,10 @@ import 'package:podcast/presentation/screens/auth/verification/verification_scre
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
+import 'package:podcast/presentation/screens/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
-import 'package:podcast/presentation/screens/play/record_play_screen.dart';
 import 'package:podcast/presentation/screens/play/record_play_screen_old.dart';
+import 'package:podcast/presentation/screens/play/stream_audio_play_screen_example.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_info_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
@@ -29,7 +30,6 @@ import 'package:podcast/presentation/screens/settings/terms_of_condition.dart';
 import 'package:podcast/presentation/screens/splash/splash_screen.dart';
 import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
 import 'package:podcast/presentation/screens/subscription/subscription_screen.dart';
-import 'package:podcast/presentation/screens/user/nav/user_nav_screen.dart';
 
 import '../../presentation/screens/album/screen/album_podcast_screen.dart';
 import '../../presentation/screens/categories/categories_screen.dart';
@@ -260,7 +260,7 @@ class AppRouter {
 
             debugPrint(model.toJson().toString());
             return _buildPageWithAnimation(
-              child: UserPlayScreen(
+              child: StreamAudioPlayScreenExample(
                 id: model.id,
                 title: model.title,
                 image: model.image,

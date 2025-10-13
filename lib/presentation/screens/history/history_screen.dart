@@ -80,6 +80,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 builderDelegate: PagedChildBuilderDelegate<HistoryItem>(
                   itemBuilder: (context, item, index) {
+                    print(item.podcast?.id);
                     final data = AudioPlayerModel(
                       id: item.podcast?.id ?? "",
                       title: item.podcast?.title ?? "",

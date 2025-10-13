@@ -6,7 +6,7 @@ import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
 import 'package:podcast/presentation/screens/home/controller/user_home_controller.dart';
-import 'package:podcast/presentation/screens/notification/controller/notification_controller.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_play_controller.dart';
 import 'package:podcast/presentation/screens/playlist/controller/playlist_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
@@ -41,4 +41,5 @@ void initGetX() {
   //Creator
   Get.lazyPut(() => CreatorNavController(), fenix: true);
   Get.lazyPut(() => PodcastAudioController(), fenix: true);
+  Get.lazyPut(() => PodcastManuallyPlayController(), fenix: true);
 }

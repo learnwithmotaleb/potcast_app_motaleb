@@ -121,21 +121,6 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
               const CustomText(text: "Add Content Station", fontSize: 20),
               const Divider(),
               ListTile(
-                leading: Assets.images.video.image(
-                  height: 30,
-                  width: 30,
-                  color: AppColors.whiteColor,
-                ),
-                title: const Text("Upload Video"),
-                onTap: () {
-                  controller.selectedScreenType.value = SelectedAddPostScreenType.video;
-                  AppRouter.route.pop();
-                  Future.delayed(const Duration(milliseconds: 300), () {
-                    navController.changeIndex(2);
-                  });
-                },
-              ),
-              ListTile(
                 leading: Assets.images.headphones.image(
                   height: 30,
                   width: 30,
@@ -144,6 +129,21 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 title: const Text("Upload Audio"),
                 onTap: () {
                   controller.selectedScreenType.value = SelectedAddPostScreenType.audio;
+                  AppRouter.route.pop();
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    navController.changeIndex(2);
+                  });
+                },
+              ),
+              ListTile(
+                leading: Assets.images.video.image(
+                  height: 30,
+                  width: 30,
+                  color: AppColors.whiteColor,
+                ),
+                title: const Text("Upload Video"),
+                onTap: () {
+                  controller.selectedScreenType.value = SelectedAddPostScreenType.video;
                   AppRouter.route.pop();
                   Future.delayed(const Duration(milliseconds: 300), () {
                     navController.changeIndex(2);
