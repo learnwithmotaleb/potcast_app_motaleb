@@ -1,6 +1,5 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
@@ -74,7 +73,7 @@ class _IntroScreenState extends State<IntroScreen> {
                               textAlign: TextAlign.center,
                               maxLines: 2,
                             ),
-                            Gap(22.h),
+                            const Gap(22),
                             CustomButton(
                               text: "get_started".tr,
                               onTap: () => AppRouter.route

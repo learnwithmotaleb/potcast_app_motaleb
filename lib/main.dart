@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -34,12 +33,10 @@ Future<void> main() async {
   initDependencies();
 
   await Purchases.setLogLevel(LogLevel.debug);
-  await Purchases.configure(
-      PurchasesConfiguration(AppConstants.revenueCatApiKey));
+  await Purchases.configure(PurchasesConfiguration(AppConstants.revenueCatApiKey));
 
   //Localization
-  Map<String, Map<String, String>>? languages =
-      await LanguageController.getLanguages();
+  Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
 }
@@ -54,34 +51,27 @@ class MyApp extends StatelessWidget {
     return GetBuilder<LanguageController>(
       init: Get.find<LanguageController>(),
       builder: (localizeController) {
-        return ScreenUtilInit(
-          designSize: const Size(393, 852),
-          minTextAdapt: true,
-          useInheritedMediaQuery: true,
-          builder: (context, child) {
-            return GetMaterialApp.router(
-              debugShowCheckedModeBanner: false,
+        return GetMaterialApp.router(
+          debugShowCheckedModeBanner: false,
 
-              //Route Section
-              routeInformationParser: AppRouter.route.routeInformationParser,
-              routerDelegate: AppRouter.route.routerDelegate,
-              routeInformationProvider:
-                  AppRouter.route.routeInformationProvider,
+          //Route Section
+          routeInformationParser: AppRouter.route.routeInformationParser,
+          routerDelegate: AppRouter.route.routerDelegate,
+          routeInformationProvider:
+          AppRouter.route.routeInformationProvider,
 
-              //Theme Section
-              themeMode: ThemeMode.dark,
-              theme: lightTheme,
-              darkTheme: darkTheme,
+          //Theme Section
+          themeMode: ThemeMode.dark,
+          theme: lightTheme,
+          darkTheme: darkTheme,
 
-              //Languages Section
-              locale: localizeController.locale,
-              translations: Messages(languages: languages),
-              fallbackLocale: Locale(
-                AppConstants.languages.first.languageCode,
-                AppConstants.languages.first.countryCode,
-              ),
-            );
-          },
+          //Languages Section
+          locale: localizeController.locale,
+          translations: Messages(languages: languages),
+          fallbackLocale: Locale(
+            AppConstants.languages.first.languageCode,
+            AppConstants.languages.first.countryCode,
+          ),
         );
       },
     );

@@ -40,7 +40,7 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
         const Gap(8),
         CustomTextField(
           hintText: "Enter Your User Name".tr,
-          keyboardType: TextInputType.name,
+          keyboardType: TextInputType.text,
           controller: name,
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -49,10 +49,10 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
             if (value.length < 2) {
               return 'User Name must be at least 2 characters';
             }
-            final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+/*            final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
             if (!nameRegex.hasMatch(value)) {
               return 'User Name can only contain letters and spaces';
-            }
+            }*/
             return null;
           },
         ),

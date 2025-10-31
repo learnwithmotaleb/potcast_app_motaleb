@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -108,7 +107,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         );
                       }),
-                      Gap(12.h),
+                      const Gap(12),
                       CustomAlignText(text: "full_name".tr),
                       const Gap(8),
                       CustomTextField(

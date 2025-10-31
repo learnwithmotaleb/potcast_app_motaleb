@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/route/route_path.dart';
@@ -154,7 +153,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             },
                             child: Container(
                               width: (width / 2) - 50,
-                              height: 38.h,
+                              height: 40,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 border: Border.all(
@@ -174,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             onTap: () => AppRouter.route.pop(),
                             child: Container(
                               width: (width / 2) - 50,
-                              height: 38.h,
+                              height: 40,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 border: Border.all(

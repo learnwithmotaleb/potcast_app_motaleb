@@ -8,8 +8,7 @@ import 'package:podcast/service/api_url.dart';
 class HistoryController extends GetxController {
   ApiClient apiClient = ApiClient();
 
-  final PagingController<int, HistoryItem> pagingController =
-      PagingController(firstPageKey: 1);
+  final PagingController<int, HistoryItem> pagingController = PagingController(firstPageKey: 1);
   bool isLoadingMove = false;
 
   RxList<HistoryItem> lastTenItems = <HistoryItem>[].obs;

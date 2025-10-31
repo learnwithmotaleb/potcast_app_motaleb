@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
@@ -26,7 +25,7 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(70.h),
+        const Gap(70),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,8 +35,8 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
               child: Align(
                 alignment: Alignment.center,
                 child: Assets.images.splashLogo.image(
-                  height: 60.h,
-                  width: 150.w,
+                  height: 60,
+                  width: 150,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -61,9 +60,10 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
               width: width,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                  color: const Color(0xFF2A2B31),
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(color: AppColors.whiteColor)),
+                color: const Color(0xFF2A2B31),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.whiteColor),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,7 +71,9 @@ class _UserHomeTopSectionState extends State<UserHomeTopSection> {
                   Assets.icons.search.svg(height: 22, width: 22),
                   const Gap(8),
                   CustomText(
-                      text: "what_would_you_like_to_listen".tr, fontSize: 16),
+                    text: "what_would_you_like_to_listen".tr,
+                    fontSize: 16,
+                  ),
                 ],
               ),
             ),

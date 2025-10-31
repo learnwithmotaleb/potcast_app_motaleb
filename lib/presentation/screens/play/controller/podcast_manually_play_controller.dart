@@ -210,13 +210,23 @@ class PodcastManuallyPlayController extends GetxController {
     await _audioPlayer.seek(position);
   }
 
+  bool isCall = false;
+
   Future<void> seekToNext() async {
     try{
+      if(isCall)return;
+      isCall = true;
+
       if (_audioPlayer.hasNext) {
       await _audioPlayer.seekToNext();
-    }
+      await Future.delayed(Duration(seconds: 1));
+    }else{
+        loadMorePodcasts();
+      }
     }catch(e){
       debugPrint('❌ Error seeking to next: $e');
+    } finally {
+      isCall = false;
     }
   }
 
@@ -314,6 +324,10 @@ class PodcastManuallyPlayController extends GetxController {
   }
 
   void _checkAndLoadMore(int currentIndex) {
+    if (_items.length < 4) {
+      debugPrint('🛑 Auto-load skipped — playlist too short (${_items.length} items).');
+      return;
+    }
     // Load more when user reaches threshold items before the end
     final remainingItems = _items.length - currentIndex;
     if (remainingItems <= preloadThreshold && !_isLoadingMore) {

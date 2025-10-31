@@ -39,11 +39,44 @@ class SubscriptionController extends GetxController {
           debugPrint("  Price: ${pkg.storeProduct.priceString}");
         }
       });
-
     } catch (e) {
       debugPrint("Error fetching subscription: $e");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> changeSubscription(Package newPackage, String oldProductIdentifier) async {
+    if (customer.value == null) {
+      toastMessage(message: "No active subscription to change.");
+      return;
+    }
+
+    isPurchasing.value = true;
+
+    try {
+      final PurchaseResult result = await Purchases.purchasePackage(
+        newPackage,
+        googleProductChangeInfo: GoogleProductChangeInfo(
+          oldProductIdentifier,
+          prorationMode: GoogleProrationMode.immediateWithTimeProration,
+        ),
+      );
+
+      customer.value = result.customerInfo;
+
+      toastMessage(
+        message: "Subscription changed successfully to ${newPackage.storeProduct.title}!",
+      );
+      debugPrint("Active Entitlements: ${result.customerInfo.entitlements.active.keys.join(", ")}");
+    } on PlatformException catch (e) {
+      debugPrint("PlatformException: ${e.code} - ${e.message}");
+      toastMessage(message: "Subscription change failed.");
+    } catch (e) {
+      debugPrint("Error changing subscription: $e");
+      toastMessage(message: "Subscription change failed.");
+    } finally {
+      isPurchasing.value = false;
     }
   }
 
@@ -59,7 +92,6 @@ class SubscriptionController extends GetxController {
     }
   }
 
-
   Future<void> purchasePackage(Package package) async {
     isPurchasing.value = true;
 
@@ -68,7 +100,8 @@ class SubscriptionController extends GetxController {
       customer.value = purchaseResult.customerInfo;
 
       debugPrint("Purchase successful!");
-      debugPrint("Active Entitlements: ${purchaseResult.customerInfo.entitlements.active.keys.join(", ")}");
+      debugPrint(
+          "Active Entitlements: ${purchaseResult.customerInfo.entitlements.active.keys.join(", ")}");
 
       toastMessage(message: "Subscription purchased successfully!");
     } on PlatformException catch (e) {
@@ -77,7 +110,7 @@ class SubscriptionController extends GetxController {
       } else {
         toastMessage(message: "Purchase Failed");
       }
-    }  on PurchasesErrorCode catch (e) {
+    } on PurchasesErrorCode catch (e) {
       debugPrint("Purchase error: ${e.toString()}");
       toastMessage(message: "Purchase Failed");
     } catch (e) {

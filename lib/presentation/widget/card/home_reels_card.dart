@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 
@@ -27,7 +26,7 @@ class HomeReelsCard extends StatelessWidget {
         onTap: onTap,
         onLongPress: onLongPress,
         child: CustomNetworkImage(
-          borderRadius: BorderRadius.circular(5.r),
+          borderRadius: BorderRadius.circular(5),
           imageUrl: data.image,
           height: 250,
           width: (width / 3),

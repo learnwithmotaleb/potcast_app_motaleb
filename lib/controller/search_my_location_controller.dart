@@ -12,7 +12,7 @@ class SearchMyLocationController extends GetxController {
 
   /// ============================= Search Location By Google =====================================
   RxBool isDirection = false.obs;
-  var searchLoading = Status.completed.obs;
+  final Rx<Status> searchLoading = Status.completed.obs;
   searchLoadingMethod(Status status) => searchLoading.value = status;
   RxList<Prediction> addressList = <Prediction>[].obs;
   final searchText = TextEditingController();

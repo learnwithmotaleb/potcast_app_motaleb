@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
@@ -9,7 +8,6 @@ import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class ForgetScreen extends StatefulWidget {
   const ForgetScreen({super.key});
@@ -46,7 +44,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                 fontWeight: FontWeight.w300,
                 fontSize: 20,
               ),
-              Gap(24.h),
+              const Gap(24),
               CustomAlignText(text: "enter_your_email".tr),
               const Gap(8),
               CustomTextField(
@@ -65,7 +63,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                   return null;
                 },
               ),
-              Gap(44.h),
+              const Gap(44),
               Obx(() {
                 return CustomButton(
                   text: "continue".tr,

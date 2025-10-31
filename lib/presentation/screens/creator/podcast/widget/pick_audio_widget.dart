@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
@@ -116,12 +115,12 @@ class PickAudioWidget extends StatelessWidget {
                         )
                       : SizedBox(
                           width: width,
-                          height: 50.h,
+                          height: 50,
                           child: Row(
                             children: [
                               Expanded(
                                 child: Container(
-                                  height: 50.h,
+                                  height: 50,
                                   alignment: Alignment.centerLeft,
                                   padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
@@ -141,8 +140,8 @@ class PickAudioWidget extends StatelessWidget {
                               GestureDetector(
                                 onTap: () => controller.audioFile.value = null,
                                 child: Container(
-                                  height: 25.h,
-                                  width: 25.w,
+                                  height: 25,
+                                  width: 25,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       border: Border.all(

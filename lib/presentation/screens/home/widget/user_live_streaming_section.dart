@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
@@ -15,12 +14,12 @@ class UserLiveStreamingSection extends StatefulWidget {
   const UserLiveStreamingSection({super.key});
 
   @override
-  State<UserLiveStreamingSection> createState() =>
-      _UserLiveStreamingSectionState();
+  State<UserLiveStreamingSection> createState() => _UserLiveStreamingSectionState();
 }
 
 class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
   final controller = Get.find<UserHomeController>();
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -35,28 +34,23 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomText(
-                  text: "Live Streaming".tr,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800),
+              CustomText(text: "Live Streaming".tr, fontSize: 22, fontWeight: FontWeight.w800),
               TextButton(
-                  onPressed: () =>
-                      AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),
-                  child: CustomText(
-                      text: "see_all".tr,
-                      color: isDarkMode
-                          ? AppColors.whiteColor
-                          : AppColors.blackColor))
+                onPressed: () => AppRouter.route.pushNamed(RoutePath.seeAllTopCreator),
+                child: CustomText(
+                  text: "see_all".tr,
+                  color: isDarkMode ? AppColors.whiteColor : AppColors.blackColor,
+                ),
+              ),
             ],
           ),
           const Gap(12),
           SizedBox(
-            height: 120.h,
+            height: 120,
             width: width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount:
-                  (controller.model.value.data?.topCreators?.length ?? 0) + 1,
+              itemCount: (controller.model.value.data?.topCreators?.length ?? 0) + 1,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
                   return Padding(
@@ -66,22 +60,20 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                         GestureDetector(
                           // onTap: ()=>controller.model.value.data?.admin?.podcast != null?AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.admin?.podcast??""):null,
                           child: Container(
-                            height: 80.w,
-                            width: 80.w,
+                            height: 80,
+                            width: 80,
                             padding: EdgeInsets.all(index == 0 ? 3 : 5),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: index == 0
-                                    ? Border.all(
-                                        color: const Color(0xFFFE7A15),
-                                        width: 3)
+                                    ? Border.all(color: const Color(0xFFFE7A15), width: 3)
                                     : Border.all(
                                         color: isDarkMode
                                             ? AppColors.whiteColor
                                             : AppColors.primaryColor,
                                         width: 1)),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(40.r),
+                                borderRadius: BorderRadius.circular(40),
                                 child: /*controller.model.value.data?.admin?.avatar != null?
                                 CustomNetworkImage(imageUrl: controller.model.value.data?.admin?.avatar??""):*/
                                     Assets.images.splashLogo.image()),
@@ -104,8 +96,8 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                       GestureDetector(
                         // onTap: ()=>AppRouter.route.pushNamed(RoutePath.userPlayScreen,extra: controller.model.value.data?.topCreators?[index-1].podcast??""),
                         child: Container(
-                          height: 80.0.h,
-                          width: 80.0.h,
+                          height: 80.0,
+                          width: 80.0,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
@@ -113,11 +105,9 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                             alignment: Alignment.center,
                             children: [
                               CustomPaint(
-                                size: Size(80.0.h, 80.0.h),
+                                size: const Size(80.0, 80.0),
                                 painter: PartialCirclePainter(
-                                  color: isDarkMode
-                                      ? AppColors.whiteColor
-                                      : AppColors.primaryColor,
+                                  color: isDarkMode ? AppColors.whiteColor : AppColors.primaryColor,
                                   strokeWidth: 1.0,
                                 ),
                               ),
@@ -126,15 +116,10 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        40.0.r), // Make it circular
+                                    borderRadius: BorderRadius.circular(40.0), // Make it circular
                                     child: CustomNetworkImage(
-                                        imageUrl: controller
-                                                .model
-                                                .value
-                                                .data
-                                                ?.topCreators?[index - 1]
-                                                .profileImage ??
+                                        imageUrl: controller.model.value.data
+                                                ?.topCreators?[index - 1].profileImage ??
                                             ""),
                                   ),
                                 ),
@@ -145,9 +130,7 @@ class _UserLiveStreamingSectionState extends State<UserLiveStreamingSection> {
                       ),
                       const Gap(5),
                       CustomText(
-                          text: controller.model.value.data
-                                  ?.topCreators?[index - 1].name ??
-                              "",
+                          text: controller.model.value.data?.topCreators?[index - 1].name ?? "",
                           fontSize: 16),
                     ],
                   ),

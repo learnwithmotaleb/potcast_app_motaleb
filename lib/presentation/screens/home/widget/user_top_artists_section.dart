@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -219,7 +218,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           ),
         ),
         SizedBox(
-          height: 140.h,
+          height: 140,
           width: width,
           child: Obx(() {
             return ListView.builder(
