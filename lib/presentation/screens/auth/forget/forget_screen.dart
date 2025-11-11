@@ -69,7 +69,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                   text: "continue".tr,
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      _controller.forget(email: _email.text.trim());
+                      _controller.forget(email: _email.text.trim().toLowerCase());
                     }
                   },
                   isLoading: _controller.forgetLoading.value,

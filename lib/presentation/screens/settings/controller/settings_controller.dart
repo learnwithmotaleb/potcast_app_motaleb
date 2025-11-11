@@ -148,6 +148,7 @@ class SettingsController extends GetxController {
       if (response.statusCode == 200) {
         toastMessage(message: response.body?['message'].toString() ?? "something want wrong");
         AppRouter.route.pop();
+
         await dbHelper.logOut();
         deleteLoadingMethod(false);
       } else {

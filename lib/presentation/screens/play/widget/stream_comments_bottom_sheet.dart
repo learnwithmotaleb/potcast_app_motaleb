@@ -80,7 +80,7 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -142,7 +142,7 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -152,7 +152,7 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundColor: Colors.white.withOpacity(0.1),
+                backgroundColor: Colors.white.withValues(alpha: 0.1),
                 child: Text(
                   comment.commentorName?.isNotEmpty == true
                       ? comment.commentorName![0].toUpperCase()
@@ -179,7 +179,7 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
                     Text(
                       _formatDate(comment.createdAt),
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                         fontSize: 12,
                       ),
                     ),
@@ -213,7 +213,7 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
         color: const Color(0xFF2A2A2A),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -230,10 +230,10 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
                 decoration: InputDecoration(
                   hintText: 'Write a comment...',
                   hintStyle: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.05),
+                  fillColor: Colors.white.withValues(alpha: 0.05),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(24),
                     borderSide: BorderSide.none,
@@ -254,7 +254,7 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
               child: Container(
                 width: 44,
                 height: 44,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
@@ -322,14 +322,14 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
           children: [
             Icon(
               Icons.chat_bubble_outline,
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               size: 64,
             ),
             const SizedBox(height: 16),
             Text(
               'No comments yet',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 16,
               ),
             ),
@@ -337,7 +337,7 @@ class _StreamCommentsBottomSheetState extends State<StreamCommentsBottomSheet> {
             Text(
               'Be the first to comment!',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 14,
               ),
             ),

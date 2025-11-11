@@ -162,7 +162,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         },
                       ),
                       const Gap(12),
-                      CustomAlignText(text: "address".tr),
+                      const CustomAlignText(text: "Location"),
                       const Gap(8),
                       GestureDetector(
                         onTap: () async {

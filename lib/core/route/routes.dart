@@ -13,9 +13,8 @@ import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/nav/user_nav_screen.dart';
-import 'package:podcast/presentation/screens/play/audio_play_screen.dart';
 import 'package:podcast/presentation/screens/play/record_play_screen_old.dart';
-import 'package:podcast/presentation/screens/play/stream_audio_play_screen_example.dart';
+import 'package:podcast/presentation/screens/play/stream_audio_play_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_info_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_screen.dart';
 import 'package:podcast/presentation/screens/playlist/playlist_screen.dart';
@@ -260,7 +259,7 @@ class AppRouter {
 
             debugPrint(model.toJson().toString());
             return _buildPageWithAnimation(
-              child: StreamAudioPlayScreenExample(
+              child: StreamAudioPlayScreen(
                 id: model.id,
                 title: model.title,
                 image: model.image,

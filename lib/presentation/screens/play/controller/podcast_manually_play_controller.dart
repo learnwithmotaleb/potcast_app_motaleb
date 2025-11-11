@@ -15,28 +15,23 @@ import 'package:podcast/utils/app_const/app_const.dart';
 
 class PodcastManuallyPlayController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
-  // Use singleton AudioPlayer from dependency injection
   final AudioPlayer _audioPlayer = serviceLocator<AudioPlayer>();
 
-  // Stream controllers for UI state
   final _loadingStatusController = StreamController<Status>.broadcast();
   final _currentItemController = StreamController<PlayEntity?>.broadcast();
   final _itemsController = StreamController<List<PlayEntity>>.broadcast();
-  
-  // Stream subscriptions (to cancel later)
+
   StreamSubscription<int?>? _indexSubscription;
   StreamSubscription<SequenceState?>? _sequenceSubscription;
   StreamSubscription<PlayerState>? _playerStateSubscription;
-  
-  // Flag to ensure listeners are only set up once
+
   bool _listenersSetup = false;
 
   List<AudioSource> audioSources = [];
-  List<PlayEntity> _items = [];
+  final List<PlayEntity> _items = [];
   PlayEntity? _currentItem;
-  Status _loadingStatus = Status.loading; // Start as completed, will update to loading when needed
+  Status _loadingStatus = Status.loading;
 
-  // Like & Favorite states (using GetX for compatibility)
   final RxBool isLike = false.obs;
   final RxBool isFavorite = false.obs;
   final RxBool likeLoading = false.obs;
@@ -49,7 +44,6 @@ class PodcastManuallyPlayController extends GetxController {
   bool _lastIsPlaylist = false;
   String? _lastId;
 
-  // Getters for AudioPlayer streams (use directly from just_audio)
   AudioPlayer get audioPlayer => _audioPlayer;
   Stream<Duration> get positionStream => _audioPlayer.positionStream;
   Stream<Duration?> get durationStream => _audioPlayer.durationStream;
@@ -66,7 +60,6 @@ class PodcastManuallyPlayController extends GetxController {
   Stream<PlayEntity?> get currentItemStream => _currentItemController.stream;
   Stream<List<PlayEntity>> get itemsStream => _itemsController.stream;
 
-  // Current values for immediate access
   PlayEntity? get currentItem => _currentItem;
   List<PlayEntity> get items => _items;
   Status get loadingStatus => _loadingStatus;
@@ -82,11 +75,6 @@ class PodcastManuallyPlayController extends GetxController {
     bool updateMainStatus = false,
   }) async {
     try {
-      // if (_audioPlayer.playing) {
-      //   debugPrint('🛑 Stopping current audio before loading podcast');
-      //   await _audioPlayer.stop();
-      // }
-
       _lastReels = reels;
       _lastPopular = popular;
       _lastFirstPodcastId = firstPodcastId;
@@ -94,7 +82,6 @@ class PodcastManuallyPlayController extends GetxController {
       _lastIsPlaylist = isPlaylist;
       _lastId = id;
 
-      // Only update main status for initial loads, not for auto-load
       if (updateMainStatus) {
         _updateLoadingStatus(Status.loading);
       }
@@ -133,7 +120,6 @@ class PodcastManuallyPlayController extends GetxController {
         _items.addAll(newPlayEntities);
         _itemsController.add(_items);
 
-        // Create new audio sources
         final newAudioSources = <AudioSource>[];
         for (final item in newPlayEntities) {
           final mediaItem = _createMediaItem(item);
@@ -155,12 +141,10 @@ class PodcastManuallyPlayController extends GetxController {
             preload: true,
           );
 
-          // Set initial current item
           if (_items.isNotEmpty) {
             _currentItem = _items[0];
             _currentItemController.add(_currentItem);
 
-            // Set initial like/favorite states
             isFavorite.value = _currentItem?.isBookmark ?? false;
             isLike.value = _currentItem?.isLike ?? false;
           }
@@ -172,10 +156,8 @@ class PodcastManuallyPlayController extends GetxController {
         debugPrint('🛑 Stopping current audio before loading podcast');
         await _audioPlayer.stop();
       }
-          // Auto-play
          _audioPlayer.play();
       } else {
-        // Handle non-200 responses
         debugPrint('❌ API Error: Status code ${response.statusCode}');
         if (updateMainStatus) {
           _updateLoadingStatus(Status.error);
@@ -189,7 +171,6 @@ class PodcastManuallyPlayController extends GetxController {
     }
   }
 
-  // Playback controls
   Future<void> play() async {
     await _audioPlayer.play();
   }
@@ -219,7 +200,7 @@ class PodcastManuallyPlayController extends GetxController {
 
       if (_audioPlayer.hasNext) {
       await _audioPlayer.seekToNext();
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
     }else{
         loadMorePodcasts();
       }
@@ -274,35 +255,29 @@ class PodcastManuallyPlayController extends GetxController {
   }
 
   void _setupListeners() {
-    // Prevent multiple listener setups
     if (_listenersSetup) {
       debugPrint('⚠️ Listeners already set up, skipping...');
       return;
     }
-    
-    // Cancel any existing subscriptions first (safety measure)
+
     _indexSubscription?.cancel();
     _sequenceSubscription?.cancel();
     _playerStateSubscription?.cancel();
-    
-    // Listen to index changes to update current item
+
     _indexSubscription = _audioPlayer.currentIndexStream.listen((index) {
       if (index != null && index < _items.length) {
         _currentItem = _items[index];
         _currentItemController.add(_currentItem);
 
-        // Update like/favorite states
         isFavorite.value = _currentItem?.isBookmark ?? false;
         isLike.value = _currentItem?.isLike ?? false;
 
         debugPrint('📻 Current item changed to: ${_currentItem?.title}');
 
-        // Load more when approaching end of playlist
         _checkAndLoadMore(index);
       }
     });
 
-    // Listen to sequence state for metadata
     _sequenceSubscription = _audioPlayer.sequenceStateStream.listen((state) {
       final tag = state.currentSource?.tag;
       if (tag is MediaItem) {
@@ -310,15 +285,13 @@ class PodcastManuallyPlayController extends GetxController {
       }
     });
 
-    // Listen to player state for completion
     _playerStateSubscription = _audioPlayer.playerStateStream.listen((playerState) {
       if (playerState.processingState == ProcessingState.completed) {
         debugPrint('🎯 Playlist completed - Auto-loading more podcasts');
         _autoLoadMorePodcasts();
       }
     });
-    
-    // Mark listeners as set up
+
     _listenersSetup = true;
     debugPrint('✅ Listeners successfully set up');
   }
@@ -328,20 +301,18 @@ class PodcastManuallyPlayController extends GetxController {
       debugPrint('🛑 Auto-load skipped — playlist too short (${_items.length} items).');
       return;
     }
-    // Load more when user reaches threshold items before the end
+
     final remainingItems = _items.length - currentIndex;
     if (remainingItems <= preloadThreshold && !_isLoadingMore) {
-      debugPrint('📥 Pre-loading more podcasts (${remainingItems} items remaining)');
+      debugPrint('📥 Pre-loading more podcasts ($remainingItems items remaining)');
       _autoLoadMorePodcasts();
     }
   }
 
   bool _isLoadingMore = false;
 
-  // Configuration: How many items before end should trigger pre-loading
   int preloadThreshold = 3;
 
-  // Enable/disable auto-loading more podcasts
   bool autoLoadEnabled = true;
 
   Future<void> _autoLoadMorePodcasts() async {
@@ -350,7 +321,7 @@ class PodcastManuallyPlayController extends GetxController {
     _isLoadingMore = true;
 
     try {
-      // Use the last successful parameters to load more
+
       await getPodcast(
         reels: _lastReels,
         popular: _lastPopular,
@@ -368,12 +339,10 @@ class PodcastManuallyPlayController extends GetxController {
     }
   }
 
-  /// Manually load more podcasts (appends to current playlist)
   Future<void> loadMorePodcasts() async {
     return _autoLoadMorePodcasts();
   }
 
-  /// Check if currently loading more items
   bool get isLoadingMore => _isLoadingMore;
 
   MediaItem _createMediaItem(PlayEntity? item) {
@@ -409,22 +378,15 @@ class PodcastManuallyPlayController extends GetxController {
 
   @override
   void onClose() {
-    // Cancel all stream subscriptions
     _indexSubscription?.cancel();
     _sequenceSubscription?.cancel();
     _playerStateSubscription?.cancel();
-    
-    // Reset listener flag
+
     _listenersSetup = false;
-    
-    // Close stream controllers
+
     _loadingStatusController.close();
     _currentItemController.close();
     _itemsController.close();
-    
-    // DON'T dispose AudioPlayer - it's a singleton managed by GetIt
-    // It should persist across controller recreations
-    
     debugPrint('🛑 PodcastManuallyPlayController disposed (AudioPlayer kept alive)');
     super.onClose();
   }
@@ -447,7 +409,7 @@ class PodcastManuallyPlayController extends GetxController {
         isLike.value = newState;
         return newState;
       } else {
-        _handleApiError('likePodcast', response?.statusCode ?? 0);
+        _handleApiError('likePodcast', response.statusCode ?? 0);
         return currentState;
       }
     } catch (e, stackTrace) {
@@ -470,8 +432,7 @@ class PodcastManuallyPlayController extends GetxController {
         body: {},
       );
 
-      if (response != null &&
-          (response.statusCode == 200 || response.statusCode == 201)) {
+      if ((response.statusCode == 200 || response.statusCode == 201)) {
         final newState = !currentState;
         isFavorite.value = newState;
         try {
@@ -481,7 +442,7 @@ class PodcastManuallyPlayController extends GetxController {
 
         return newState;
       } else {
-        _handleApiError('favoritePodcast', response?.statusCode ?? 0);
+        _handleApiError('favoritePodcast', response.statusCode ?? 0);
         return currentState;
       }
     } catch (e, stackTrace) {

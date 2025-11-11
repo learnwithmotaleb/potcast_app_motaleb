@@ -7,10 +7,9 @@ import 'package:podcast/presentation/screens/play/widget/stream_audio_play_contr
 import 'package:podcast/presentation/screens/play/widget/stream_audio_play_progress.dart';
 import 'package:podcast/presentation/screens/play/widget/stream_audio_video_player_view.dart';
 import 'package:podcast/presentation/screens/play/widget/stream_glassmorphism_toggle_widget.dart';
-import 'package:podcast/presentation/screens/play/widget/stream_loading_more_indicator.dart';
 
-class StreamAudioPlayScreenExample extends StatefulWidget {
-  const StreamAudioPlayScreenExample({
+class StreamAudioPlayScreen extends StatefulWidget {
+  const StreamAudioPlayScreen({
     super.key,
     required this.id,
     required this.title,
@@ -40,10 +39,10 @@ class StreamAudioPlayScreenExample extends StatefulWidget {
   final bool isCreator;
 
   @override
-  State<StreamAudioPlayScreenExample> createState() => _StreamAudioPlayScreenExampleState();
+  State<StreamAudioPlayScreen> createState() => _StreamAudioPlayScreenState();
 }
 
-class _StreamAudioPlayScreenExampleState extends State<StreamAudioPlayScreenExample>
+class _StreamAudioPlayScreenState extends State<StreamAudioPlayScreen>
     with WidgetsBindingObserver {
   late final PodcastManuallyPlayController controller;
 

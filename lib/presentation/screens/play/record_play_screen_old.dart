@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/presentation/screens/play/controller/podcast_play_controller.dart';
-import 'package:podcast/presentation/screens/play/widget/buffer_animation_widget.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -113,8 +111,8 @@ class _RecordPlayScreenState extends State<RecordPlayScreen> {
           _showIcon.value = false;
         });
       }
-    } catch (e) {
-      print(e.toString());
+    } catch (_) {
+
     }
   }
 

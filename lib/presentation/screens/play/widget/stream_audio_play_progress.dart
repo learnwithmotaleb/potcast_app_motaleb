@@ -76,7 +76,7 @@ class StreamAudioPlayProgress extends StatelessWidget {
       return Container(
         height: 5,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(2.5),
         ),
         child: ClipRRect(
@@ -84,7 +84,7 @@ class StreamAudioPlayProgress extends StatelessWidget {
           child: LinearProgressIndicator(
             backgroundColor: Colors.transparent,
             valueColor: AlwaysStoppedAnimation<Color>(
-              Colors.white.withOpacity(0.4),
+              Colors.white.withValues(alpha: 0.4),
             ),
           ),
         ),
@@ -95,7 +95,7 @@ class StreamAudioPlayProgress extends StatelessWidget {
       return Container(
         height: 5,
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.2),
+          color: Colors.red.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(2.5),
         ),
       );
@@ -113,7 +113,7 @@ class StreamAudioPlayProgress extends StatelessWidget {
           child: Container(
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(2.5),
             ),
             child: Stack(
@@ -125,7 +125,7 @@ class StreamAudioPlayProgress extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.white.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(2.5),
                       ),
                     ),
@@ -178,14 +178,14 @@ class StreamAudioPlayProgress extends StatelessWidget {
           Text(
             "Loading...",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               fontSize: 12,
             ),
           ),
           Text(
             "--:--",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               fontSize: 12,
             ),
           ),
@@ -200,14 +200,14 @@ class StreamAudioPlayProgress extends StatelessWidget {
           Text(
             "Error",
             style: TextStyle(
-              color: Colors.red.withOpacity(0.7),
+              color: Colors.red.withValues(alpha: 0.7),
               fontSize: 12,
             ),
           ),
           Text(
             "--:--",
             style: TextStyle(
-              color: Colors.red.withOpacity(0.7),
+              color: Colors.red.withValues(alpha: 0.7),
               fontSize: 12,
             ),
           ),
@@ -229,7 +229,7 @@ class StreamAudioPlayProgress extends StatelessWidget {
         Text(
           _formatDuration(total),
           style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             fontSize: 12,
             fontWeight: FontWeight.w400,
           ),

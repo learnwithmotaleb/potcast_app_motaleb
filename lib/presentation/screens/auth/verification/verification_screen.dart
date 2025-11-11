@@ -88,7 +88,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
                       final body = {
-                        "email": widget.email,
+                        "email": widget.email.trim().toLowerCase(),
                         "verifyCode": int.tryParse(_otp.text.trim()),
                       };
 

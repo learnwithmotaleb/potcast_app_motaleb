@@ -143,7 +143,6 @@ class StreamAudioPlayBottom extends StatelessWidget {
   }
 
   void _handleShare() {
-    // Implement share functionality
     debugPrint('Share functionality not implemented yet');
     _showError('Share feature coming soon!');
   }
@@ -154,7 +153,7 @@ class StreamAudioPlayBottom extends StatelessWidget {
         SnackBar(
           content: Text(message),
           duration: const Duration(seconds: 2),
-          backgroundColor: Colors.red.withOpacity(0.8),
+          backgroundColor: Colors.red.withValues(alpha: 0.8),
         ),
       );
     }

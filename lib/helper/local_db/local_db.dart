@@ -5,6 +5,8 @@ import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../presentation/screens/play/controller/podcast_manually_play_controller.dart';
+
 class DBHelper {
   /// ====================== Get Token ====================
   Future<String> getToken() async {
@@ -66,6 +68,9 @@ class DBHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear().then((value) {
       toastMessage(message: "Logout Successful!");
+      final controller = Get.find<PodcastManuallyPlayController>();
+      controller.pause();
+
       Get.deleteAll();
       AppRouter.route.goNamed(RoutePath.loginScreen);
     }).onError((error, stack) {

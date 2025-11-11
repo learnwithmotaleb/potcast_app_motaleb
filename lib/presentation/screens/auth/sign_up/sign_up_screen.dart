@@ -82,12 +82,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
                       final body = {
-                        "name": _name.text.trim(),
-                        "email": _email.text.trim(),
-                        "password": _password.text.trim(),
-                        "confirmPassword": _confirmPassword.text.trim(),
+                        "name": _name.text,
+                        "email": _email.text.trim().toLowerCase(),
+                        "password": _password.text,
+                        "confirmPassword": _confirmPassword.text,
                         "role": _controller.selectedRoll.value,
-                        "address": _address.text.trim(),
+                        "address": _address.text,
                         "dateOfBirth": dob.value.toUtc().toIso8601String(),
                         "gender": "Male"
                       };

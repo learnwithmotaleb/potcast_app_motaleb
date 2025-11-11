@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:mime/mime.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
-import 'package:podcast/presentation/screens/play/controller/podcast_play_controller.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class StreamGlassMorphismToggle extends StatelessWidget {
@@ -28,12 +28,11 @@ class StreamGlassMorphismToggle extends StatelessWidget {
           builder: (context, itemSnapshot) {
             final currentItem = itemSnapshot.data;
 
-            // Only show for video files
             if (currentItem?.podcastUrl == null) {
               return const SizedBox.shrink();
             }
 
-            final mediaType = _getMediaType(currentItem!.podcastUrl);
+            final mediaType = detectMediaType(currentItem!.podcastUrl);
             if (mediaType != MediaType.video) {
               return const SizedBox.shrink();
             }
@@ -97,13 +96,10 @@ class StreamGlassMorphismToggle extends StatelessWidget {
   }
 
   void _navigateToVideoPlayer(dynamic currentItem) async {
-    // Get current audio position before stopping
     final currentPosition = controller.audioPlayer.position;
 
-    // Stop current audio playback
     await controller.pause();
 
-    // Navigate to video player screen with current position
     AppRouter.route.pushNamed(
       RoutePath.recordPlayScreen,
       extra: {
@@ -113,21 +109,18 @@ class StreamGlassMorphismToggle extends StatelessWidget {
     );
   }
 
-  MediaType _getMediaType(String url) {
-    final uri = Uri.parse(url);
-    final path = uri.path.toLowerCase();
-
-    // Video extensions
-    if (path.endsWith('.mp4') ||
-        path.endsWith('.mov') ||
-        path.endsWith('.avi') ||
-        path.endsWith('.mkv') ||
-        path.endsWith('.webm') ||
-        path.endsWith('.m4v')) {
-      return MediaType.video;
+  MediaType detectMediaType(String url) {
+    final mimeType = lookupMimeType(url);
+    if (mimeType != null) {
+      if (mimeType.startsWith('video/')) return MediaType.video;
+      if (mimeType.startsWith('audio/')) return MediaType.audio;
     }
-
-    // Audio extensions (default)
     return MediaType.audio;
   }
+
+}
+
+enum MediaType{
+  audio,
+  video
 }

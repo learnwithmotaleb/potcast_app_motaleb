@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         _controller.login(
-                          body: {"email": _email.text.trim(), "password": _password.text.trim()},
+                          body: {"email": _email.text.trim().toLowerCase(), "password": _password.text},
                         );
                       }
                     },

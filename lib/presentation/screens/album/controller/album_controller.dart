@@ -7,7 +7,7 @@ import 'package:podcast/utils/app_const/app_const.dart';
 
 class AlbumController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
-  Rx<AlbumModel> albumModel = AlbumModel().obs;
+  final Rx<AlbumModel> albumModel = AlbumModel().obs;
 
   /// ============================= GET Album Info =====================================
   var loading = Status.completed.obs;

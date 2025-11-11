@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 
-/// Visual indicator showing when more podcasts are being loaded
 class StreamLoadingMoreIndicator extends StatelessWidget {
   const StreamLoadingMoreIndicator({
     super.key,
@@ -25,10 +24,10 @@ class StreamLoadingMoreIndicator extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 8),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               width: 1,
             ),
           ),
@@ -41,7 +40,7 @@ class StreamLoadingMoreIndicator extends StatelessWidget {
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation(
-                    Colors.white.withOpacity(0.9),
+                    Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
               ),
@@ -49,7 +48,7 @@ class StreamLoadingMoreIndicator extends StatelessWidget {
               Text(
                 'Loading more... ($totalItems podcasts)',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -100,18 +99,18 @@ class StreamLoadingMoreIndicatorDetailed extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.blue.withOpacity(0.15),
-                  Colors.purple.withOpacity(0.15),
+                  Colors.blue.withValues(alpha: 0.15),
+                  Colors.purple.withValues(alpha: 0.15),
                 ],
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -129,7 +128,7 @@ class StreamLoadingMoreIndicatorDetailed extends StatelessWidget {
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
                         valueColor: AlwaysStoppedAnimation(
-                          Colors.white.withOpacity(0.9),
+                          Colors.white.withValues(alpha: 0.9),
                         ),
                       ),
                     ),
@@ -140,7 +139,7 @@ class StreamLoadingMoreIndicatorDetailed extends StatelessWidget {
                         Text(
                           'Loading more podcasts...',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.95),
+                            color: Colors.white.withValues(alpha: 0.95),
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
@@ -150,7 +149,7 @@ class StreamLoadingMoreIndicatorDetailed extends StatelessWidget {
                           Text(
                             '$remainingItems remaining • $totalItems total',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.6),
+                              color: Colors.white.withValues(alpha: 0.6),
                               fontSize: 11,
                             ),
                           ),
@@ -204,15 +203,15 @@ class StreamLoadingMoreFloatingIndicator extends StatelessWidget {
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.85),
+                  color: Colors.black.withValues(alpha: 0.85),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       blurRadius: 12,
                       spreadRadius: 2,
                       offset: const Offset(0, 4),
@@ -228,7 +227,7 @@ class StreamLoadingMoreFloatingIndicator extends StatelessWidget {
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation(
-                          Colors.white.withOpacity(0.9),
+                          Colors.white.withValues(alpha: 0.9),
                         ),
                       ),
                     ),
@@ -236,7 +235,7 @@ class StreamLoadingMoreFloatingIndicator extends StatelessWidget {
                     Text(
                       'Loading more...',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.95),
+                        color: Colors.white.withValues(alpha: 0.95),
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),

@@ -70,8 +70,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -128,7 +127,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                             url: item?.podcastUrl ?? "",
                                             duration: formatDuration(item?.duration ?? 0),
                                             reels: true,
-                                          )),
+                                          ),
+                                      ),
                                     );
                                   },
                                 ),

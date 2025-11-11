@@ -273,7 +273,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               final List<HomeNewestPodcast>? reelsItem = reelsNotEmpty ? data.reels : [];
               final List<HomeAlbumItem>? albumItem = albumNotEmpty ? data.albums : [];
 
-              print(categories?.length);
               return RefreshIndicator(
                 onRefresh: () async {
                   profileController.getProfile();
@@ -497,7 +496,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const CustomText(
-                              text: "Albums",
+                              text: "Series",
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),

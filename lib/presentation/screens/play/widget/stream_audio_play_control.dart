@@ -113,7 +113,7 @@ class StreamAudioPlayControl extends StatelessWidget {
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
             ),
           )
               : Column(
@@ -150,7 +150,7 @@ class StreamAudioPlayControl extends StatelessWidget {
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
             ),
           ) : Column(
             key: ValueKey('favorite_$isFavorited'),
@@ -223,19 +223,19 @@ class StreamAudioPlayControl extends StatelessWidget {
     );
   }
 
-  Widget _buildPreviousButton({
-    required VoidCallback? onPressed,
-    required bool hasCurrentItem,
-  }) {
-    return _buildControlButton(
-      onPressed: onPressed,
-      child: Icon(
-        Icons.skip_previous,
-        color: hasCurrentItem ? Colors.white : Colors.white38,
-        size: 32,
-      ),
-    );
-  }
+  // Widget _buildPreviousButton({
+  //   required VoidCallback? onPressed,
+  //   required bool hasCurrentItem,
+  // }) {
+  //   return _buildControlButton(
+  //     onPressed: onPressed,
+  //     child: Icon(
+  //       Icons.skip_previous,
+  //       color: hasCurrentItem ? Colors.white : Colors.white38,
+  //       size: 32,
+  //     ),
+  //   );
+  // }
 
   Widget _buildNextButton({
     required VoidCallback? onPressed,
@@ -261,11 +261,11 @@ class StreamAudioPlayControl extends StatelessWidget {
         width: 72,
         height: 72,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               blurRadius: 20,
               spreadRadius: 2,
             ),
@@ -287,11 +287,11 @@ class StreamAudioPlayControl extends StatelessWidget {
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: Colors.red.withOpacity(0.8),
+            color: Colors.red.withValues(alpha: 0.8),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.red.withOpacity(0.3),
+                color: Colors.red.withValues(alpha: 0.3),
                 blurRadius: 20,
                 spreadRadius: 2,
               ),
@@ -336,14 +336,14 @@ class StreamAudioPlayControl extends StatelessWidget {
           boxShadow: isPlaying
               ? [
                   BoxShadow(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     blurRadius: 20,
                     spreadRadius: 2,
                   ),
                 ]
               : [
                   BoxShadow(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     blurRadius: 10,
                     spreadRadius: 1,
                   ),
@@ -375,7 +375,7 @@ class StreamAudioPlayControl extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: onPressed != null
-              ? Colors.white.withOpacity(0.1)
+              ? Colors.white.withValues(alpha: 0.1)
               : Colors.transparent,
         ),
         child: Center(child: child),

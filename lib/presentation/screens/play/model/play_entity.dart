@@ -103,8 +103,6 @@ class PlayEntity {
         'duration: $duration, isBookmark: $isBookmark, isLike: $isLike)';
   }
 
-  /// ✅ Mapper from API → Entity
-  /// Skips if required fields are missing
   static PlayEntity? fromPodcast(PlayPodcastItem item) {
     if (item.id == null ||
         item.title == null ||

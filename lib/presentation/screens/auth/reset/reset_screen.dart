@@ -95,9 +95,9 @@ class _ResetScreenState extends State<ResetScreen> {
                     if (_formKey.currentState!.validate()) {
                       _controller.resetPassword(
                         body: {
-                          "email": widget.email,
-                          "password": _newPassword.text.trim(),
-                          "confirmPassword": _confirmPassword.text.trim()
+                          "email": widget.email.trim().toLowerCase(),
+                          "password": _newPassword.text,
+                          "confirmPassword": _confirmPassword.text,
                         },
                       );
                     }
