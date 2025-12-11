@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
-import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';

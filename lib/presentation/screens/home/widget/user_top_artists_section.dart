@@ -108,7 +108,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
       AppRouter.route.pushNamed(
         RoutePath.audioPlayScreen,
         extra: AudioPlayerModel(
-          id: creator.creatorId ?? "",
+          id: creator.latestPodcast?.id?? "",
           title: creator.latestPodcast?.title ?? "",
           image: creator.profileImage ?? "",
           url: creator.latestPodcast?.podcastUrl ?? "",

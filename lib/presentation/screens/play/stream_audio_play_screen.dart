@@ -146,11 +146,11 @@ class _StreamAudioPlayScreenState extends State<StreamAudioPlayScreen>
               );
             },
           ),
-          actions: [
+          /*actions: [
             StreamGlassMorphismToggle(
               controller: controller,
             ),
-          ],
+          ],*/
         ),
         body: Column(
           children: [

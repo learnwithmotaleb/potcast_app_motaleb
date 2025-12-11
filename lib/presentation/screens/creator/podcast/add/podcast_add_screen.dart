@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/controller/global_controller.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
-import 'package:podcast/model/basic/selected_location_model.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
@@ -18,8 +17,6 @@ import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/media_duration.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
-
-import '../../../../../helper/function/get_audio_duration.dart';
 import '../../../../widget/common/category_subcategory_picker.dart';
 import '../widget/pick_audio_widget.dart';
 import '../widget/pick_cover_image_widget.dart';
@@ -269,6 +266,10 @@ class _PodcastAudioScreenState extends State<PodcastAudioScreen> {
       return;
     }
 
+
+    if (duration != null && duration.inSeconds <= 30) {
+      toastMessage(message: "Your song is now visible in the Clips section.");
+    }
 
     try {
       if (validate && hasCategory && hasSubCategory) {

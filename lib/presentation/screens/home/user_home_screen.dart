@@ -544,7 +544,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                     ),
                     const SliverGap(8),
-                    SliverToBoxAdapter(
+                    /*SliverToBoxAdapter(
                       child: Obx(() {
                         if (controller.recordList.isEmpty) {
                           return const SizedBox();
@@ -619,7 +619,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         }
                       }),
                     ),
-                    const SliverGap(8),
+                    const SliverGap(8),*/
                   ],
                 ),
               );

@@ -79,7 +79,7 @@ class _AlbumPodcastScreenState extends State<AlbumPodcastScreen> {
                 itemBuilder: (BuildContext context, int index){
                   final item = controller.albumModel.value.data?.podcasts?[index];
                   final data = AudioPlayerModel(
-                    id: widget.id,
+                    id: item?.id ?? "",
                     title: item?.title ?? "",
                     image: item?.coverImage ?? "",
                     duration: "",
@@ -89,7 +89,7 @@ class _AlbumPodcastScreenState extends State<AlbumPodcastScreen> {
                     data: data,
                     onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
                         extra: AudioPlayerModel(
-                          id: widget.id,
+                          id: item?.id ?? "",
                           title: item?.title ?? "",
                           categories: item?.category?.name ?? "",
                           image: item?.coverImage ?? "",

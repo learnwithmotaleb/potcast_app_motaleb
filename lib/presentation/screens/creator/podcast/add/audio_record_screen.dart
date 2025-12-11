@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:podcast/helper/function/get_audio_duration.dart';
 import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
@@ -279,6 +277,10 @@ class _AudioRecordScreenState extends State<AudioRecordScreen> {
     } catch (_) {
       toastMessage(message: "Please try again, duration get issue");
       return;
+    }
+
+    if (duration != null && duration.inSeconds <= 30) {
+      toastMessage(message: "Your song is now visible in the Clips section.");
     }
 
 

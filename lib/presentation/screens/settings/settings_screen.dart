@@ -33,8 +33,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(
-            onPressed: () => AppRouter.route.pop(), icon: const Icon(Icons.arrow_back_ios)),
         title: Text("settings".tr),
       ),
       body: SingleChildScrollView(

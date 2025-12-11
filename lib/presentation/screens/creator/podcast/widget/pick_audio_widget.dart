@@ -44,7 +44,7 @@ class PickAudioWidget extends StatelessWidget {
                             const Icon(Icons.cloud_upload_rounded, size: 28),
                             const SizedBox(width: 8),
                             CustomText(
-                              text: "uploading_video".tr,
+                              text: "Uploading Audio".tr,
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
                             ),

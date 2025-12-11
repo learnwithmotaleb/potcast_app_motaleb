@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/text_field/custom_text_field.dart';
@@ -35,9 +34,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(
-            onPressed: () => AppRouter.route.pop(),
-            icon: const Icon(Icons.arrow_back_ios)),
         title: Text("change_password".tr),
       ),
       body: SingleChildScrollView(

@@ -59,7 +59,7 @@ class _SeeAllTopCreatorState extends State<SeeAllTopCreator> {
               onTap: () => AppRouter.route.pushNamed(
                 RoutePath.audioPlayScreen,
                 extra: AudioPlayerModel(
-                  id: item.creatorId ?? "",
+                  id: item.latestPodcast?.id?? "",
                   title: item.latestPodcast?.title ?? "",
                   image: item.profileImage ?? "",
                   url: item.latestPodcast?.podcastUrl ?? "",

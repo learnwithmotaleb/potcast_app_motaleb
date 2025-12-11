@@ -33,7 +33,7 @@ class SeeAllPodcast {
   final String? title;
   final String? cover;
   final String? audioDuration;
-  final int? totalLikes;
+  final num? totalLikes;
 
   SeeAllPodcast({
     this.id,

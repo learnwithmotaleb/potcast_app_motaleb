@@ -75,6 +75,15 @@ class PodcastManuallyPlayController extends GetxController {
     bool updateMainStatus = false,
   }) async {
     try {
+
+      if (firstPodcastId != null &&
+          _currentItem != null &&
+          _currentItem!.id == firstPodcastId &&
+          _audioPlayer.playing) {
+        debugPrint('⏭️ Skipping reload - Song already playing: ${_currentItem!.title}');
+        return;
+      }
+
       _lastReels = reels;
       _lastPopular = popular;
       _lastFirstPodcastId = firstPodcastId;

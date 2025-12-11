@@ -54,8 +54,7 @@ class SearchMyLocationController extends GetxController {
 
   Future<LatLng?> placeIdToLatLng({required String placeId}) async {
     if (isPlaceToLatLng || placeId.isEmpty) {
-      debugPrint(
-          "⚠️ Skipped placeIdToLatLng call: already loading or placeId is empty");
+      debugPrint("⚠️ Skipped placeIdToLatLng call: already loading or placeId is empty");
       return null;
     }
 

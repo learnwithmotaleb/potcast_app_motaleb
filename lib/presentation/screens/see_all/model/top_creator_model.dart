@@ -127,12 +127,14 @@ class TopCreatorItem {
 }
 
 class LatestPodcast {
+  final String? id;
   final String? title;
   final String? description;
   final String? podcastUrl;
   final String? coverImage;
 
   LatestPodcast({
+    this.id,
     this.title,
     this.description,
     this.podcastUrl,
@@ -140,6 +142,7 @@ class LatestPodcast {
   });
 
   factory LatestPodcast.fromJson(Map<String, dynamic> json) => LatestPodcast(
+    id: json["_id"],
     title: json["title"],
     description: json["description"],
     podcastUrl: json["podcast_url"],
@@ -147,6 +150,7 @@ class LatestPodcast {
   );
 
   Map<String, dynamic> toJson() => {
+    "_id": id,
     "title": title,
     "description": description,
     "podcast_url": podcastUrl,

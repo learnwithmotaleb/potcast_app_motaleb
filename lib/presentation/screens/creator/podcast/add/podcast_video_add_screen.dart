@@ -261,6 +261,10 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
       return;
     }
 
+    if (duration != null && duration.inSeconds <= 30) {
+      toastMessage(message: "Your song is now visible in the Clips section.");
+    }
+
     try {
       if (validate && hasCategory && hasSubCategory) {
 

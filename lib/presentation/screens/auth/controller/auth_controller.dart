@@ -9,6 +9,7 @@ import 'package:podcast/presentation/screens/auth/model/login_model.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/service/check_api.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 class AuthController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
@@ -49,6 +50,7 @@ class AuthController extends GetxController {
           profileId: profileId,
           role: role,
         );
+        await purchaseConfig(userId: id);
 
         activeMethod(false);
         toastMessage(message: response.body['message'].toString());
@@ -66,6 +68,22 @@ class AuthController extends GetxController {
       }
     } catch (err) {
       loginMethod(false);
+    }
+  }
+
+  Future<void> purchaseConfig({required String userId}) async {
+    try {
+      print("0 User ID: $userId / RC ID: ${await Purchases.appUserID}");
+      await Purchases.logIn(userId);
+
+      print("1 User ID: $userId / RC ID: ${await Purchases.appUserID}");
+      await Purchases.setAttributes({
+        'user_id': userId,
+      });
+
+      print("🔧 Attributes synced for $userId");
+    } catch (e) {
+      print('Purchase config failed: $e');
     }
   }
 
@@ -123,6 +141,7 @@ class AuthController extends GetxController {
           profileId: profileId,
           role: role,
         );
+        await purchaseConfig(userId: id);
 
         activeMethod(false);
         toastMessage(message: response.body['message'].toString());

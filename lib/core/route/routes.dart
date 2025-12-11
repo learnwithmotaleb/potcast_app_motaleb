@@ -276,7 +276,7 @@ class AppRouter {
             );
           },
         ),
-        GoRoute(
+        /*GoRoute(
           name: RoutePath.recordPlayScreen,
           path: RoutePath.recordPlayScreen.addBasePath,
           pageBuilder: (context, state) {
@@ -292,8 +292,8 @@ class AppRouter {
               state: state,
             );
           },
-        ),
-        GoRoute(
+        ),*/
+        /*GoRoute(
           name: RoutePath.seeAllRecord,
           path: RoutePath.seeAllRecord.addBasePath,
           pageBuilder: (context, state) {
@@ -302,7 +302,7 @@ class AppRouter {
               state: state,
             );
           },
-        ),
+        ),*/
         GoRoute(
           name: RoutePath.podcastListScreen,
           path: RoutePath.podcastListScreen.addBasePath,

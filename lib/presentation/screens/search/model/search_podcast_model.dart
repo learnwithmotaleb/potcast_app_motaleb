@@ -25,9 +25,9 @@ class SearchPodcastModel {
 
 class Data {
   final List<SearchPodcast>? podcasts;
-  final int? page;
-  final int? limit;
-  final int? total;
+  final num? page;
+  final num? limit;
+  final num? total;
 
   Data({
     this.podcasts,
@@ -66,8 +66,8 @@ class SearchPodcast {
   final String? location;
   final String? cover;
   final String? audio;
-  final int? totalLikes;
-  final int? totalViews;
+  final num? totalLikes;
+  final num? totalViews;
   final String? audioDuration;
 
   SearchPodcast({
