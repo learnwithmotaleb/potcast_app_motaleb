@@ -1,0 +1,83 @@
+﻿Analyzing podcast_app...                                        
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\helper\dialog\custom_dialog.dart:14:32 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\helper\function\file_upload.dart:46:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\helper\function\file_upload.dart:48:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\helper\function\file_upload.dart:51:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\helper\function\file_upload.dart:55:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:47:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:50:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:55:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\main.dart:57:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\auth\controller\auth_controller.dart:76:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\auth\controller\auth_controller.dart:79:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\auth\controller\auth_controller.dart:84:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\auth\controller\auth_controller.dart:86:7 - avoid_print
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\auth\sign_up\widget\sign_up_choose_role.dart:22:17 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\auth\sign_up\widget\sign_up_choose_role.dart:24:17 - deprecated_member_use
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\auth\sign_up\widget\sign_up_choose_role.dart:40:17 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\auth\sign_up\widget\sign_up_choose_role.dart:41:17 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\presentation\screens\creator\podcast\add\audio_record_screen.dart:272:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\creator\podcast\add\podcast_add_screen.dart:252:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\creator\podcast\add\podcast_add_screen.dart:259:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\creator\podcast\add\podcast_video_add_screen.dart:245:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\creator\podcast\add\podcast_video_add_screen.dart:251:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\screens\creator\podcast\add\podcast_video_add_screen.dart:257:7 - avoid_print
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:249:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:290:27 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:292:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:343:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:357:45 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:378:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:380:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:426:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:497:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:576:22 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:578:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:581:26 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:618:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\creator\podcast\widget\record_audio_widget.dart:673:42 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\presentation\screens\history\history_screen.dart:83:21 - avoid_print
+   info - 'ConcatenatingAudioSource' is deprecated and shouldn't be used. Use AudioPlayer.setAudioSources instead - lib\presentation\screens\play\controller\podcast_manually_play_controller.dart:148:13 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\play\stream_audio_play_screen.dart:138:43 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\presentation\screens\playlist\add\playlist_add_screen.dart:123:21 - avoid_print
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\profile\edit\edit_profile_screen.dart:244:31 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\profile\edit\edit_profile_screen.dart:245:31 - deprecated_member_use
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\profile\edit\edit_profile_screen.dart:254:31 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\profile\edit\edit_profile_screen.dart:255:31 - deprecated_member_use
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\profile\edit\edit_profile_screen.dart:264:31 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\screens\profile\edit\edit_profile_screen.dart:265:31 - deprecated_member_use
+warning - The value of the local variable 'width' isn't used - lib\presentation\widget\bottom_nav_play_card.dart:10:11 - unused_local_variable
+warning - The value of the local variable 'width' isn't used - lib\presentation\widget\card\creator_card.dart:19:18 - unused_local_variable
+warning - The left operand can't be null, so the right operand is never executed - lib\presentation\widget\card\home_music_card.dart:45:47 - dead_null_aware_expression
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widget\card\modern_streaming_card.dart:41:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widget\card\modern_streaming_card.dart:46:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widget\card\modern_streaming_card.dart:52:48 - deprecated_member_use
+warning - The left operand can't be null, so the right operand is never executed - lib\presentation\widget\card\modern_streaming_card.dart:74:51 - dead_null_aware_expression
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widget\card\modern_streaming_card.dart:97:51 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widget\card\modern_streaming_card.dart:141:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widget\card\modern_streaming_card.dart:195:68 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\widget\card\modern_streaming_card.dart:203:62 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\presentation\widget\map\search_my_location.dart:89:31 - avoid_print
+   info - Don't invoke 'print' in production code - lib\presentation\widget\map\search_my_location.dart:90:31 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:32:3 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:506:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:509:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:519:15 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:524:13 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:528:13 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:540:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\service\api_service.dart:541:7 - avoid_print
+warning - The exception variable 'err' isn't used, so the 'catch' clause can be removed - lib\service\api_service.dart:567:38 - unused_catch_clause
+   info - Don't invoke 'print' in production code - lib\service\media_duration.dart:31:7 - avoid_print
+
+flutter : 70 issues found. (ran in 3.9s)
+At line:1 char:1
++ flutter analyze 2>&1 | Out-File -FilePath 
+"c:\Users\Betopia\StudioPro ...
++ ~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (70  
+   issues found. (ran in 3.9s):String) [], Remo  
+  teException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

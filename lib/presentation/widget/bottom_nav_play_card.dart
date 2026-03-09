@@ -1,13 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:marquee/marquee.dart';
-import 'package:podcast/core/route/route_path.dart';
-import 'package:podcast/core/route/routes.dart';
-import 'package:podcast/helper/image/network_image.dart';
-import 'package:podcast/model/route/audio_player_model.dart';
-import 'package:get/get.dart';
-import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class BottomNavPlayCard extends StatelessWidget {
   const BottomNavPlayCard({super.key});

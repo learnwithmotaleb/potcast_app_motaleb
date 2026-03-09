@@ -91,8 +91,8 @@ class ApiClient {
 
       var body = jsonDecode(response.body);
 
-      if(body["message"] == "This user does not exist"){
-        try{
+      if (body["message"] == "This user does not exist") {
+        try {
           DBHelper dbHelper = serviceLocator<DBHelper>();
           await dbHelper.logOut();
 
@@ -102,7 +102,7 @@ class ApiClient {
             statusCode: response.statusCode,
             statusText: response.reasonPhrase,
           );
-        }catch(_){
+        } catch (_) {
           return Response(
             body: body ?? response.body,
             bodyString: response.body.toString(),
@@ -462,7 +462,8 @@ class ApiClient {
       final request = http.MultipartRequest(
         reqType,
         Uri.parse(url),
-      )..fields.addAll(body ?? {})
+      )
+        ..fields.addAll(body ?? {})
         ..headers.addAll(
           isBasic ? basicHeaderInfo() : await bearerHeaderInfo(),
         );
@@ -563,7 +564,7 @@ class ApiClient {
           body: {},
           statusCode: 400,
           statusText: '🐞🐞🐞 Error Alert Timeout Exception 🐞🐞🐞');
-    } on http.ClientException catch (err, stackrace) {
+    } on http.ClientException catch (err) {
       log.e('🐞🐞🐞 Error Alert Client Exception🐞🐞🐞');
       return const Response(
           body: {}, statusCode: 400, statusText: 'client exception hitted');
@@ -577,14 +578,14 @@ class ApiClient {
   }
 
   // Delete method
-  Future<Response> delete(
-      {required String url,
-      bool isBasic = false,
-      int code = 200,
-      int duration = 15,
-      required Map<String, dynamic> body,
-      bool showResult = false,
-      }) async {
+  Future<Response> delete({
+    required String url,
+    bool isBasic = false,
+    int code = 200,
+    int duration = 15,
+    required Map<String, dynamic> body,
+    bool showResult = false,
+  }) async {
     log.i(
         '|📍📍📍|-----------------[[ DELETE ]] method details start-----------------|📍📍📍|');
 
@@ -604,12 +605,16 @@ class ApiClient {
       log.i(headers);
       log.i(body);
 
-      final response = await http.delete(Uri.parse(url),
-        headers: await bearerHeaderInfoForDelete(),
-        body: jsonEncode(body),
-      ).timeout(Duration(seconds: duration));
+      final response = await http
+          .delete(
+            Uri.parse(url),
+            headers: await bearerHeaderInfoForDelete(),
+            body: jsonEncode(body),
+          )
+          .timeout(Duration(seconds: duration));
 
-      log.i('|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
+      log.i(
+          '|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
 
       if (showResult) {
         log.i(response.body.toString());
@@ -617,7 +622,8 @@ class ApiClient {
 
       log.i(response.statusCode);
 
-      log.i('|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
+      log.i(
+          '|📒📒📒|----------------- [[ DELETE ]] method response start-----------------|📒📒📒|');
 
       if (response.statusCode == code || response.statusCode == 200) {
         return Response(
@@ -627,7 +633,8 @@ class ApiClient {
       } else {
         log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
 
-        log.e('unknown error hitted in status code  ${jsonDecode(response.body)}');
+        log.e(
+            'unknown error hitted in status code  ${jsonDecode(response.body)}');
 
         return Response(
           body: jsonDecode(response.body),
@@ -639,9 +646,9 @@ class ApiClient {
       log.e('🐞🐞🐞 Error Alert on Socket Exception 🐞🐞🐞');
 
       return const Response(
-          body: {},
-          statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+        body: {},
+        statusCode: 400,
+        statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
       );
     } on TimeoutException {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
@@ -649,9 +656,9 @@ class ApiClient {
       log.e('Time out exception$url');
 
       return const Response(
-          body: {},
-          statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+        body: {},
+        statusCode: 400,
+        statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
       );
     } on http.ClientException catch (err, stackrace) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
@@ -663,9 +670,9 @@ class ApiClient {
       log.e(stackrace.toString());
 
       return const Response(
-          body: {},
-          statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+        body: {},
+        statusCode: 400,
+        statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
       );
     } catch (e) {
       log.e('🐞🐞🐞 Error Alert 🐞🐞🐞');
@@ -675,9 +682,9 @@ class ApiClient {
       log.e("❌❌❌ $e");
 
       return const Response(
-          body: {},
-          statusCode: 400,
-          statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
+        body: {},
+        statusCode: 400,
+        statusText: '🐞🐞🐞 Other Error Alert 🐞🐞🐞',
       );
     }
   }

@@ -6,7 +6,6 @@ import 'package:podcast/presentation/screens/play/widget/stream_audio_play_botto
 import 'package:podcast/presentation/screens/play/widget/stream_audio_play_control.dart';
 import 'package:podcast/presentation/screens/play/widget/stream_audio_play_progress.dart';
 import 'package:podcast/presentation/screens/play/widget/stream_audio_video_player_view.dart';
-import 'package:podcast/presentation/screens/play/widget/stream_glassmorphism_toggle_widget.dart';
 
 class StreamAudioPlayScreen extends StatefulWidget {
   const StreamAudioPlayScreen({
@@ -193,7 +192,9 @@ class _StreamAudioPlayScreenState extends State<StreamAudioPlayScreen>
   }) {
     if (isCreator) {
       // If creator: show artist name, fallback to category name
-      return (artist != null && artist.isNotEmpty) ? artist : (categoryName ?? '');
+      return (artist != null && artist.isNotEmpty)
+          ? artist
+          : (categoryName ?? '');
     } else {
       // If not creator: show category name only
       return categoryName ?? '';

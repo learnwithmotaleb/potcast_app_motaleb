@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -27,7 +26,8 @@ class MusicCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final displayTitle = data.title.trim().isNotEmpty == true ? data.title : "Unknown";
+    final displayTitle =
+        data.title.trim().isNotEmpty == true ? data.title : "Unknown";
     final categoryCheck = data.categories?.trim().isNotEmpty == true;
     final artistCheck = data.artist?.trim().isNotEmpty == true;
     final displayCategory = categoryCheck
@@ -38,7 +38,8 @@ class MusicCard extends StatelessWidget {
     final durationCheck = data.duration.trim().isNotEmpty == true;
     final displayDuration = durationCheck ? data.duration : "0:00";
     final imageCheck = data.image.trim().isNotEmpty == true;
-    final displayImage = imageCheck ? data.image : AppConstants.defaultCoverImage;
+    final displayImage =
+        imageCheck ? data.image : AppConstants.defaultCoverImage;
     Border? border;
     if (bgColor != null) {
       border = Border.all(color: bgColor ?? const Color(0xFF1F1F26));
@@ -96,7 +97,7 @@ class MusicCard extends StatelessWidget {
                         fontSize: 12,
                         color: AppColors.searchBoxColor,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: isPlayList? 3 :1,
+                        maxLines: isPlayList ? 3 : 1,
                         textAlign: TextAlign.justify,
                       ),
                       if (!isPlayList)
@@ -127,7 +128,8 @@ class MusicCard extends StatelessWidget {
   }
 
   String _formatDuration(String rawDuration) {
-    final int totalSeconds = int.tryParse(rawDuration.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    final int totalSeconds =
+        int.tryParse(rawDuration.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
 
     final int minutes = totalSeconds ~/ 60;
     final int seconds = totalSeconds % 60;

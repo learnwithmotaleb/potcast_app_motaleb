@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -17,7 +16,6 @@ import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 import '../../../../../controller/global_controller.dart';
-import '../../../../../helper/function/get_audio_duration.dart';
 import '../../../../widget/common/category_subcategory_picker.dart';
 import '../../../../widget/loading/loading_widget.dart';
 import '../controller/podcast_audio_controller.dart';
@@ -267,14 +265,12 @@ class _PodcastVideoAddScreenState extends State<PodcastVideoAddScreen> {
 
     try {
       if (validate && hasCategory && hasSubCategory) {
-
         String textValue = tag.text.trim();
         List<String> items = textValue
             .split(',')
             .map((e) => e.trim())
             .where((e) => e.isNotEmpty)
             .toList();
-
 
         final Map<String, dynamic> body = {
           "category": controller.selectedCategoryId.value,

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -76,7 +74,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 controller: _controller,
               ),
               const Gap(24),
-              Obx(() => CustomButton(
+              Obx(
+                () => CustomButton(
                   text: "sign_up".tr,
                   isLoading: _controller.signUpLoading.value,
                   onTap: () {

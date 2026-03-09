@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -89,13 +88,15 @@ class PlaylistController extends GetxController {
 
       if (response.statusCode == 201) {
         loadingMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
         AppRouter.route.pop();
         AppRouter.route.pop();
       } else {
         loadingMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (err) {
@@ -115,12 +116,14 @@ class PlaylistController extends GetxController {
         showResult: true,
       );
 
-      String message = response.body?['message']?.toString() ?? 'Something went wrong';
+      String message =
+          response.body?['message']?.toString() ?? 'Something went wrong';
       toastMessage(message: message);
 
       if (response.statusCode == 200) {
         final currentList = pagingController.itemList ?? [];
-        pagingController.itemList = List.from(currentList)..removeWhere((item) => item.id == id);
+        pagingController.itemList = List.from(currentList)
+          ..removeWhere((item) => item.id == id);
       }
     } catch (_) {}
   }
@@ -136,7 +139,8 @@ class PlaylistController extends GetxController {
     isLoadingPodcast = true;
 
     try {
-      final response = await apiClient.get(url: ApiUrl.playListSongs(page: pageKey, id: id), showResult: true);
+      final response = await apiClient.get(
+          url: ApiUrl.playListSongs(page: pageKey, id: id), showResult: true);
 
       if (response.statusCode == 200) {
         final userServiceAll = PlayListSongsModel.fromJson(response.body);
