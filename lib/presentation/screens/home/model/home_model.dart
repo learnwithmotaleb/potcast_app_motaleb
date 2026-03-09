@@ -159,7 +159,7 @@ class HomeNewestPodcast {
   final String? address;
   final List<String>? tags;
   final int? totalView;
-  final int? duration;
+  final num? duration;
   final List<Liker>? likers;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -198,7 +198,7 @@ class HomeNewestPodcast {
     address: json["address"],
     tags: json["tags"] == null ? [] : List<String>.from(json["tags"]!.map((x) => x)),
     totalView: json["totalView"],
-    duration: json["duration"],
+    duration: json["duration"] != null ? (json["duration"] as num) : null,
     likers: json["likers"] == null ? [] : List<Liker>.from(json["likers"]!.map((x) => Liker.fromJson(x))),
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),

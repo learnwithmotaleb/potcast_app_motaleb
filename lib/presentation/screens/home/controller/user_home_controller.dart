@@ -37,14 +37,16 @@ class UserHomeController extends GetxController {
           loadingMethod(Status.error);
         }
       }
-    }catch(_){
+    } catch(e, st) {
+      debugPrint("❌ getHome error: $e");
+      debugPrint("❌ getHome stacktrace: $st");
       loadingMethod(Status.error);
     }
   }
 
   /// ============================= GET Record List =====================================
   var loadingRecord = Status.completed.obs;
-  loadingRecordMethod(Status status) => loading.value = status;
+  loadingRecordMethod(Status status) => loadingRecord.value = status;
   final RxList<StreamingRecordItem> recordList = RxList([]);
 
   Future<void> getRecords() async {
