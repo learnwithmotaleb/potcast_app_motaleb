@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:podcast/presentation/screens/play/widget/web_view.dart';
+
+import 'package:share_plus/share_plus.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
+import 'package:podcast/presentation/screens/play/model/play_entity.dart';
 import 'package:podcast/presentation/screens/play/widget/stream_comments_bottom_sheet.dart';
 
 class StreamAudioPlayBottom extends StatelessWidget {
@@ -26,9 +29,10 @@ class StreamAudioPlayBottom extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildCommentButton(hasCurrentItem, currentItem?.id ?? "", context),
-              _buildShareButton(hasCurrentItem),
-              _buildDonateButton(hasCurrentItem),
+              _buildCommentButton(
+                  hasCurrentItem, currentItem?.id ?? "", context),
+              _buildShareButton(hasCurrentItem, currentItem),
+              _buildDonateButton(hasCurrentItem, currentItem, context),
             ],
           ),
         );
@@ -36,11 +40,10 @@ class StreamAudioPlayBottom extends StatelessWidget {
     );
   }
 
-  Widget _buildCommentButton(bool hasCurrentItem, String id, BuildContext context) {
+  Widget _buildCommentButton(
+      bool hasCurrentItem, String id, BuildContext context) {
     return _buildActionButton(
-      onPressed: hasCurrentItem
-          ? () => _showComments(id, context)
-          : null,
+      onPressed: hasCurrentItem ? () => _showComments(id, context) : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -65,9 +68,9 @@ class StreamAudioPlayBottom extends StatelessWidget {
     );
   }
 
-  Widget _buildShareButton(bool hasCurrentItem) {
+  Widget _buildShareButton(bool hasCurrentItem, PlayEntity? item) {
     return _buildActionButton(
-      onPressed: hasCurrentItem ? () => _handleShare() : null,
+      onPressed: hasCurrentItem ? () => _handleShare(item) : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -89,9 +92,19 @@ class StreamAudioPlayBottom extends StatelessWidget {
     );
   }
 
-  Widget _buildDonateButton(bool hasCurrentItem) {
+  Widget _buildDonateButton(
+      bool hasCurrentItem, PlayEntity? item, BuildContext context) {
     return _buildActionButton(
-      onPressed: hasCurrentItem ? () => _handleShare() : null,
+      onPressed: hasCurrentItem
+          ? () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const WebViewScreen(
+                    url: 'https://rakibx.webflow.io/',
+                    title: 'Donate',
+                  ),
+                ),
+              )
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -142,20 +155,15 @@ class StreamAudioPlayBottom extends StatelessWidget {
     );
   }
 
-  void _handleShare() {
-    debugPrint('Share functionality not implemented yet');
-    _showError('Share feature coming soon!');
-  }
+  void _handleShare(PlayEntity? item) {
+    if (item == null) return;
 
-  void _showError(String message) {
-    if (Get.context != null) {
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          duration: const Duration(seconds: 2),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
-        ),
-      );
-    }
+    final String title = item.title;
+    // TODO: Replace with your actual domain/deep link URL
+    final String deepLink = "https://preachradio.com/podcast/${item.id}";
+    final String shareText =
+        "Check out this podcast: $title\n\nListen here: $deepLink";
+
+    Share.share(shareText, subject: title);
   }
 }
