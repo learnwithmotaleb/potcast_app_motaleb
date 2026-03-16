@@ -23,7 +23,7 @@ Future<void> main() async {
     androidNotificationOngoing: true,
     androidStopForegroundOnPause: true,
     androidNotificationClickStartsActivity: true,
-    androidNotificationIcon: 'drawable/ic_stat_music_note',
+    androidNotificationIcon: 'mipmap/ic_launcher',
     preloadArtwork: true,
     rewindInterval: const Duration(seconds: 15),
   );

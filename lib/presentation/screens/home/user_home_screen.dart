@@ -323,6 +323,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800,
                                 ),
+
                                 TextButton(
                                   onPressed: () {
                                     AppRouter.route.pushNamed(

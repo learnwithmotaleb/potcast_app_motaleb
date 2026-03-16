@@ -73,10 +73,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   Future<void> _handleCreatorTap(TopCreator creator) async {
     if (creator.isLiveRunning) {
       final participantCode = creator.streamRoom?.roomCodes?.firstWhere(
-        (roomCode) =>
-            roomCode.role == "participants" &&
-            roomCode.code != null &&
-            roomCode.code!.isNotEmpty,
+        (roomCode) => roomCode.role == "participants" && roomCode.code != null && roomCode.code!.isNotEmpty,
         orElse: () => RoomCode(),
       );
 
@@ -352,6 +349,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.red.withValues(alpha: 0.2),
+
                     Colors.orange.withValues(alpha: 0.1)
                   ],
                 )
