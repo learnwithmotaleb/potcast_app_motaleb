@@ -13,6 +13,7 @@ class PlayEntity {
   final num? duration;
   final bool? isBookmark;
   final bool? isLike;
+  final String? creatorId;
 
   const PlayEntity({
     required this.id,
@@ -26,6 +27,7 @@ class PlayEntity {
     this.duration,
     this.isBookmark,
     this.isLike,
+    this.creatorId,
   });
 
   PlayEntity copyWith({
@@ -40,6 +42,7 @@ class PlayEntity {
     num? duration,
     bool? isBookmark,
     bool? isLike,
+    String? creatorId,
   }) {
     return PlayEntity(
       id: id ?? this.id,
@@ -53,6 +56,7 @@ class PlayEntity {
       duration: duration ?? this.duration,
       isBookmark: isBookmark ?? this.isBookmark,
       isLike: isLike ?? this.isLike,
+      creatorId: creatorId ?? this.creatorId,
     );
   }
 
@@ -69,6 +73,7 @@ class PlayEntity {
       'duration': duration,
       'isBookmark': isBookmark,
       'isLike': isLike,
+      'creatorId': creatorId,
     };
   }
 
@@ -87,6 +92,7 @@ class PlayEntity {
           : map['duration'] as num?,
       isBookmark: map['isBookmark'] as bool?,
       isLike: map['isLike'] as bool?,
+      creatorId: map['creatorId'] as String?,
     );
   }
 
@@ -100,7 +106,7 @@ class PlayEntity {
     return 'PlayEntity(id: $id, title: $title, podcastUrl: $podcastUrl, coverImage: $coverImage, '
         'categoryName: $categoryName, subCategoryName: $subCategoryName, '
         'creatorName: $creatorName, donationLink: $donationLink, '
-        'duration: $duration, isBookmark: $isBookmark, isLike: $isLike)';
+        'duration: $duration, isBookmark: $isBookmark, isLike: $isLike, creatorId: $creatorId)';
   }
 
   static PlayEntity? fromPodcast(PlayPodcastItem item) {
@@ -123,6 +129,7 @@ class PlayEntity {
       duration: item.duration,
       isBookmark: item.isBookmark,
       isLike: item.isLike,
+      creatorId: item.creator?.id,
     );
   }
 
@@ -140,7 +147,8 @@ class PlayEntity {
         other.donationLink == donationLink &&
         other.duration == duration &&
         other.isBookmark == isBookmark &&
-        other.isLike == isLike;
+        other.isLike == isLike &&
+        other.creatorId == creatorId;
   }
 
   @override
@@ -155,6 +163,7 @@ class PlayEntity {
     donationLink.hashCode ^
     duration.hashCode ^
     isBookmark.hashCode ^
-    isLike.hashCode;
+    isLike.hashCode ^
+    creatorId.hashCode;
   }
 }

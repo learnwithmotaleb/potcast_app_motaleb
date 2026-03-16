@@ -9,6 +9,7 @@ import 'package:podcast/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
 import 'package:podcast/presentation/screens/auth/verification/verification_screen.dart';
+import 'package:podcast/presentation/screens/creator/creator_profile_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
@@ -393,6 +394,15 @@ class AppRouter {
           path: RoutePath.myPodcastScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const MyPodcastScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.creatorProfileScreen,
+          path: RoutePath.creatorProfileScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: CreatorProfileScreen(
+                creatorId: (state.extra is String) ? state.extra as String : ""),
             state: state,
           ),
         ),

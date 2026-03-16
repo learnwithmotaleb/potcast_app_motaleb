@@ -138,6 +138,8 @@ class ApiUrl {
   ///Creator
   static String podcast({required int page}) => '$base/podcast?page=$page&limit=10';
   static String myPodcast({required int page}) => '$base/podcast/my-podcasts?page=$page&limit=20';
+  static String creatorPodcasts({required String creatorId, int page = 1, int limit = 10}) =>
+      '$base/podcast/all?creator=$creatorId&page=$page&limit=$limit';
 
   static String liveRecordings({required int page}) => '$base/live-session/get-my-previous-live?page=$page&limit=20';
   static String toggleRecord({required String id}) => '$base/live-session/toggle-private-public/$id';

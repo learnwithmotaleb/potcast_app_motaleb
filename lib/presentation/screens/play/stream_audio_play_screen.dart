@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 import 'package:podcast/presentation/screens/play/widget/stream_audio_play_bottom.dart';
 import 'package:podcast/presentation/screens/play/widget/stream_audio_play_control.dart';
@@ -115,33 +117,39 @@ class _StreamAudioPlayScreenState extends State<StreamAudioPlayScreen>
             initialData: controller.currentItem,
             builder: (context, snapshot) {
               final currentItem = snapshot.data;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    currentItem?.title ?? widget.title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+              return GestureDetector(
+                onTap: () {
+                  context.pushNamed(RoutePath.creatorProfileScreen,
+                      extra: currentItem?.creatorId ?? "");
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      currentItem?.title ?? widget.title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    buildCategoryOrArtistText(
-                        isCreator: widget.isCreator,
-                        artist: widget.artist,
-                        categoryName: currentItem?.categoryName),
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.6),
-                      fontSize: 12,
+                    Text(
+                      buildCategoryOrArtistText(
+                          isCreator: widget.isCreator,
+                          artist: widget.artist,
+                          categoryName: currentItem?.categoryName),
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.6),
+                        fontSize: 12,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
