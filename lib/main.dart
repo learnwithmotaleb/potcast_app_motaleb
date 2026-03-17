@@ -36,7 +36,6 @@ Future<void> main() async {
   await Purchases.configure(PurchasesConfiguration(AppConstants.revenueCatApiKey));
   final local = serviceLocator<DBHelper>();
   await purchaseConfig(userId: await local.getUserId());
-
   Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
