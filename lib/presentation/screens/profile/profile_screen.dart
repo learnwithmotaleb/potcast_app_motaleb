@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
@@ -11,7 +10,6 @@ import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/favorite/controller/favorite_controller.dart';
 import 'package:podcast/presentation/screens/history/controller/history_controller.dart';
-import 'package:podcast/presentation/widget/align/custom_align_text.dart';
 import 'package:podcast/presentation/widget/card/profile_podcast_card.dart';
 import 'package:podcast/presentation/widget/card/profile_podcast_shimmer.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -121,136 +119,185 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ]);
           },
           child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
+              // Modern Asymmetrical Header
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 28.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                  child: Stack(
                     children: [
-                      /*IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Iconsax.edit_2,
-                          color: AppColors.blackColor,
+                      Positioned(
+                        right: -20,
+                        top: -20,
+                        child: Icon(
+                          Iconsax.user_copy,
+                          size: 150,
+                          color: AppColors.redColor.withValues(alpha: 0.05),
                         ),
-                      ),*/
-                      Assets.images.splashLogo.image(height: 100),
-                      /*IconButton(
-                        onPressed: () => AppRouter.route.pushNamed(RoutePath.editProfileScreen),
-                        icon: const Icon(
-                          Iconsax.edit_2,
-                          color: AppColors.redColor,
-                        ),
-                      ),*/
+                      ),
+                      Column(
+                        children: [
+                          Center(
+                            child: Assets.images.splashLogo.image(height: 70),
+                          ),
+                          const Gap(20),
+                          // Squircle Profile Image
+                          Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(35),
+                                border: Border.all(
+                                  color: AppColors.redColor,
+                                  width: 2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.redColor.withValues(alpha: 0.15),
+                                    blurRadius: 15,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(30),
+                                child: Obx(() {
+                                  final profileImage = _controller.profile.value.data?.profileImage ?? "";
+                                  const image = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                                  final finalImage = profileImage.isNotEmpty ? profileImage : image;
+
+                                  return CustomNetworkImage(
+                                    imageUrl: finalImage,
+                                    height: 110,
+                                    width: 110,
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.redColor,
-                      width: 3,
-                    ),
-                  ),
-                  child: Obx(() {
-                    final profileImage = _controller.profile.value.data?.profileImage ?? "";
-                    const image = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-                    final finalImage = profileImage.isNotEmpty ? profileImage : image;
-
-                    return CustomNetworkImage(
-                      borderRadius: BorderRadius.circular(50),
-                      imageUrl: finalImage,
-                      height: 100,
-                      width: 100,
-                    );
-                  }),
-                ),
-              ),
-              const SliverGap(12),
+              const SliverGap(16),
+              // Profile Info
               SliverToBoxAdapter(
                 child: Obx(() {
                   final data = _controller.profile.value.data;
                   return Column(
                     children: [
                       CustomText(
-                        text: data?.name ?? "",
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
+                        text: data?.name ?? "User Name",
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.whiteColor,
                       ),
-                      CustomText(
-                        text: DateFormat("MM - dd - yyyy")
-                            .format(data?.dateOfBirth ?? DateTime.now()),
-                        fontSize: 16,
-                        color: AppColors.whiteColor.withValues(alpha: 0.8),
-                      ),
-                      CustomText(
-                        text: data?.address ?? "",
-                        fontSize: 16,
-                        color: AppColors.whiteColor.withValues(alpha: 0.5),
+                      const Gap(4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Iconsax.location_copy, size: 14, color: AppColors.redColor),
+                          const Gap(6),
+                          CustomText(
+                            text: data?.address ?? "Address placeholder",
+                            fontSize: 14,
+                            color: AppColors.whiteColor.withValues(alpha: 0.6),
+                          ),
+                        ],
                       ),
                     ],
                   );
                 }),
               ),
-              const SliverGap(24),
+              const SliverGap(32),
+              // Different Style Action Tiles
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 8,
-                    mainAxisExtent: 52,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    mainAxisExtent: 65,
                   ),
                   delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                     return _items[index];
                   }, childCount: _items.length),
                 ),
               ),
-              const SliverGap(12),
+              const SliverGap(32),
+              // Section with Accent Line
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverToBoxAdapter(
                   child: Obx(() {
                     final items = historyController.lastTenItems;
-
-                    if (historyController.getLstLoading.value) {
-                      return const CustomAlignText(text: "Recently Played");
-                    }
-
-                    if (items.isEmpty) {
+                    if (items.isEmpty && !historyController.getLstLoading.value) {
                       return const SizedBox();
                     }
 
-                    return const CustomAlignText(text: "Recently Played");
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: "Recently Played",
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.whiteColor,
+                                ),
+                                Container(
+                                  height: 3,
+                                  width: 40,
+                                  margin: const EdgeInsets.only(top: 4),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.redColor,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                AppRouter.route.pushNamed(RoutePath.historyScreen);
+                              },
+                                child: CustomText(
+                                  text: "See All",
+                                  fontSize: 13,
+                                  color: AppColors.redColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                    );
                   }),
                 ),
               ),
-              const SliverGap(8),
               SliverToBoxAdapter(
                 child: Obx(() {
                   final items = historyController.lastTenItems;
 
                   if (historyController.getLstLoading.value) {
-                    if (historyController.getLstLoading.value) {
-                      // Show shimmer placeholders
-                      return SizedBox(
-                        height: 100,
-                        child: ListView.builder(
-                          padding: const EdgeInsets.only(left: 14),
-                          itemCount: 4,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return const ProfilePodcastCardShimmer();
-                          },
-                        ),
-                      );
-                    }
+                    return SizedBox(
+                      height: 120,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(left: 20),
+                        itemCount: 4,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return const ProfilePodcastCardShimmer();
+                        },
+                      ),
+                    );
                   }
 
                   if (items.isEmpty) {
@@ -258,9 +305,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
 
                   return SizedBox(
-                    height: 100,
+                    height: 120,
                     child: ListView.builder(
-                      padding: const EdgeInsets.only(left: 14),
+                      padding: const EdgeInsets.only(left: 20),
                       itemCount: items.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
@@ -291,22 +338,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 }),
               ),
-              const SliverGap(12),
+              const SliverGap(24),
+              // Favorites Section with Accent Line
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverToBoxAdapter(
                   child: Obx(() {
-                    final items = historyController.lastTenItems;
-
-                    if (historyController.getLstLoading.value) {
-                      return const CustomAlignText(text: "My Favorites");
-                    }
-
-                    if (items.isEmpty) {
+                    final items = favoriteController.lastTenItems;
+                    if (items.isEmpty && !favoriteController.getLstLoading.value) {
                       return const SizedBox();
                     }
 
-                    return const CustomAlignText(text: "My Favorites");
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: "My Favorites",
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.whiteColor,
+                                ),
+                                Container(
+                                  height: 3,
+                                  width: 40,
+                                  margin: const EdgeInsets.only(top: 4),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.redColor,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                AppRouter.route.pushNamed(RoutePath.favoriteScreen);
+                              },
+                                child: CustomText(
+                                  text: "See All",
+                                  fontSize: 13,
+                                  color: AppColors.redColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                    );
                   }),
                 ),
               ),
@@ -315,9 +397,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Obx(() {
                   if (favoriteController.getLstLoading.value) {
                     return SizedBox(
-                      height: 100,
+                      height: 120,
                       child: ListView.builder(
-                        padding: const EdgeInsets.only(left: 14),
+                        padding: const EdgeInsets.only(left: 20),
                         itemCount: 4,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) => const ProfilePodcastCardShimmer(),
@@ -329,9 +411,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (items.isEmpty) return const SizedBox();
 
                   return SizedBox(
-                    height: 100,
+                    height: 120,
                     child: ListView.builder(
-                      padding: const EdgeInsets.only(left: 14),
+                      padding: const EdgeInsets.only(left: 20),
                       itemCount: items.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
@@ -362,22 +444,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 }),
               ),
-              const SliverGap(12),
+              const SliverGap(40),
+              // Logout stylized button
               SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 45,
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      child: ProfileStatusCard(
-                        onTap: () => showLogoutDialog(context),
-                        text: "logout".tr,
-                        icon: Iconsax.logout_copy,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: GestureDetector(
+                    onTap: () => showLogoutDialog(context),
+                    child: Container(
+                      height: 52,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.redColor, width: 1.5),
+                        borderRadius: BorderRadius.circular(16),
+                        color: AppColors.redColor.withValues(alpha: 0.1),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Iconsax.logout_copy, size: 22, color: AppColors.redColor),
+                          const Gap(12),
+                          CustomText(
+                            text: "logout".tr,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.redColor,
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
+              const SliverGap(40),
             ],
           ),
         ),
@@ -412,26 +510,47 @@ class ProfileStatusCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppColors.redColor.withValues(alpha: 0.1),
-          border: Border.all(color: AppColors.redColor.withValues(alpha: 0.7), width: 2),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 8,
-          children: [
-            Icon(
-              icon,
-              color: AppColors.redColor,
-            ),
-            CustomText(
-              text: text,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+          color: const Color(0xff1E2122),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.blackColor.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.whiteColor.withValues(alpha: 0.05),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: AppColors.redColor, size: 24),
+                const Gap(12),
+                Expanded(
+                  child: CustomText(
+                    text: text.tr,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.whiteColor,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

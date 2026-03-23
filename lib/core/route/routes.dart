@@ -29,6 +29,8 @@ import 'package:podcast/presentation/screens/settings/terms_of_condition.dart';
 import 'package:podcast/presentation/screens/splash/splash_screen.dart';
 import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
 import 'package:podcast/presentation/screens/subscription/subscription_screen.dart';
+import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
+import 'package:podcast/presentation/screens/history/history_screen.dart';
 
 import '../../presentation/screens/album/screen/album_podcast_screen.dart';
 import '../../presentation/screens/categories/categories_screen.dart';
@@ -179,6 +181,22 @@ class AppRouter {
           path: RoutePath.seeAllTopCreator.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: const SeeAllTopCreator(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.historyScreen,
+          path: RoutePath.historyScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const HistoryScreen(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.favoriteScreen,
+          path: RoutePath.favoriteScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: const FavoriteScreen(),
             state: state,
           ),
         ),

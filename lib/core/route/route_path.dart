@@ -23,6 +23,8 @@ class RoutePath {
   static const String albumSeeAllScreen = 'albumSeeAllScreen';
   static const String albumPodcastScreen = 'albumPodcastScreen';
   static const String subscriptionScreen = 'subscriptionScreen';
+  static const String historyScreen = 'historyScreen';
+  static const String favoriteScreen = 'favoriteScreen';
   static const String streamingScreen = 'streamingScreen';
   // static const String recordPlayScreen = 'recordPlayScreen';
   // static const String seeAllRecord = 'seeAllRecord';
