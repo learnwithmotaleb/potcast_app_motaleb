@@ -16,7 +16,6 @@ import 'utils/app_const/app_const.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
-
   await JustAudioBackground.init(
     androidNotificationChannelId: "com.ryanheise.audio_service.podcast.audio_player",
     androidNotificationChannelName: "Audio playback",
@@ -33,10 +32,12 @@ Future<void> main() async {
   initDependencies();
 
   await Purchases.setLogLevel(LogLevel.debug);
-  await Purchases.configure(PurchasesConfiguration(AppConstants.revenueCatApiKey));
+  await Purchases.configure(
+      PurchasesConfiguration(AppConstants.revenueCatApiKey));
   final local = serviceLocator<DBHelper>();
   await purchaseConfig(userId: await local.getUserId());
-  Map<String, Map<String, String>>? languages = await LanguageController.getLanguages();
+  Map<String, Map<String, String>>? languages =
+      await LanguageController.getLanguages();
 
   runApp(MyApp(languages: languages));
 }
@@ -45,12 +46,12 @@ Future<void> purchaseConfig({required String userId}) async {
   try {
     print("0 User ID: $userId / RC ID: ${await Purchases.appUserID}");
     await Purchases.logIn(userId);
-
     print("1 User ID: $userId / RC ID: ${await Purchases.appUserID}");
+
     await Purchases.setAttributes({
       'user_id': userId,
     });
-
+    print("2 User ID: $userId / RC ID: ${await Purchases.appUserID}");
     print("🔧 Attributes synced for $userId");
   } catch (e) {
     print('Purchase config failed: $e');
@@ -73,8 +74,7 @@ class MyApp extends StatelessWidget {
           //Route Section
           routeInformationParser: AppRouter.route.routeInformationParser,
           routerDelegate: AppRouter.route.routerDelegate,
-          routeInformationProvider:
-          AppRouter.route.routeInformationProvider,
+          routeInformationProvider: AppRouter.route.routeInformationProvider,
 
           //Theme Section
           themeMode: ThemeMode.dark,

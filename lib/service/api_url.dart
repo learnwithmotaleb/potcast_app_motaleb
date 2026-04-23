@@ -107,7 +107,12 @@ class ApiUrl {
     return '$base/podcast/all${queryString.isNotEmpty ? '?$queryString' : ''}';
   }
 
-  static String seeAllAlbum({required int page}) => '$base/album/all-albums?page=$page&limit=20';
+  static String seeAllAlbum({required int page, String searchTerm = ""}) {
+    final Map<String, String> queryParams = {'page': page.toString(), 'limit': '20'};
+    if (searchTerm.isNotEmpty) queryParams['searchTerm'] = searchTerm;
+    final queryString = Uri(queryParameters: queryParams).query;
+    return '$base/album/all-albums?$queryString';
+  }
   static String singleAlbum({required String id}) => '$base/album/get-single/$id';
   static String like({required String id}) => '$base/podcast/like-unlike/$id';
   static String favoriteAdd({required String id}) => '$base/bookmark/add-delete-bookmark/$id';
@@ -123,7 +128,12 @@ class ApiUrl {
   static String playListDelete({required String id}) => '$base/playlist/delete/$id';
   static String playListSongs({required String id, required int page}) => '$base/playlist/get-single/$id';
   static String seeAll({required String type, required int page}) => '$base/podcast/$type?page=$page&limit=10';
-  static String seeAllTopCreator({required int page}) => '$base/creator/get-top-creators?page=$page&limit=20';
+  static String seeAllTopCreator({required int page, String searchTerm = ""}) {
+    final Map<String, String> queryParams = {'page': page.toString(), 'limit': '20'};
+    if (searchTerm.isNotEmpty) queryParams['searchTerm'] = searchTerm;
+    final queryString = Uri(queryParameters: queryParams).query;
+    return '$base/creator/get-top-creators?$queryString';
+  }
   static String subCategoryPodcast({required String id, required int page}) => '$base/sub-category/$id/podcasts?page=$page&limit=10';
   static String addLocation() => '$base/user/update-location';
   static String notification({required int page}) => '$base/notification?limit=20&page=$page';

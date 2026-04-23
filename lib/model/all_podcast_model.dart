@@ -49,10 +49,13 @@ class Data {
       );
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        result: json["result"] == null
-            ? []
-            : List<AllPodcastItem>.from(
-                json["result"]!.map((x) => AllPodcastItem.fromJson(x))),
+        result: (json["result"] != null)
+            ? List<AllPodcastItem>.from(
+                json["result"]!.map((x) => AllPodcastItem.fromJson(x)))
+            : (json["podcasts"] != null)
+                ? List<AllPodcastItem>.from(
+                    json["podcasts"]!.map((x) => AllPodcastItem.fromJson(x)))
+                : [],
       );
 
   Map<String, dynamic> toJson() => {

@@ -36,18 +36,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ever(controller.loadingBanner, (status) async {
         if (!controller.shouldShowBanners.value) return;
-
         if (status == Status.completed &&
             controller.bannerModel.value.data != null &&
             controller.bannerModel.value.data!.isNotEmpty) {
           final shouldShow =
-              await controller.dbHelper.shouldShowBanner(secondsGap: 10);
+          await controller.dbHelper.shouldShowBanner(secondsGap: 10);
           final random = math.Random().nextBool();
-
           if (shouldShow && random) {
             _showFullScreenBanner(controller.bannerModel.value.data ?? []);
             await controller.dbHelper.markBannerShown();
@@ -62,7 +59,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   void _showFullScreenBanner(List<BannerItem> banners) {
     if (_isDialogOpen) return;
     _isDialogOpen = true;
-
     final random = math.Random();
     final banner = banners[random.nextInt(banners.length)];
 
@@ -93,7 +89,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   ),
                 ),
               ),
-
               Positioned(
                 top: 0,
                 left: 0,

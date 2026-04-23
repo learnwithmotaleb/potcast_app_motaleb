@@ -99,7 +99,7 @@ class _PlaylistAddScreenState extends State<PlaylistAddScreen> {
                         onSubmitted: (val) {
                           controller.updateSearch(
                             value: val,
-                            pagingController: pagingController,
+                            controllers: [pagingController],
                           );
                         },
                       ),
