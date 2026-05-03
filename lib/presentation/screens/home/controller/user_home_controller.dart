@@ -11,6 +11,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../model/home_model.dart';
 import '../model/streaming_record_model.dart';
+import '../model/top_fav_live_model.dart';
 
 class UserHomeController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
@@ -41,6 +42,35 @@ class UserHomeController extends GetxController {
       debugPrint("❌ getHome error: $e");
       debugPrint("❌ getHome stacktrace: $st");
       loadingMethod(Status.error);
+    }
+  }
+
+  /// ============================= GET Station Info =====================================
+  var loadingStation = Status.completed.obs;
+  loadingStationMethod(Status status) => loadingStation.value = status;
+  final Rx<TopFavLiveModel?> topFavLiveModel = Rx<TopFavLiveModel?>(null);
+
+  Future<void> getStation() async {
+    try{
+      loadingStationMethod(Status.loading);
+      var response = await apiClient.get(url: ApiUrl.station(), showResult: true);
+      if (response.statusCode == 200) {
+        topFavLiveModel.value = TopFavLiveModel.fromJson(response.body);
+        debugPrint("✅ Station data loaded: ${topFavLiveModel.value?.data?.name}");
+        loadingStationMethod(Status.completed);
+      } else {
+        if (response.statusCode == 503) {
+          loadingStationMethod(Status.internetError);
+        } else if (response.statusCode == 404) {
+          loadingStationMethod(Status.noDataFound);
+        } else {
+          loadingStationMethod(Status.error);
+        }
+      }
+    } catch(e, st) {
+      debugPrint("❌ getStation error: $e");
+      debugPrint("❌ getStation stacktrace: $st");
+      loadingStationMethod(Status.error);
     }
   }
 
@@ -141,6 +171,7 @@ class UserHomeController extends GetxController {
   void onReady() {
     Future.wait([
       getHome(),
+      getStation(),
       getBanners(),
       getRecords(),
     ]);

@@ -218,6 +218,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           height: 140,
           width: width,
           child: Obx(() {
+            final stationData = controller.topFavLiveModel.value?.data;
+            
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -230,7 +232,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
                 if (index == 0) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 12.0),
-                    child: _buildHostCard(),
+                    child: _buildHostCard(stationData),
                   );
                 }
 
@@ -252,71 +254,168 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
     );
   }
 
-  Widget _buildHostCard() {
+  Widget _buildHostCard(dynamic stationData) {
+    final isLive = stationData?.isLive ?? false;
+    final name = stationData?.name ?? "Joe";
+    final profileImage = stationData?.profileImage ?? "";
+
     return GestureDetector(
-      onTap: (){
-        /*AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
-            extra: AudioPlayerModel(
-              id: "",
-              title: reelsItem?[index].title ?? "",
-              categories: reelsItem?[index].category?.name ?? "",
-              image: reelsItem?[index].coverImage ?? "",
-              url: reelsItem?[index].podcastUrl ?? "",
-              duration: formatDuration(reelsItem?[index].duration ?? 0),
-              reels: true,
-            ));*/
+      onTap: () {
+        if (isLive) {
+          // TODO: Implement click action for live station
+          debugPrint("Station clicked");
+        }
       },
       child: Container(
         width: 90.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          // gradient: LinearGradient(
-          //   begin: Alignment.topCenter,
-          //   end: Alignment.bottomCenter,
-          //   colors: [
-          //     Colors.red.withValues(alpha: 0.3),
-          //     Colors.pink.withValues(alpha: 0.1),
-          //   ],
-          // ),
-          // border: Border.all(
-          //   color: Colors.red.withValues(alpha: 0.5),
-          //   width: 1,
-          // ),
+          gradient: isLive
+              ? LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.red.withValues(alpha: 0.2),
+                    Colors.orange.withValues(alpha: 0.1)
+                  ],
+                )
+              : null,
+          border: isLive
+              ? Border.all(
+                  color: Colors.red.withValues(alpha: 0.6),
+                  width: 2,
+                )
+              : null,
+          boxShadow: isLive
+              ? [
+                  BoxShadow(
+                    color: Colors.red.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ]
+              : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              height: 80,
-              width: 80,
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [Colors.black, Colors.black12],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.red.withValues(alpha: 0.4),
-                    blurRadius: 8,
-                    spreadRadius: 2,
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                if (isLive)
+                  AnimatedBuilder(
+                    animation: _pulseAnimation,
+                    builder: (context, child) {
+                      return Transform.scale(
+                        scale: _pulseAnimation.value,
+                        child: Container(
+                          height: 88,
+                          width: 88,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.red.withValues(alpha: 0.6),
+                              width: 3,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ],
-              ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
+                Container(
+                  height: 80.0,
+                  width: 80.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: (isLive ? Colors.red : Colors.grey)
+                            .withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CustomPaint(
+                        size: const Size(80.0, 80.0),
+                        painter: PartialCirclePainter(
+                          color: isLive ? Colors.red : AppColors.whiteColor,
+                          strokeWidth: isLive ? 2.0 : 1.0,
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(40.0),
+                            child: profileImage.isNotEmpty
+                                ? CustomNetworkImage(
+                                    imageUrl: profileImage,
+                                  )
+                                : Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        colors: [Colors.black, Colors.black12],
+                                      ),
+                                    ),
+                                    child: Assets.images.splashLogo.image(),
+                                  ),
+                          ),
+                        ),
+                      ),
+                      if (isLive)
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white, width: 1),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  height: 6,
+                                  width: 6,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const Gap(2),
+                                const Text(
+                                  "LIVE",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-                padding: const EdgeInsets.all(8),
-                child: Assets.images.splashLogo.image(),
-              ),
+              ],
             ),
             const Gap(8),
-            const CustomText(
-              text: "Joe",
-              fontSize: 14,
+            CustomText(
+              text: _formatName(name),
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: Colors.white,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

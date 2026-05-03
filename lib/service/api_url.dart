@@ -6,8 +6,8 @@ import '../utils/app_const/app_const.dart';
 class ApiUrl {
   ApiUrl._();
 
-  // static const String base = "http://10.10.20.9:5088";
-  static const String base = "https://api.preachradio.com"; // Live
+  static const String base = "http://10.10.20.9:5088";
+  // static const String base = "https://api.preachradio.com"; // Live
   static String generatePreSignedURL() => "$base/generate-presigned-url";
   static String googleSearchApi({required String search}) =>
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
@@ -107,6 +107,22 @@ class ApiUrl {
     return '$base/podcast/all${queryString.isNotEmpty ? '?$queryString' : ''}';
   }
 
+  static String globalSearch({
+    required String searchTerm,
+    required String pageKey,
+    String limit = "10",
+  }) {
+    final Map<String, String> queryParams = {
+      'page': pageKey,
+      'limit': limit,
+    };
+    if (searchTerm.isNotEmpty) {
+      queryParams['searchTerm'] = searchTerm;
+    }
+    final queryString = Uri(queryParameters: queryParams).query;
+    return '$base/podcast/global-search?$queryString';
+  }
+
   static String seeAllAlbum({required int page, String searchTerm = ""}) {
     final Map<String, String> queryParams = {'page': page.toString(), 'limit': '20'};
     if (searchTerm.isNotEmpty) queryParams['searchTerm'] = searchTerm;
@@ -141,6 +157,7 @@ class ApiUrl {
 
   ///User
   static String home() => '$base/podcast/get-home-data';
+  static String station() => '$base/station/get-station';
   static String streamingRecord({int page = 1, int limit = 10 }) => '$base/live-session/get-previous-live?page=$page&limit=$limit&isPublic=true';
   static String plan() => '$base/plan';
   static String payment({required String id}) => '$base/subscription/create/$id';
