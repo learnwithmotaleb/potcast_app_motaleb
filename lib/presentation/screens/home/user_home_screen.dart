@@ -488,7 +488,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                 url: reelsItem?[index].podcastUrl ?? "",
                               ),
                               onTap: () => AppRouter.route.pushNamed(
-                                  RoutePath.audioPlayScreen,
+                                  RoutePath.reelsScreen,
                                   extra: AudioPlayerModel(
                                     id: reelsItem?[index].id ?? "",
                                     title: reelsItem?[index].title ?? "",

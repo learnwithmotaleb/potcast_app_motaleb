@@ -261,9 +261,24 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
 
     return GestureDetector(
       onTap: () {
-        if (isLive) {
-          // TODO: Implement click action for live station
-          debugPrint("Station clicked");
+        if (stationData != null) {
+          final latestPodcastId = stationData.latestPodcastId ?? "";
+          final stationId = isLive ? stationData.id : null;
+
+          final data = AudioPlayerModel(
+            id: latestPodcastId.isNotEmpty ? latestPodcastId : (stationData.id ?? ""),
+            title: name,
+            image: profileImage,
+            duration: "",
+            url: "",
+            stationId: stationId,
+            firstPodcastId: latestPodcastId,
+          );
+
+          AppRouter.route.pushNamed(
+            RoutePath.reelsScreen,
+            extra: data,
+          );
         }
       },
       child: Container(

@@ -31,6 +31,7 @@ class Data {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int version;
+  final String? latestPodcastId;
 
   Data({
     this.location,
@@ -45,6 +46,7 @@ class Data {
     this.createdAt,
     this.updatedAt,
     required this.version,
+    this.latestPodcastId,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) {
@@ -65,6 +67,7 @@ class Data {
           ? DateTime.tryParse(json["updatedAt"])
           : null,
       version: json["__v"] ?? 0,
+      latestPodcastId: json["latestPodcastId"],
     );
   }
 }

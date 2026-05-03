@@ -38,6 +38,7 @@ import '../../presentation/screens/search/search_screen.dart';
 import '../../presentation/screens/see_all/album_see_all_screen.dart';
 import '../../presentation/screens/see_all/podcast_list_screen.dart';
 import '../../presentation/screens/see_all/see_all_top_creator.dart';
+import 'package:podcast/presentation/screens/reels/reels_screen.dart';
 
 class AppRouter {
   static final GoRouter initRoute = GoRouter(
@@ -290,7 +291,20 @@ class AppRouter {
                 artist: model.artist,
                 isPlaylist: model.isPlaylist,
                 isCreator: model.isCreator,
+                stationId: model.stationId,
+                firstPodcastId: model.firstPodcastId,
               ),
+              state: state,
+            );
+          },
+        ),
+        GoRoute(
+          name: RoutePath.reelsScreen,
+          path: RoutePath.reelsScreen.addBasePath,
+          pageBuilder: (context, state) {
+            final model = state.extra as AudioPlayerModel;
+            return _buildPageWithAnimation(
+              child: ReelsScreen(data: model),
               state: state,
             );
           },

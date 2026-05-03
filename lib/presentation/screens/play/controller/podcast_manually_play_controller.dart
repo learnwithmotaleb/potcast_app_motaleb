@@ -73,6 +73,7 @@ class PodcastManuallyPlayController extends GetxController {
     bool isPlaylist = false,
     String? id,
     bool updateMainStatus = false,
+    String? stationId,
   }) async {
     try {
 
@@ -103,6 +104,7 @@ class PodcastManuallyPlayController extends GetxController {
           id: id,
           isAlbum: isAlbum,
           isPlaylist: isPlaylist,
+          stationId: stationId,
         ),
         showResult: true,
       );

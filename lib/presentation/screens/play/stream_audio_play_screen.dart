@@ -24,6 +24,8 @@ class StreamAudioPlayScreen extends StatefulWidget {
     required this.isAlbum,
     required this.isPlaylist,
     required this.isCreator,
+    this.stationId,
+    this.firstPodcastId,
   });
 
   final String id;
@@ -38,6 +40,8 @@ class StreamAudioPlayScreen extends StatefulWidget {
   final bool isAlbum;
   final bool isPlaylist;
   final bool isCreator;
+  final String? stationId;
+  final String? firstPodcastId;
 
   @override
   State<StreamAudioPlayScreen> createState() => _StreamAudioPlayScreenState();
@@ -92,10 +96,11 @@ class _StreamAudioPlayScreenState extends State<StreamAudioPlayScreen>
     try {
       await controller.getPodcast(
         id: widget.id,
-        firstPodcastId: widget.id,
+        firstPodcastId: widget.firstPodcastId ?? widget.id,
         popular: widget.popular,
         reels: widget.reels,
         updateMainStatus: true,
+        stationId: widget.stationId,
       );
     } catch (e) {
       debugPrint('❌ Failed to load podcasts: $e');

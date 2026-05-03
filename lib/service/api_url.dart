@@ -51,6 +51,7 @@ class ApiUrl {
     bool isAlbum = false,
     bool isPlaylist = false,
     String? id,
+    String? stationId,
   }) {
     if (isAlbum) {
       if (id == null || id.isEmpty) {
@@ -77,6 +78,9 @@ class ApiUrl {
     // if (popular == true) queryParams['popular'] = popular.toString();
     if (firstPodcastId != null && firstPodcastId.isNotEmpty) {
       queryParams['firstPodcastId'] = firstPodcastId;
+    }
+    if (stationId != null && stationId.isNotEmpty) {
+      queryParams['stationId'] = stationId;
     }
 
     final queryString = Uri(queryParameters: queryParams).query;
