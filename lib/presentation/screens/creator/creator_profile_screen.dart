@@ -109,12 +109,12 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                     _buildInfoItem(Iconsax.location, podcasts.first.address!),
                   const Gap(32),
 
-                  // Albums Section
-                  _buildSectionHeader(
-                    "Albums",
-                    onTap: () => context.pushNamed(RoutePath.albumSeeAllScreen),
-                  ),
-                  const Gap(16),
+                  // // Albums Section
+                  // _buildSectionHeader(
+                  //   "Albums",
+                  //   onTap: () => context.pushNamed(RoutePath.albumSeeAllScreen),
+                  // ),
+                  // const Gap(16),
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),

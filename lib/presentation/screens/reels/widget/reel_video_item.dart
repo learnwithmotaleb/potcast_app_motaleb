@@ -8,8 +8,14 @@ import 'package:video_player/video_player.dart';
 class ReelVideoItem extends StatefulWidget {
   final PlayEntity item;
   final bool isActive;
+  final VoidCallback? onError;
 
-  const ReelVideoItem({super.key, required this.item, required this.isActive});
+  const ReelVideoItem({
+    super.key,
+    required this.item,
+    required this.isActive,
+    this.onError,
+  });
 
   @override
   State<ReelVideoItem> createState() => _ReelVideoItemState();
@@ -53,6 +59,7 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
             _errorMessage = "This media format is not supported or link is broken.";
           });
         }
+        widget.onError?.call();
         return;
       }
       
@@ -75,6 +82,7 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
           _errorMessage = "This media format is not supported or link is broken.";
         });
       }
+      widget.onError?.call();
     }
   }
 

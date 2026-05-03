@@ -102,6 +102,19 @@ class _ReelsScreenState extends State<ReelsScreen> {
               key: ValueKey(item.id),
               item: item,
               isActive: index == _activePage,
+              onError: () {
+                // Auto skip after a short delay if it's the active page
+                if (index == _activePage) {
+                  Future.delayed(const Duration(seconds: 2), () {
+                    if (mounted && _activePage == index) {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  });
+                }
+              },
             );
           },
         );

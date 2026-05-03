@@ -8,8 +8,7 @@ import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/model/global_search_model.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/search/controller/search_screen_controller.dart';
-import 'package:podcast/presentation/widget/card/creator_card.dart';
-import 'package:podcast/presentation/widget/card/home_music_card.dart';
+import 'package:podcast/presentation/screens/search/widget/global_search_card.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -93,46 +92,39 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   builderDelegate: PagedChildBuilderDelegate<GlobalSearchResultItem>(
                     itemBuilder: (context, item, index) {
-                      if (item.type.toLowerCase() == "profile" || item.type.toLowerCase() == "creator" || item.type.toLowerCase() == "user") {
-                        final data = AudioPlayerModel(
-                          id: item.id,
-                          title: item.title,
-                          image: item.image,
-                          duration: "",
-                          url: "",
-                        );
-                        return CreatorCard(
-                          data: data,
-                          onTap: () {
+                      bool isProfile = item.type.toLowerCase() == "profile" || 
+                                       item.type.toLowerCase() == "creator" || 
+                                       item.type.toLowerCase() == "user";
+
+                      return GlobalSearchCard(
+                        title: item.title,
+                        image: item.image,
+                        type: item.type,
+                        onTap: () {
+                          if (isProfile) {
                             if (item.id.isNotEmpty) {
                               AppRouter.route.pushNamed(
                                 RoutePath.creatorProfileScreen,
                                 extra: item.id,
                               );
                             }
-                          },
-                        );
-                      } else {
-                        // Default to podcast
-                        final data = AudioPlayerModel(
-                          id: item.id,
-                          title: item.title,
-                          image: item.image,
-                          categories: "",
-                          duration: "",
-                          artist: "",
-                          url: item.url ?? "",
-                        );
-                        return HomeMusicCard(
-                          data: data,
-                          onTap: () {
+                          } else {
+                            final data = AudioPlayerModel(
+                              id: item.id,
+                              title: item.title,
+                              image: item.image,
+                              categories: "",
+                              duration: "",
+                              artist: "",
+                              url: item.url ?? "",
+                            );
                             AppRouter.route.pushNamed(
                               RoutePath.audioPlayScreen,
                               extra: data,
                             );
-                          },
-                        );
-                      }
+                          }
+                        },
+                      );
                     },
                   ),
                 ),
