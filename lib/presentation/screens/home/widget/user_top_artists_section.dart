@@ -263,14 +263,15 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
       onTap: () {
         if (stationData != null) {
           final latestPodcastId = stationData.latestPodcastId ?? "";
-          final stationId = isLive ? stationData.id : null;
+          final stationId = stationData.id ?? "";
 
           final data = AudioPlayerModel(
-            id: latestPodcastId.isNotEmpty ? latestPodcastId : (stationData.id ?? ""),
+            id: latestPodcastId.isNotEmpty ? latestPodcastId : stationId,
             title: name,
             image: profileImage,
             duration: "",
             url: "",
+            reels: true,
             stationId: stationId,
             firstPodcastId: latestPodcastId,
           );

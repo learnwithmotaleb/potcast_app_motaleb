@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/play/model/play_entity.dart';
+import 'package:podcast/presentation/screens/reels/controller/reels_controller.dart';
+import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -27,10 +34,13 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
   bool _isError = false;
   String _errorMessage = "";
   bool _showIcon = false;
+  bool _isLiked = false;
+  bool _likeLoading = false;
 
   @override
   void initState() {
     super.initState();
+    _isLiked = widget.item.isLike ?? false;
     _initializeVideo();
   }
 
@@ -105,6 +115,36 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
         });
       }
     });
+  }
+
+  Future<void> _toggleLike() async {
+    if (_likeLoading) return;
+    
+    setState(() {
+      _likeLoading = true;
+    });
+
+    try {
+      final podcastController = Get.find<PodcastManuallyPlayController>();
+      final newState = await podcastController.likePodcast(
+        id: widget.item.id,
+        currentState: _isLiked,
+      );
+      
+      if (mounted) {
+        setState(() {
+          _isLiked = newState;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error toggling like: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _likeLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -221,7 +261,7 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
             Positioned(
               bottom: 40,
               left: 16,
-              right: 60,
+              right: 80,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -235,14 +275,89 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    widget.item.creatorName ?? "",
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
+                  const Gap(8),
+                  GestureDetector(
+                    onTap: () {
+                      final stationId = Get.find<ReelsController>().stationId;
+                      if (stationId != null && stationId.isNotEmpty) {
+                        context.pushNamed(
+                          RoutePath.stationProfileScreen,
+                          extra: stationId,
+                        );
+                      }
+                    },
+                    child: Text(
+                      widget.item.creatorName ?? "",
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ),
+
+            // Profile Image (TikTok style)
+            Positioned(
+              right: 12,
+              bottom: 100,
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      final stationId = Get.find<ReelsController>().stationId;
+                      if (stationId != null && stationId.isNotEmpty) {
+                        context.pushNamed(
+                          RoutePath.stationProfileScreen,
+                          extra: stationId,
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: const BoxDecoration(
+                          color: Colors.grey,
+                          shape: BoxShape.circle,
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: CustomNetworkImage(
+                          imageUrl: widget.item.coverImage,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Gap(20),
+                  GestureDetector(
+                    onTap: _toggleLike,
+                    child: Column(
+                      children: [
+                        Icon(
+                          _isLiked ? Iconsax.heart : Iconsax.heart,
+                          color: _isLiked ? Colors.red : Colors.white,
+                          size: 30,
+                        ),
+                        const Gap(4),
+                        CustomText(
+                          text: _isLiked ? "Liked" : "Like",
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Gap(20),
+                  const Icon(Iconsax.message, color: Colors.white, size: 30),
+                  const Gap(4),
+                  const CustomText(text: "Comm.", color: Colors.white, fontSize: 12),
                 ],
               ),
             ),

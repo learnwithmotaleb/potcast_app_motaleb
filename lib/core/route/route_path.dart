@@ -21,6 +21,7 @@ class RoutePath {
   // static const String notificationScreen = 'notificationScreen';
   static const String seeAllTopCreator = 'seeAllTopCreator';
   static const String albumSeeAllScreen = 'albumSeeAllScreen';
+  static const String stationProfileScreen = 'stationProfileScreen';
   static const String reelsScreen = 'reelsScreen';
   static const String albumPodcastScreen = 'albumPodcastScreen';
   static const String subscriptionScreen = 'subscriptionScreen';
