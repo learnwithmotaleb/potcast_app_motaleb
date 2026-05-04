@@ -249,8 +249,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             case Status.completed:
               final data = controller.model.value.data;
 
-              final categoryNotEmpty =
-                  data?.categories != null && data!.categories!.isNotEmpty;
+              final categoryNotEmpty = data?.categories != null && data!.categories!.isNotEmpty;
               final newNotEmpty = data?.newestPodcasts != null &&
                   data!.newestPodcasts!.isNotEmpty;
               final popularNotEmpty = data?.popularPodcasts != null &&

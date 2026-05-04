@@ -70,7 +70,6 @@ class DBHelper {
       toastMessage(message: "Logout Successful!");
       final controller = Get.find<PodcastManuallyPlayController>();
       controller.pause();
-
       Get.deleteAll();
       AppRouter.route.goNamed(RoutePath.loginScreen);
     }).onError((error, stack) {
