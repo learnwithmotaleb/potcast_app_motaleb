@@ -564,7 +564,7 @@ class ApiClient {
           body: {},
           statusCode: 400,
           statusText: '🐞🐞🐞 Error Alert Timeout Exception 🐞🐞🐞');
-    } on http.ClientException catch (err) {
+    } on http.ClientException {
       log.e('🐞🐞🐞 Error Alert Client Exception🐞🐞🐞');
       return const Response(
           body: {}, statusCode: 400, statusText: 'client exception hitted');

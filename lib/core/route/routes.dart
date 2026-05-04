@@ -40,7 +40,6 @@ import '../../presentation/screens/see_all/podcast_list_screen.dart';
 import '../../presentation/screens/see_all/see_all_top_creator.dart';
 import 'package:podcast/presentation/screens/reels/reels_screen.dart';
 import 'package:podcast/presentation/screens/creator/station_profile_screen.dart';
-import 'package:podcast/presentation/screens/see_all/album_see_all_screen.dart';
 
 class AppRouter {
   static final GoRouter initRoute = GoRouter(

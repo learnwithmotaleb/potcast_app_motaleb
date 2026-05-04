@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/utils/app_const/app_const.dart';
 
 class ModernStreamingCard extends StatelessWidget {
   const ModernStreamingCard({
@@ -71,7 +70,7 @@ class ModernStreamingCard extends StatelessWidget {
                       child: ClipRRect(
 
                         child: CustomNetworkImage(
-                          imageUrl: data.image ?? AppConstants.defaultCoverImage,
+                          imageUrl: data.image,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(8),
                             topRight: Radius.circular(8),

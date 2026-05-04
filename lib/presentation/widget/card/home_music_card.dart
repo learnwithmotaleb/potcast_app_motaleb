@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/utils/app_const/app_const.dart';
 
 class HomeMusicCard extends StatelessWidget {
   const HomeMusicCard({
@@ -42,7 +41,7 @@ class HomeMusicCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomNetworkImage(
-                      imageUrl: data.image ?? AppConstants.defaultCoverImage,
+                      imageUrl: data.image,
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),

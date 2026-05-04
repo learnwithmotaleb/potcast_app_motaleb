@@ -16,7 +16,6 @@ class CreatorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: GestureDetector(
