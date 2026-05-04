@@ -304,7 +304,7 @@ class AppRouter {
           name: RoutePath.stationProfileScreen,
           path: RoutePath.stationProfileScreen.addBasePath,
           pageBuilder: (context, state) {
-            final stationId = state.extra as String;
+            final stationId = (state.extra as String?) ?? "";
             return _buildPageWithAnimation(
               child: StationProfileScreen(stationId: stationId),
               state: state,
@@ -445,11 +445,24 @@ class AppRouter {
         GoRoute(
           name: RoutePath.creatorProfileScreen,
           path: RoutePath.creatorProfileScreen.addBasePath,
-          pageBuilder: (context, state) => _buildPageWithAnimation(
-            child: CreatorProfileScreen(
-                creatorId: (state.extra is String) ? state.extra as String : ""),
-            state: state,
-          ),
+          pageBuilder: (context, state) {
+            final extra = state.extra;
+            if (extra is Map<String, dynamic>) {
+              return _buildPageWithAnimation(
+                child: CreatorProfileScreen(
+                  creatorId: extra["id"] ?? "",
+                  initialName: extra["name"],
+                  initialImage: extra["image"],
+                ),
+                state: state,
+              );
+            }
+            return _buildPageWithAnimation(
+              child: CreatorProfileScreen(
+                  creatorId: (extra is String) ? extra : ""),
+              state: state,
+            );
+          },
         ),
 /*        GoRoute(
           name: RoutePath.podcastAddScreen,

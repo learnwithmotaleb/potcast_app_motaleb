@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 import 'package:podcast/presentation/screens/play/model/play_entity.dart';
 import 'package:podcast/presentation/screens/reels/controller/reels_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
-import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -58,33 +58,33 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
         return;
       }
 
+      _videoPlayerController?.dispose();
       _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(url));
       await _videoPlayerController!.initialize();
-      
+
+      if (!mounted) return;
+
       if (_videoPlayerController!.value.hasError) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _isError = true;
-            _errorMessage = "This media format is not supported or link is broken.";
-          });
-        }
+        setState(() {
+          _isLoading = false;
+          _isError = true;
+          _errorMessage = "This media format is not supported or link is broken.";
+        });
         widget.onError?.call();
         return;
       }
-      
+
       _videoPlayerController!.setLooping(true);
-      
+
       if (widget.isActive) {
         _videoPlayerController!.play();
       }
-      
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
+      debugPrint("❌ Video init error: $e");
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -97,7 +97,10 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
   }
 
   void _togglePlayPause() {
-    if (_videoPlayerController == null || !_videoPlayerController!.value.isInitialized) return;
+    if (_videoPlayerController == null ||
+        !_videoPlayerController!.value.isInitialized) {
+      return;
+    }
 
     setState(() {
       _showIcon = true;
@@ -119,7 +122,7 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
 
   Future<void> _toggleLike() async {
     if (_likeLoading) return;
-    
+
     setState(() {
       _likeLoading = true;
     });
@@ -130,7 +133,7 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
         id: widget.item.id,
         currentState: _isLiked,
       );
-      
+
       if (mounted) {
         setState(() {
           _isLiked = newState;
@@ -147,10 +150,26 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
     }
   }
 
+  void _navigateToStationProfile() {
+    try {
+      final reelsController = Get.find<ReelsController>();
+      final stationId = reelsController.stationId;
+      if (stationId != null && stationId.isNotEmpty) {
+        context.pushNamed(
+          RoutePath.stationProfileScreen,
+          extra: stationId,
+        );
+      }
+    } catch (e) {
+      debugPrint("❌ Cannot navigate to station profile: $e");
+    }
+  }
+
   @override
   void didUpdateWidget(covariant ReelVideoItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_videoPlayerController != null && _videoPlayerController!.value.isInitialized) {
+    if (_videoPlayerController != null &&
+        _videoPlayerController!.value.isInitialized) {
       if (widget.isActive && !oldWidget.isActive) {
         _videoPlayerController!.play();
       } else if (!widget.isActive && oldWidget.isActive) {
@@ -169,10 +188,15 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(child: LoadingWidget());
+      return Container(
+        color: Colors.black,
+        child: const Center(child: LoadingWidget()),
+      );
     }
 
-    if (_isError || _videoPlayerController == null || _videoPlayerController!.value.hasError) {
+    if (_isError ||
+        _videoPlayerController == null ||
+        _videoPlayerController!.value.hasError) {
       return Container(
         color: Colors.black,
         child: Center(
@@ -181,15 +205,18 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.error_outline, color: Colors.white54, size: 48),
+                const Icon(Icons.error_outline,
+                    color: Colors.white54, size: 48),
                 const SizedBox(height: 16),
                 Text(
-                  _errorMessage.isNotEmpty ? _errorMessage : "Error playing media",
+                  _errorMessage.isNotEmpty
+                      ? _errorMessage
+                      : "Error playing media",
                   style: const TextStyle(color: Colors.white54),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                TextButton(
+                ElevatedButton.icon(
                   onPressed: () {
                     setState(() {
                       _isLoading = true;
@@ -198,8 +225,13 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                     });
                     _initializeVideo();
                   },
-                  child: const Text("Retry"),
-                )
+                  icon: const Icon(Icons.refresh, size: 18),
+                  label: const Text("Retry"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white24,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
               ],
             ),
           ),
@@ -208,8 +240,8 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
     }
 
     final isPlaying = _videoPlayerController!.value.isPlaying;
-    final isAudioOnly = _videoPlayerController!.value.size.width == 0 || 
-                        _videoPlayerController!.value.size.height == 0;
+    final isAudioOnly = _videoPlayerController!.value.size.width == 0 ||
+        _videoPlayerController!.value.size.height == 0;
 
     return GestureDetector(
       onTap: _togglePlayPause,
@@ -219,10 +251,10 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
           alignment: Alignment.center,
           fit: StackFit.expand,
           children: [
-            // If it's audio only, show the cover image
+            // Video or cover image
             if (isAudioOnly)
               CustomNetworkImage(
-                imageUrl: widget.item.coverImage ?? "",
+                imageUrl: widget.item.coverImage,
                 width: double.infinity,
                 height: double.infinity,
                 backgroundColor: Colors.grey.shade900,
@@ -236,8 +268,8 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                   child: VideoPlayer(_videoPlayerController!),
                 ),
               ),
-            
-            // Overlay gradient for text visibility
+
+            // Bottom gradient overlay
             Positioned(
               bottom: 0,
               left: 0,
@@ -249,15 +281,15 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                      Colors.black.withOpacity(0.8),
+                      Colors.black.withValues(alpha: 0.8),
                       Colors.transparent,
                     ],
                   ),
                 ),
               ),
             ),
-            
-            // Reel Information
+
+            // Reel info (title + creator name)
             Positioned(
               bottom: 40,
               left: 16,
@@ -277,15 +309,7 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                   ),
                   const Gap(8),
                   GestureDetector(
-                    onTap: () {
-                      final stationId = Get.find<ReelsController>().stationId;
-                      if (stationId != null && stationId.isNotEmpty) {
-                        context.pushNamed(
-                          RoutePath.stationProfileScreen,
-                          extra: stationId,
-                        );
-                      }
-                    },
+                    onTap: _navigateToStationProfile,
                     child: Text(
                       widget.item.creatorName ?? "",
                       style: const TextStyle(
@@ -299,22 +323,15 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
               ),
             ),
 
-            // Profile Image (TikTok style)
+            // Right side action buttons (Profile, Like, Comment)
             Positioned(
               right: 12,
               bottom: 100,
               child: Column(
                 children: [
+                  // Profile avatar
                   GestureDetector(
-                    onTap: () {
-                      final stationId = Get.find<ReelsController>().stationId;
-                      if (stationId != null && stationId.isNotEmpty) {
-                        context.pushNamed(
-                          RoutePath.stationProfileScreen,
-                          extra: stationId,
-                        );
-                      }
-                    },
+                    onTap: _navigateToStationProfile,
                     child: Container(
                       padding: const EdgeInsets.all(2),
                       decoration: const BoxDecoration(
@@ -336,15 +353,26 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                     ),
                   ),
                   const Gap(20),
+
+                  // Like button
                   GestureDetector(
                     onTap: _toggleLike,
                     child: Column(
                       children: [
-                        Icon(
-                          _isLiked ? Iconsax.heart : Iconsax.heart,
-                          color: _isLiked ? Colors.red : Colors.white,
-                          size: 30,
-                        ),
+                        _likeLoading
+                            ? const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Icon(
+                                _isLiked ? Icons.favorite : Icons.favorite_border,
+                                color: _isLiked ? Colors.red : Colors.white,
+                                size: 30,
+                              ),
                         const Gap(4),
                         CustomText(
                           text: _isLiked ? "Liked" : "Like",
@@ -355,25 +383,28 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                     ),
                   ),
                   const Gap(20),
+
+                  // Comment button (placeholder)
                   const Icon(Iconsax.message, color: Colors.white, size: 30),
                   const Gap(4),
-                  const CustomText(text: "Comm.", color: Colors.white, fontSize: 12),
+                  const CustomText(
+                      text: "Comm.", color: Colors.white, fontSize: 12),
                 ],
               ),
             ),
-            
-            // Play/Pause icon animation
+
+            // Play/Pause icon overlay
             if (_showIcon)
               Center(
                 child: Container(
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    isPlaying ? Iconsax.play : Iconsax.pause,
+                    isPlaying ? Icons.play_arrow : Icons.pause,
                     size: 30,
                     color: Colors.white,
                   ),

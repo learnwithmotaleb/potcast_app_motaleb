@@ -24,58 +24,84 @@ class StationProfileController extends GetxController {
 
     try {
       loading.value = Status.loading;
-      
+
+      // Clear previous data for fresh load
+      podcasts.clear();
+      reels.clear();
+      albums.clear();
+      stationInfo.value = null;
+
       // 1. Fetch Station Info
       final stationResponse = await apiClient.get(
-        url: ApiUrl.station(), // Note: Usually this returns the "active" station or we might need a specific ID
+        url: ApiUrl.station(),
         showResult: true,
       );
 
-        if (stationResponse.statusCode == 200) {
+      if (stationResponse.statusCode == 200) {
+        try {
           final model = station_model.TopFavLiveModel.fromJson(stationResponse.body);
           stationInfo.value = model.data;
+        } catch (e) {
+          debugPrint("⚠️ Station info parse error (non-fatal): $e");
         }
+      }
 
       // 2. Fetch Podcasts for this station
-      var podcastResponse = await apiClient.get(
+      final podcastResponse = await apiClient.get(
         url: ApiUrl.playFeed(stationId: stationId, reels: false, limit: 10),
         showResult: true,
       );
 
       if (podcastResponse.statusCode == 200) {
-        final feed = PlayFeedModel.fromJson(podcastResponse.body);
-        podcasts.assignAll(feed.data?.podcasts ?? []);
-      }
-
-      // If podcasts are empty, try creatorPodcasts endpoint as backup
-      if (podcasts.isEmpty) {
-        final altResponse = await apiClient.get(
-          url: ApiUrl.creatorPodcasts(creatorId: stationId),
-          showResult: true,
-        );
-        if (altResponse.statusCode == 200) {
-           final model = all_podcast.AllPodcastModel.fromJson(altResponse.body);
-           final items = model.data?.result?.map((e) => PlayPodcastItem(
-             id: e.id,
-             title: e.title,
-             coverImage: e.coverImage,
-             podcastUrl: e.podcastUrl,
-             duration: e.duration,
-             creator: Creator(id: e.creator?.id, name: e.creator?.name),
-           )).toList();
-           if (items != null) podcasts.assignAll(items);
+        try {
+          final feed = PlayFeedModel.fromJson(podcastResponse.body);
+          podcasts.assignAll(feed.data?.podcasts ?? []);
+        } catch (e) {
+          debugPrint("⚠️ Podcast feed parse error: $e");
         }
       }
 
-      // If stationInfo is still null or doesn't match the ID, extract from first podcast
-      if (podcasts.isNotEmpty && (stationInfo.value == null || stationInfo.value?.id != stationId)) {
+      // 3. If podcasts are empty, try creatorPodcasts endpoint as backup
+      if (podcasts.isEmpty) {
+        try {
+          final altResponse = await apiClient.get(
+            url: ApiUrl.creatorPodcasts(creatorId: stationId),
+            showResult: true,
+          );
+          if (altResponse.statusCode == 200) {
+            final model = all_podcast.AllPodcastModel.fromJson(altResponse.body);
+            final items = model.data?.result
+                ?.map((e) => PlayPodcastItem(
+                      id: e.id,
+                      title: e.title,
+                      coverImage: e.coverImage,
+                      podcastUrl: e.podcastUrl,
+                      duration: e.duration,
+                      creator: Creator(
+                        id: e.creator?.id,
+                        name: e.creator?.name,
+                      ),
+                    ))
+                .toList();
+            if (items != null && items.isNotEmpty) {
+              podcasts.assignAll(items);
+            }
+          }
+        } catch (e) {
+          debugPrint("⚠️ Creator podcasts fallback error: $e");
+        }
+      }
+
+      // 4. Build stationInfo from podcast data if station API didn't match
+      if (podcasts.isNotEmpty &&
+          (stationInfo.value == null || stationInfo.value?.id != stationId)) {
         final first = podcasts.first;
         stationInfo.value = station_model.Data(
           id: first.creator?.id ?? stationId,
           name: first.creator?.name ?? "Station",
-          description: "Station Profile",
+          description: "",
           profileImage: first.coverImage ?? "",
-          address: "Station Location",
+          address: "",
           isLive: false,
           donationUrl: "",
           coverImage: first.coverImage ?? "",
@@ -83,36 +109,52 @@ class StationProfileController extends GetxController {
         );
       }
 
-      // 3. Fetch Reels for this station
-      var reelsResponse = await apiClient.get(
+      // 5. Fetch Reels for this station
+      final reelsResponse = await apiClient.get(
         url: ApiUrl.playFeed(stationId: stationId, reels: true, limit: 10),
         showResult: true,
       );
 
       if (reelsResponse.statusCode == 200) {
-        final feed = PlayFeedModel.fromJson(reelsResponse.body);
-        reels.assignAll(feed.data?.podcasts ?? []);
-      }
-
-      // If reels are empty, try creatorPodcasts with reels=true if supported or just use first 5 from podcasts as reels
-      if (reels.isEmpty && podcasts.isNotEmpty) {
-         reels.assignAll(podcasts.take(5).toList());
-      }
-
-      // 4. Fetch Albums (Placeholder or specific if available)
-      final albumResponse = await apiClient.get(
-        url: ApiUrl.seeAllAlbum(page: 1),
-        showResult: true,
-      );
-
-      if (albumResponse.statusCode == 200) {
-        final Map<String, dynamic> body = albumResponse.body;
-        if (body['success'] == true) {
-          albums.assignAll(body['data']['result'] ?? []);
+        try {
+          final feed = PlayFeedModel.fromJson(reelsResponse.body);
+          reels.assignAll(feed.data?.podcasts ?? []);
+        } catch (e) {
+          debugPrint("⚠️ Reels feed parse error: $e");
         }
       }
 
-      loading.value = Status.completed;
+      // 6. If reels are still empty, use first 5 podcasts as fallback
+      if (reels.isEmpty && podcasts.isNotEmpty) {
+        reels.assignAll(podcasts.take(5).toList());
+      }
+
+      // 7. Fetch Albums
+      try {
+        final albumResponse = await apiClient.get(
+          url: ApiUrl.seeAllAlbum(page: 1),
+          showResult: true,
+        );
+
+        if (albumResponse.statusCode == 200) {
+          final body = albumResponse.body;
+          if (body is Map<String, dynamic> &&
+              body['success'] == true &&
+              body['data'] != null &&
+              body['data']['result'] != null) {
+            albums.assignAll(body['data']['result'] as List);
+          }
+        }
+      } catch (e) {
+        debugPrint("⚠️ Albums fetch error (non-fatal): $e");
+      }
+
+      // If we still have no data at all, show noDataFound
+      if (podcasts.isEmpty && reels.isEmpty && stationInfo.value == null) {
+        loading.value = Status.noDataFound;
+      } else {
+        loading.value = Status.completed;
+      }
     } catch (e, st) {
       debugPrint("❌ getStationProfile error: $e");
       debugPrint("❌ getStationProfile stacktrace: $st");

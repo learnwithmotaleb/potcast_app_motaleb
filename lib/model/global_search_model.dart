@@ -78,7 +78,7 @@ class GlobalSearchResultItem {
     return GlobalSearchResultItem(
       id: json["id"] ?? "",
       type: json["type"] ?? "podcast",
-      title: json["title"] ?? "",
+      title: json["title"] ?? json["name"] ?? "",
       image: json["image"] ?? "",
       url: json["url"] ?? json["podcastUrl"],
       createdAt: json["createdAt"],

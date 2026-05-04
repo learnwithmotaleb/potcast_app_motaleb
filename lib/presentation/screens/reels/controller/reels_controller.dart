@@ -36,22 +36,30 @@ class ReelsController extends GetxController {
     if (isRefresh) {
       isLoading.value = true;
       reels.clear();
-      nextCursor = firstPodcastId; // Use the provided first ID or cursor
+      nextCursor = firstPodcastId;
       hasMore = true;
+      error.value = "";
     } else {
       if (!hasMore || isLoadingMore.value) return;
       isLoadingMore.value = true;
     }
     
     try {
+      final url = ApiUrl.playFeed(
+        reels: isReels,
+        popular: isPopular,
+        firstPodcastId: nextCursor,
+        stationId: stationId,
+        limit: 10,
+      );
+
+      if (url.isEmpty) {
+        error.value = "Invalid feed URL";
+        return;
+      }
+
       final response = await apiClient.get(
-        url: ApiUrl.playFeed(
-          reels: isReels,
-          popular: isPopular,
-          firstPodcastId: nextCursor,
-          stationId: stationId,
-          limit: 10,
-        ),
+        url: url,
         showResult: true,
       );
 
@@ -67,14 +75,21 @@ class ReelsController extends GetxController {
         if (isRefresh) {
           reels.assignAll(newPlayEntities);
         } else {
-          reels.addAll(newPlayEntities);
+          // Avoid duplicates
+          final existingIds = reels.map((e) => e.id).toSet();
+          final uniqueItems = newPlayEntities
+              .where((item) => !existingIds.contains(item.id))
+              .toList();
+          reels.addAll(uniqueItems);
         }
         
         hasMore = feed.data?.hasMore ?? false;
         nextCursor = feed.data?.nextCursor;
         error.value = "";
+      } else if (response.statusCode == 503) {
+        error.value = "No internet connection. Please check your network.";
       } else {
-        error.value = "Failed to load reels. Status code: ${response.statusCode}";
+        error.value = "Failed to load reels. Please try again.";
       }
     } catch (e) {
       debugPrint("Error fetching reels: $e");

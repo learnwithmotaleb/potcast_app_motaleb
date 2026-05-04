@@ -105,7 +105,11 @@ class _SearchScreenState extends State<SearchScreen> {
                             if (item.id.isNotEmpty) {
                               AppRouter.route.pushNamed(
                                 RoutePath.creatorProfileScreen,
-                                extra: item.id,
+                                extra: {
+                                  "id": item.id,
+                                  "name": item.title,
+                                  "image": item.image,
+                                },
                               );
                             }
                           } else {
