@@ -112,6 +112,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           artist: creator.name ?? "",
           duration: creator.donationLink ?? "",
           isCreator: true,
+          creatorImage: creator.profileImage,
         ),
       );
     }
@@ -274,6 +275,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
             reels: true,
             stationId: stationId,
             firstPodcastId: latestPodcastId,
+            creatorImage: profileImage,
           );
 
           AppRouter.route.pushNamed(

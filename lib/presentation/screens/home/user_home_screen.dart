@@ -498,6 +498,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     duration: formatDuration(
                                         reelsItem?[index].duration ?? 0),
                                     reels: true,
+                                    creatorImage: reelsItem?[index].creator?.profileImage,
                                   )),
                             );
                           },

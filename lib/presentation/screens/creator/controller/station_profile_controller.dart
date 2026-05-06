@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:get/get.dart';
 import 'package:podcast/model/all_podcast_model.dart' as all_podcast;
 import 'package:podcast/presentation/screens/play/model/play_feed_model.dart';
@@ -14,6 +14,7 @@ class StationProfileController extends GetxController {
   final RxList<PlayPodcastItem> podcasts = <PlayPodcastItem>[].obs;
   final RxList<PlayPodcastItem> reels = <PlayPodcastItem>[].obs;
   final RxList<dynamic> albums = <dynamic>[].obs;
+  final RxList<all_podcast.Category> categories = <all_podcast.Category>[].obs;
   final Rx<station_model.Data?> stationInfo = Rx<station_model.Data?>(null);
 
   Future<void> getStationProfile(String stationId) async {
@@ -29,6 +30,7 @@ class StationProfileController extends GetxController {
       podcasts.clear();
       reels.clear();
       albums.clear();
+      categories.clear();
       stationInfo.value = null;
 
       // 1. Fetch Station Info
@@ -39,7 +41,8 @@ class StationProfileController extends GetxController {
 
       if (stationResponse.statusCode == 200) {
         try {
-          final model = station_model.TopFavLiveModel.fromJson(stationResponse.body);
+          final model =
+              station_model.TopFavLiveModel.fromJson(stationResponse.body);
           stationInfo.value = model.data;
         } catch (e) {
           debugPrint("⚠️ Station info parse error (non-fatal): $e");
@@ -69,7 +72,8 @@ class StationProfileController extends GetxController {
             showResult: true,
           );
           if (altResponse.statusCode == 200) {
-            final model = all_podcast.AllPodcastModel.fromJson(altResponse.body);
+            final model =
+                all_podcast.AllPodcastModel.fromJson(altResponse.body);
             final items = model.data?.result
                 ?.map((e) => PlayPodcastItem(
                       id: e.id,
@@ -147,6 +151,27 @@ class StationProfileController extends GetxController {
         }
       } catch (e) {
         debugPrint("⚠️ Albums fetch error (non-fatal): $e");
+      }
+
+      // 8. Fetch Global Categories (for the "Albums" UI requested by user)
+      try {
+        final catResponse = await apiClient.get(
+          url: ApiUrl.category(),
+          showResult: true,
+        );
+
+        if (catResponse.statusCode == 200) {
+          final body = catResponse.body;
+          if (body is Map<String, dynamic> &&
+              body['success'] == true &&
+              body['data'] != null) {
+            final List<dynamic> catList = body['data'];
+            categories.assignAll(
+                catList.map((e) => all_podcast.Category.fromJson(e)).toList());
+          }
+        }
+      } catch (e) {
+        debugPrint("⚠️ Categories fetch error (non-fatal): $e");
       }
 
       // If we still have no data at all, show noDataFound

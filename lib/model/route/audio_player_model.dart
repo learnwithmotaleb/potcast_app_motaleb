@@ -4,6 +4,7 @@ class AudioPlayerModel {
   final String? categories;
   final String image;
   final String? artist;
+  final String? creatorImage;
   final String duration;
   final String url;
   final bool reels;
@@ -20,6 +21,7 @@ class AudioPlayerModel {
     this.categories,
     required this.image,
     this.artist,
+    this.creatorImage,
     required this.duration,
     required this.url,
     this.reels = false,
@@ -38,6 +40,7 @@ class AudioPlayerModel {
       'categories': categories,
       'image': image,
       'artist': artist,
+      'creatorImage': creatorImage,
       'duration': duration,
       'url': url,
       'reels': reels,

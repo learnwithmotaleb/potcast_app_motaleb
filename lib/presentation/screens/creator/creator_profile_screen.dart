@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -123,7 +124,8 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
 
   Widget _buildProfileBody() {
     final creator = controller.creatorInfo.value;
-    final podcasts = controller.creatorPodcasts.value.data?.result ?? [];
+    final podcasts = controller.podcasts;
+    final categories = controller.categories;
     
     // Use initial data if API hasn't loaded yet
     final String displayName = creator?.name ?? widget.initialName ?? "Creator";
@@ -231,13 +233,44 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (controller.loading.value == Status.loading)
+                if (controller.loading.value == Status.loading && podcasts.isEmpty)
                    const Padding(
                      padding: EdgeInsets.only(top: 40),
                      child: Center(child: CircularProgressIndicator(color: AppColors.primaryColor)),
                    )
                 else ...[
                   const Gap(24),
+
+                  // Albums Section (Categories)
+                  if (categories.isNotEmpty) ...[
+                    _buildSectionHeader("Albums", onTap: () {
+                      context.pushNamed(RoutePath.categoriesScreen);
+                    }),
+                    const Gap(16),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: min(categories.length, 4),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        mainAxisExtent: 85,
+                      ),
+                      itemBuilder: (context, index) {
+                        final cat = categories[index];
+                        return _buildCategoryCard(
+                          cat.name ?? "Category",
+                          cat.categoryImage ?? "",
+                          onTap: () => context.pushNamed(
+                            RoutePath.categoriesScreen,
+                            extra: cat.id ?? "",
+                          ),
+                        );
+                      },
+                    ),
+                    const Gap(32),
+                  ],
 
                   // Podcasts Section
                   if (podcasts.isNotEmpty) ...[
@@ -333,6 +366,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                                   duration: _formatDuration(item.duration),
                                   reels: true,
                                   isCreator: true,
+                                  creatorImage: displayImage,
                                 ),
                               );
                             },
@@ -343,7 +377,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                   ],
 
                   // Empty state
-                  if (podcasts.isEmpty)
+                  if (podcasts.isEmpty && categories.isEmpty)
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 60),
                       child: Center(
@@ -418,6 +452,50 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildCategoryCard(String title, String imageUrl,
+      {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 100,
+        decoration: BoxDecoration(
+          color: const Color(0xFF2A2B31),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 10.0, top: 8, right: 90, bottom: 2),
+              child: CustomText(
+                text: title,
+                color: AppColors.whiteColor,
+                fontWeight: FontWeight.w800,
+                fontSize: 16,
+                textAlign: TextAlign.start,
+                maxLines: 3,
+              ),
+            ),
+            Positioned(
+              bottom: -2,
+              right: -2,
+              top: -2,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomNetworkImage(
+                  imageUrl: imageUrl,
+                  width: 70,
+                  height: 100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

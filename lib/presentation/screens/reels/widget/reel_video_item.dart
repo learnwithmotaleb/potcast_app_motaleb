@@ -347,7 +347,7 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: CustomNetworkImage(
-                          imageUrl: widget.item.coverImage,
+                          imageUrl: widget.item.creatorImage ?? widget.item.coverImage,
                         ),
                       ),
                     ),

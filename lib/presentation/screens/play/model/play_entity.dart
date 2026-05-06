@@ -9,6 +9,7 @@ class PlayEntity {
   final String? categoryName;
   final String? subCategoryName;
   final String? creatorName;
+  final String? creatorImage;
   final String? donationLink;
   final num? duration;
   final bool? isBookmark;
@@ -23,6 +24,7 @@ class PlayEntity {
     this.categoryName,
     this.subCategoryName,
     this.creatorName,
+    this.creatorImage,
     this.donationLink,
     this.duration,
     this.isBookmark,
@@ -38,6 +40,7 @@ class PlayEntity {
     String? categoryName,
     String? subCategoryName,
     String? creatorName,
+    String? creatorImage,
     String? donationLink,
     num? duration,
     bool? isBookmark,
@@ -52,6 +55,7 @@ class PlayEntity {
       categoryName: categoryName ?? this.categoryName,
       subCategoryName: subCategoryName ?? this.subCategoryName,
       creatorName: creatorName ?? this.creatorName,
+      creatorImage: creatorImage ?? this.creatorImage,
       donationLink: donationLink ?? this.donationLink,
       duration: duration ?? this.duration,
       isBookmark: isBookmark ?? this.isBookmark,
@@ -69,6 +73,7 @@ class PlayEntity {
       'categoryName': categoryName,
       'subCategoryName': subCategoryName,
       'creatorName': creatorName,
+      'creatorImage': creatorImage,
       'donationLink': donationLink,
       'duration': duration,
       'isBookmark': isBookmark,
@@ -86,6 +91,7 @@ class PlayEntity {
       categoryName: map['categoryName'] as String?,
       subCategoryName: map['subCategoryName'] as String?,
       creatorName: map['creatorName'] as String?,
+      creatorImage: map['creatorImage'] as String?,
       donationLink: map['donationLink'] as String?,
       duration: map['duration'] is int
           ? (map['duration'] as int).toDouble()
@@ -105,7 +111,7 @@ class PlayEntity {
   String toString() {
     return 'PlayEntity(id: $id, title: $title, podcastUrl: $podcastUrl, coverImage: $coverImage, '
         'categoryName: $categoryName, subCategoryName: $subCategoryName, '
-        'creatorName: $creatorName, donationLink: $donationLink, '
+        'creatorName: $creatorName, creatorImage: $creatorImage, donationLink: $donationLink, '
         'duration: $duration, isBookmark: $isBookmark, isLike: $isLike, creatorId: $creatorId)';
   }
 
@@ -125,6 +131,7 @@ class PlayEntity {
       categoryName: item.category?.name,
       subCategoryName: item.subCategory?.name,
       creatorName: item.creator?.name,
+      creatorImage: item.creator?.profileImage,
       donationLink: item.creator?.donationLink,
       duration: item.duration,
       isBookmark: item.isBookmark,
@@ -144,6 +151,7 @@ class PlayEntity {
         other.categoryName == categoryName &&
         other.subCategoryName == subCategoryName &&
         other.creatorName == creatorName &&
+        other.creatorImage == creatorImage &&
         other.donationLink == donationLink &&
         other.duration == duration &&
         other.isBookmark == isBookmark &&
@@ -160,6 +168,7 @@ class PlayEntity {
     categoryName.hashCode ^
     subCategoryName.hashCode ^
     creatorName.hashCode ^
+    creatorImage.hashCode ^
     donationLink.hashCode ^
     duration.hashCode ^
     isBookmark.hashCode ^

@@ -202,29 +202,35 @@ class AllPodcastItem {
 class Category {
   final String? id;
   final String? name;
+  final String? categoryImage;
 
   Category({
     this.id,
     this.name,
+    this.categoryImage,
   });
 
   Category copyWith({
     String? id,
     String? name,
+    String? categoryImage,
   }) =>
       Category(
         id: id ?? this.id,
         name: name ?? this.name,
+        categoryImage: categoryImage ?? this.categoryImage,
       );
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
         id: json["_id"],
         name: json["name"],
+        categoryImage: json["category_image"],
       );
 
   Map<String, dynamic> toJson() => {
         "_id": id,
         "name": name,
+        "category_image": categoryImage,
       };
 }
 

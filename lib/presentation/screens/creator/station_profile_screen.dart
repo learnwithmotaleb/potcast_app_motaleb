@@ -130,6 +130,7 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
     final station = controller.stationInfo.value;
     final podcasts = controller.podcasts;
     final reels = controller.reels;
+    final categories = controller.categories;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -177,35 +178,30 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
                 Iconsax.location, station.address, Colors.redAccent),
           const Gap(32),
 
-          // Albums Section
-          if (controller.albums.isNotEmpty) ...[
+          // Albums Section (Requested to look like home categories)
+          if (categories.isNotEmpty) ...[
             _buildSectionHeader("Albums",
                 onTap: () =>
-                    context.pushNamed(RoutePath.albumSeeAllScreen)),
+                    context.pushNamed(RoutePath.categoriesScreen)),
             const Gap(16),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: min(controller.albums.length, 4),
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              itemCount: min(categories.length, 4),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 2.2,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                mainAxisExtent: 85,
               ),
               itemBuilder: (context, index) {
-                final album = controller.albums[index];
-                if (album is! Map) return const SizedBox.shrink();
-                return _buildAlbumCard(
-                  (album['name'] ?? "Album").toString(),
-                  Iconsax.music,
+                final category = categories[index];
+                return _buildCategoryCard(
+                  category.name ?? "Category",
+                  category.categoryImage ?? "",
                   onTap: () => context.pushNamed(
-                    RoutePath.albumPodcastScreen,
-                    extra: {
-                      "title": album['name'],
-                      "id": album['_id'],
-                    },
+                    RoutePath.categoriesScreen,
+                    extra: category.id ?? "",
                   ),
                 );
               },
@@ -279,6 +275,7 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
                             duration: _formatDuration(item.duration),
                             reels: true,
                             stationId: widget.stationId,
+                            creatorImage: station?.profileImage,
                           ));
                     },
                   );
@@ -351,49 +348,42 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
     );
   }
 
-  Widget _buildAlbumCard(String title, IconData icon,
+  Widget _buildCategoryCard(String title, String imageUrl,
       {VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        height: 100,
         decoration: BoxDecoration(
-          color: const Color(0xFF1E2122),
-          borderRadius: BorderRadius.circular(12),
+          color: const Color(0xFF2A2B31),
+          borderRadius: BorderRadius.circular(5),
         ),
-        child: Row(
+        child: Stack(
           children: [
-            Expanded(
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 10.0, top: 8, right: 90, bottom: 2),
               child: CustomText(
                 text: title,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                maxLines: 2,
+                color: AppColors.whiteColor,
+                fontWeight: FontWeight.w800,
+                fontSize: 16,
                 textAlign: TextAlign.start,
+                maxLines: 3,
               ),
             ),
-            const Gap(8),
-            SizedBox(
-              width: 40,
-              height: 40,
-              child: Stack(
-                children: [
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Icon(icon,
-                        color: Colors.blueAccent.withValues(alpha: 0.5),
-                        size: 24),
-                  ),
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    child: Icon(icon,
-                        color: Colors.redAccent.withValues(alpha: 0.5),
-                        size: 20),
-                  ),
-                ],
+            Positioned(
+              bottom: -2,
+              right: -2,
+              top: -2,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomNetworkImage(
+                  imageUrl: imageUrl,
+                  width: 70,
+                  height: 100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],

@@ -120,12 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Flexible(
-                      child: CustomText(text: "don't_have_account".tr),
-                    ),
+                    Flexible(child: CustomText(text: "don't_have_account".tr),),
                     TextButton(
-                      onPressed: () =>
-                          AppRouter.route.pushNamed(RoutePath.signUpScreen),
+                      onPressed: () => AppRouter.route.pushNamed(RoutePath.signUpScreen),
                       child: CustomText(
                         text: "sign_up".tr,
                         color: AppColors.redColor,

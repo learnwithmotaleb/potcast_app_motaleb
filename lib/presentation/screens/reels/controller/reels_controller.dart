@@ -22,12 +22,14 @@ class ReelsController extends GetxController {
   bool? isPopular;
   String? firstPodcastId;
   String? stationId;
+  String? passedCreatorImage;
   
   void initData(AudioPlayerModel model) {
     isReels = model.reels;
     isPopular = model.popular;
     firstPodcastId = model.firstPodcastId ?? model.id;
     stationId = model.stationId;
+    passedCreatorImage = model.creatorImage;
     
     fetchReels(isRefresh: true);
   }
@@ -68,7 +70,13 @@ class ReelsController extends GetxController {
         final newItems = feed.data?.podcasts ?? [];
         
         final newPlayEntities = newItems
-            .map(PlayEntity.fromPodcast)
+            .map((e) {
+              final entity = PlayEntity.fromPodcast(e);
+              if (entity != null && (entity.creatorImage == null || entity.creatorImage!.isEmpty)) {
+                return entity.copyWith(creatorImage: passedCreatorImage);
+              }
+              return entity;
+            })
             .whereType<PlayEntity>()
             .toList();
 

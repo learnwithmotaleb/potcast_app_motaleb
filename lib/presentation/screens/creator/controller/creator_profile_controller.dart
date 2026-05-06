@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:get/get.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/model/all_podcast_model.dart';
@@ -10,7 +10,8 @@ class CreatorProfileController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
 
   final Rx<Status> loading = Status.loading.obs;
-  final Rx<AllPodcastModel> creatorPodcasts = AllPodcastModel().obs;
+  final RxList<AllPodcastItem> podcasts = <AllPodcastItem>[].obs;
+  final RxList<Category> categories = <Category>[].obs;
   final Rx<Creator?> creatorInfo = Rx<Creator?>(null);
 
   Future<void> getCreatorProfile(String creatorId) async {
@@ -21,6 +22,10 @@ class CreatorProfileController extends GetxController {
 
     try {
       loading.value = Status.loading;
+      podcasts.clear();
+      categories.clear();
+      creatorInfo.value = null;
+
       final response = await apiClient.get(
         url: ApiUrl.creatorPodcasts(creatorId: creatorId),
         showResult: true,
@@ -28,17 +33,33 @@ class CreatorProfileController extends GetxController {
 
       if (response.statusCode == 200) {
         final model = AllPodcastModel.fromJson(response.body);
-        creatorPodcasts.value = model;
-        
+        podcasts.assignAll(model.data?.result ?? []);
+
         // Extract creator info from the first podcast item if available
-        if (model.data?.result?.isNotEmpty == true) {
-          creatorInfo.value = model.data!.result!.first.creator;
+        if (podcasts.isNotEmpty) {
+          creatorInfo.value = podcasts.first.creator;
         }
-        
-        if (model.data?.result?.isEmpty == true) {
-           loading.value = Status.noDataFound;
+
+        // Fetch Global Categories
+        try {
+          final catResponse = await apiClient.get(
+            url: ApiUrl.category(),
+            showResult: true,
+          );
+          if (catResponse.statusCode == 200) {
+            final body = catResponse.body;
+            if (body is Map<String, dynamic> && body['data'] != null) {
+              final List<dynamic> catList = body['data'];
+              categories.assignAll(
+                  catList.map((e) => Category.fromJson(e)).toList());
+            }
+          }
+        } catch (_) {}
+
+        if (podcasts.isEmpty) {
+          loading.value = Status.noDataFound;
         } else {
-           loading.value = Status.completed;
+          loading.value = Status.completed;
         }
       } else {
         if (response.statusCode == 503) {

@@ -204,34 +204,40 @@ class Creator {
   final String? id;
   final String? name;
   final String? donationLink;
+  final String? profileImage;
 
   Creator({
     this.id,
     this.name,
     this.donationLink,
+    this.profileImage,
   });
 
   Creator copyWith({
     String? id,
     String? name,
     String? donationLink,
+    String? profileImage,
   }) =>
       Creator(
         id: id ?? this.id,
         name: name ?? this.name,
         donationLink: donationLink ?? this.donationLink,
+        profileImage: profileImage ?? this.profileImage,
       );
 
   factory Creator.fromJson(Map<String, dynamic> json) => Creator(
         id: json["_id"],
         name: json["name"],
-    donationLink: json["donationLink"],
+        donationLink: json["donationLink"],
+        profileImage: json["profile_image"],
       );
 
   Map<String, dynamic> toJson() => {
         "_id": id,
         "name": name,
         "donationLink": donationLink,
+        "profile_image": profileImage,
       };
 }
 
