@@ -362,20 +362,25 @@ class PodcastAudioController extends GetxController {
       var response = await apiClient.post(
         url: ApiUrl.createLive(),
         body: {},
+        showResult: true,
       );
+
+      debugPrint("🟢 Create Live Response: ${response.statusCode}");
+      debugPrint("📦 Create Live Body: ${response.body}");
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = LiveStreamingModel.fromJson(response.body);
         liveData.value = data;
         createLiveMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
-        toastMessage(message: errorMessage);
+        String message = response.body?['message']?.toString() ?? 'Room created successfully';
+        toastMessage(message: message);
       } else {
         createLiveMethod(false);
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint("🔴 Create Live Error: $e");
       createLiveMethod(false);
     }
   }
@@ -388,16 +393,20 @@ class PodcastAudioController extends GetxController {
         showResult: true,
       );
 
+      debugPrint("🟢 Get Live Response: ${response.statusCode}");
+      debugPrint("📦 Get Live Body: ${response.body}");
+
       if (response.statusCode == 200) {
         final data = LiveStreamingModel.fromJson(response.body);
         liveData.value = data;
         getLiveMethod(false);
       } else {
         getLiveMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
-        toastMessage(message: errorMessage);
+        // String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        // toastMessage(message: errorMessage);
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint("🔴 Get Live Error: $e");
       getLiveMethod(false);
     }
   }
@@ -405,19 +414,23 @@ class PodcastAudioController extends GetxController {
   Future<void> endLive({required String id}) async {
     try {
       endLiveMethod(true);
-      var response = await apiClient.post(url: ApiUrl.endLive(id: id), body: {});
+      var response = await apiClient.post(url: ApiUrl.endLive(id: id), body: {}, showResult: true);
+
+      debugPrint("🟢 End Live Response: ${response.statusCode}");
+      debugPrint("📦 End Live Body: ${response.body}");
 
       if (response.statusCode == 200) {
         endLiveMethod(false);
         await getLive();
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
-        toastMessage(message: errorMessage);
+        String message = response.body?['message']?.toString() ?? 'Stream ended successfully';
+        toastMessage(message: message);
       } else {
         endLiveMethod(false);
         String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint("🔴 End Live Error: $e");
       endLiveMethod(false);
     }
   }

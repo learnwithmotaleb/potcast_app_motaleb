@@ -165,7 +165,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                   });
                 },
               ),
-              /*ListTile(
+              ListTile(
                 leading: Assets.images.liveStream.image(
                   height: 30,
                   width: 30,
@@ -201,7 +201,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                     );
                   }
                 },
-              ),*/
+              ),
               const Gap(44),
             ],
           ),

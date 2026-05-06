@@ -8,8 +8,10 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
+import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/dialog/custom_dialog.dart';
+import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/creator/podcast/controller/podcast_audio_controller.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
@@ -67,32 +69,52 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
   }
 
   void _joinAsAdmin() {
-    final roomCodes = controller.liveData.value.data?.roomCodes;
-    final adminCode = roomCodes?.firstWhere(
-          (code) => code.role == 'admin',
-      orElse: () => roomCodes.first,
+
+    final roomCodes = controller.liveData.value.data?.roomCodes ?? [];
+
+    print('---------------------ROOM CODE-----------------------$roomCodes',);
+    print(roomCodes);
+
+    if (roomCodes.isEmpty) {
+      toastMessage(message: "No room codes available. Please try creating a room again.");
+      return;
+    }
+
+    final adminCode = roomCodes.firstWhere(
+      (code) => code.role == 'host',
+      orElse: () => roomCodes.firstWhere(
+        (code) => code.role == 'admin',
+        orElse: () => roomCodes.first,
+      ),
     );
 
-    if (adminCode?.code != null) {
+    if (adminCode.code != null) {
+
+
+
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              StreamingScreen(
-                authToken: "",
-                roomCode: adminCode!.code!,
-                userName: _profileController.profile.value.data?.name ?? "Admin",
-                userID: _profileController.profile.value.data?.id ?? "4354534534534534535353",
-              ),
+          builder: (context) {
+            final name = _profileController.profile.value.data?.name;
+            final id = _profileController.profile.value.data?.id;
+            
+            return StreamingScreen(
+              roomCode: adminCode.code!.trim(),
+              userName: (name != null && name.isNotEmpty) ? name : "Admin",
+              userID: (id != null && id.isNotEmpty) ? id : null,
+
+            );
+          },
         ),
       );
+    } else {
+      toastMessage(message: "Admin code not found.");
     }
   }
 
   void _joinAsHost() {
-    if (roomCodeController.text
-        .trim()
-        .isEmpty) {
+    if (roomCodeController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter a room code'),
@@ -105,13 +127,16 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            StreamingScreen(
-              authToken: "",
-              roomCode: roomCodeController.text.trim(),
-              userName: _profileController.profile.value.data?.name ?? "Host",
-              userID: _profileController.profile.value.data?.id ?? "43545454654444465476",
-            ),
+      builder: (context) {
+        final name = _profileController.profile.value.data?.name;
+        final id = _profileController.profile.value.data?.id;
+
+        return StreamingScreen(
+          roomCode: roomCodeController.text.trim(),
+          userName: (name != null && name.isNotEmpty) ? name : "Host",
+          userID: (id != null && id.isNotEmpty) ? id : null,
+        );
+      },
       ),
     );
   }
@@ -348,7 +373,7 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _joinAsAdmin,
                     icon: const Icon(Icons.admin_panel_settings, size: 20),
-                    label: const Text('Create Stream'),
+                    label: const Text('Start Streaming'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade600,
                       foregroundColor: Colors.white,
@@ -360,7 +385,7 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
                     ),
                   ),
                 ),
-                /*const SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
@@ -382,7 +407,7 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
                       elevation: 2,
                     ),
                   ),
-                ),*/
+                ),
               ],
             ),
           ],
@@ -604,11 +629,11 @@ class _LiveStreamingScreenState extends State<LiveStreamingScreen> {
             /// Record Link
             GestureDetector(
               onTap: (){
-                /*if(item.recordingPresignedUrl != null){
+                if(item.recordingPresignedUrl != null){
                   AppRouter.route.pushNamed(RoutePath.recordPlayScreen,
                     extra: {"url": item.recordingPresignedUrl ?? ""},
                   );
-                }*/
+                }
               },
               // onTap: () => openBrowser(url: item.recordingPresignedUrl ?? ""),
               child: Row(

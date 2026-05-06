@@ -31,6 +31,8 @@ import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
 import 'package:podcast/presentation/screens/subscription/subscription_screen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
+import 'package:podcast/presentation/screens/play/record_play_screen_old.dart';
+import 'package:podcast/presentation/screens/see_all/see_all_record.dart';
 
 import '../../presentation/screens/album/screen/album_podcast_screen.dart';
 import '../../presentation/screens/categories/categories_screen.dart';
@@ -321,7 +323,7 @@ class AppRouter {
             );
           },
         ),
-        /*GoRoute(
+        GoRoute(
           name: RoutePath.recordPlayScreen,
           path: RoutePath.recordPlayScreen.addBasePath,
           pageBuilder: (context, state) {
@@ -337,8 +339,8 @@ class AppRouter {
               state: state,
             );
           },
-        ),*/
-        /*GoRoute(
+        ),
+        GoRoute(
           name: RoutePath.seeAllRecord,
           path: RoutePath.seeAllRecord.addBasePath,
           pageBuilder: (context, state) {
@@ -347,7 +349,7 @@ class AppRouter {
               state: state,
             );
           },
-        ),*/
+        ),
         GoRoute(
           name: RoutePath.podcastListScreen,
           path: RoutePath.podcastListScreen.addBasePath,

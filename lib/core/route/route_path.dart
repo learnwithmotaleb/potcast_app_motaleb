@@ -28,8 +28,8 @@ class RoutePath {
   static const String historyScreen = 'historyScreen';
   static const String favoriteScreen = 'favoriteScreen';
   static const String streamingScreen = 'streamingScreen';
-  // static const String recordPlayScreen = 'recordPlayScreen';
-  // static const String seeAllRecord = 'seeAllRecord';
+  static const String recordPlayScreen = 'recordPlayScreen';
+  static const String seeAllRecord = 'seeAllRecord';
 
   //User
   static const String userNavScreen = 'userNavScreen';

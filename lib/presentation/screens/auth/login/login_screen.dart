@@ -21,8 +21,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _controller = Get.find<AuthController>();
-  final _email =
-      TextEditingController(text: kDebugMode ? "creator@yopmail.com" : "");
+  final _email = TextEditingController(text: kDebugMode ? "creator@yopmail.com" : "");
   final _password = TextEditingController(text: kDebugMode ? "123456" : "");
   final _formKey = GlobalKey<FormState>();
 
@@ -60,11 +59,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Email is required';
                     }
-                    final emailRegex = RegExp(
-                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    final emailRegex =
+                    RegExp(
+                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                    );
                     if (!emailRegex.hasMatch(value)) {
                       return 'Enter a valid email';
                     }
+
                     return null;
                   },
                 ),

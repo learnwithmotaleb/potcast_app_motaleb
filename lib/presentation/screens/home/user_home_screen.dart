@@ -14,6 +14,7 @@ import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
+import 'package:podcast/presentation/widget/card/modern_streaming_card.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'controller/user_home_controller.dart';
@@ -561,7 +562,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                     ),
                     const SliverGap(8),
-                    /*SliverToBoxAdapter(
+                    SliverToBoxAdapter(
                       child: Obx(() {
                         if (controller.recordList.isEmpty) {
                           return const SizedBox();
@@ -614,7 +615,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                   final item = controller.recordList[index];
 
                                   return ModernStreamingCard(
-                                    isLive: true,
+                                    isLive: false,
                                     data: AudioPlayerModel(
                                       id: item.id ?? "",
                                       title: item.name ?? "",
@@ -636,7 +637,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         }
                       }),
                     ),
-                    const SliverGap(8),*/
+                    const SliverGap(8),
                   ],
                 ),
               );
