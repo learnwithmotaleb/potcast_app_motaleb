@@ -10,7 +10,7 @@ class GoogleSearchLocationModel {
         predictions: json["predictions"] == null
             ? []
             : List<Prediction>.from(
-                json["predictions"]!.map((x) => Prediction.fromJson(x))),
+                json["predictions"]!.map((x) => Prediction.fromJson(x),),),
       );
 }
 
