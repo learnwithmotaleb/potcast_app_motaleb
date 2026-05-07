@@ -14,13 +14,11 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../model/home_model.dart' as home;
 import '../model/streaming_record_model.dart';
 import '../model/top_fav_live_model.dart';
-
 class UserHomeController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final DBHelper dbHelper = serviceLocator<DBHelper>();
 
   Timer? _refreshTimer;
-
   /// ============================= GET Home Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
