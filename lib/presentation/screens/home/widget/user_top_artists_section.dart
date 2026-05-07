@@ -372,31 +372,6 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
         width: 90.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          gradient: isLive
-              ? LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.red.withValues(alpha: 0.2),
-                    Colors.orange.withValues(alpha: 0.1)
-                  ],
-                )
-              : null,
-          border: isLive
-              ? Border.all(
-                  color: Colors.red.withValues(alpha: 0.6),
-                  width: 2,
-                )
-              : null,
-          boxShadow: isLive
-              ? [
-                  BoxShadow(
-                    color: Colors.red.withValues(alpha: 0.3),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  ),
-                ]
-              : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -535,46 +510,6 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
         width: 90.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          // gradient: LinearGradient(
-          //   begin: Alignment.topCenter,
-          //   end: Alignment.bottomCenter,
-          //   colors: isLive
-          //       ? [Colors.red.withValues(alpha: 0.2), Colors.orange.withValues(alpha: 0.1)]
-          //       : [
-          //     Colors.grey[800]!.withValues(alpha: 0.3),
-          //     Colors.grey[900]!.withValues(alpha: 0.1)
-          //   ],
-          // ),
-          gradient: isLive
-              ? LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.red.withValues(alpha: 0.2),
-
-                    Colors.orange.withValues(alpha: 0.1)
-                  ],
-                )
-              : null,
-          // border: Border.all(
-          //   color: isLive ? Colors.red.withValues(alpha: 0.6) : Colors.grey.withValues(alpha: 0.3),
-          //   width: isLive ? 2 : 1,
-          // ),
-          border: isLive
-              ? Border.all(
-                  color: Colors.red.withValues(alpha: 0.6),
-                  width: 2,
-                )
-              : null,
-          boxShadow: isLive
-              ? [
-                  BoxShadow(
-                    color: Colors.red.withValues(alpha: 0.3),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  ),
-                ]
-              : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
