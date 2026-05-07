@@ -40,7 +40,7 @@ class _SeeAllTopCreatorState extends State<SeeAllTopCreator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Top Favorites"),
+        title: const Text("vorites"),
       ),
       body: PagedGridView<int, TopCreatorItem>(
         pagingController: pagingController,

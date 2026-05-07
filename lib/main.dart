@@ -70,7 +70,6 @@ class MyApp extends StatelessWidget {
       builder: (localizeController) {
         return GetMaterialApp.router(
           debugShowCheckedModeBanner: false,
-
           //Route Section
           routeInformationParser: AppRouter.route.routeInformationParser,
           routerDelegate: AppRouter.route.routerDelegate,
