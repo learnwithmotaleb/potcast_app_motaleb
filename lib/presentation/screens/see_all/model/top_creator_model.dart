@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class TopCreatorModel {
   final bool? success;
   final String? message;
@@ -82,6 +84,7 @@ class TopCreatorItem {
   final LatestPodcast? latestPodcast;
   final String? creatorId;
   final LiveSession? liveSession;
+  final StreamRoom? streamRoom; // ✅ ADD
 
   TopCreatorItem({
     this.name,
@@ -95,21 +98,31 @@ class TopCreatorItem {
     this.latestPodcast,
     this.creatorId,
     this.liveSession,
+    this.streamRoom, // ✅ ADD
   });
 
-  factory TopCreatorItem.fromJson(Map<String, dynamic> json) => TopCreatorItem(
-    name: json["name"],
-    email: json["email"],
-    profileImage: json["profile_image"],
-    location: json["location"] == null ? null : Location.fromJson(json["location"]),
-    profileCover: json["profile_cover"],
-    donationLink: json["donationLink"],
-    isLive: json["isLive"],
-    totalViews: json["totalViews"],
-    latestPodcast: json["latestPodcast"] == null ? null : LatestPodcast.fromJson(json["latestPodcast"]),
-    creatorId: json["creatorId"],
-    liveSession: json["liveSession"] == null ? null : LiveSession.fromJson(json["liveSession"]),
-  );
+  factory TopCreatorItem.fromJson(Map<String, dynamic> json) {
+    return TopCreatorItem(
+      name: json["name"],
+      email: json["email"],
+      profileImage: json["profile_image"],
+      location: json["location"] == null ? null : Location.fromJson(json["location"]),
+      profileCover: json["profile_cover"],
+      donationLink: json["donationLink"],
+      isLive: json["isLive"],
+      totalViews: json["totalViews"],
+      latestPodcast: (json["latestPodcast"] == null || (json["latestPodcast"] is Map && (json["latestPodcast"] as Map).isEmpty))
+          ? null 
+          : LatestPodcast.fromJson(json["latestPodcast"]),
+      creatorId: json["creatorId"],
+      liveSession: (json["liveSession"] == null || (json["liveSession"] is Map && (json["liveSession"] as Map).isEmpty))
+          ? null 
+          : LiveSession.fromJson(json["liveSession"]),
+      streamRoom: (json["streamRoom"] == null || (json["streamRoom"] is Map && (json["streamRoom"] as Map).isEmpty))
+          ? null 
+          : StreamRoom.fromJson(json["streamRoom"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     "name": name,
@@ -123,7 +136,22 @@ class TopCreatorItem {
     "latestPodcast": latestPodcast?.toJson(),
     "creatorId": creatorId,
     "liveSession": liveSession?.toJson(),
+    "streamRoom": streamRoom?.toJson(), // ✅ ADD
   };
+
+  bool get isLiveRunning {
+    debugPrint("🔍 [SeeAll] Checking Live Status for: $name");
+    if (isLive != true) return false;
+    if (streamRoom == null) return false;
+    
+    final hasParticipantsWithCode = streamRoom?.roomCodes?.any(
+          (roomCode) =>
+      roomCode.role == "participants" &&
+          (roomCode.code?.isNotEmpty ?? false),
+    ) ?? false;
+    
+    return hasParticipantsWithCode;
+  }
 }
 
 class LatestPodcast {
@@ -159,12 +187,94 @@ class LatestPodcast {
 }
 
 class LiveSession {
-  LiveSession();
+  final String? sessionId;
+  final String? name;
+  final String? description;
+  final String? coverImage;
+  final DateTime? sessionStartedAt;
+  final dynamic duration;
 
-  factory LiveSession.fromJson(Map<String, dynamic> json) => LiveSession(
+  LiveSession({
+    this.sessionId,
+    this.name,
+    this.description,
+    this.coverImage,
+    this.sessionStartedAt,
+    this.duration,
+  });
+
+  factory LiveSession.fromJson(Map<String, dynamic> json) {
+    DateTime? startedAt;
+    try {
+      if (json["session_started_at"] != null) {
+        startedAt = DateTime.tryParse(json["session_started_at"]);
+      }
+    } catch (e) {
+      debugPrint("⚠️ [SeeAll] Error parsing session_started_at: $e");
+    }
+
+    return LiveSession(
+      sessionId: json["session_id"],
+      name: json["name"],
+      description: json["description"],
+      coverImage: json["coverImage"],
+      sessionStartedAt: startedAt,
+      duration: json["duration"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "session_id": sessionId,
+    "name": name,
+    "description": description,
+    "coverImage": coverImage,
+    "session_started_at": sessionStartedAt?.toIso8601String(),
+    "duration": duration,
+  };
+}
+
+class StreamRoom {
+  final String? id;
+  final String? status;
+  final List<RoomCode>? roomCodes;
+
+  StreamRoom({this.id, this.status, this.roomCodes});
+
+  factory StreamRoom.fromJson(Map<String, dynamic> json) => StreamRoom(
+    id: json["_id"],
+    status: json["status"],
+    roomCodes: json["roomCodes"] == null
+        ? []
+        : List<RoomCode>.from(json["roomCodes"]!.map((x) => RoomCode.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
+    "_id": id,
+    "status": status,
+    "roomCodes": roomCodes == null ? [] : List<dynamic>.from(roomCodes!.map((x) => x.toJson())),
+  };
+}
+
+class RoomCode {
+  final String? id;
+  final String? code;
+  final String? role;
+  final bool? enabled;
+
+  RoomCode({this.id, this.code, this.role, this.enabled});
+
+  factory RoomCode.fromJson(Map<String, dynamic> json) => RoomCode(
+    id: json["id"],
+    code: json["code"],
+    role: json["role"],
+    enabled: json["enabled"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "code": code,
+    "role": role,
+    "enabled": enabled,
   };
 }
 

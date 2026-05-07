@@ -1,15 +1,17 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/model/banner_model.dart';
+import 'package:podcast/presentation/screens/see_all/model/top_creator_model.dart' as top;
 import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-import '../model/home_model.dart';
+import '../model/home_model.dart' as home;
 import '../model/streaming_record_model.dart';
 import '../model/top_fav_live_model.dart';
 
@@ -17,18 +19,23 @@ class UserHomeController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final DBHelper dbHelper = serviceLocator<DBHelper>();
 
+  Timer? _refreshTimer;
+
   /// ============================= GET Home Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
-  final Rx<HomeModel> model = HomeModel().obs;
+  final Rx<home.HomeModel> model = home.HomeModel().obs;
 
   Future<void> getHome() async {
     try{
       loadingMethod(Status.loading);
       var response = await apiClient.get(url: ApiUrl.home(), showResult: true);
       if (response.statusCode == 200) {
-        model.value = HomeModel.fromJson(response.body);
+        model.value = home.HomeModel.fromJson(response.body);
         loadingMethod(Status.completed);
+        
+        // After loading home, immediately sync top creators to get latest live status
+        getTopCreators();
       } else {
         if (response.statusCode == 503) {
           loadingMethod(Status.internetError);
@@ -43,6 +50,72 @@ class UserHomeController extends GetxController {
       debugPrint("❌ getHome stacktrace: $st");
       loadingMethod(Status.error);
     }
+  }
+
+  /// ============================= GET Top Creators (Sync Live Status) =====================================
+  Future<void> getTopCreators() async {
+    try {
+      var response = await apiClient.get(url: ApiUrl.seeAllTopCreator(page: 1, searchTerm: ""), showResult: false);
+      if (response.statusCode == 200) {
+        final topCreatorData = top.TopCreatorModel.fromJson(response.body);
+        final latestCreators = topCreatorData.data?.result;
+
+        if (latestCreators != null && latestCreators.isNotEmpty) {
+          // Update the existing home model's top creators with latest data
+          if (model.value.data != null) {
+            final List<home.TopCreator> updatedList = latestCreators.map((item) => home.TopCreator(
+              name: item.name,
+              email: item.email,
+              profileImage: item.profileImage,
+              location: item.location != null ? home.Location(
+                type: item.location?.type, 
+                coordinates: item.location?.coordinates?.map((e) => (e as num).toDouble()).toList()
+              ) : null,
+              profileCover: item.profileCover,
+              donationLink: item.donationLink,
+              liveSession: item.liveSession != null ? home.LiveSession(
+                sessionId: item.liveSession?.sessionId,
+                name: item.liveSession?.name,
+                description: item.liveSession?.description,
+                coverImage: item.liveSession?.coverImage,
+                sessionStartedAt: item.liveSession?.sessionStartedAt,
+                duration: item.liveSession?.duration,
+              ) : null,
+              isLive: item.isLive,
+              streamRoom: item.streamRoom != null ? home.StreamRoom(
+                id: item.streamRoom?.id,
+                status: item.streamRoom?.status,
+                roomCodes: item.streamRoom?.roomCodes?.map((rc) => home.RoomCode(
+                  roomCodeId: rc.id,
+                  code: rc.code,
+                  role: rc.role,
+                  enabled: rc.enabled,
+                )).toList(),
+              ) : null,
+              totalViews: item.totalViews?.toInt(),
+              creatorId: item.creatorId,
+            )).toList();
+
+            // Trigger UI update
+            model.update((val) {
+              val?.data?.topCreators?.clear();
+              val?.data?.topCreators?.addAll(updatedList);
+            });
+            debugPrint("✅ Top Creators Live Status Synchronized");
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("❌ Error syncing top creators: $e");
+    }
+  }
+
+  void _startRefreshTimer() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      // Only refresh if we are on the home screen to save resources
+      getTopCreators();
+    });
   }
 
   /// ============================= GET Station Info =====================================
@@ -165,6 +238,8 @@ class UserHomeController extends GetxController {
         getBanners();
       }
     });
+
+    _startRefreshTimer();
   }
 
   @override
@@ -176,5 +251,11 @@ class UserHomeController extends GetxController {
       getRecords(),
     ]);
     super.onReady();
+  }
+
+  @override
+  void onClose() {
+    _refreshTimer?.cancel();
+    super.onClose();
   }
 }

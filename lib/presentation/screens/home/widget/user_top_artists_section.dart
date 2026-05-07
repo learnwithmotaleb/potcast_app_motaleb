@@ -71,11 +71,108 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   }
 
   Future<void> _handleCreatorTap(TopCreator creator) async {
+    debugPrint("🖱️ Tapped Creatom r: ${creator.name} | isLive: ${creator.isLive}");
+    if (creator.isLive == true) {
+      _showJoinLiveDialog(creator);
+    } else {
+      AppRouter.route.pushNamed(
+        RoutePath.audioPlayScreen,
+        extra: AudioPlayerModel(
+          id: creator.latestPodcast?.id ?? "",
+          title: creator.latestPodcast?.title ?? "",
+          image: creator.profileImage ?? "",
+          url: creator.latestPodcast?.podcastUrl ?? "",
+          artist: creator.name ?? "",
+          duration: creator.donationLink ?? "",
+          isCreator: true,
+          creatorImage: creator.profileImage,
+        ),
+      );
+    }
+  }
+
+  void _showJoinLiveDialog(TopCreator creator) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black.withValues(alpha: 0.9),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: const BorderSide(color: Colors.red, width: 1),
+        ),
+        title: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.live_tv, color: Colors.red, size: 32),
+            ),
+            const Gap(16),
+            CustomText(
+              text: "${creator.name} is Live!",
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ],
+        ),
+        content: const CustomText(
+          text: "Would you like to join the live session and interact with the creator?",
+          fontSize: 14,
+          color: Colors.white70,
+          textAlign: TextAlign.center,
+        ),
+        actionsPadding: const EdgeInsets.only(bottom: 20, left: 16, right: 16),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Maybe Later", style: TextStyle(color: Colors.grey)),
+                ),
+              ),
+              const Gap(12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _joinLiveSession(creator);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    elevation: 4,
+                    shadowColor: Colors.red.withValues(alpha: 0.5),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Join Now", style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _joinLiveSession(TopCreator creator) async {
+    debugPrint("🚀 Joining Session: ${creator.name} | isLiveRunning: ${creator.isLiveRunning}");
     if (creator.isLiveRunning) {
       final participantCode = creator.streamRoom?.roomCodes?.firstWhere(
         (roomCode) => roomCode.role == "participants" && roomCode.code != null && roomCode.code!.isNotEmpty,
         orElse: () => RoomCode(),
       );
+
+      debugPrint("🔑 Participant Code found: ${participantCode?.code}");
 
       if (participantCode?.code != null) {
         final hasPermissions = await getPermissions();
@@ -88,10 +185,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
               builder: (context) => StreamingScreen(
                 authToken: "",
                 roomCode: participantCode!.code!,
-                userName:
-                    _profileController.profile.value.data?.name ?? "Viewer",
-                userID: _profileController.profile.value.data?.id ??
-                    "46464645645645",
+                userName: _profileController.profile.value.data?.name ?? "Viewer",
+                userID: _profileController.profile.value.data?.id ?? "46464645645645",
               ),
             ),
           );
@@ -99,24 +194,13 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           _showPermissionDialog();
         }
       } else {
-        _showErrorDialog("Live session is not available");
+        _showErrorDialog("Live session is not available. Please try again in a moment.");
       }
     } else {
-      AppRouter.route.pushNamed(
-        RoutePath.audioPlayScreen,
-        extra: AudioPlayerModel(
-          id: creator.latestPodcast?.id?? "",
-          title: creator.latestPodcast?.title ?? "",
-          image: creator.profileImage ?? "",
-          url: creator.latestPodcast?.podcastUrl ?? "",
-          artist: creator.name ?? "",
-          duration: creator.donationLink ?? "",
-          isCreator: true,
-          creatorImage: creator.profileImage,
-        ),
-      );
+      _showErrorDialog("Live session is starting up. Please try again in a moment.");
     }
   }
+
 
   void _showPermissionDialog() {
     showDialog(
@@ -442,7 +526,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   }
 
   Widget _buildCreatorCard(TopCreator creator) {
-    final isLive = creator.isLiveRunning;
+    final isLive = creator.isLive ?? false;
+    debugPrint("👤 Card: ${creator.name} | isLive: $isLive | isLiveRunning: ${creator.isLiveRunning}");
 
     return GestureDetector(
       onTap: () => _handleCreatorTap(creator),

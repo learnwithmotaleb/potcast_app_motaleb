@@ -369,8 +369,11 @@ class PodcastAudioController extends GetxController {
       debugPrint("📦 Create Live Body: ${response.body}");
 
       if (response.statusCode == 201 || response.statusCode == 200) {
+        debugPrint("✅ Room created successfully: ${response.body}");
         final data = LiveStreamingModel.fromJson(response.body);
         liveData.value = data;
+        debugPrint("📦 Parsed Live Data: ${liveData.value.toJson()}");
+        debugPrint("🔑 Host Codes: ${liveData.value.data?.roomCodes?.where((c) => c.role == 'host').map((c) => c.code).toList()}");
         createLiveMethod(false);
         String message = response.body?['message']?.toString() ?? 'Room created successfully';
         toastMessage(message: message);

@@ -41,9 +41,10 @@ class _StreamingScreenState extends State<StreamingScreen> {
   @override
   Widget build(BuildContext context) {
     debugPrint("🎬 Joining HMS Room:");
-    debugPrint("🔑 Room Code: ${widget.roomCode}");
+    debugPrint("🔑 Room Code: '${widget.roomCode}'");
     debugPrint("👤 User Name: ${widget.userName}");
     debugPrint("🆔 User ID: ${widget.userID}");
+    debugPrint("🌐 Auth Token: ${widget.authToken}");
 
     return Scaffold(
       body: HMSPrebuilt(
