@@ -5,6 +5,13 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+
 class GlobalSearchCard extends StatelessWidget {
   final String title;
   final String image;
@@ -31,7 +38,7 @@ class GlobalSearchCard extends StatelessWidget {
     );
   }
 
-  /// ─── Profile Card: Centered avatar with name below ───
+  /// ─── Profile Card: unchanged ───────────────────────────────────────
   Widget _buildProfileCard() {
     return Container(
       decoration: BoxDecoration(
@@ -59,7 +66,6 @@ class GlobalSearchCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
-          // Subtle background glow
           Positioned(
             top: -20,
             left: -20,
@@ -76,8 +82,6 @@ class GlobalSearchCard extends StatelessWidget {
               ),
             ),
           ),
-
-          // Main content
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -85,7 +89,6 @@ class GlobalSearchCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Profile avatar with ring
                   Container(
                     padding: const EdgeInsets.all(2.5),
                     decoration: BoxDecoration(
@@ -118,24 +121,22 @@ class GlobalSearchCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(35),
                         child: image.isNotEmpty
                             ? CustomNetworkImage(
-                                imageUrl: image,
-                                width: 66,
-                                height: 66,
-                              )
+                          imageUrl: image,
+                          width: 66,
+                          height: 66,
+                        )
                             : Container(
-                                color: const Color(0xFF2A2B3D),
-                                child: const Icon(
-                                  Iconsax.profile_circle,
-                                  color: Colors.white38,
-                                  size: 30,
-                                ),
-                              ),
+                          color: const Color(0xFF2A2B3D),
+                          child: const Icon(
+                            Iconsax.profile_circle,
+                            color: Colors.white38,
+                            size: 30,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   const Gap(10),
-
-                  // Name
                   CustomText(
                     text: title.isNotEmpty ? title : "Unknown",
                     color: Colors.white,
@@ -146,8 +147,6 @@ class GlobalSearchCard extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const Gap(3),
-
-                  // Subtitle
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -167,11 +166,8 @@ class GlobalSearchCard extends StatelessWidget {
                     ],
                   ),
                   const Gap(8),
-
-                  // View Profile button
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white.withValues(alpha: 0.08),
@@ -196,24 +192,17 @@ class GlobalSearchCard extends StatelessWidget {
     );
   }
 
-  /// ─── Podcast Card: Cover image with bottom info ───
+  /// ─── Podcast Card: redesigned ──────────────────────────────────────
   Widget _buildPodcastCard() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: const Color(0xFF1F2026),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: const Color(0xFF1C1D25),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
-          // Image
+          // Cover image
           Positioned.fill(
             child: CustomNetworkImage(
               imageUrl: image,
@@ -222,82 +211,119 @@ class GlobalSearchCard extends StatelessWidget {
             ),
           ),
 
-          // Gradient Overlay
+          // Dark gradient overlay — stronger at bottom
           Positioned.fill(
-            child: Container(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
+                  stops: const [0.0, 0.35, 1.0],
                   colors: [
                     Colors.transparent,
-                    Colors.black.withValues(alpha: 0.2),
-                    Colors.black.withValues(alpha: 0.85),
+                    Colors.black.withValues(alpha: 0.1),
+                    Colors.black.withValues(alpha: 0.88),
                   ],
                 ),
               ),
             ),
           ),
 
-          // Type Badge
+          // Podcast badge — top right, frosted pill style
           Positioned(
             top: 10,
-            left: 10,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Colors.orangeAccent, Colors.redAccent],
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.redAccent.withValues(alpha: 0.4),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+            right: 10,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      width: 0.8,
+                    ),
                   ),
-                ],
-              ),
-              child: const Text(
-                "Podcast",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 5,
+                        height: 5,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFA78BFA),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      const Text(
+                        'PODCAST',
+                        style: TextStyle(
+                          color: Color(0xFFC4B5FD),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
 
-          // Bottom Info with Glassmorphism
+          // Bottom info
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.4),
-                    border: Border(
-                      top: BorderSide(
-                        color: Colors.white.withValues(alpha: 0.1),
-                        width: 0.5,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Play button row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.play_arrow_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  child: CustomText(
-                    text: title,
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(height: 8),
+
+                  // Title
+                  Text(
+                    title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      height: 1.3,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),

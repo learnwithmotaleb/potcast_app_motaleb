@@ -12,13 +12,11 @@ Future<String?> getPreSignedUrl({
     "fileType": mimeType,
     "fileCategory": fileCategory,
   };
-
   final response = await apiClient.post(
     url: ApiUrl.generatePreSignedURL(),
     body: body,
     showResult: false,
   );
-
   if (response.statusCode == 200) {
     return response.body['uploadURL'];
   } else {
@@ -26,7 +24,7 @@ Future<String?> getPreSignedUrl({
   }
 }
 
-Future<String?> uploadFileToS3({
+  Future<String?> uploadFileToS3({
   required Uint8List fileBytes,
   required String uploadUrl,
   required String mimeType,
@@ -37,13 +35,11 @@ Future<String?> uploadFileToS3({
     final response = await dio.put(
       uploadUrl,
       data: fileBytes,
-      options: Options(
-        headers: {"Content-Type": mimeType},
-      ),
+      options: Options(headers: {"Content-Type": mimeType},),
       onSendProgress: onProgress,
     );
-
     print(response);
+
     if (response.statusCode == 200) {
       print("uploadUrl.split('?').first ${uploadUrl.split('?').first}");
       return uploadUrl.split('?').first;
