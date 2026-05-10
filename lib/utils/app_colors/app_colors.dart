@@ -10,4 +10,6 @@ class AppColors {
   static const Color hintTextColor = Color(0xFF706666);
   static const Color searchBoxColor = Color(0xFFFAF8F8);
   static const Color greenLight = Colors.green;
+
+  
 }

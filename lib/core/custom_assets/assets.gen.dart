@@ -38,13 +38,13 @@ class $AssetsFontsGen {
 
   /// List of all assets
   List<String> get values => [
-        robotoBold,
-        robotoLight,
-        robotoRegular,
-        robotoCondensedMediumItalic,
-        robotoCondensedRegular,
-        robotoCondensedSemiBold
-      ];
+    robotoBold,
+    robotoLight,
+    robotoRegular,
+    robotoCondensedMediumItalic,
+    robotoCondensedRegular,
+    robotoCondensedSemiBold,
+  ];
 }
 
 class $AssetsIconsGen {
@@ -162,42 +162,42 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        addAPhoto,
-        audio,
-        audioLeft,
-        audioRight,
-        birthday,
-        close,
-        cloudAdd,
-        comments,
-        delete,
-        donate,
-        edit,
-        favorite,
-        gender,
-        history,
-        home,
-        homeWhite,
-        like,
-        logOut,
-        mic,
-        micWhite,
-        myPodcast,
-        notification,
-        person,
-        phone,
-        play,
-        playList,
-        profile,
-        right,
-        search,
-        settings,
-        skip,
-        sort,
-        subscription,
-        subscriptionWhite,
-        updrade
-      ];
+    addAPhoto,
+    audio,
+    audioLeft,
+    audioRight,
+    birthday,
+    close,
+    cloudAdd,
+    comments,
+    delete,
+    donate,
+    edit,
+    favorite,
+    gender,
+    history,
+    home,
+    homeWhite,
+    like,
+    logOut,
+    mic,
+    micWhite,
+    myPodcast,
+    notification,
+    person,
+    phone,
+    play,
+    playList,
+    profile,
+    right,
+    search,
+    settings,
+    skip,
+    sort,
+    subscription,
+    subscriptionWhite,
+    updrade,
+  ];
 }
 
 class $AssetsImagesGen {
@@ -205,9 +205,6 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/add.png
   AssetGenImage get add => const AssetGenImage('assets/images/add.png');
-
-  /// File path: assets/images/add.png
-  AssetGenImage get remove => const AssetGenImage('assets/images/remove.png');
 
   /// File path: assets/images/banner_logo.png
   AssetGenImage get bannerLogo =>
@@ -220,6 +217,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/classical_banner.png
   AssetGenImage get classicalBanner =>
       const AssetGenImage('assets/images/classical_banner.png');
+
+  /// File path: assets/images/delete.png
+  AssetGenImage get delete => const AssetGenImage('assets/images/delete.png');
 
   /// File path: assets/images/error.png
   AssetGenImage get error => const AssetGenImage('assets/images/error.png');
@@ -264,6 +264,9 @@ class $AssetsImagesGen {
   AssetGenImage get rectangle =>
       const AssetGenImage('assets/images/rectangle.png');
 
+  /// File path: assets/images/remove.png
+  AssetGenImage get remove => const AssetGenImage('assets/images/remove.png');
+
   /// File path: assets/images/reset.png
   AssetGenImage get reset => const AssetGenImage('assets/images/reset.png');
 
@@ -285,36 +288,33 @@ class $AssetsImagesGen {
   /// File path: assets/images/video.png
   AssetGenImage get video => const AssetGenImage('assets/images/video.png');
 
-  /// File path: assets/images/video.png
-  AssetGenImage get delete => const AssetGenImage('assets/images/delete.png');
-
   /// List of all assets
   List<AssetGenImage> get values => [
-        add,
-        bannerLogo,
-        classical,
-        classicalBanner,
-        error,
-        flag,
-        forget,
-        genres,
-        genresBanner,
-        headphones,
-        liveStream,
-        map,
-        microphone,
-        millennial,
-        millennialBanner,
-        rectangle,
-        reset,
-        splashLogo,
-        startedLogo,
-        upload,
-        verification,
-        video,
-        remove,
-        delete
-      ];
+    add,
+    bannerLogo,
+    classical,
+    classicalBanner,
+    delete,
+    error,
+    flag,
+    forget,
+    genres,
+    genresBanner,
+    headphones,
+    liveStream,
+    map,
+    microphone,
+    millennial,
+    millennialBanner,
+    rectangle,
+    remove,
+    reset,
+    splashLogo,
+    startedLogo,
+    upload,
+    verification,
+    video,
+  ];
 }
 
 class $AssetsLanguagesGen {
@@ -328,7 +328,7 @@ class $AssetsLanguagesGen {
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
@@ -337,11 +337,7 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
 
@@ -369,7 +365,7 @@ class AssetGenImage {
     bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -401,15 +397,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;
@@ -418,17 +407,11 @@ class AssetGenImage {
 }
 
 class SvgGenImage {
-  const SvgGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = false;
+  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}})
+    : _isVecFormat = false;
 
-  const SvgGenImage.vec(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = true;
+  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}})
+    : _isVecFormat = true;
 
   final String _assetName;
   final Size? size;
@@ -482,7 +465,8 @@ class SvgGenImage {
       placeholderBuilder: placeholderBuilder,
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
-      colorFilter: colorFilter ??
+      colorFilter:
+          colorFilter ??
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,

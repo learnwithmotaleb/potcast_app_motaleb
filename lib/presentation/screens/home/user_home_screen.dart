@@ -263,7 +263,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               final List<HomeCategoryElement>? categories =
                   categoryNotEmpty ? data.categories : [];
               final List<HomeNewestPodcast>? newItem =
-                  newNotEmpty ? data.newestPodcasts : [];
+                  newNotEmpty ?
+                  data.newestPodcasts : [];
               final List<HomeNewestPodcast>? popularItem =
                   popularNotEmpty ? data.popularPodcasts : [];
               final List<HomeNewestPodcast>? reelsItem =
