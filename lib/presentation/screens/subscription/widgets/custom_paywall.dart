@@ -9,6 +9,7 @@ import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
 import 'package:podcast/presentation/widget/button/custom_button.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
+import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,7 +42,8 @@ class CustomPaywallScreen extends StatelessWidget {
         final key = role == "user" ? "default_user" : "default";
         final offering = allOffers[key];
 
-        final Package? relevantPackage = offering?.availablePackages.firstWhereOrNull((pkg) {
+        final Package? relevantPackage =
+            offering?.availablePackages.firstWhereOrNull((pkg) {
           return pkg.storeProduct.identifier.contains("${role}_subscription");
         });
 
@@ -100,8 +102,8 @@ class CustomPaywallScreen extends StatelessWidget {
         ];
 
         final features = isUser ? userFeature : creatorFeature;
-        return Obx((){
-          if(controller.hasActiveSubscription){
+        return Obx(() {
+          if (controller.hasActiveSubscription) {
             return ActiveSubscriptionScreen(
               isUser: isUser,
               controller: controller,
@@ -110,7 +112,7 @@ class CustomPaywallScreen extends StatelessWidget {
             );
           }
           return Scaffold(
-            backgroundColor: Colors.black,
+            backgroundColor: AppColors.blackColor,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
@@ -183,17 +185,17 @@ class _BackgroundLayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xFF1DB954),
-            Color(0xFF1ed760),
-            Color(0xFF191414),
-            Color(0xFF000000),
+            AppColors.primaryColor.withValues(alpha: 0.8),
+            AppColors.primaryColor.withValues(alpha: 0.4),
+            AppColors.blackColor,
+            AppColors.blackColor,
           ],
-          stops: [0.0, 0.3, 0.7, 1.0],
+          stops: const [0.0, 0.3, 0.7, 1.0],
         ),
       ),
       child: Stack(
@@ -212,11 +214,13 @@ class _BackgroundLayer extends StatelessWidget {
               ),
             ),
           ),
-          ...List.generate(15, (index) => _FloatingMusicNote(
-                    delay: index * 0.3,
-                    left: (index * 47.0) % MediaQuery.of(context).size.width,
-                    size: 20 + (index % 3) * 10,
-                  ),
+          ...List.generate(
+            15,
+            (index) => _FloatingMusicNote(
+              delay: index * 0.3,
+              left: (index * 47.0) % MediaQuery.of(context).size.width,
+              size: 20 + (index % 3) * 10,
+            ),
           ),
         ],
       ),
@@ -239,7 +243,8 @@ class _FloatingMusicNote extends StatefulWidget {
   _FloatingMusicNoteState createState() => _FloatingMusicNoteState();
 }
 
-class _FloatingMusicNoteState extends State<_FloatingMusicNote> with SingleTickerProviderStateMixin {
+class _FloatingMusicNoteState extends State<_FloatingMusicNote>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -264,7 +269,8 @@ class _FloatingMusicNoteState extends State<_FloatingMusicNote> with SingleTicke
       builder: (context, child) {
         return Positioned(
           left: widget.left,
-          top: MediaQuery.of(context).size.height * _animation.value - widget.size,
+          top: MediaQuery.of(context).size.height * _animation.value -
+              widget.size,
           child: Opacity(
             opacity: (1 - _animation.value) * 0.3,
             child: Icon(
@@ -293,20 +299,25 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = isUser ? "Premium Music Experience" : "Creator Studio Pro";
-    final slogan = isUser ? "Unlock the full potential of your music journey" : "Professional tools for content creators";
+    final slogan = isUser
+        ? "Unlock the full potential of your music journey"
+        : "Professional tools for content creators";
     return Column(
       children: [
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white.withValues(alpha: 0.2),
-                Colors.white.withValues(alpha: 0.1),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+            color: Colors.white.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+                color: Colors.white.withValues(alpha: 0.4), width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.05),
+                blurRadius: 15,
+                spreadRadius: 2,
+              )
+            ],
           ),
           child: Icon(
             isUser ? Icons.headphones : Icons.mic,
@@ -349,9 +360,10 @@ class _FeaturesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        color: AppColors.blackColor.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(16),
+        border:
+            Border.all(color: AppColors.primaryColor.withValues(alpha: 0.3)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
@@ -366,7 +378,10 @@ class _FeaturesList extends StatelessWidget {
 
                 return Column(
                   children: [
-                    if (index > 0) Divider(color: Colors.white.withValues(alpha: 0.1), height: 24),
+                    if (index > 0)
+                      Divider(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          height: 24),
                     _FeatureItem(
                       icon: feature["icon"] as IconData,
                       title: feature["title"] as String,
@@ -401,12 +416,12 @@ class _FeatureItem extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF1DB954), Color(0xFF1ed760)],
-            ),
+            color: AppColors.primaryColor.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+                color: AppColors.primaryColor.withValues(alpha: 0.3)),
           ),
-          child: Icon(icon, color: Colors.white, size: 24),
+          child: Icon(icon, color: AppColors.primaryColor, size: 24),
         ),
         const Gap(16),
         Expanded(
@@ -455,16 +470,13 @@ class _PricingCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF1DB954),
-            Color(0xFF1ed760),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.primaryColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+            color: AppColors.primaryColor.withValues(alpha: 0.4), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1DB954).withValues(alpha: 0.3),
+            color: AppColors.primaryColor.withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -504,12 +516,16 @@ class _PricingCard extends StatelessWidget {
               ),
             ),
             const Gap(16),
-            Obx(() {
+            Obx(
+              () {
                 return CustomButton(
                   text: "Start Premium",
                   isLoading: isPurchasing.value,
-                  onTap: package != null && !isPurchasing.value ? () => onPurchase(package!) : null,
-                  textColor: const Color(0xFF1DB954),
+                  onTap: package != null && !isPurchasing.value
+                      ? () => onPurchase(package!)
+                      : null,
+                  textColor: Colors.white,
+                  bgColor: AppColors.primaryColor,
                 );
               },
             ),
@@ -588,7 +604,8 @@ class _LegalFooter extends StatelessWidget {
           children: [
             _LegalLink(
               text: "Terms",
-              onTap: () => AppRouter.route.pushNamed(RoutePath.termsOfCondition),
+              onTap: () =>
+                  AppRouter.route.pushNamed(RoutePath.termsOfCondition),
             ),
             _LegalLink(
               text: "Privacy",
@@ -630,7 +647,6 @@ class _LegalLink extends StatelessWidget {
   }
 }
 
-
 class ActiveSubscriptionScreen extends StatelessWidget {
   final bool isUser;
   final SubscriptionController controller;
@@ -649,10 +665,11 @@ class ActiveSubscriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final entitlement = controller.activeEntitlement;
     final daysRemaining = controller.getDaysRemaining();
-    final expirationDate = controller.getFormattedDate(entitlement?.expirationDate);
+    final expirationDate =
+        controller.getFormattedDate(entitlement?.expirationDate);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.blackColor,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -720,13 +737,13 @@ class _ActiveSubscriptionHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF1DB954), Color(0xFF1ed760)],
-            ),
+            color: AppColors.primaryColor.withValues(alpha: 0.15),
             shape: BoxShape.circle,
+            border: Border.all(
+                color: AppColors.primaryColor.withValues(alpha: 0.4), width: 2),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF1DB954).withValues(alpha: 0.4),
+                color: AppColors.primaryColor.withValues(alpha: 0.2),
                 blurRadius: 20,
                 spreadRadius: 5,
               ),
@@ -735,7 +752,7 @@ class _ActiveSubscriptionHeader extends StatelessWidget {
           child: const Icon(
             Icons.verified,
             size: 64,
-            color: Colors.white,
+            color: AppColors.primaryColor,
           ),
         ),
         const Gap(16),
@@ -780,9 +797,10 @@ class _SubscriptionStatusCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.4),
+        color: AppColors.blackColor.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1DB954).withValues(alpha: 0.3)),
+        border:
+            Border.all(color: AppColors.primaryColor.withValues(alpha: 0.3)),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -797,12 +815,12 @@ class _SubscriptionStatusCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1DB954).withValues(alpha: 0.2),
+                        color: AppColors.primaryColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.schedule,
-                        color: Color(0xFF1DB954),
+                        color: AppColors.primaryColor,
                         size: 20,
                       ),
                     ),
@@ -821,9 +839,9 @@ class _SubscriptionStatusCard extends StatelessWidget {
                           ),
                           Text(
                             daysRemaining,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
-                              color: Color(0xFF1DB954),
+                              color: AppColors.primaryColor,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -853,7 +871,9 @@ class _SubscriptionStatusCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            isUser ? "Premium Subscription" : "Pro Subscription",
+                            isUser
+                                ? "Premium Subscription"
+                                : "Pro Subscription",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
@@ -903,17 +923,49 @@ class _ActiveFeaturesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userFeatures = [
-      {"icon": Icons.check_circle, "title": "Ad-free listening", "status": "Active"},
-      {"icon": Icons.check_circle, "title": "Unlimited skips", "status": "Active"},
-      {"icon": Icons.check_circle, "title": "Custom playlists", "status": "Active"},
-      {"icon": Icons.check_circle, "title": "Offline playback", "status": "Active"},
+      {
+        "icon": Icons.check_circle,
+        "title": "Ad-free listening",
+        "status": "Active"
+      },
+      {
+        "icon": Icons.check_circle,
+        "title": "Unlimited skips",
+        "status": "Active"
+      },
+      {
+        "icon": Icons.check_circle,
+        "title": "Custom playlists",
+        "status": "Active"
+      },
+      {
+        "icon": Icons.check_circle,
+        "title": "Offline playback",
+        "status": "Active"
+      },
     ];
 
     final creatorFeatures = [
-      {"icon": Icons.check_circle, "title": "Upload & manage", "status": "Active"},
-      {"icon": Icons.check_circle, "title": "Live streaming", "status": "Active"},
-      {"icon": Icons.check_circle, "title": "Monetize content", "status": "Active"},
-      {"icon": Icons.check_circle, "title": "Advanced analytics", "status": "Active"},
+      {
+        "icon": Icons.check_circle,
+        "title": "Upload & manage",
+        "status": "Active"
+      },
+      {
+        "icon": Icons.check_circle,
+        "title": "Live streaming",
+        "status": "Active"
+      },
+      {
+        "icon": Icons.check_circle,
+        "title": "Monetize content",
+        "status": "Active"
+      },
+      {
+        "icon": Icons.check_circle,
+        "title": "Advanced analytics",
+        "status": "Active"
+      },
     ];
 
     final features = isUser ? userFeatures : creatorFeatures;
@@ -943,43 +995,46 @@ class _ActiveFeaturesList extends StatelessWidget {
                 ),
                 const Gap(16),
                 ...features.map((feature) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    children: [
-                      Icon(
-                        feature["icon"] as IconData,
-                        color: const Color(0xFF1DB954),
-                        size: 24,
-                      ),
-                      const Gap(12),
-                      Expanded(
-                        child: Text(
-                          feature["title"] as String,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        children: [
+                          Icon(
+                            feature["icon"] as IconData,
+                            color: AppColors.primaryColor,
+                            size: 24,
                           ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1DB954).withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          feature["status"] as String,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF1DB954),
-                            fontWeight: FontWeight.w600,
+                          const Gap(12),
+                          Expanded(
+                            child: Text(
+                              feature["title"] as String,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                        ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor
+                                  .withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+
+                              feature["status"] as String,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )),
+                    )),
               ],
             ),
           ),
@@ -1029,39 +1084,43 @@ class _SubscriptionManagementCard extends StatelessWidget {
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                        side: BorderSide(
+                            color: Colors.white.withValues(alpha: 0.2)),
                       ),
                     ),
                   ),
                 ),
                 const Gap(12),
                 Obx(() => SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: OutlinedButton.icon(
-                    onPressed: isRestoring.value ? null : onRestore,
-                    icon: isRestoring.value
-                        ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.white.withValues(alpha: 0.7),
+                      width: double.infinity,
+                      height: 50,
+                      child: OutlinedButton.icon(
+                        onPressed: isRestoring.value ? null : onRestore,
+                        icon: isRestoring.value
+                            ? SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                              )
+                            : const Icon(Icons.refresh),
+                        label: Text(isRestoring.value
+                            ? "Restoring..."
+                            : "Restore Purchases"),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white.withValues(alpha: 0.8),
+                          side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
-                    )
-                        : const Icon(Icons.refresh),
-                    label: Text(isRestoring.value ? "Restoring..." : "Restore Purchases"),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white.withValues(alpha: 0.8),
-                      side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                )),
+                    )),
               ],
             ),
           ),
