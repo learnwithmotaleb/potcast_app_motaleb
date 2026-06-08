@@ -8,6 +8,8 @@ import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/presentation/screens/creator/controller/station_profile_controller.dart';
+import 'package:podcast/presentation/screens/creator/creator_profile_screen.dart';
+import 'package:podcast/presentation/screens/see_all/podcast_list_screen.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/card/profile_podcast_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -211,7 +213,9 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
 
           // Podcasts Section
           if (podcasts.isNotEmpty) ...[
-            _buildSectionHeader("Podcasts", onTap: () {}),
+            _buildSectionHeader("Podcasts", onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> const PodcastListScreen(title: "All PodCasts")));
+            }),
             const Gap(16),
             SizedBox(
               height: 220,
@@ -248,7 +252,11 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
 
           // Reels Section
           if (reels.isNotEmpty) ...[
-            _buildSectionHeader("Reels", onTap: () {}),
+            _buildSectionHeader("Reels", onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> const PodcastListScreen(title: "All Reels")));
+
+
+            }),
             const Gap(16),
             SizedBox(
               height: 280,
