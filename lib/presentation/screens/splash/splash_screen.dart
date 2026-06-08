@@ -29,6 +29,9 @@ class _SplashScreenState extends State<SplashScreen> {
           AppRouter.route.goNamed(RoutePath.userNavScreen);
         } else if (roll == "creator") {
           AppRouter.route.goNamed(RoutePath.creatorNavScreen);
+        }
+        else if (roll == "superAdmin") {
+          AppRouter.route.goNamed(RoutePath.adminNavScreen);
         } else {
           AppRouter.route.goNamed(RoutePath.loginScreen);
         }

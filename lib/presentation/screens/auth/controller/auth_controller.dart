@@ -59,7 +59,11 @@ class AuthController extends GetxController {
           AppRouter.route.goNamed(RoutePath.userNavScreen);
         } else if (role == "creator") {
           AppRouter.route.goNamed(RoutePath.creatorNavScreen);
-        } else {
+        }
+        else if (role == "superAdmin" || role == "admin") {
+          AppRouter.route.goNamed(RoutePath.adminNavScreen);
+        }
+        else {
           AppRouter.route.goNamed(RoutePath.loginScreen);
         }
       } else {
@@ -150,7 +154,11 @@ class AuthController extends GetxController {
           AppRouter.route.goNamed(RoutePath.userNavScreen);
         } else if (role == "creator") {
           AppRouter.route.goNamed(RoutePath.creatorNavScreen);
-        } else {
+        }
+        else if (role == "superAdmin" || role == "admin") {
+          AppRouter.route.goNamed(RoutePath.adminNavScreen);
+        }
+        else {
           AppRouter.route.goNamed(RoutePath.loginScreen);
         }
       } else {

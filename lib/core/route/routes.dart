@@ -11,6 +11,7 @@ import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
 import 'package:podcast/presentation/screens/auth/verification/verification_screen.dart';
 import 'package:podcast/presentation/screens/creator/creator_profile_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
+import 'package:podcast/presentation/screens/admin/nav/admin_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
 import 'package:podcast/presentation/screens/nav/user_nav_screen.dart';
@@ -329,8 +330,9 @@ class AppRouter {
           pageBuilder: (context, state) {
             final extras = state.extra as Map<String, dynamic>? ?? {};
             final url = extras['url'] as String? ?? '';
-            final startPosition = extras['startPosition'] as Duration? ?? Duration.zero;
-            
+            final startPosition =
+                extras['startPosition'] as Duration? ?? Duration.zero;
+
             return _buildPageWithAnimation(
               child: RecordPlayScreen(
                 url: url,
@@ -431,6 +433,15 @@ class AppRouter {
           path: RoutePath.creatorNavScreen.addBasePath,
           pageBuilder: (context, state) => _buildPageWithAnimation(
             child: CreatorNavScreen(
+                index: (state.extra is int) ? state.extra as int : 0),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          name: RoutePath.adminNavScreen,
+          path: RoutePath.adminNavScreen.addBasePath,
+          pageBuilder: (context, state) => _buildPageWithAnimation(
+            child: AdminNavScreen(
                 index: (state.extra is int) ? state.extra as int : 0),
             state: state,
           ),
