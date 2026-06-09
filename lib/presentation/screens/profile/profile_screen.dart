@@ -16,6 +16,7 @@ import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'controller/profile_controller.dart';
+import 'package:podcast/helper/local_db/local_db.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.isUser});
@@ -30,6 +31,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _controller = Get.find<ProfileController>();
   final historyController = Get.find<HistoryController>();
   final favoriteController = Get.find<FavoriteController>();
+  String _role = "";
+
+  Future<void> _loadUserRole() async {
+    final role = await DBHelper().getUserRole();
+    if (mounted) {
+      setState(() {
+        _role = role;
+      });
+    }
+  }
 
   List<ProfileStatusCard> get _items {
     if (widget.isUser) {
@@ -54,11 +65,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
           icon: Icons.settings_outlined,
         ),
-        /*ProfileStatusCard(
-          text: "notification",
-          onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
-          icon: Icons.notifications_none,
-        ),*/
+
+        if (_role == "superAdmin") ...[
+          ProfileStatusCard(
+            text: "Station Profile",
+            onTap: () async {
+              final stationId = await DBHelper().getUserId();
+              AppRouter.route
+                  .pushNamed(RoutePath.stationProfileScreen, extra: stationId);
+            },
+            icon: Icons.star,
+          ),
+        ],
+
+        // ProfileStatusCard(
+        //   text: "Station Profile",
+        //   onTap: () => AppRouter.route.pushNamed(RoutePath.stationProfileScreen),
+        //   icon: Icons.start,
+        // ),
       ];
     } else {
       return [
@@ -87,6 +111,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: () => AppRouter.route.pushNamed(RoutePath.settingsScreen),
           icon: Icons.settings_outlined,
         ),
+        if (_role == "superAdmin") ...[
+          ProfileStatusCard(
+            text: "Station Profile",
+            onTap: () async {
+              final stationId = await DBHelper().getUserId();
+              AppRouter.route
+                  .pushNamed(RoutePath.stationProfileScreen, extra: stationId);
+            },
+            icon: Icons.star,
+          ),
+        ],
+
         /*ProfileStatusCard(
           text: "notification",
           onTap: () => AppRouter.route.pushNamed(RoutePath.notificationScreen),
@@ -102,6 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       historyController.getLastTenHistory(),
       favoriteController.getLastTenFavorites(),
     ]);
+    _loadUserRole();
 
     super.initState();
   }
@@ -111,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SafeArea(
       child: Scaffold(
         body: RefreshIndicator(
-          onRefresh: () async{
+          onRefresh: () async {
             Future.wait([
               historyController.getLastTenHistory(),
               favoriteController.getLastTenFavorites(),
@@ -154,7 +191,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.redColor.withValues(alpha: 0.15),
+                                    color: AppColors.redColor
+                                        .withValues(alpha: 0.15),
                                     blurRadius: 15,
                                     spreadRadius: 2,
                                   ),
@@ -163,9 +201,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(30),
                                 child: Obx(() {
-                                  final profileImage = _controller.profile.value.data?.profileImage ?? "";
-                                  const image = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-                                  final finalImage = profileImage.isNotEmpty ? profileImage : image;
+                                  final profileImage = _controller
+                                          .profile.value.data?.profileImage ??
+                                      "";
+                                  const image =
+                                      "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                                  final finalImage = profileImage.isNotEmpty
+                                      ? profileImage
+                                      : image;
 
                                   return CustomNetworkImage(
                                     imageUrl: finalImage,
@@ -199,7 +242,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Iconsax.location_copy, size: 14, color: AppColors.redColor),
+                          const Icon(Iconsax.location_copy,
+                              size: 14, color: AppColors.redColor),
                           const Gap(6),
                           CustomText(
                             text: data?.address ?? "Address placeholder",
@@ -223,7 +267,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     crossAxisSpacing: 16,
                     mainAxisExtent: 65,
                   ),
-                  delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
                     return _items[index];
                   }, childCount: _items.length),
                 ),
@@ -235,7 +280,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Obx(() {
                     final items = historyController.lastTenItems;
-                    if (items.isEmpty && !historyController.getLstLoading.value) {
+                    if (items.isEmpty &&
+                        !historyController.getLstLoading.value) {
                       return const SizedBox();
                     }
 
@@ -267,17 +313,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                AppRouter.route.pushNamed(RoutePath.historyScreen);
+                                AppRouter.route
+                                    .pushNamed(RoutePath.historyScreen);
                               },
-                                child: CustomText(
-                                  text: "See All",
-                                  fontSize: 13,
-                                  color: AppColors.redColor,
-                                ),
+                              child: CustomText(
+                                text: "See All",
+                                fontSize: 13,
+                                color: AppColors.redColor,
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
+                      ],
                     );
                   }),
                 ),
@@ -317,7 +364,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             id: item.podcast?.id ?? "",
                             title: item.podcast?.title ?? "",
                             categories: item.podcast?.category?.name ?? "",
-                            image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
+                            image: item.podcast?.coverImage ??
+                                AppConstants.defaultCoverImage,
                             duration: "0.0",
                             url: "",
                           ),
@@ -329,7 +377,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               categories: item.podcast?.category?.name ?? "",
                               image: item.podcast?.coverImage ?? "",
                               url: "",
-                              duration: formatDuration(item.podcast?.duration ?? 0),
+                              duration:
+                                  formatDuration(item.podcast?.duration ?? 0),
                             ),
                           ),
                         );
@@ -345,7 +394,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Obx(() {
                     final items = favoriteController.lastTenItems;
-                    if (items.isEmpty && !favoriteController.getLstLoading.value) {
+                    if (items.isEmpty &&
+                        !favoriteController.getLstLoading.value) {
                       return const SizedBox();
                     }
 
@@ -377,17 +427,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                AppRouter.route.pushNamed(RoutePath.favoriteScreen);
+                                AppRouter.route
+                                    .pushNamed(RoutePath.favoriteScreen);
                               },
-                                child: CustomText(
-                                  text: "See All",
-                                  fontSize: 13,
-                                  color: AppColors.redColor,
-                                ),
+                              child: CustomText(
+                                text: "See All",
+                                fontSize: 13,
+                                color: AppColors.redColor,
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
+                      ],
                     );
                   }),
                 ),
@@ -402,7 +453,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.only(left: 20),
                         itemCount: 4,
                         scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => const ProfilePodcastCardShimmer(),
+                        itemBuilder: (context, index) =>
+                            const ProfilePodcastCardShimmer(),
                       ),
                     );
                   }
@@ -423,7 +475,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             id: item.podcast?.id ?? "",
                             title: item.podcast?.title ?? "",
                             categories: item.podcast?.category?.name ?? "",
-                            image: item.podcast?.coverImage ?? AppConstants.defaultCoverImage,
+                            image: item.podcast?.coverImage ??
+                                AppConstants.defaultCoverImage,
                             duration: "0.0",
                             url: "",
                           ),
@@ -435,7 +488,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               categories: item.podcast?.category?.name ?? "",
                               image: item.podcast?.coverImage ?? "",
                               url: "",
-                              duration: formatDuration(item.podcast?.duration ?? 0),
+                              duration:
+                                  formatDuration(item.podcast?.duration ?? 0),
                             ),
                           ),
                         );
@@ -454,14 +508,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Container(
                       height: 52,
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.redColor, width: 1.5),
+                        border:
+                            Border.all(color: AppColors.redColor, width: 1.5),
                         borderRadius: BorderRadius.circular(16),
                         color: AppColors.redColor.withValues(alpha: 0.1),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Iconsax.logout_copy, size: 22, color: AppColors.redColor),
+                          const Icon(Iconsax.logout_copy,
+                              size: 22, color: AppColors.redColor),
                           const Gap(12),
                           CustomText(
                             text: "logout".tr,

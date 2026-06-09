@@ -10,6 +10,7 @@ import 'package:podcast/presentation/screens/auth/reset/reset_screen.dart';
 import 'package:podcast/presentation/screens/auth/sign_up/sign_up_screen.dart';
 import 'package:podcast/presentation/screens/auth/verification/verification_screen.dart';
 import 'package:podcast/presentation/screens/creator/creator_profile_screen.dart';
+import 'package:podcast/presentation/screens/admin/admin_profile_screen.dart';
 import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart';
 import 'package:podcast/presentation/screens/admin/nav/admin_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
@@ -309,6 +310,21 @@ class AppRouter {
             final stationId = (state.extra as String?) ?? "";
             return _buildPageWithAnimation(
               child: StationProfileScreen(stationId: stationId),
+              state: state,
+            );
+          },
+        ),
+        GoRoute(
+          name: RoutePath.adminProfileScreen,
+          path: RoutePath.adminProfileScreen.addBasePath,
+          pageBuilder: (context, state) {
+            final args = state.extra as Map<String, dynamic>? ?? {};
+            return _buildPageWithAnimation(
+              child: AdminProfileScreen(
+                creatorId: args['creatorId'] ?? '',
+                initialName: args['initialName'],
+                initialImage: args['initialImage'],
+              ),
               state: state,
             );
           },

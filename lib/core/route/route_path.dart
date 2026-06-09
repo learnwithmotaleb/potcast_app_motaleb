@@ -42,6 +42,7 @@ class RoutePath {
   static const String categoryAllPodcast = 'categoryAllPodcast';
 
   static const String adminNavScreen = 'adminNavScreen';
+  static const String adminProfileScreen = 'adminProfileScreen';
 
   //Creator
   static const String creatorNavScreen = 'creatorNavScreen';
