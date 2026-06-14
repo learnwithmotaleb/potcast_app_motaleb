@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:podcast/core/dependency/path.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
 import 'package:podcast/model/banner_model.dart';
-import 'package:podcast/presentation/screens/see_all/model/top_creator_model.dart' as top;
+import 'package:podcast/presentation/screens/see_all/model/top_creator_model.dart'
+    as top;
 import 'package:podcast/presentation/screens/subscription/controller/subscription_controller.dart';
 import 'package:podcast/service/api_service.dart';
 import 'package:podcast/service/api_url.dart';
@@ -14,24 +15,26 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../model/home_model.dart' as home;
 import '../model/streaming_record_model.dart';
 import '../model/top_fav_live_model.dart';
+
 class UserHomeController extends GetxController {
   final ApiClient apiClient = serviceLocator<ApiClient>();
   final DBHelper dbHelper = serviceLocator<DBHelper>();
 
   Timer? _refreshTimer;
+
   /// ============================= GET Home Info =====================================
   var loading = Status.completed.obs;
   loadingMethod(Status status) => loading.value = status;
   final Rx<home.HomeModel> model = home.HomeModel().obs;
 
   Future<void> getHome() async {
-    try{
+    try {
       loadingMethod(Status.loading);
       var response = await apiClient.get(url: ApiUrl.home(), showResult: true);
       if (response.statusCode == 200) {
         model.value = home.HomeModel.fromJson(response.body);
         loadingMethod(Status.completed);
-        
+
         // After loading home, immediately sync top creators to get latest live status
         getTopCreators();
       } else {
@@ -43,7 +46,7 @@ class UserHomeController extends GetxController {
           loadingMethod(Status.error);
         }
       }
-    } catch(e, st) {
+    } catch (e, st) {
       debugPrint("❌ getHome error: $e");
       debugPrint("❌ getHome stacktrace: $st");
       loadingMethod(Status.error);
@@ -53,7 +56,9 @@ class UserHomeController extends GetxController {
   /// ============================= GET Top Creators (Sync Live Status) =====================================
   Future<void> getTopCreators() async {
     try {
-      var response = await apiClient.get(url: ApiUrl.seeAllTopCreator(page: 1, searchTerm: ""), showResult: false);
+      var response = await apiClient.get(
+          url: ApiUrl.seeAllTopCreator(page: 1, searchTerm: ""),
+          showResult: false);
       if (response.statusCode == 200) {
         final topCreatorData = top.TopCreatorModel.fromJson(response.body);
         final latestCreators = topCreatorData.data?.result;
@@ -61,38 +66,50 @@ class UserHomeController extends GetxController {
         if (latestCreators != null && latestCreators.isNotEmpty) {
           // Update the existing home model's top creators with latest data
           if (model.value.data != null) {
-            final List<home.TopCreator> updatedList = latestCreators.map((item) => home.TopCreator(
-              name: item.name,
-              email: item.email,
-              profileImage: item.profileImage,
-              location: item.location != null ? home.Location(
-                type: item.location?.type, 
-                coordinates: item.location?.coordinates?.map((e) => (e as num).toDouble()).toList()
-              ) : null,
-              profileCover: item.profileCover,
-              donationLink: item.donationLink,
-              liveSession: item.liveSession != null ? home.LiveSession(
-                sessionId: item.liveSession?.sessionId,
-                name: item.liveSession?.name,
-                description: item.liveSession?.description,
-                coverImage: item.liveSession?.coverImage,
-                sessionStartedAt: item.liveSession?.sessionStartedAt,
-                duration: item.liveSession?.duration,
-              ) : null,
-              isLive: item.isLive,
-              streamRoom: item.streamRoom != null ? home.StreamRoom(
-                id: item.streamRoom?.id,
-                status: item.streamRoom?.status,
-                roomCodes: item.streamRoom?.roomCodes?.map((rc) => home.RoomCode(
-                  roomCodeId: rc.id,
-                  code: rc.code,
-                  role: rc.role,
-                  enabled: rc.enabled,
-                )).toList(),
-              ) : null,
-              totalViews: item.totalViews?.toInt(),
-              creatorId: item.creatorId,
-            )).toList();
+            final List<home.TopCreator> updatedList = latestCreators
+                .map((item) => home.TopCreator(
+                      name: item.name,
+                      email: item.email,
+                      profileImage: item.profileImage,
+                      location: item.location != null
+                          ? home.Location(
+                              type: item.location?.type,
+                              coordinates: item.location?.coordinates
+                                  ?.map((e) => (e as num).toDouble())
+                                  .toList())
+                          : null,
+                      profileCover: item.profileCover,
+                      donationLink: item.donationLink,
+                      liveSession: item.liveSession != null
+                          ? home.LiveSession(
+                              sessionId: item.liveSession?.sessionId,
+                              name: item.liveSession?.name,
+                              description: item.liveSession?.description,
+                              coverImage: item.liveSession?.coverImage,
+                              sessionStartedAt:
+                                  item.liveSession?.sessionStartedAt,
+                              duration: item.liveSession?.duration,
+                            )
+                          : null,
+                      isLive: item.isLive,
+                      streamRoom: item.streamRoom != null
+                          ? home.StreamRoom(
+                              id: item.streamRoom?.id,
+                              status: item.streamRoom?.status,
+                              roomCodes: item.streamRoom?.roomCodes
+                                  ?.map((rc) => home.RoomCode(
+                                        roomCodeId: rc.id,
+                                        code: rc.code,
+                                        role: rc.role,
+                                        enabled: rc.enabled,
+                                      ))
+                                  .toList(),
+                            )
+                          : null,
+                      totalViews: item.totalViews?.toInt(),
+                      creatorId: item.creatorId,
+                    ))
+                .toList();
 
             // Trigger UI update
             model.update((val) {
@@ -113,6 +130,7 @@ class UserHomeController extends GetxController {
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       // Only refresh if we are on the home screen to save resources
       getTopCreators();
+      getStation();
     });
   }
 
@@ -122,12 +140,14 @@ class UserHomeController extends GetxController {
   final Rx<TopFavLiveModel?> topFavLiveModel = Rx<TopFavLiveModel?>(null);
 
   Future<void> getStation() async {
-    try{
+    try {
       loadingStationMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.station(), showResult: true);
+      var response =
+          await apiClient.get(url: ApiUrl.station(), showResult: true);
       if (response.statusCode == 200) {
         topFavLiveModel.value = TopFavLiveModel.fromJson(response.body);
-        debugPrint("✅ Station data loaded: ${topFavLiveModel.value?.data?.name}");
+        debugPrint(
+            "✅ Station data loaded: ${topFavLiveModel.value?.data?.name}");
         loadingStationMethod(Status.completed);
       } else {
         if (response.statusCode == 503) {
@@ -138,7 +158,7 @@ class UserHomeController extends GetxController {
           loadingStationMethod(Status.error);
         }
       }
-    } catch(e, st) {
+    } catch (e, st) {
       debugPrint("❌ getStation error: $e");
       debugPrint("❌ getStation stacktrace: $st");
       loadingStationMethod(Status.error);
@@ -151,9 +171,10 @@ class UserHomeController extends GetxController {
   final RxList<StreamingRecordItem> recordList = RxList([]);
 
   Future<void> getRecords() async {
-    try{
+    try {
       loadingRecordMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.streamingRecord(), showResult: true);
+      var response =
+          await apiClient.get(url: ApiUrl.streamingRecord(), showResult: true);
       if (response.statusCode == 200) {
         final items = StreamingRecordModel.fromJson(response.body);
         final newItems = items.data?.result ?? [];
@@ -169,7 +190,7 @@ class UserHomeController extends GetxController {
           loadingRecordMethod(Status.error);
         }
       }
-    }catch(_){
+    } catch (_) {
       loadingRecordMethod(Status.error);
     }
   }
@@ -183,7 +204,6 @@ class UserHomeController extends GetxController {
 
   Future<void> getBanners() async {
     try {
-
       await subscriptionController.fetchCustomerInfo();
 
       if (subscriptionController.hasActiveSubscription) {
@@ -221,7 +241,8 @@ class UserHomeController extends GetxController {
     super.onInit();
 
     ever(subscriptionController.customer, (CustomerInfo? customerInfo) {
-      final hasSubscription = customerInfo?.entitlements.active.isNotEmpty ?? false;
+      final hasSubscription =
+          customerInfo?.entitlements.active.isNotEmpty ?? false;
       shouldShowBanners.value = !hasSubscription;
 
       debugPrint("Subscription status changed: Premium = $hasSubscription");

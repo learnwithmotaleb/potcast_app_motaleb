@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/presentation/screens/creator/podcast/add/add_icon_main_screen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
@@ -59,7 +60,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
         }),
         bottomNavigationBar: Obx(() {
           final index = navController.selectedPage.value;
-      
+
           return BottomNavigationBar(
             currentIndex: index,
             elevation: 0,
@@ -78,10 +79,14 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
               }
             },
             items: [
-              const BottomNavigationBarItem(icon: Icon(Iconsax.home, size: 32), label: ""),
-              const BottomNavigationBarItem(icon: Icon(Iconsax.clock, size: 32), label: ""),
-              const BottomNavigationBarItem(icon: Icon(Iconsax.add, size: 32), label: ""),
-              const BottomNavigationBarItem(icon: Icon(Iconsax.lovely, size: 32), label: ""),
+              const BottomNavigationBarItem(
+                  icon: Icon(Iconsax.home, size: 32), label: ""),
+              const BottomNavigationBarItem(
+                  icon: Icon(Iconsax.clock, size: 32), label: ""),
+              const BottomNavigationBarItem(
+                  icon: Icon(Iconsax.add, size: 32), label: ""),
+              const BottomNavigationBarItem(
+                  icon: Icon(Iconsax.lovely, size: 32), label: ""),
               BottomNavigationBarItem(
                 icon: SizedBox(
                   height: 32,
@@ -89,9 +94,12 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Obx(() {
-                      final image = profileController.profile.value.data?.profileImage ?? "";
-                      const defaultImage = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-      
+                      final image =
+                          profileController.profile.value.data?.profileImage ??
+                              "";
+                      const defaultImage =
+                          "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
                       return CustomNetworkImage(
                         imageUrl: image.isNotEmpty ? image : defaultImage,
                         errorIcon: Iconsax.user,
@@ -128,7 +136,8 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 ),
                 title: const Text("Upload Audio"),
                 onTap: () {
-                  controller.selectedScreenType.value = SelectedAddPostScreenType.audio;
+                  controller.selectedScreenType.value =
+                      SelectedAddPostScreenType.audio;
                   AppRouter.route.pop();
                   Future.delayed(const Duration(milliseconds: 300), () {
                     navController.changeIndex(2);
@@ -143,7 +152,8 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 ),
                 title: const Text("Upload Video"),
                 onTap: () {
-                  controller.selectedScreenType.value = SelectedAddPostScreenType.video;
+                  controller.selectedScreenType.value =
+                      SelectedAddPostScreenType.video;
                   AppRouter.route.pop();
                   Future.delayed(const Duration(milliseconds: 300), () {
                     navController.changeIndex(2);
@@ -158,7 +168,8 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 ),
                 title: const Text("Record Audio"),
                 onTap: () {
-                  controller.selectedScreenType.value = SelectedAddPostScreenType.record;
+                  controller.selectedScreenType.value =
+                      SelectedAddPostScreenType.record;
                   AppRouter.route.pop();
                   Future.delayed(const Duration(milliseconds: 300), () {
                     navController.changeIndex(2);
@@ -169,16 +180,20 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
                 leading: Assets.images.liveStream.image(
                   height: 30,
                   width: 30,
-                  color: AppColors.whiteColor,
+                  color: AppColors.whiteColor
                 ),
-                title: const Text("Go Live"),
+                title:  Text("Go Live",style: TextStyle(
+                  color: AppColors.whiteColor
+                ),),
+
                 onTap: () async {
                   final granted = await getPermissions();
 
                   if (!context.mounted) return;
 
                   if (granted) {
-                    controller.selectedScreenType.value = SelectedAddPostScreenType.live;
+                    controller.selectedScreenType.value =
+                        SelectedAddPostScreenType.live;
                     AppRouter.route.pop();
                     Future.delayed(const Duration(milliseconds: 300), () {
                       navController.changeIndex(2);
@@ -211,7 +226,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
   }
 
   Future<bool> getPermissions() async {
-    try{
+    try {
       if (Platform.isIOS) {
         final camera = await Permission.camera.request();
         final mic = await Permission.microphone.request();
@@ -225,9 +240,8 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
         return camera.isGranted && mic.isGranted;
         // return camera.isGranted && mic.isGranted && bt.isGranted;
       }
-    }catch(_){
+    } catch (_) {
       return false;
     }
   }
-
 }

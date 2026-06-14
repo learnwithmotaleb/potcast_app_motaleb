@@ -44,7 +44,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             controller.bannerModel.value.data != null &&
             controller.bannerModel.value.data!.isNotEmpty) {
           final shouldShow =
-          await controller.dbHelper.shouldShowBanner(secondsGap: 10);
+              await controller.dbHelper.shouldShowBanner(secondsGap: 10);
           final random = math.Random().nextBool();
           if (shouldShow && random) {
             _showFullScreenBanner(controller.bannerModel.value.data ?? []);
@@ -250,7 +250,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             case Status.completed:
               final data = controller.model.value.data;
 
-              final categoryNotEmpty = data?.categories != null && data!.categories!.isNotEmpty;
+              final categoryNotEmpty =
+                  data?.categories != null && data!.categories!.isNotEmpty;
               final newNotEmpty = data?.newestPodcasts != null &&
                   data!.newestPodcasts!.isNotEmpty;
               final popularNotEmpty = data?.popularPodcasts != null &&
@@ -263,8 +264,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               final List<HomeCategoryElement>? categories =
                   categoryNotEmpty ? data.categories : [];
               final List<HomeNewestPodcast>? newItem =
-                  newNotEmpty ?
-                  data.newestPodcasts : [];
+                  newNotEmpty ? data.newestPodcasts : [];
               final List<HomeNewestPodcast>? popularItem =
                   popularNotEmpty ? data.popularPodcasts : [];
               final List<HomeNewestPodcast>? reelsItem =
@@ -319,7 +319,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800,
                                 ),
-
                                 TextButton(
                                   onPressed: () {
                                     AppRouter.route.pushNamed(
@@ -500,7 +499,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     duration: formatDuration(
                                         reelsItem?[index].duration ?? 0),
                                     reels: true,
-                                    creatorImage: reelsItem?[index].creator?.profileImage,
+                                    creatorImage:
+                                        reelsItem?[index].creator?.profileImage,
                                   )),
                             );
                           },
@@ -580,7 +580,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  AppRouter.route.pushNamed(RoutePath.seeAllRecord);
+                                  AppRouter.route
+                                      .pushNamed(RoutePath.seeAllRecord);
                                 },
                                 child: Text(
                                   "see_all".tr,
@@ -609,7 +610,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             return SizedBox(
                               height: 220,
                               child: ListView.builder(
-                                padding: const EdgeInsets.only(left: 12, right: 12),
+                                padding:
+                                    const EdgeInsets.only(left: 12, right: 12),
                                 itemCount: controller.recordList.length,
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (BuildContext context, int index) {
@@ -626,8 +628,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     ),
                                     onTap: () {
                                       if (item.recordingPresignedUrl != null) {
-                                        AppRouter.route.pushNamed(RoutePath.recordPlayScreen,
-                                          extra: {"url": item.recordingPresignedUrl ?? ""},
+                                        AppRouter.route.pushNamed(
+                                          RoutePath.recordPlayScreen,
+                                          extra: {
+                                            "url":
+                                                item.recordingPresignedUrl ?? ""
+                                          },
                                         );
                                       }
                                     },

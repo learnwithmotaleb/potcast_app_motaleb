@@ -38,10 +38,10 @@ class _AddIconMainScreenState extends State<AddIconMainScreen> {
             case SelectedAddPostScreenType.record:
               return const AudioRecordScreen();
             case SelectedAddPostScreenType.live:
-              if (role == "superAdmin") {
+              // if (role == "superAdmin") {
                 return const LiveStreamingScreen();
-              }
-              return const Center(child: Text('Creators cannot go live'));
+              // }
+              // return const Center(child: Text('Creators cannot go live'));
             case SelectedAddPostScreenType.none:
               return Container();
           }

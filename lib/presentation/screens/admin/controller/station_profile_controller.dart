@@ -15,7 +15,8 @@ class StationProfileController extends GetxController {
   final RxList<PlayPodcastItem> reels = <PlayPodcastItem>[].obs;
   final RxList<dynamic> albums = <dynamic>[].obs;
   final RxList<all_podcast.Category> categories = <all_podcast.Category>[].obs;
-  final Rx<station_model.Data?> stationInfo = Rx<station_model.Data?>(null);
+  final Rx<station_model.StationData?> stationInfo =
+      Rx<station_model.StationData?>(null);
 
   Future<void> getStationProfile(String stationId) async {
     if (stationId.isEmpty) {
@@ -100,7 +101,7 @@ class StationProfileController extends GetxController {
       if (podcasts.isNotEmpty &&
           (stationInfo.value == null || stationInfo.value?.id != stationId)) {
         final first = podcasts.first;
-        stationInfo.value = station_model.Data(
+        stationInfo.value = station_model.StationData(
           id: first.creator?.id ?? stationId,
           name: first.creator?.name ?? "Station",
           description: "",

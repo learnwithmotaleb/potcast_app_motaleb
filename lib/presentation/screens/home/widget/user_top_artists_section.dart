@@ -11,6 +11,7 @@ import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/home/controller/user_home_controller.dart';
 import 'package:podcast/presentation/screens/home/model/home_model.dart';
+import 'package:podcast/presentation/screens/home/model/top_fav_live_model.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -71,7 +72,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   }
 
   Future<void> _handleCreatorTap(TopCreator creator) async {
-    debugPrint("🖱️ Tapped Creatom r: ${creator.name} | isLive: ${creator.isLive}");
+    debugPrint(
+        "🖱️ Tapped Creatom r: ${creator.name} | isLive: ${creator.isLive}");
     if (creator.isLive == true) {
       _showJoinLiveDialog(creator);
     } else {
@@ -120,7 +122,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           ],
         ),
         content: const CustomText(
-          text: "Would you like to join the live session and interact with the creator?",
+          text:
+              "Would you like to join the live session and interact with the creator?",
           fontSize: 14,
           color: Colors.white70,
           textAlign: TextAlign.center,
@@ -134,9 +137,11 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("Maybe Later", style: TextStyle(color: Colors.grey)),
+                  child: const Text("Maybe Later",
+                      style: TextStyle(color: Colors.grey)),
                 ),
               ),
               const Gap(12),
@@ -152,9 +157,11 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     elevation: 4,
                     shadowColor: Colors.red.withValues(alpha: 0.5),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("Join Now", style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: const Text("Join Now",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -165,10 +172,14 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
   }
 
   Future<void> _joinLiveSession(TopCreator creator) async {
-    debugPrint("🚀 Joining Session: ${creator.name} | isLiveRunning: ${creator.isLiveRunning}");
+    debugPrint(
+        "🚀 Joining Session: ${creator.name} | isLiveRunning: ${creator.isLiveRunning}");
     if (creator.isLiveRunning) {
       final participantCode = creator.streamRoom?.roomCodes?.firstWhere(
-        (roomCode) => roomCode.role == "participants" && roomCode.code != null && roomCode.code!.isNotEmpty,
+        (roomCode) =>
+            roomCode.role == "participants" &&
+            roomCode.code != null &&
+            roomCode.code!.isNotEmpty,
         orElse: () => RoomCode(),
       );
 
@@ -185,8 +196,10 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
               builder: (context) => StreamingScreen(
                 authToken: "",
                 roomCode: participantCode!.code!,
-                userName: _profileController.profile.value.data?.name ?? "Viewer",
-                userID: _profileController.profile.value.data?.id ?? "46464645645645",
+                userName:
+                    _profileController.profile.value.data?.name ?? "Viewer",
+                userID: _profileController.profile.value.data?.id ??
+                    "46464645645645",
               ),
             ),
           );
@@ -194,13 +207,14 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           _showPermissionDialog();
         }
       } else {
-        _showErrorDialog("Live session is not available. Please try again in a moment.");
+        _showErrorDialog(
+            "Live session is not available. Please try again in a moment.");
       }
     } else {
-      _showErrorDialog("Live session is starting up. Please try again in a moment.");
+      _showErrorDialog(
+          "Live session is starting up. Please try again in a moment.");
     }
   }
-
 
   void _showPermissionDialog() {
     showDialog(
@@ -304,7 +318,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
           width: width,
           child: Obx(() {
             final stationData = controller.topFavLiveModel.value?.data;
-            
+
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -339,7 +353,158 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
     );
   }
 
-  Widget _buildHostCard(dynamic stationData) {
+  void _handleHostTap(StationData stationData) {
+    debugPrint(
+        "🖱️ Tapped Host: ${stationData.name} | isLive: ${stationData.isLive}");
+    if (stationData.isLive) {
+      _showJoinHostLiveDialog(stationData);
+    } else {
+      final latestPodcastId = stationData.latestPodcastId ?? "";
+      final stationId = stationData.id;
+
+      final data = AudioPlayerModel(
+        id: latestPodcastId.isNotEmpty ? latestPodcastId : stationId,
+        title: stationData.name,
+        image: stationData.profileImage,
+        duration: "",
+        url: "",
+        reels: true,
+        stationId: stationId,
+        firstPodcastId: latestPodcastId,
+        creatorImage: stationData.profileImage,
+      );
+
+      AppRouter.route.pushNamed(
+        RoutePath.reelsScreen,
+        extra: data,
+      );
+    }
+  }
+
+  void _showJoinHostLiveDialog(StationData stationData) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black.withValues(alpha: 0.9),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: const BorderSide(color: Colors.red, width: 1),
+        ),
+        title: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.live_tv, color: Colors.red, size: 32),
+            ),
+            const Gap(16),
+            CustomText(
+              text: "${stationData.name} is Live!",
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ],
+        ),
+        content: const CustomText(
+          text:
+              "Would you like to join the live session and interact with the host?",
+          fontSize: 14,
+          color: Colors.white70,
+          textAlign: TextAlign.center,
+        ),
+        actionsPadding: const EdgeInsets.only(bottom: 20, left: 16, right: 16),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Maybe Later",
+                      style: TextStyle(color: Colors.grey)),
+                ),
+              ),
+              const Gap(12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _joinHostLiveSession(stationData);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    elevation: 4,
+                    shadowColor: Colors.red.withValues(alpha: 0.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Join Now",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _joinHostLiveSession(StationData stationData) async {
+    debugPrint(
+        "🚀 Joining Host Session: ${stationData.name} | isLiveRunning: ${stationData.isLiveRunning}");
+    if (stationData.isLiveRunning) {
+      final participantCode = stationData.streamRoom?.roomCodes?.firstWhere(
+        (roomCode) =>
+            roomCode.role == "participants" &&
+            roomCode.code != null &&
+            roomCode.code!.isNotEmpty,
+        orElse: () => RoomCode(),
+      );
+
+      debugPrint("🔑 Host Participant Code found: ${participantCode?.code}");
+
+      if (participantCode?.code != null) {
+        final hasPermissions = await getPermissions();
+
+        if (hasPermissions) {
+          if (!mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StreamingScreen(
+                authToken: "",
+                roomCode: participantCode!.code!,
+                userName:
+                    _profileController.profile.value.data?.name ?? "Viewer",
+                userID: _profileController.profile.value.data?.id ??
+                    "46464645645645",
+              ),
+            ),
+          );
+        } else {
+          _showPermissionDialog();
+        }
+      } else {
+        _showErrorDialog(
+            "Live session is not available. Please try again in a moment.");
+      }
+    } else {
+      _showErrorDialog(
+          "Live session is starting up. Please try again in a moment.");
+    }
+  }
+
+  Widget _buildHostCard(StationData? stationData) {
     final isLive = stationData?.isLive ?? false;
     final name = stationData?.name ?? "Joe";
     final profileImage = stationData?.profileImage ?? "";
@@ -347,25 +512,7 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
     return GestureDetector(
       onTap: () {
         if (stationData != null) {
-          final latestPodcastId = stationData.latestPodcastId ?? "";
-          final stationId = stationData.id ?? "";
-
-          final data = AudioPlayerModel(
-            id: latestPodcastId.isNotEmpty ? latestPodcastId : stationId,
-            title: name,
-            image: profileImage,
-            duration: "",
-            url: "",
-            reels: true,
-            stationId: stationId,
-            firstPodcastId: latestPodcastId,
-            creatorImage: profileImage,
-          );
-
-          AppRouter.route.pushNamed(
-            RoutePath.reelsScreen,
-            extra: data,
-          );
+          _handleHostTap(stationData);
         }
       },
       child: Container(
@@ -502,7 +649,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
 
   Widget _buildCreatorCard(TopCreator creator) {
     final isLive = creator.isLive ?? false;
-    debugPrint("👤 Card: ${creator.name} | isLive: $isLive | isLiveRunning: ${creator.isLiveRunning}");
+    debugPrint(
+        "👤 Card: ${creator.name} | isLive: $isLive | isLiveRunning: ${creator.isLiveRunning}");
 
     return GestureDetector(
       onTap: () => _handleCreatorTap(creator),

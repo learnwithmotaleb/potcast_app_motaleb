@@ -17,7 +17,8 @@ class SeeAllTopCreator extends StatefulWidget {
 
 class _SeeAllTopCreatorState extends State<SeeAllTopCreator> {
   final controller = Get.find<SeeAllController>();
-  final pagingController = PagingController<int, TopCreatorItem>(firstPageKey: 1);
+  final pagingController =
+      PagingController<int, TopCreatorItem>(firstPageKey: 1);
 
   @override
   void initState() {
@@ -59,7 +60,7 @@ class _SeeAllTopCreatorState extends State<SeeAllTopCreator> {
               onTap: () => AppRouter.route.pushNamed(
                 RoutePath.audioPlayScreen,
                 extra: AudioPlayerModel(
-                  id: item.latestPodcast?.id?? "",
+                  id: item.latestPodcast?.id ?? "",
                   title: item.latestPodcast?.title ?? "",
                   image: item.profileImage ?? "",
                   url: item.latestPodcast?.podcastUrl ?? "",
@@ -72,10 +73,10 @@ class _SeeAllTopCreatorState extends State<SeeAllTopCreator> {
           },
         ),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisExtent: 200,
-            mainAxisSpacing: 4.0,
-            crossAxisSpacing: 4.0,
+          crossAxisCount: 2,
+          mainAxisExtent: 200,
+          mainAxisSpacing: 4.0,
+          crossAxisSpacing: 4.0,
         ),
       ),
     );

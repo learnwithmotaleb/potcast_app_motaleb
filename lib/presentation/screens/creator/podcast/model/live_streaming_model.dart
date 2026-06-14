@@ -9,11 +9,12 @@ class LiveStreamingModel {
     this.data,
   });
 
-  factory LiveStreamingModel.fromJson(Map<String, dynamic> json) => LiveStreamingModel(
-    success: json["success"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory LiveStreamingModel.fromJson(Map<String, dynamic> json) =>
+      LiveStreamingModel(
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
     "success": success,
@@ -38,6 +39,9 @@ class Data {
   final DateTime? updatedAt;
   final int? v;
 
+  // 🔥 NEW FIELD ADDED
+  final bool? isActive;
+
   Data({
     this.id,
     this.host,
@@ -53,6 +57,7 @@ class Data {
     this.createdAt,
     this.updatedAt,
     this.v,
+    this.isActive,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -65,11 +70,23 @@ class Data {
     status: json["status"],
     startTime: json["startTime"],
     endTime: json["endTime"],
-    roomCodes: json["roomCodes"] == null ? [] : List<RoomCode>.from(json["roomCodes"]!.map((x) => RoomCode.fromJson(x))),
-    recordings: json["recordings"] == null ? [] : List<dynamic>.from(json["recordings"]!.map((x) => x)),
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    roomCodes: json["roomCodes"] == null
+        ? []
+        : List<RoomCode>.from(
+        json["roomCodes"]!.map((x) => RoomCode.fromJson(x))),
+    recordings: json["recordings"] == null
+        ? []
+        : List<dynamic>.from(json["recordings"]!.map((x) => x)),
+    createdAt: json["createdAt"] == null
+        ? null
+        : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null
+        ? null
+        : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
+
+    // 🔥 NEW FIELD MAPPING
+    isActive: json["isActive"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -82,11 +99,18 @@ class Data {
     "status": status,
     "startTime": startTime,
     "endTime": endTime,
-    "roomCodes": roomCodes == null ? [] : List<dynamic>.from(roomCodes!.map((x) => x.toJson())),
-    "recordings": recordings == null ? [] : List<dynamic>.from(recordings!.map((x) => x)),
+    "roomCodes": roomCodes == null
+        ? []
+        : List<dynamic>.from(roomCodes!.map((x) => x.toJson())),
+    "recordings": recordings == null
+        ? []
+        : List<dynamic>.from(recordings!.map((x) => x)),
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
+
+    // 🔥 NEW FIELD TO JSON
+    "isActive": isActive,
   };
 }
 
@@ -117,8 +141,12 @@ class RoomCode {
     roomId: json["room_id"],
     role: json["role"],
     enabled: json["enabled"],
-    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+    createdAt: json["created_at"] == null
+        ? null
+        : DateTime.parse(json["created_at"]),
+    updatedAt: json["updated_at"] == null
+        ? null
+        : DateTime.parse(json["updated_at"]),
     id: json["_id"],
   );
 

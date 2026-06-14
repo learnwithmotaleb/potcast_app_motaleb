@@ -405,8 +405,8 @@ class PodcastAudioController extends GetxController {
         getLiveMethod(false);
       } else {
         getLiveMethod(false);
-        // String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
-        // toastMessage(message: errorMessage);
+        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        toastMessage(message: errorMessage);
       }
     } catch (e) {
       debugPrint("🔴 Get Live Error: $e");

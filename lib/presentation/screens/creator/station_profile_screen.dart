@@ -13,6 +13,12 @@ import 'package:podcast/presentation/screens/see_all/podcast_list_screen.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/card/profile_podcast_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
+import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
+import 'package:podcast/presentation/screens/home/model/home_model.dart';
+import 'package:podcast/presentation/screens/home/model/top_fav_live_model.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
@@ -24,8 +30,13 @@ class StationProfileScreen extends StatefulWidget {
   State<StationProfileScreen> createState() => _StationProfileScreenState();
 }
 
-class _StationProfileScreenState extends State<StationProfileScreen> {
+class _StationProfileScreenState extends State<StationProfileScreen>
+    with TickerProviderStateMixin {
   late final StationProfileController controller;
+  final _profileController = Get.find<ProfileController>();
+
+  late AnimationController _animationController;
+  late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
@@ -34,12 +45,230 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.getStationProfile(widget.stationId);
     });
+
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    _pulseAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+    _animationController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
+    _animationController.dispose();
     Get.delete<StationProfileController>();
     super.dispose();
+  }
+
+  Future<bool> getPermissions() async {
+    try {
+      if (Platform.isIOS) {
+        final camera = await Permission.camera.request();
+        final mic = await Permission.microphone.request();
+        return camera.isGranted && mic.isGranted;
+      } else {
+        final camera = await Permission.camera.request();
+        final mic = await Permission.microphone.request();
+        return camera.isGranted && mic.isGranted;
+      }
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _showJoinHostLiveDialog(StationData stationData) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black.withValues(alpha: 0.9),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: const BorderSide(color: Colors.red, width: 1),
+        ),
+        title: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.live_tv, color: Colors.red, size: 32),
+            ),
+            const Gap(16),
+            CustomText(
+              text: "${stationData.name} is Live!",
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ],
+        ),
+        content: const CustomText(
+          text:
+              "Would you like to join the live session and interact with the host?",
+          fontSize: 14,
+          color: Colors.white70,
+          textAlign: TextAlign.center,
+        ),
+        actionsPadding: const EdgeInsets.only(bottom: 20, left: 16, right: 16),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Maybe Later",
+                      style: TextStyle(color: Colors.grey)),
+                ),
+              ),
+              const Gap(12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _joinHostLiveSession(stationData);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    elevation: 4,
+                    shadowColor: Colors.red.withValues(alpha: 0.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Join Now",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _joinHostLiveSession(StationData stationData) async {
+    if (stationData.isLiveRunning) {
+      final participantCode = stationData.streamRoom?.roomCodes?.firstWhere(
+        (roomCode) =>
+            roomCode.role == "participants" &&
+            roomCode.code != null &&
+            roomCode.code!.isNotEmpty,
+        orElse: () => RoomCode(),
+      );
+
+      if (participantCode?.code != null) {
+        final hasPermissions = await getPermissions();
+
+        if (hasPermissions) {
+          if (!mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StreamingScreen(
+                authToken: "",
+                roomCode: participantCode!.code!,
+                userName:
+                    _profileController.profile.value.data?.name ?? "Viewer",
+                userID: _profileController.profile.value.data?.id ??
+                    "46464645645645",
+              ),
+            ),
+          );
+        } else {
+          _showPermissionDialog();
+        }
+      } else {
+        _showErrorDialog(
+            "Live session is not available. Please try again in a moment.");
+      }
+    } else {
+      _showErrorDialog(
+          "Live session is starting up. Please try again in a moment.");
+    }
+  }
+
+  void _showPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning, color: Colors.orange),
+            Gap(8),
+            Text("Permissions Required", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: const Text(
+          "Camera and microphone permissions are required to join the live stream.",
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              openAppSettings();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            child:
+                const Text("Settings", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: const Row(
+          children: [
+            Icon(Icons.error, color: Colors.red),
+            Gap(8),
+            Text("Error", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: Text(message, style: const TextStyle(color: Colors.white70)),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text("OK", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
   }
 
   String _formatDuration(num? duration) {
@@ -65,8 +294,8 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
         switch (controller.loading.value) {
           case Status.loading:
             return const Center(
-                child: CircularProgressIndicator(
-                    color: AppColors.primaryColor));
+                child:
+                    CircularProgressIndicator(color: AppColors.primaryColor));
           case Status.error:
             return Center(
               child: Column(
@@ -94,15 +323,13 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
           case Status.noDataFound:
             return const Center(
                 child: CustomText(
-                    text: "No station profile found",
-                    color: Colors.white));
+                    text: "No station profile found", color: Colors.white));
           case Status.internetError:
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.wifi_off,
-                      color: Colors.white54, size: 48),
+                  const Icon(Icons.wifi_off, color: Colors.white54, size: 48),
                   const Gap(16),
                   const CustomText(
                       text: "Check your internet connection",
@@ -140,26 +367,100 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
         children: [
           // Profile Image
           Center(
-            child: Container(
-              height: 120,
-              width: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.1), width: 4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.red.withValues(alpha: 0.3),
-                    blurRadius: 20,
-                    spreadRadius: 5,
+            child: GestureDetector(
+              onTap: () {
+                if (station?.isLive == true && station != null) {
+                  _showJoinHostLiveDialog(station);
+                }
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (station?.isLive == true)
+                    AnimatedBuilder(
+                      animation: _pulseAnimation,
+                      builder: (context, child) {
+                        return Transform.scale(
+                          scale: _pulseAnimation.value,
+                          child: Container(
+                            height: 130,
+                            width: 130,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.red.withValues(alpha: 0.6),
+                                width: 4,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  Container(
+                    height: 120,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: (station?.isLive == true)
+                              ? Colors.red
+                              : Colors.white.withValues(alpha: 0.1),
+                          width: 4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: (station?.isLive == true
+                                  ? Colors.red
+                                  : Colors.black)
+                              .withValues(alpha: 0.3),
+                          blurRadius: 20,
+                          spreadRadius: 5,
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(60),
+                      child: CustomNetworkImage(
+                        imageUrl: station?.profileImage ?? "",
+                      ),
+                    ),
                   ),
+                  if (station?.isLive == true)
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.black, width: 2),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              height: 8,
+                              width: 8,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const Gap(4),
+                            const Text(
+                              "LIVE",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(60),
-                child: CustomNetworkImage(
-                  imageUrl: station?.profileImage ?? "",
-                ),
               ),
             ),
           ),
@@ -183,8 +484,7 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
           // Albums Section (Requested to look like home categories)
           if (categories.isNotEmpty) ...[
             _buildSectionHeader("Albums",
-                onTap: () =>
-                    context.pushNamed(RoutePath.categoriesScreen)),
+                onTap: () => context.pushNamed(RoutePath.categoriesScreen)),
             const Gap(16),
             GridView.builder(
               shrinkWrap: true,
@@ -214,7 +514,11 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
           // Podcasts Section
           if (podcasts.isNotEmpty) ...[
             _buildSectionHeader("Podcasts", onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> const PodcastListScreen(title: "All PodCasts")));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const PodcastListScreen(title: "All PodCasts")));
             }),
             const Gap(16),
             SizedBox(
@@ -253,9 +557,11 @@ class _StationProfileScreenState extends State<StationProfileScreen> {
           // Reels Section
           if (reels.isNotEmpty) ...[
             _buildSectionHeader("Reels", onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> const PodcastListScreen(title: "All Reels")));
-
-
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const PodcastListScreen(title: "All Reels")));
             }),
             const Gap(16),
             SizedBox(

@@ -30,6 +30,7 @@ class Data {
   final String? user;
   final String? name;
   final String? email;
+  final String? role;
   final String? profileImage;
   final String? profileCover;
   final String? address;
@@ -46,6 +47,7 @@ class Data {
     this.user,
     this.name,
     this.email,
+    this.role,
     this.profileImage,
     this.profileCover,
     this.address,
@@ -67,6 +69,7 @@ class Data {
         user: json["user"],
         name: json["name"],
         email: json["email"],
+    role: json["role"],
         profileImage: json["profile_image"],
         profileCover: json["profile_cover"],
         address: json["address"],
@@ -88,6 +91,7 @@ class Data {
         "user": user,
         "name": name,
         "email": email,
+    "role": role,
         "profile_image": profileImage,
         "profile_cover": profileCover,
         "address": address,

@@ -18,25 +18,23 @@ class ProfileController extends GetxController {
   final RxString gender = "".obs;
 
   Future<void> pickImage() async {
-   try{
-     XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
-     if (image != null) {
-       selectedImage.value = image;
-     }
-   }catch(_){
-
-   }
+    try {
+      XFile? image = await _picker.pickImage(
+          source: ImageSource.gallery, imageQuality: 50);
+      if (image != null) {
+        selectedImage.value = image;
+      }
+    } catch (_) {}
   }
 
   Future<void> pickCoverImage() async {
-    try{
-      XFile? image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    try {
+      XFile? image = await _picker.pickImage(
+          source: ImageSource.gallery, imageQuality: 50);
       if (image != null) {
         selectedCoverImage.value = image;
       }
-    }catch(_){
-
-    }
+    } catch (_) {}
   }
 
   void updateGender({required String value}) {
@@ -50,7 +48,8 @@ class ProfileController extends GetxController {
   Future<void> getProfile() async {
     try {
       loadingMethod(Status.loading);
-      var response = await apiClient.get(url: ApiUrl.profile(), showResult: true);
+      var response =
+          await apiClient.get(url: ApiUrl.profile(), showResult: true);
       if (response.statusCode == 200) {
         profile.value = ProfileModel.fromJson(response.body);
         loadingMethod(Status.completed);
@@ -83,7 +82,8 @@ class ProfileController extends GetxController {
       }
       if (selectedCoverImage.value != null) {
         multipartBody.add(
-          MultipartBody("profile_cover", File(selectedCoverImage.value?.path ?? "")),
+          MultipartBody(
+              "profile_cover", File(selectedCoverImage.value?.path ?? "")),
         );
       }
       var response = await apiClient.multipartRequest(
@@ -101,7 +101,8 @@ class ProfileController extends GetxController {
         getProfile();
       } else {
         editLoadingMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (err) {
@@ -113,7 +114,8 @@ class ProfileController extends GetxController {
   void editProfileOnlyBody({required Map<String, String> body}) async {
     try {
       editLoadingMethod(true);
-      var response = await apiClient.patch(url: ApiUrl.profileEdit(), body: body, showResult: true);
+      var response = await apiClient.patch(
+          url: ApiUrl.profileEdit(), body: body, showResult: true);
 
       if (response.statusCode == 200) {
         editLoadingMethod(false);
@@ -121,7 +123,8 @@ class ProfileController extends GetxController {
         getProfile();
       } else {
         editLoadingMethod(false);
-        String errorMessage = response.body?['message']?.toString() ?? 'Something went wrong';
+        String errorMessage =
+            response.body?['message']?.toString() ?? 'Something went wrong';
         toastMessage(message: errorMessage);
       }
     } catch (err) {

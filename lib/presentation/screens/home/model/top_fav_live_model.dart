@@ -1,7 +1,10 @@
+import 'package:podcast/presentation/screens/home/model/home_model.dart'
+    show LiveSession, StreamRoom;
+
 class TopFavLiveModel {
   final bool success;
   final String message;
-  final Data? data;
+  final StationData? data;
 
   TopFavLiveModel({
     required this.success,
@@ -13,13 +16,13 @@ class TopFavLiveModel {
     return TopFavLiveModel(
       success: json["success"] ?? false,
       message: json["message"] ?? "",
-      data: json["data"] != null ? Data.fromJson(json["data"]) : null,
+      data: json["data"] != null ? StationData.fromJson(json["data"]) : null,
     );
   }
 }
 
-class Data {
-  final Location? location;
+class StationData {
+  final StationLocation? location;
   final String id;
   final String name;
   final String description;
@@ -31,9 +34,12 @@ class Data {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int version;
+  final LiveSession? liveSession;
+  final StreamRoom? streamRoom;
+  final int totalViews;
   final String? latestPodcastId;
 
-  Data({
+  StationData({
     this.location,
     required this.id,
     required this.name,
@@ -46,12 +52,17 @@ class Data {
     this.createdAt,
     this.updatedAt,
     required this.version,
+    this.liveSession,
+    this.streamRoom,
+    this.totalViews = 0,
     this.latestPodcastId,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
-      location: json["location"] != null ? Location.fromJson(json["location"]) : null,
+  factory StationData.fromJson(Map<String, dynamic> json) {
+    return StationData(
+      location: json["location"] != null
+          ? StationLocation.fromJson(json["location"])
+          : null,
       id: json["_id"] ?? "",
       name: json["name"] ?? "",
       description: json["description"] ?? "",
@@ -67,22 +78,48 @@ class Data {
           ? DateTime.tryParse(json["updatedAt"])
           : null,
       version: json["__v"] ?? 0,
+      liveSession: (json["liveSession"] == null ||
+              (json["liveSession"] is Map &&
+                  (json["liveSession"] as Map).isEmpty))
+          ? null
+          : LiveSession.fromJson(json["liveSession"]),
+      streamRoom: (json["streamRoom"] == null ||
+              (json["streamRoom"] is Map &&
+                  (json["streamRoom"] as Map).isEmpty))
+          ? null
+          : StreamRoom.fromJson(json["streamRoom"]),
+      totalViews: json["totalViews"] ?? 0,
       latestPodcastId: json["latestPodcastId"],
     );
   }
+
+  /// Check if the station host is actually live and joinable
+  bool get isLiveRunning {
+    if (!isLive) return false;
+    if (streamRoom == null) return false;
+
+    final hasParticipantsWithCode = streamRoom?.roomCodes?.any(
+          (roomCode) =>
+              roomCode.role == "participants" &&
+              (roomCode.code?.isNotEmpty ?? false),
+        ) ??
+        false;
+
+    return hasParticipantsWithCode;
+  }
 }
 
-class Location {
+class StationLocation {
   final String type;
   final List<double> coordinates;
 
-  Location({
+  StationLocation({
     required this.type,
     required this.coordinates,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
+  factory StationLocation.fromJson(Map<String, dynamic> json) {
+    return StationLocation(
       type: json["type"] ?? "",
       coordinates: json["coordinates"] != null
           ? List<double>.from(
