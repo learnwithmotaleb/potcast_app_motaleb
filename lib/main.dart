@@ -4,6 +4,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:podcast/core/theme/dark_theme.dart';
 import 'package:podcast/helper/local_db/local_db.dart';
+import 'package:podcast/presentation/screens/ads_manager/ads_manager.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'controller/language_controller.dart';
 import 'core/dependency/getx_injection.dart';
@@ -15,9 +16,12 @@ import 'utils/app_const/app_const.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
+  await MobileAds.instance.initialize();
+  // Initialise the central ad manager (premium flag false for now)
+  await AdManager.instance.initialize(isPremiumUser: false);
   await JustAudioBackground.init(
-    androidNotificationChannelId: "com.ryanheise.audio_service.podcast.audio_player",
+    androidNotificationChannelId:
+        "com.ryanheise.audio_service.podcast.audio_player",
     androidNotificationChannelName: "Audio playback",
     androidNotificationOngoing: true,
     androidStopForegroundOnPause: true,

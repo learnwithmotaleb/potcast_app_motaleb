@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../presentation/screens/subscription/controller/subscription_controller.dart';
+import '../presentation/screens/ads_manager/ad_constants.dart';
 
 class RewardedAdService {
   static final RewardedAdService _instance = RewardedAdService._internal();
@@ -15,9 +16,7 @@ class RewardedAdService {
 
 
   String get _adUnitId {
-    return Platform.isAndroid
-        ? "ca-app-pub-3940256099942544/5224354917"
-        : "ca-app-pub-3940256099942544/1712485313";
+    return AdConfigKeys.testRewardedUnitId;
   }
 
   /// Load rewarded ad safely

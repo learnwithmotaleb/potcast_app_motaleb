@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/presentation/screens/ads_manager/test.dart';
 import 'package:podcast/presentation/screens/creator/podcast/add/add_icon_main_screen.dart';
 import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
 import 'package:podcast/presentation/screens/history/history_screen.dart';
@@ -37,7 +38,7 @@ class _AdminNavScreenState extends State<AdminNavScreen> {
 
   final List<Widget> _pages = [
     const UserHomeScreen(),
-    const HistoryScreen(),
+    const TestAds(),
     const AddIconMainScreen(),
     const FavoriteScreen(),
     const ProfileScreen(isUser: false),

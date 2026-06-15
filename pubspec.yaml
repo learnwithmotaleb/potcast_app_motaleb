@@ -72,7 +72,7 @@ dependencies:
   path_provider: ^2.1.5
   audioplayers: ^6.1.1
   jwt_decoder: ^2.0.1
-  google_mobile_ads: ^5.3.1
+  google_mobile_ads: ^9.0.0
   marquee: ^2.3.0
   flutter_datetime_picker_plus: ^2.2.0
   get_time_ago: ^2.3.2

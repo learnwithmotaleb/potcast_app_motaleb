@@ -15,6 +15,7 @@ import 'package:podcast/presentation/screens/creator/nav/creator_nav_screen.dart
 import 'package:podcast/presentation/screens/admin/nav/admin_nav_screen.dart';
 import 'package:podcast/presentation/screens/creator/podcast/my_podcast_screen.dart';
 import 'package:podcast/presentation/screens/intro/intro_screen.dart';
+import 'package:podcast/presentation/screens/ads_manager/test.dart';
 import 'package:podcast/presentation/screens/nav/user_nav_screen.dart';
 import 'package:podcast/presentation/screens/play/stream_audio_play_screen.dart';
 import 'package:podcast/presentation/screens/playlist/add/playlist_add_info_screen.dart';

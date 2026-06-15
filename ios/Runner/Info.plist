@@ -1,75 +1,122 @@
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Preach Radio</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>podcast</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-9600166294736004~6364781143</string>
-	<key>IOGoogleMapsAPIKey</key>
-	<string>AIzaSyAszXC1be8aJ37eHuNcBm_-O1clWkPUwV4</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>This app needs access to play audio files.</string>
-	<key>NSCameraUsageDescription</key>
+
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+
+    <key>CFBundleDisplayName</key>
+    <string>Preach Radio</string>
+
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+
+    <key>CFBundleName</key>
+    <string>Preach Radio</string>
+
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+
+    <key>CFBundleShortVersionString</key>
+    <string>$(FLUTTER_BUILD_NAME)</string>
+
+    <key>CFBundleSignature</key>
+    <string>????</string>
+
+    <key>CFBundleVersion</key>
+    <string>$(FLUTTER_BUILD_NUMBER)</string>
+
+    <!-- AdMob -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-9600166294736004~6364781143</string>
+
+    <!-- Google Maps -->
+    <key>IOGoogleMapsAPIKey</key>
+    <string>YOUR_GOOGLE_MAPS_API_KEY</string>
+
+    <!-- Firebase -->
+    <key>FirebaseAppDelegateProxyEnabled</key>
+    <true/>
+
+    <!-- App Tracking Transparency -->
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This identifier will be used to provide personalized ads and improve your experience.</string>
+
+    <!-- Camera -->
+    <key>NSCameraUsageDescription</key>
     <string>This app requires camera access for live streaming and profile photos.</string>
-	<key>NSDocumentsFolderUsageDescription</key>
-	<string>We need access to your files to save and retrieve data.</string>
-	<key>NSFileSystemUsageDescription</key>
-	<string>We need access to your device’s file system to manage files.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is used to get city name</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is used to get city name</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-    <string>This app requires Bluetooth access to connect to audio devices.</string>
-	<key>NSMicrophoneUsageDescription</key>
-    <string>This app requires microphone access to record and stream audio.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need access to your photo library to save captured images.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to pick images.</string>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-	</array>
+
+    <!-- Microphone -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app requires microphone access for audio recording and live streaming.</string>
+
+    <!-- Photo Library -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires access to your photo library to select images.</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app requires permission to save images to your photo library.</string>
+
+    <!-- Bluetooth -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app requires Bluetooth access to connect audio devices.</string>
+
+    <!-- Location -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location may be used to personalize content and services.</string>
+
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location may be used to personalize content and services.</string>
+
+    <!-- Apple Music -->
+    <key>NSAppleMusicUsageDescription</key>
+    <string>This app requires access to audio playback services.</string>
+
+    <!-- Launch Screen -->
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+
+    <!-- Background Modes -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>audio</string>
+        <string>remote-notification</string>
+    </array>
+
+    <!-- Orientation -->
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    </array>
+
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
+
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+
 </dict>
 </plist>
+
