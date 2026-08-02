@@ -8,10 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:podcast/core/custom_assets/assets.gen.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/image/network_image.dart';
-import 'package:podcast/presentation/screens/ads_manager/test.dart';
 import 'package:podcast/presentation/screens/creator/podcast/add/add_icon_main_screen.dart';
-import 'package:podcast/presentation/screens/favorite/favorite_screen.dart';
-import 'package:podcast/presentation/screens/history/history_screen.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/screens/profile/profile_screen.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
@@ -36,11 +33,11 @@ class _AdminNavScreenState extends State<AdminNavScreen> {
   final profileController = Get.find<ProfileController>();
   final navController = Get.find<CreatorNavController>();
 
+  // Admin nav: Home (0), Add (1), Profile (2)
+  // Favorite and History are removed for admin role
   final List<Widget> _pages = [
     const UserHomeScreen(),
-    const TestAds(),
     const AddIconMainScreen(),
-    const FavoriteScreen(),
     const ProfileScreen(isUser: false),
   ];
 
@@ -72,21 +69,20 @@ class _AdminNavScreenState extends State<AdminNavScreen> {
             ),
             type: BottomNavigationBarType.fixed,
             onTap: (int newIndex) {
-              if (newIndex == 2) {
+              if (newIndex == 1) {
                 buildShowModalBottomSheet(context);
               } else {
                 navController.changeIndex(newIndex);
               }
             },
             items: [
+              // Index 0: Home
               const BottomNavigationBarItem(
                   icon: Icon(Iconsax.home, size: 32), label: ""),
-              const BottomNavigationBarItem(
-                  icon: Icon(Iconsax.clock, size: 32), label: ""),
+              // Index 1: Add (center action button)
               const BottomNavigationBarItem(
                   icon: Icon(Iconsax.add, size: 32), label: ""),
-              const BottomNavigationBarItem(
-                  icon: Icon(Iconsax.lovely, size: 32), label: ""),
+              // Index 2: Profile
               BottomNavigationBarItem(
                 icon: SizedBox(
                   height: 32,

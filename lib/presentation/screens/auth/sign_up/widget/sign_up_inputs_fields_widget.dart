@@ -86,7 +86,7 @@ class SignUpInputsFieldsWidget extends StatelessWidget {
                 DatePicker.showDatePicker(
                   context,
                   showTitleActions: true,
-                  minTime: DateTime(1990),
+                  minTime: DateTime(1900),
                   maxTime: DateTime.now(),
                   onConfirm: (value) {
                     dob.value = value;

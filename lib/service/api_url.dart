@@ -8,7 +8,8 @@ class ApiUrl {
 
   // static const String base = "http://10.10.20.9:5088";
   // static const String base = "https://api.preachradio.com"; // Live
-  static const String base = "https://rnj64vmh-5088.inc1.devtunnels.ms"; // Live
+  //static const String base = "https://rnj64vmh-5088.inc1.devtunnels.ms"; // Live
+  static const String base = "https://api.preachradio.com"; // Live
   static String generatePreSignedURL() => "$base/generate-presigned-url";
   static String googleSearchApi({required String search}) =>
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&key=${AppConstants.googleMapAPI}';
