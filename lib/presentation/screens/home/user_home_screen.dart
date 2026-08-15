@@ -14,6 +14,7 @@ import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
+import 'package:podcast/presentation/widget/loader/app_loader_custom.dart';
 import 'package:podcast/presentation/widget/card/modern_streaming_card.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -235,7 +236,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           switch (controller.loading.value) {
             case Status.loading:
               return const Center(
-                child: CircularProgressIndicator(),
+                child: AppLogoLoader(),
               );
             case Status.internetError:
               return NoInternetCard(

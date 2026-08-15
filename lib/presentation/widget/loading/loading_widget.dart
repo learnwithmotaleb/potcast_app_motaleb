@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../loader/app_loader_custom.dart';
 import 'spin_kit_circle.dart';
 
 class LoadingWidget extends StatelessWidget {
@@ -8,10 +9,8 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SpinKitCircle(
-        color: color ?? Colors.white,
-        size: 40.0,
-      ),
+      child: AppLogoLoader(),
+
     );
   }
 }

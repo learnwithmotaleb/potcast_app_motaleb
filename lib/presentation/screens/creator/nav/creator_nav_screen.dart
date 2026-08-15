@@ -86,7 +86,7 @@ class _CreatorNavScreenState extends State<CreatorNavScreen> {
               const BottomNavigationBarItem(
                   icon: Icon(Iconsax.add, size: 32), label: ""),
               const BottomNavigationBarItem(
-                  icon: Icon(Iconsax.lovely, size: 32), label: ""),
+                  icon: Icon(Iconsax.heart, size: 32), label: ""),
               BottomNavigationBarItem(
                 icon: SizedBox(
                   height: 32,

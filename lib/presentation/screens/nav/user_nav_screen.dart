@@ -53,7 +53,7 @@ class _UserNavScreenState extends State<UserNavScreen> {
                 label: "",
               ),
               const BottomNavigationBarItem(
-                icon: Icon(Iconsax.lovely, size: 32),
+                icon: Icon(Iconsax.heart, size: 32),
                 label: "",
               ),
               BottomNavigationBarItem(
