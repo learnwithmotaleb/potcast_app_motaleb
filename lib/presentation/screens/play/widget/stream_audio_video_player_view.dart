@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 import 'package:podcast/presentation/screens/play/model/play_entity.dart';
+import 'package:podcast/presentation/widget/loader/app_loader_custom.dart';
 import 'package:podcast/utils/app_const/app_const.dart';
 
 class StreamAudioVideoPlayerView extends StatelessWidget {
@@ -176,6 +177,7 @@ class StreamAudioVideoPlayerView extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            // child: AppLogoLoader(),
           ),
         ],
       ),
