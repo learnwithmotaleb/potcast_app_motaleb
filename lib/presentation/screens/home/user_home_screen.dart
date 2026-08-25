@@ -8,6 +8,7 @@ import 'package:podcast/helper/extension/base_extension.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/model/banner_model.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
+import 'package:podcast/presentation/screens/home/widget/featues_box.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/home_music_card.dart';
@@ -23,6 +24,8 @@ import 'model/home_model.dart';
 import 'widget/user_home_categories_section.dart';
 import 'widget/user_home_top_section.dart';
 import 'widget/user_top_artists_section.dart';
+import 'widget/adversting_box.dart';
+import 'widget/featues_box.dart';
 
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({super.key});
@@ -305,6 +308,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         itemCount: categories?.length ?? 0,
                       ),
                     ),
+
                     SliverToBoxAdapter(
                       child: Column(
                         children: [
@@ -342,6 +346,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         ],
                       ),
                     ),
+
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: 220,
@@ -377,6 +382,41 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         ),
                       ),
                     ),
+
+                    const SliverToBoxAdapter(
+                      child: FeatureBox(),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const CustomText(
+                              text: "Advertisement",
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
+                            // TextButton(
+                            //   onPressed: () {
+                            //     AppRouter.route.pushNamed(
+                            //       RoutePath.podcastListScreen,
+                            //       extra: {
+                            //         'title': 'Advertisement ',
+                            //         'popular': true,
+                            //       },
+                            //     );
+                            //   },
+                            //   child: Text("see_all".tr),
+                            // ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SliverToBoxAdapter(
+                      child: AdvertisingBox(),
+                    ),
+
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),

@@ -33,6 +33,7 @@ class _AlbumPodcastScreenState extends State<AlbumPodcastScreen> {
     controller.getAlbum(id: widget.id);
     super.initState();
   }
+
   @override
   void dispose() {
     Get.delete<AlbumController>();
@@ -66,18 +67,17 @@ class _AlbumPodcastScreenState extends State<AlbumPodcastScreen> {
 
           case Status.completed:
             return RefreshIndicator(
-              onRefresh: () async{
+              onRefresh: () async {
                 controller.getAlbum(id: widget.id);
               },
               child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8.0),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8
-                ),
-                itemBuilder: (BuildContext context, int index){
-                  final item = controller.albumModel.value.data?.podcasts?[index];
+                    crossAxisCount: 2, crossAxisSpacing: 8, mainAxisSpacing: 8),
+                itemBuilder: (BuildContext context, int index) {
+                  final item =
+                      controller.albumModel.value.data?.podcasts?[index];
                   final data = AudioPlayerModel(
                     id: item?.id ?? "",
                     title: item?.title ?? "",
@@ -87,20 +87,22 @@ class _AlbumPodcastScreenState extends State<AlbumPodcastScreen> {
                   );
                   return CreatorCard(
                     data: data,
-                    onTap: () => AppRouter.route.pushNamed(RoutePath.audioPlayScreen,
-                        extra: AudioPlayerModel(
-                          id: item?.id ?? "",
-                          title: item?.title ?? "",
-                          categories: item?.category?.name ?? "",
-                          image: item?.coverImage ?? "",
-                          url: item?.podcastUrl ?? "",
-                          duration: formatDuration(item?.duration ?? 0),
-                          isAlbum: true,
-                        ),
+                    onTap: () => AppRouter.route.pushNamed(
+                      RoutePath.audioPlayScreen,
+                      extra: AudioPlayerModel(
+                        id: item?.id ?? "",
+                        title: item?.title ?? "",
+                        categories: item?.category?.name ?? "",
+                        image: item?.coverImage ?? "",
+                        url: item?.podcastUrl ?? "",
+                        duration: formatDuration(item?.duration ?? 0),
+                        isAlbum: true,
+                      ),
                     ),
                   );
                 },
-                itemCount: controller.albumModel.value.data?.podcasts?.length ?? 0,
+                itemCount:
+                    controller.albumModel.value.data?.podcasts?.length ?? 0,
               ),
             );
         }
