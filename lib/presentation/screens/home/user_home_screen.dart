@@ -286,6 +286,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     const SliverToBoxAdapter(
                       child: UserHomeTopSection(),
                     ),
+
+
+
+
                     const SliverGap(8),
                     SliverPadding(
                       padding: const EdgeInsets.only(
@@ -309,10 +313,30 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                     ),
 
+                    //====================
+
+
+
+
+                    //================
+
+
+
+
+
+
+
                     SliverToBoxAdapter(
                       child: Column(
                         children: [
                           const UserTopArtistsSection(),
+
+
+                            FeatureBox(),
+
+
+
+
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12.0),
@@ -383,9 +407,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                     ),
 
-                    const SliverToBoxAdapter(
-                      child: FeatureBox(),
-                    ),
+
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
