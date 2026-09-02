@@ -17,6 +17,8 @@ import 'package:podcast/presentation/screens/streaming/streaming_screen.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/utils/app_colors/app_colors.dart';
 
+import 'featues_box.dart';
+
 class UserTopArtistsSection extends StatefulWidget {
   const UserTopArtistsSection({super.key});
 
@@ -349,6 +351,8 @@ class _UserTopArtistsSectionState extends State<UserTopArtistsSection>
             );
           }),
         ),
+
+
       ],
     );
   }
