@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -7,9 +8,11 @@ import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/helper/image/network_image.dart';
 import 'package:podcast/presentation/screens/play/controller/podcast_manually_play_controller.dart';
 import 'package:podcast/presentation/screens/play/model/play_entity.dart';
+import 'package:podcast/presentation/screens/play/widget/stream_comments_bottom_sheet.dart';
 import 'package:podcast/presentation/screens/reels/controller/reels_controller.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/loading/loading_widget.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
 class ReelVideoItem extends StatefulWidget {
@@ -36,11 +39,15 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
   bool _showIcon = false;
   bool _isLiked = false;
   bool _likeLoading = false;
+  bool _isFavorite = false;
+  bool _favoriteLoading = false;
+  bool _isFollowing = false;
 
   @override
   void initState() {
     super.initState();
     _isLiked = widget.item.isLike ?? false;
+    _isFavorite = widget.item.isBookmark ?? false;
     _initializeVideo();
   }
 
@@ -148,6 +155,128 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
         });
       }
     }
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_favoriteLoading) return;
+
+    setState(() {
+      _favoriteLoading = true;
+    });
+
+    try {
+      final podcastController = Get.find<PodcastManuallyPlayController>();
+      final newState = await podcastController.favoritePodcast(
+        id: widget.item.id,
+        currentState: _isFavorite,
+      );
+
+      if (mounted) {
+        setState(() {
+          _isFavorite = newState;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error toggling favorite: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _favoriteLoading = false;
+        });
+      }
+    }
+  }
+
+  void _toggleFollow() {
+    setState(() {
+      _isFollowing = !_isFollowing;
+    });
+  }
+
+  void _shareReel() {
+    final String title = widget.item.title;
+    final String deepLink =
+        "https://preachradio.com/podcast/${widget.item.id}";
+    final String shareText =
+        "Check out this reel: $title\n\nWatch here: $deepLink";
+    Share.share(shareText, subject: title);
+  }
+
+  void _showComments() {
+    try {
+      final podcastController = Get.find<PodcastManuallyPlayController>();
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => StreamCommentsBottomSheet(
+          controller: podcastController,
+          podcastId: widget.item.id,
+        ),
+      );
+    } catch (e) {
+      debugPrint("❌ Cannot open comments: $e");
+    }
+  }
+
+  void _showMoreOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF1C1D22),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Gap(12),
+            Container(
+              height: 4,
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const Gap(16),
+            ListTile(
+              leading: const Icon(Icons.link, color: Colors.white70),
+              title: const CustomText(
+                text: "Copy link",
+                color: Colors.white,
+                textAlign: TextAlign.start,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                final link =
+                    "https://preachradio.com/podcast/${widget.item.id}";
+                Clipboard.setData(ClipboardData(text: link));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.flag_outlined, color: Colors.white70),
+              title: const CustomText(
+                text: "Report",
+                color: Colors.white,
+                textAlign: TextAlign.start,
+              ),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: const Icon(Icons.close, color: Colors.white70),
+              title: const CustomText(
+                text: "Cancel",
+                color: Colors.white,
+                textAlign: TextAlign.start,
+              ),
+              onTap: () => Navigator.pop(context),
+            ),
+            const Gap(8),
+          ],
+        ),
+      ),
+    );
   }
 
   void _navigateToStationProfile() {
@@ -308,22 +437,54 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const Gap(8),
-                  GestureDetector(
-                    onTap: _navigateToStationProfile,
-                    child: Text(
-                      widget.item.creatorName ?? "",
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        decoration: TextDecoration.underline,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: GestureDetector(
+                          onTap: _navigateToStationProfile,
+                          child: Text(
+                            widget.item.creatorName ?? "",
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                              decoration: TextDecoration.underline,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
-                    ),
+                      const Gap(10),
+                      GestureDetector(
+                        onTap: _toggleFollow,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: _isFollowing
+                                ? Colors.white24
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            _isFollowing ? "Following" : "Follow",
+                            style: TextStyle(
+                              color: _isFollowing
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
 
-            // Right side action buttons (Profile, Like, Comment)
+            // Right side action buttons (Profile, Like, Comment, Favorite, Share, More)
             Positioned(
               right: 12,
               bottom: 100,
@@ -382,13 +543,75 @@ class _ReelVideoItemState extends State<ReelVideoItem> {
                       ],
                     ),
                   ),
-                  const Gap(20),
+                  const Gap(16),
 
-                  // Comment button (placeholder)
-                  const Icon(Iconsax.message, color: Colors.white, size: 30),
-                  const Gap(4),
-                  const CustomText(
-                      text: "Comm.", color: Colors.white, fontSize: 12),
+                  // Comment button
+                  GestureDetector(
+                    onTap: _showComments,
+                    child: const Column(
+                      children: [
+                        Icon(Iconsax.message, color: Colors.white, size: 28),
+                        Gap(4),
+                        CustomText(
+                            text: "Comm.", color: Colors.white, fontSize: 12),
+                      ],
+                    ),
+                  ),
+                  const Gap(16),
+
+                  // Favorite / bookmark button
+                  GestureDetector(
+                    onTap: _toggleFavorite,
+                    child: Column(
+                      children: [
+                        _favoriteLoading
+                            ? const SizedBox(
+                                height: 28,
+                                width: 28,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Icon(
+                                _isFavorite
+                                    ? Icons.bookmark
+                                    : Icons.bookmark_border,
+                                color:
+                                    _isFavorite ? Colors.amber : Colors.white,
+                                size: 28,
+                              ),
+                        const Gap(4),
+                        CustomText(
+                          text: _isFavorite ? "Saved" : "Save",
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Gap(16),
+
+                  // Share button
+                  GestureDetector(
+                    onTap: _shareReel,
+                    child: const Column(
+                      children: [
+                        Icon(Icons.share, color: Colors.white, size: 26),
+                        Gap(4),
+                        CustomText(
+                            text: "Share", color: Colors.white, fontSize: 12),
+                      ],
+                    ),
+                  ),
+                  const Gap(16),
+
+                  // More options button
+                  GestureDetector(
+                    onTap: _showMoreOptions,
+                    child: const Icon(Icons.more_horiz,
+                        color: Colors.white, size: 28),
+                  ),
                 ],
               ),
             ),

@@ -6,13 +6,17 @@ import 'package:podcast/core/route/route_path.dart';
 import 'package:podcast/core/route/routes.dart';
 import 'package:podcast/helper/extension/base_extension.dart';
 import 'package:podcast/helper/image/network_image.dart';
+import 'package:podcast/helper/toast_message/toast_message.dart';
 import 'package:podcast/model/banner_model.dart';
 import 'package:podcast/model/route/audio_player_model.dart';
 import 'package:podcast/presentation/screens/home/widget/featues_box.dart';
+import 'package:podcast/presentation/screens/play/model/play_entity.dart';
 import 'package:podcast/presentation/screens/profile/controller/profile_controller.dart';
+import 'package:podcast/presentation/screens/reels/mock_reels_preview_screen.dart';
 import 'package:podcast/presentation/widget/bottom_nav_play_card.dart';
 import 'package:podcast/presentation/widget/card/home_music_card.dart';
 import 'package:podcast/presentation/widget/card/home_reels_card.dart';
+import 'package:podcast/presentation/widget/card/home_series_card.dart';
 import 'package:podcast/presentation/widget/custom_text/custom_text.dart';
 import 'package:podcast/presentation/widget/no_internet/no_internet_card.dart';
 import 'package:podcast/presentation/widget/loader/app_loader_custom.dart';
@@ -60,6 +64,104 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   }
 
   bool _isDialogOpen = false;
+
+  // ===================== PREVIEW-ONLY MOCK DATA =====================
+  // Used only when the backend returns empty `reels` / `albums` lists, so
+  // the Praise Clips / Series sections aren't blank while showing the
+  // client a design preview. Safe to delete this whole block once real
+  // Clip and Series content exists on the server.
+  static final List<HomeNewestPodcast> _mockReelItems = [
+    HomeNewestPodcast(
+      id: "mock-reel-1",
+      title: "Sunday Praise Moment",
+      coverImage: "https://picsum.photos/id/1011/400/700",
+      podcastUrl: "",
+      duration: 45,
+    ),
+    HomeNewestPodcast(
+      id: "mock-reel-2",
+      title: "Worship Highlight",
+      coverImage: "https://picsum.photos/id/1025/400/700",
+      podcastUrl: "",
+      duration: 38,
+    ),
+    HomeNewestPodcast(
+      id: "mock-reel-3",
+      title: "Youth Testimony",
+      coverImage: "https://picsum.photos/id/1027/400/700",
+      podcastUrl: "",
+      duration: 52,
+    ),
+    HomeNewestPodcast(
+      id: "mock-reel-4",
+      title: "Choir Special",
+      coverImage: "https://picsum.photos/id/1035/400/700",
+      podcastUrl: "",
+      duration: 29,
+    ),
+    HomeNewestPodcast(
+      id: "mock-reel-5",
+      title: "Prayer Clip",
+      coverImage: "https://picsum.photos/id/1039/400/700",
+      podcastUrl: "",
+      duration: 41,
+    ),
+  ];
+
+  // Sample public videos so tapping a mock clip actually plays something
+  // reels-style. Keyed by the mock item's id.
+  static const Map<String, String> _mockReelVideoUrls = {
+    "mock-reel-1":
+        "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
+    "mock-reel-2":
+        "https://test-videos.co.uk/vids/sintel/mp4/h264/360/Sintel_360_10s_1MB.mp4",
+    "mock-reel-3":
+        "https://test-videos.co.uk/vids/jellyfish/mp4/h264/360/Jellyfish_360_10s_1MB.mp4",
+    "mock-reel-4":
+        "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_2MB.mp4",
+    "mock-reel-5":
+        "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+  };
+
+  List<PlayEntity> _mockReelPlayEntities() => _mockReelItems
+      .map((e) => PlayEntity(
+            id: e.id ?? "",
+            title: e.title ?? "",
+            podcastUrl: _mockReelVideoUrls[e.id] ?? "",
+            coverImage: e.coverImage ?? "",
+            creatorName: "Preview Creator",
+            isLike: false,
+            isBookmark: false,
+          ))
+      .toList();
+
+  static final List<HomeAlbumItem> _mockAlbumItems = [
+    HomeAlbumItem(
+      id: "mock-series-1",
+      name: "Faith Over Fear",
+      description: "A journey through faith and courage",
+      coverImage: "https://picsum.photos/id/1015/800/500",
+    ),
+    HomeAlbumItem(
+      id: "mock-series-2",
+      name: "Grace Unfolded",
+      description: "Weekly reflections on grace",
+      coverImage: "https://picsum.photos/id/1043/800/500",
+    ),
+    HomeAlbumItem(
+      id: "mock-series-3",
+      name: "Renewed Hope",
+      description: "Stories of renewal and hope",
+      coverImage: "https://picsum.photos/id/1050/800/500",
+    ),
+    HomeAlbumItem(
+      id: "mock-series-4",
+      name: "Sacred Sundays",
+      description: "Sunday sermon series",
+      coverImage: "https://picsum.photos/id/1074/800/500",
+    ),
+  ];
+  // ==================== END PREVIEW-ONLY MOCK DATA ===================
 
   void _showFullScreenBanner(List<BannerItem> banners) {
     if (_isDialogOpen) return;
@@ -271,10 +373,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   newNotEmpty ? data.newestPodcasts : [];
               final List<HomeNewestPodcast>? popularItem =
                   popularNotEmpty ? data.popularPodcasts : [];
+              // NOTE: Preview-only fallback data. Backend currently returns
+              // empty `reels` / `albums` lists, so these placeholders let the
+              // client see the section designs. Remove once real Clips/Series
+              // content is uploaded from the admin panel — real data always
+              // takes priority over these mocks.
               final List<HomeNewestPodcast>? reelsItem =
-                  reelsNotEmpty ? data.reels : [];
+                  reelsNotEmpty ? data.reels : _mockReelItems;
               final List<HomeAlbumItem>? albumItem =
-                  albumNotEmpty ? data.albums : [];
+                  albumNotEmpty ? data.albums : _mockAlbumItems;
 
               return RefreshIndicator(
                 onRefresh: () async {
@@ -286,9 +393,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     const SliverToBoxAdapter(
                       child: UserHomeTopSection(),
                     ),
-
-
-
 
                     const SliverGap(8),
                     SliverPadding(
@@ -315,28 +419,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
                     //====================
 
-
-
-
                     //================
-
-
-
-
-
-
 
                     SliverToBoxAdapter(
                       child: Column(
                         children: [
                           const UserTopArtistsSection(),
-
-
-                            FeatureBox(),
-
-
-
-
+                          FeatureBox(),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12.0),
@@ -406,7 +495,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         ),
                       ),
                     ),
-
 
                     SliverToBoxAdapter(
                       child: Padding(
@@ -550,21 +638,40 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                     reelsItem?[index].duration ?? 0),
                                 url: reelsItem?[index].podcastUrl ?? "",
                               ),
-                              onTap: () => AppRouter.route.pushNamed(
-                                  RoutePath.reelsScreen,
-                                  extra: AudioPlayerModel(
-                                    id: reelsItem?[index].id ?? "",
-                                    title: reelsItem?[index].title ?? "",
-                                    categories:
-                                        reelsItem?[index].category?.name ?? "",
-                                    image: reelsItem?[index].coverImage ?? "",
-                                    url: reelsItem?[index].podcastUrl ?? "",
-                                    duration: formatDuration(
-                                        reelsItem?[index].duration ?? 0),
-                                    reels: true,
-                                    creatorImage:
-                                        reelsItem?[index].creator?.profileImage,
-                                  )),
+                              onTap: () {
+                                if (reelsNotEmpty) {
+                                  AppRouter.route.pushNamed(
+                                      RoutePath.reelsScreen,
+                                      extra: AudioPlayerModel(
+                                        id: reelsItem?[index].id ?? "",
+                                        title: reelsItem?[index].title ?? "",
+                                        categories:
+                                            reelsItem?[index].category?.name ??
+                                                "",
+                                        image:
+                                            reelsItem?[index].coverImage ?? "",
+                                        url: reelsItem?[index].podcastUrl ?? "",
+                                        duration: formatDuration(
+                                            reelsItem?[index].duration ?? 0),
+                                        reels: true,
+                                        creatorImage: reelsItem?[index]
+                                            .creator
+                                            ?.profileImage,
+                                      ));
+                                } else {
+                                  // Preview-only mock clips: play locally
+                                  // instead of calling the (empty) reels API.
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          MockReelsPreviewScreen(
+                                        items: _mockReelPlayEntities(),
+                                        initialIndex: index,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
                             );
                           },
                         ),
@@ -596,30 +703,21 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ),
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 220,
+                        height: 250,
                         child: ListView.builder(
                           padding: const EdgeInsets.only(left: 12, right: 12),
                           itemCount: albumItem?.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (BuildContext context, int index) {
-                            return HomeMusicCard(
-                              data: AudioPlayerModel(
-                                id: albumItem?[index].id ?? "",
-                                title: albumItem?[index].name ?? "",
-                                categories: albumItem?[index].description,
-                                image: albumItem?[index].coverImage ?? "",
-                                duration: formatDuration(0),
-                                url: "",
-                              ),
-                              onTap: () {
-                                AppRouter.route.pushNamed(
-                                  RoutePath.albumPodcastScreen,
-                                  extra: {
-                                    "title": albumItem?[index].name,
-                                    "id": albumItem?[index].id,
-                                  },
-                                );
-                              },
+                            final isFirst = index == 0;
+                            final screenWidth =
+                                MediaQuery.of(context).size.width;
+                            return HomeSeriesCard(
+                              imageUrl: albumItem?[index].coverImage ?? "",
+                              title: albumItem?[index].name ?? "",
+                              width:
+                                  isFirst ? screenWidth - 24 : screenWidth / 3,
+                              onTap: () => toastMessage(message: "Coming Soon"),
                             );
                           },
                         ),
